@@ -5,7 +5,7 @@ public class TestClass {
 		// TODO Auto-generated method stub
 
 		// Adrian
-		System.out.println("Can everyone see this?");
+		System.out.println("Is everyone able to see this?");
 	}
 
 }
