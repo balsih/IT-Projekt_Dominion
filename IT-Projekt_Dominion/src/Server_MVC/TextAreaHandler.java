@@ -1,4 +1,8 @@
+package Server_MVC;
 
+import java.util.logging.LogRecord;
+
+import javafx.scene.control.TextArea;
 
 /**
  * @author Lukas
@@ -13,14 +17,11 @@ public class TextAreaHandler {
 
 	}
 
-	public void finalize() throws Throwable {
-
-	}
-	public close(){
+	public void close(){
 
 	}
 
-	public flush(){
+	public void flush(){
 
 	}
 
@@ -32,7 +33,7 @@ public class TextAreaHandler {
 	 * 
 	 * @param record
 	 */
-	public publish(LogRecord record){
+	public void publish(LogRecord record){
 
 	}
 }//end TextAreaHandler

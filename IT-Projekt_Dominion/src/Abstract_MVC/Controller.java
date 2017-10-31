@@ -1,28 +1,18 @@
-
+package Abstract_MVC;
 
 /**
- * @author Renate
- * @version 1.0
- * @created 31-Okt-2017 17:03:35
+ * Copyright 2015, FHNW, Prof. Dr. Brad Richards. All rights reserved. This code
+ * is licensed under the terms of the BSD 3-clause license (see the file
+ * license.txt).
+ * 
+ * @author Brad Richards
  */
-public abstract class Controller {
-
-	private Model model;
-	private View view;
-
-	public Controller(){
-
-	}
-
-	public void finalize() throws Throwable {
-
-	}
-	/**
-	 * 
-	 * @param model
-	 * @param view
-	 */
-	protected Controller(Model model, View view){
-
-	}
+public abstract class Controller<M, V> {
+    protected M model;
+    protected V view;
+    
+    protected Controller(M model, V view) {
+        this.model = model;
+        this.view = view;
+    }
 }//end Controller

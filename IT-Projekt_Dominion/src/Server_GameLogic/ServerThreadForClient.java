@@ -1,26 +1,28 @@
-import Klassendiagramm.Messages.Message;
+package Server_GameLogic;
+
+import java.net.InetAddress;
+import java.net.Socket;
+import java.util.HashMap;
+import java.util.Queue;
+
+import Messages.Message;
+import Server_Services.ServiceLocator;
 
 /**
  * @author Lukas
  * @version 1.0
  * @created 31-Okt-2017 17:09:30
  */
-public class ServerThreadForClient {
+public class ServerThreadForClient implements Runnable {
 
 	private Socket clientSocket;
-	private static HashMap connections;
+	private static HashMap<InetAddress, ServerThreadForClient> connections;
 	private Game gameThread;
 	private Player player;
-	private ServiceLocator sl;
-	private Queue waitingMessages;
-	public Game m_Game;
-	public Player m_Player;
+	private ServiceLocator sl = ServiceLocator.getServiceLocator();
+	private Queue<Message> waitingMessages;
 
 
-
-	public void finalize() throws Throwable {
-
-	}
 	private ServerThreadForClient(){
 
 	}
@@ -29,7 +31,7 @@ public class ServerThreadForClient {
 	 * 
 	 * @param clientSocket
 	 */
-	private addClientSocket(Socket clientSocket){
+	private void addClientSocket(Socket clientSocket){
 
 	}
 
@@ -38,7 +40,7 @@ public class ServerThreadForClient {
 	 * @param inetAddress
 	 * @param clientSocket
 	 */
-	public ServerThreadForClient getServerThreadForClient(InetAddress inetAddress, Socket clientSocket){
+	public static ServerThreadForClient getServerThreadForClient(InetAddress inetAddress, Socket clientSocket){
 		return null;
 	}
 
@@ -50,7 +52,8 @@ public class ServerThreadForClient {
 		return null;
 	}
 
-	public run(){
+	@Override
+	public void run(){
 
 	}
 
@@ -58,7 +61,7 @@ public class ServerThreadForClient {
 	 * 
 	 * @param message
 	 */
-	public sendMessage(Message message){
+	public void sendMessage(Message message){
 
 	}
 }//end ServerThreadForClient

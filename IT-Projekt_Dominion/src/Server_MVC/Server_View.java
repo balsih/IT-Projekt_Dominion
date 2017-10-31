@@ -1,23 +1,19 @@
+package Server_MVC;
 
+import Abstract_MVC.View;
+import javafx.scene.Scene;
+import javafx.scene.control.TextArea;
+import javafx.stage.Stage;
 
 /**
  * @author Lukas
  * @version 1.0
  * @created 31-Okt-2017 17:09:20
  */
-public class Server_View {
+public class Server_View extends View<Server_Model> {
 
-	private Server_Model model;
-	private Stage stage;
 	private TextArea txtLog;
 
-	public Server_View(){
-
-	}
-
-	public void finalize() throws Throwable {
-
-	}
 	/**
 	 * 
 	 * @param stage
@@ -25,18 +21,12 @@ public class Server_View {
 	 * @param txtLog
 	 */
 	public Server_View(Stage stage, Server_Model model, TextArea txtLog){
-
+		super(stage, model);
 	}
 
-	public Stage getStage(){
+
+	@Override
+	protected Scene create_GUI() {
 		return null;
-	}
-
-	public start(){
-
-	}
-
-	public stop(){
-
 	}
 }//end Server_View

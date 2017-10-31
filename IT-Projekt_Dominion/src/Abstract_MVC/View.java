@@ -1,43 +1,55 @@
+package Abstract_MVC;
 
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 /**
- * @author Renate
- * @version 1.0
- * @created 31-Okt-2017 17:06:35
+ * Copyright 2015, FHNW, Prof. Dr. Brad Richards. All rights reserved. This code
+ * is licensed under the terms of the BSD 3-clause license (see the file
+ * license.txt).
+ * 
+ * @author Brad Richards
  */
-public abstract class View {
+public abstract class View<M> {
+    protected Stage stage;
+    protected Scene scene;
+    protected M model;
+    
+    /**
+     * Set any options for the stage in the subclass constructor
+     * 
+     * @param stage
+     * @param model
+     */
+    protected View(Stage stage, M model) {
+        this.stage = stage;
+        this.model = model;
+        
+        Scene scene = create_GUI(); // Create all controls within "root"
+        stage.setScene(scene);
+    }
 
-	private Model model;
-	protected Scene scene;
-	protected Stage stage;
+    protected abstract Scene create_GUI();
 
-	public View(){
-
-	}
-
-	public void finalize() throws Throwable {
-
-	}
-	/**
-	 * 
-	 * @param stage
-	 * @param model
-	 */
-	protected int View(Stage stage, Model model){
-		return 0;
-	}
-
-	protected abstract Scene create_GUI();
-
-	public Stage getStage(){
-		return null;
-	}
-
-	public start(){
-
-	}
-
-	public stop(){
-
-	}
-}//end View
+    /**
+     * Display the view
+     */
+    public void start() {
+        stage.show();
+    }
+    
+    /**
+     * Hide the view
+     */
+    public void stop() {
+        stage.hide();
+    }
+    
+    /**
+     * Getter for the stage, so that the controller can access window events
+     */
+    public Stage getStage() {
+        return stage;
+    }
+}
+//end View

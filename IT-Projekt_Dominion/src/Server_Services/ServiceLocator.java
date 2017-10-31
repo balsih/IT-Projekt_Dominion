@@ -1,3 +1,5 @@
+package Server_Services;
+
 
 
 /**
@@ -8,14 +10,9 @@
 public class ServiceLocator {
 
 	private DB_Connector connection;
-	private ServiceLocator ServiceLocator;
-	public DB_Connector m_DB_Connector;
+	private static ServiceLocator ServiceLocator;
 
 
-
-	public void finalize() throws Throwable {
-
-	}
 	private ServiceLocator(){
 
 	}
@@ -32,7 +29,7 @@ public class ServiceLocator {
 	 * 
 	 * @param connector
 	 */
-	public setDB_Connector(DB_Connector connector){
+	public void setDB_Connector(DB_Connector connector){
 
 	}
 }//end ServiceLocator

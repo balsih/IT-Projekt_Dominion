@@ -1,5 +1,11 @@
-package Klassendiagramm.Messages;
+package Messages;
 
+import java.net.Socket;
+
+import com.sun.xml.internal.txw2.Document;
+
+import Client_GameApp_MVC.GameApp_Model;
+import Server_GameLogic.Game;
 
 /**
  * @author Lukas
@@ -8,12 +14,12 @@ package Klassendiagramm.Messages;
  */
 public abstract class Message {
 
-	private static final String ATTR_CLIENT;
-	private static final String ATTR_ID;
-	private static final String ATTR_TIMESTAMP;
-	private static final String ATTR_TYPE;
+	private static final String ATTR_CLIENT = "client";
+	private static final String ATTR_ID = "id";
+	private static final String ATTR_TIMESTAMP = "timestamp";
+	private static final String ATTR_TYPE = "type";
 	private String client;
-	private static final String ELEMENT_MESSAGE;
+	private static final String ELEMENT_MESSAGE = "message";
 	private long id;
 	private static long messageID;
 	private long timestamp;
@@ -23,10 +29,6 @@ public abstract class Message {
 	public Game m_Game;
 
 
-
-	public void finalize() throws Throwable {
-
-	}
 	protected Message(){
 
 	}
@@ -35,9 +37,9 @@ public abstract class Message {
 	 * 
 	 * @param docIn
 	 */
-	protected abstract addNodes(Document docIn);
+	protected abstract void addNodes(Document docIn);
 
-	private buildMessage(){
+	private void buildMessage(){
 
 	}
 
@@ -61,7 +63,7 @@ public abstract class Message {
 	 * 
 	 * @param docIn
 	 */
-	protected abstract init(Document docIn);
+	protected abstract void init(Document docIn);
 
 	private static long nextMessageID(){
 		return 0;
@@ -79,7 +81,7 @@ public abstract class Message {
 	 * 
 	 * @param s
 	 */
-	public send(Socket s){
+	public void send(Socket s){
 
 	}
 
@@ -87,7 +89,7 @@ public abstract class Message {
 	 * 
 	 * @param client
 	 */
-	public setClient(String client){
+	public void setClient(String client){
 
 	}
 
@@ -95,7 +97,7 @@ public abstract class Message {
 	 * 
 	 * @param id
 	 */
-	public setId(long id){
+	public void setId(long id){
 
 	}
 
@@ -103,7 +105,7 @@ public abstract class Message {
 	 * 
 	 * @param timestamp
 	 */
-	public setTimestamp(long timestamp){
+	public void setTimestamp(long timestamp){
 
 	}
 

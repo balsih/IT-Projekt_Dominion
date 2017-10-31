@@ -1,4 +1,6 @@
+package Server_Services;
 
+import Server_GameLogic.Player;
 
 /**
  * @author Renate
@@ -8,14 +10,9 @@
 public class DB_Connector {
 
 	private DB_Connector connection;
-	private ServiceLocator sl;
-	public ServiceLocator m_ServiceLocator;
+	private ServiceLocator sl = ServiceLocator.getServiceLocator();
 
 
-
-	public void finalize() throws Throwable {
-
-	}
 	private DB_Connector(){
 
 	}
@@ -25,7 +22,7 @@ public class DB_Connector {
 	 * @param name
 	 * @param password
 	 */
-	public addNewPlayer(String name, String password){
+	public void addNewPlayer(String name, String password){
 
 	}
 
@@ -50,7 +47,7 @@ public class DB_Connector {
 	 * 
 	 * @param name
 	 */
-	public deletePlayer(String name){
+	public void deletePlayer(String name){
 
 	}
 

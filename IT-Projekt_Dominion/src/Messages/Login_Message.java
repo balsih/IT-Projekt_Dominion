@@ -1,5 +1,6 @@
-package Klassendiagramm.Messages;
+package Messages;
 
+import com.sun.xml.internal.txw2.Document;
 
 /**
  * @author Lukas
@@ -8,14 +9,10 @@ package Klassendiagramm.Messages;
  */
 public class Login_Message extends Message {
 
-	private static final String ELEMENT_PASSWORD;
+	private static final String ELEMENT_PASSWORD = "password";
 	private String password;
 
 
-
-	public void finalize() throws Throwable {
-		super.finalize();
-	}
 	public Login_Message(){
 
 	}
@@ -24,7 +21,8 @@ public class Login_Message extends Message {
 	 * 
 	 * @param docIn
 	 */
-	protected addNodes(Document docIn){
+	@Override
+	protected void addNodes(Document docIn){
 
 	}
 
@@ -36,7 +34,8 @@ public class Login_Message extends Message {
 	 * 
 	 * @param docIn
 	 */
-	protected init(Document docIn){
+	@Override
+	protected void init(Document docIn){
 
 	}
 

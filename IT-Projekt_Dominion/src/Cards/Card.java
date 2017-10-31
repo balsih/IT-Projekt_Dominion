@@ -1,5 +1,7 @@
-package Klassendiagramm.Cards;
+package Cards;
 
+import Server_GameLogic.Player;
+import javafx.scene.image.ImageView;
 
 /**
  * @author Renate
@@ -14,10 +16,6 @@ public abstract class Card {
 	private String type;
 
 
-
-	public void finalize() throws Throwable {
-
-	}
 	protected Card(){
 
 	}
@@ -25,8 +23,9 @@ public abstract class Card {
 	/**
 	 * 
 	 * @param player
+	 * @return 
 	 */
-	public abstract executeCard(Player player);
+	public abstract void executeCard(Player player);
 
 	public String getCardName(){
 		return "";

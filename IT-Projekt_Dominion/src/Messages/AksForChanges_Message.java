@@ -1,5 +1,6 @@
-package Klassendiagramm.Messages;
+package Messages;
 
+import com.sun.xml.internal.txw2.Document;
 
 /**
  * @author Lukas
@@ -12,26 +13,26 @@ public class AksForChanges_Message extends Message {
 
 	}
 
-	public void finalize() throws Throwable {
-		super.finalize();
-	}
 	/**
 	 * 
 	 * @param docIn
 	 */
-	protected addNodes(Document docIn){
+	@Override
+	protected void addNodes(Document docIn){
 
 	}
 
-	public AskForChanges(){
+	public void AskForChanges(){
 
 	}
 
 	/**
 	 * 
 	 * @param docIn
+	 * @return 
 	 */
-	protected init(Document docIn){
+	@Override
+	protected void init(Document docIn){
 
 	}
 }//end AksForChanges_Message

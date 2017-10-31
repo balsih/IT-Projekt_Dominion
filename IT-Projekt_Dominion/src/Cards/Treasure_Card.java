@@ -1,4 +1,6 @@
-package Klassendiagramm.Cards;
+package Cards;
+
+
 
 
 /**
@@ -10,11 +12,6 @@ public abstract class Treasure_Card extends Card {
 
 	private int coinValue;
 
-
-
-	public void finalize() throws Throwable {
-		super.finalize();
-	}
 	protected Treasure_Card(){
 
 	}

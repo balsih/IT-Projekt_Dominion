@@ -1,4 +1,6 @@
-package Klassendiagramm.Messages;
+package Messages;
+
+
 
 
 /**
@@ -7,7 +9,19 @@ package Klassendiagramm.Messages;
  * @created 31-Okt-2017 17:01:18
  */
 public enum MessageType {
-;
+	AskForChanges,
+	BuyCard,
+	Chat,
+	CreateGame,
+	CreateNewPlayer,
+	GameMode,
+	HighScore,
+	Login,
+	LoginOrCreateNewPlayerAnswer,
+	PlayCard,
+	PlayerSuccess,
+	SkipPhase,
+	UpdateGame;
 
 	/**
 	 * 

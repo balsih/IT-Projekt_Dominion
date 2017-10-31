@@ -1,31 +1,17 @@
+package MainClasses;
 
+import javafx.application.Application;
+import javafx.stage.Stage;
 
 /**
  * @author Renate
  * @version 1.0
  * @created 31-Okt-2017 17:28:23
  */
-public class Dominion_Main {
-
-	public CreatePlayer_Controller m_CreatePlayer_Controller;
-	public MainMenu_Controller m_MainMenu_Controller;
-	public Splash_View m_Splash_View;
-	public Login_View m_Login_View;
-	public CreatePlayer_View m_CreatePlayer_View;
-	public MainMenu_View m_MainMenu_View;
-	public GameApp_View m_GameApp_View;
-	public Splash_Model m_Splash_Model;
-	public Splash_Controller m_Splash_Controller;
-	public Login_Controller m_Login_Controller;
+public class Dominion_Main extends Application {
+	
 
 	public Dominion_Main(){
-
-	}
-
-	public void finalize() throws Throwable {
-
-	}
-	public init(){
 
 	}
 
@@ -33,31 +19,38 @@ public class Dominion_Main {
 	 * 
 	 * @param args
 	 */
-	public static main(String[] args){
+	public static void main(String[] args){
+		
+	}
+
+	@Override
+	public void start(Stage stage) throws Exception{
 
 	}
 
-	public start(){
+	public void startCreateNewPlayer(){
 
 	}
 
-	public startCreateNewPlayer(){
+	public void startGameApp(){
 
 	}
 
-	public startGameApp(){
+	public void startLogin(){
 
 	}
 
-	public startLogin(){
+	public void startMainMenu(){
+
+	}
+	
+	@Override
+	public void init(){
 
 	}
 
-	public startMainMenu(){
-
-	}
-
-	public stop(){
+	@Override
+	public void stop(){
 
 	}
 }//end Dominion_Main

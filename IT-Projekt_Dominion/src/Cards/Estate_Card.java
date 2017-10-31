@@ -1,5 +1,6 @@
-package Klassendiagramm.Cards;
+package Cards;
 
+import Server_GameLogic.Player;
 
 /**
  * @author Lukas
@@ -9,10 +10,6 @@ package Klassendiagramm.Cards;
 public class Estate_Card extends Victory_Card {
 
 
-
-	public void finalize() throws Throwable {
-		super.finalize();
-	}
 	public Estate_Card(){
 
 	}
@@ -21,7 +18,8 @@ public class Estate_Card extends Victory_Card {
 	 * 
 	 * @param player
 	 */
-	public executeCard(Player player){
+	@Override
+	public void executeCard(Player player){
 
 	}
 }//end Estate_Card

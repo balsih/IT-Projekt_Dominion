@@ -1,4 +1,9 @@
-import Klassendiagramm.Cards.Card;
+package Server_GameLogic;
+
+import java.util.LinkedList;
+import java.util.Stack;
+
+import Cards.Card;
 
 /**
  * @author Lukas
@@ -10,21 +15,15 @@ public class Player {
 	protected int actions;
 	protected int buys;
 	protected int coins;
-	protected Stack deckPile;
-	protected Stack discardPile;
+	protected Stack<Card> deckPile;
+	protected Stack<Card> discardPile;
 	private Game gameThread;
-	protected LinkedList handCards;
-	private LinkedList playedCards;
+	protected LinkedList<Card> handCards;
+	private LinkedList<Card> playedCards;
 	private String playerName;
 	protected int victoryPoints;
 
-	public Player(){
 
-	}
-
-	public void finalize() throws Throwable {
-
-	}
 	/**
 	 * 
 	 * @param name
@@ -37,7 +36,7 @@ public class Player {
 	 * 
 	 * @param gameThread
 	 */
-	public addGameThread(Game gameThread){
+	public void addGameThread(Game gameThread){
 
 	}
 
@@ -49,7 +48,7 @@ public class Player {
 		return null;
 	}
 
-	private cleanUp(){
+	private void cleanUp(){
 
 	}
 
@@ -57,7 +56,7 @@ public class Player {
 	 * 
 	 * @param number
 	 */
-	public draw(int number){
+	public void draw(int number){
 
 	}
 
@@ -65,11 +64,11 @@ public class Player {
 	 * 
 	 * @param cardName
 	 */
-	public play(String cardName){
+	public void play(String cardName){
 
 	}
 
-	public skipPhase(){
+	public void skipPhase(){
 
 	}
 }//end Player

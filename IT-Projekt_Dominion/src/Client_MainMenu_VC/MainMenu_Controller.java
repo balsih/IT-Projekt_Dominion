@@ -1,19 +1,16 @@
+package Client_MainMenu_VC;
 
+import Abstract_MVC.Controller;
+import Client_GameApp_MVC.GameApp_Model;
+import MainClasses.Dominion_Main;
 
 /**
  * @author Renate
  * @version 1.0
  * @created 31-Okt-2017 17:05:00
  */
-public class MainMenu_Controller extends Controller {
+public class MainMenu_Controller extends Controller<GameApp_Model, MainMenu_View> {
 
-	public MainMenu_Controller(){
-
-	}
-
-	public void finalize() throws Throwable {
-		super.finalize();
-	}
 	/**
 	 * 
 	 * @param main
@@ -21,6 +18,6 @@ public class MainMenu_Controller extends Controller {
 	 * @param view
 	 */
 	public MainMenu_Controller(Dominion_Main main, GameApp_Model model, MainMenu_View view){
-
+		super(model, view);
 	}
 }//end MainMenu_Controller

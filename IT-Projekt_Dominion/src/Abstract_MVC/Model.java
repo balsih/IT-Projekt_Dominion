@@ -1,18 +1,14 @@
-
+package Abstract_MVC;
 
 /**
- * @author Adrian
- * @version 1.0
- * @created 31-Okt-2017 17:05:08
+ * Copyright 2015, FHNW, Prof. Dr. Brad Richards. All rights reserved. This code
+ * is licensed under the terms of the BSD 3-clause license (see the file
+ * license.txt).
+ * 
+ * @author Brad Richards
  */
 public abstract class Model {
-
-
-
-	public void finalize() throws Throwable {
-
-	}
-	protected Model(){
-
-	}
+    protected Model() {
+        // Nothing to see here, move along
+    }
 }//end Model

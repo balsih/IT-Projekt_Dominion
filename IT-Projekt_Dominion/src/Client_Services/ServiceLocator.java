@@ -1,4 +1,8 @@
+package Client_Services;
 
+import java.util.Locale;
+
+import MainClasses.Dominion_Main;
 
 /**
  * @author Renate
@@ -7,24 +11,21 @@
  */
 public class ServiceLocator {
 
-	private final Class APP_CLASS;
-	private final String APP_NAME;
+	private final Class<?> APP_CLASS = Dominion_Main.class;
+	private final String APP_NAME = Dominion_Main.class.getSimpleName();
 	private Configuration configuration;
 	private Gallery gallery;
-	private final Locale[] locales;
+	private final Locale[] locales = new Locale[] {new Locale("en"), new Locale("de")};
 	private static ServiceLocator serviceLocator;
 	private Translator translator;
 
 
 
-	public void finalize() throws Throwable {
-
-	}
 	private ServiceLocator(){
 
 	}
 
-	public Class getAPP_CLASS(){
+	public Class<?> getAPP_CLASS(){
 		return null;
 	}
 
@@ -45,7 +46,9 @@ public class ServiceLocator {
 	}
 
 	public static ServiceLocator getServiceLocator(){
-		return null;
+		if(serviceLocator == null)
+			return new ServiceLocator();
+		return serviceLocator;
 	}
 
 	public Translator getTranslator(){
@@ -56,7 +59,7 @@ public class ServiceLocator {
 	 * 
 	 * @param configuration
 	 */
-	public setConfiguration(Configuration configuration){
+	public void setConfiguration(Configuration configuration){
 
 	}
 
@@ -64,7 +67,7 @@ public class ServiceLocator {
 	 * 
 	 * @param gallery
 	 */
-	public setGallery(Gallery gallery){
+	public void setGallery(Gallery gallery){
 
 	}
 
@@ -72,7 +75,7 @@ public class ServiceLocator {
 	 * 
 	 * @param translator
 	 */
-	public setTranslator(Translator translator){
+	public void setTranslator(Translator translator){
 
 	}
 }//end ServiceLocator

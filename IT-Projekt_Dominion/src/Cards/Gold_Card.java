@@ -1,5 +1,6 @@
-package Klassendiagramm.Cards;
+package Cards;
 
+import Server_GameLogic.Player;
 
 /**
  * @author Lukas
@@ -9,10 +10,6 @@ package Klassendiagramm.Cards;
 public class Gold_Card extends Treasure_Card {
 
 
-
-	public void finalize() throws Throwable {
-		super.finalize();
-	}
 	public Gold_Card(){
 
 	}
@@ -21,7 +18,8 @@ public class Gold_Card extends Treasure_Card {
 	 * 
 	 * @param player
 	 */
-	public executeCard(Player player){
+	@Override
+	public void executeCard(Player player){
 
 	}
 }//end Gold_Card

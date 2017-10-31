@@ -1,5 +1,6 @@
-package Klassendiagramm.Messages;
+package Messages;
 
+import com.sun.xml.internal.txw2.Document;
 
 /**
  * @author Lukas
@@ -8,26 +9,22 @@ package Klassendiagramm.Messages;
  */
 public class CreateGame_Message extends Message {
 
-	private static final String ATTR_BUYCARDNUMBER;
-	private static final String ATTR_DECKCARDNUMBER;
+	private static final String ATTR_BUYCARDNUMBER = "buyCardNumber";
+	private static final String ATTR_DECKCARDNUMBER = "deckCardNumber";
+	private static final String ELEMENT_BUYCARD = "buyCard";
+	private static final String ELEMENT_BUYCARDS = "buyCards";
+	private static final String ELEMENT_DECKCARD = "deckCard";
+	private static final String ELEMENT_DECKPILE = "deckPile";
+	private static final String ELEMENT_OPPONENT = "opponent";
 	private String buyCard;
 	private int buyCardNumber;
 	private String buyCards;
 	private String deckCard;
 	private int deckCardNumber;
 	private String deckPile;
-	private static final String ELEMENT_BUYCARD;
-	private static final String ELEMENT_BUYCARDS;
-	private static final String ELEMENT_DECKCARD;
-	private static final String ELEMENT_DECKPILE;
-	private static final String ELEMENT_OPPONENT;
 	private String opponent;
 
 
-
-	public void finalize() throws Throwable {
-		super.finalize();
-	}
 	public CreateGame_Message(){
 
 	}
@@ -36,7 +33,8 @@ public class CreateGame_Message extends Message {
 	 * 
 	 * @param docIn
 	 */
-	protected addNodes(Document docIn){
+	@Override
+	protected void addNodes(Document docIn){
 
 	}
 
@@ -72,7 +70,8 @@ public class CreateGame_Message extends Message {
 	 * 
 	 * @param docIn
 	 */
-	protected init(Document docIn){
+	@Override
+	protected void init(Document docIn){
 
 	}
 
@@ -80,7 +79,7 @@ public class CreateGame_Message extends Message {
 	 * 
 	 * @param buyCard
 	 */
-	public setBuyCard(String buyCard){
+	public void setBuyCard(String buyCard){
 
 	}
 
@@ -88,7 +87,7 @@ public class CreateGame_Message extends Message {
 	 * 
 	 * @param buyCardNumber
 	 */
-	public setBuyCardNumber(int buyCardNumber){
+	public void setBuyCardNumber(int buyCardNumber){
 
 	}
 
@@ -96,7 +95,7 @@ public class CreateGame_Message extends Message {
 	 * 
 	 * @param buyCards
 	 */
-	public setBuyCards(String buyCards){
+	public void setBuyCards(String buyCards){
 
 	}
 
@@ -104,7 +103,7 @@ public class CreateGame_Message extends Message {
 	 * 
 	 * @param deckCard
 	 */
-	public setDeckCard(String deckCard){
+	public void setDeckCard(String deckCard){
 
 	}
 
@@ -112,7 +111,7 @@ public class CreateGame_Message extends Message {
 	 * 
 	 * @param deckCardNumber
 	 */
-	public setDeckCardNumber(int deckCardNumber){
+	public void setDeckCardNumber(int deckCardNumber){
 
 	}
 
@@ -120,7 +119,7 @@ public class CreateGame_Message extends Message {
 	 * 
 	 * @param deckPile
 	 */
-	public setDeckPile(String deckPile){
+	public void setDeckPile(String deckPile){
 
 	}
 
@@ -128,7 +127,7 @@ public class CreateGame_Message extends Message {
 	 * 
 	 * @param opponent
 	 */
-	public setOpponent(String opponent){
+	public void setOpponent(String opponent){
 
 	}
 }//end CreateGame_Message
