@@ -1,5 +1,6 @@
-package Klassendiagramm.Messages;
+package Messages;
 
+import com.sun.xml.internal.txw2.Document;
 
 /**
  * @author Lukas
@@ -9,13 +10,9 @@ package Klassendiagramm.Messages;
 public class Chat_Message extends Message {
 
 	private String chat;
-	private static final String ELEMENT_CHAT;
+	private static final String ELEMENT_CHAT = "chat";
 
 
-
-	public void finalize() throws Throwable {
-		super.finalize();
-	}
 	public Chat_Message(){
 
 	}
@@ -24,7 +21,8 @@ public class Chat_Message extends Message {
 	 * 
 	 * @param docIn
 	 */
-	protected addNodes(Document docIn){
+	@Override
+	protected void addNodes(Document docIn){
 
 	}
 
@@ -36,7 +34,8 @@ public class Chat_Message extends Message {
 	 * 
 	 * @param docIn
 	 */
-	protected init(Document docIn){
+	@Override
+	protected void init(Document docIn){
 
 	}
 
@@ -44,7 +43,7 @@ public class Chat_Message extends Message {
 	 * 
 	 * @param chat
 	 */
-	public setChat(String chat){
+	public void setChat(String chat){
 
 	}
 }//end Chat_Message

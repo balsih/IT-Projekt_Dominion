@@ -1,4 +1,6 @@
-package Klassendiagramm.Cards;
+package Cards;
+
+
 
 
 /**
@@ -10,11 +12,6 @@ public abstract class Victory_Card extends Card {
 
 	private int victoryPoints;
 
-
-
-	public void finalize() throws Throwable {
-		super.finalize();
-	}
 	protected Victory_Card(){
 
 	}

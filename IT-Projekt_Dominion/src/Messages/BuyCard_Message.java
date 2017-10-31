@@ -1,5 +1,6 @@
-package Klassendiagramm.Messages;
+package Messages;
 
+import com.sun.xml.internal.txw2.Document;
 
 /**
  * @author Lukas
@@ -9,13 +10,9 @@ package Klassendiagramm.Messages;
 public class BuyCard_Message extends Message {
 
 	private String card;
-	private static final String ELEMENT_CARD;
+	private static final String ELEMENT_CARD = "card";
 
 
-
-	public void finalize() throws Throwable {
-		super.finalize();
-	}
 	public BuyCard_Message(){
 
 	}
@@ -24,7 +21,8 @@ public class BuyCard_Message extends Message {
 	 * 
 	 * @param docIn
 	 */
-	protected addNodes(Document docIn){
+	@Override
+	protected void addNodes(Document docIn){
 
 	}
 
@@ -36,7 +34,8 @@ public class BuyCard_Message extends Message {
 	 * 
 	 * @param docIn
 	 */
-	protected init(Document docIn){
+	@Override
+	protected void init(Document docIn){
 
 	}
 
@@ -44,7 +43,7 @@ public class BuyCard_Message extends Message {
 	 * 
 	 * @param card
 	 */
-	public setCard(String card){
+	public void setCard(String card){
 
 	}
 }//end BuyCard_Message

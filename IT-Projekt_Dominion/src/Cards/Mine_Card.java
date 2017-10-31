@@ -1,5 +1,6 @@
-package Klassendiagramm.Cards;
+package Cards;
 
+import Server_GameLogic.Player;
 
 /**
  * @author Renate
@@ -9,10 +10,6 @@ package Klassendiagramm.Cards;
 public class Mine_Card extends Card {
 
 
-
-	public void finalize() throws Throwable {
-		super.finalize();
-	}
 	public Mine_Card(){
 
 	}
@@ -21,7 +18,8 @@ public class Mine_Card extends Card {
 	 * 
 	 * @param player
 	 */
-	public executeCard(Player player){
+	@Override
+	public void executeCard(Player player){
 
 	}
 }//end Mine_Card

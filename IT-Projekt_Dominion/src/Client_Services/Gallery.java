@@ -1,4 +1,8 @@
+package Client_Services;
 
+import java.util.ResourceBundle;
+
+import javafx.scene.image.ImageView;
 
 /**
  * @author Renate
@@ -8,14 +12,9 @@
 public class Gallery {
 
 	private ResourceBundle imagesBundle;
-	private ServiceLocator sl;
-	public ServiceLocator m_ServiceLocator;
+	private ServiceLocator sl = ServiceLocator.getServiceLocator();
 
 
-
-	public void finalize() throws Throwable {
-
-	}
 	public Gallery(){
 
 	}

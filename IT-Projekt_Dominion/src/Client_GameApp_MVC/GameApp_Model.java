@@ -1,22 +1,29 @@
-import Klassendiagramm.Cards.Card;
+package Client_GameApp_MVC;
+
+import java.net.Socket;
+import java.util.LinkedList;
+
+import Abstract_MVC.Model;
+import Cards.Card;
+import MainClasses.Dominion_Main;
 
 /**
  * @author Renate
  * @version 1.0
  * @created 31-Okt-2017 17:04:41
  */
-public class GameApp_Model {
+public class GameApp_Model extends Model {
 
 	protected int actions;
 	protected int buys;
 	protected String clientName;
 	private String clientNameRegex;
 	protected String currentPlayer;
-	private LinkedList deck;
-	private LinkedList discardPile;
-	private LinkedList fieldCards;
+	private LinkedList<Card> deck;
+	private LinkedList<Card> discardPile;
+	private LinkedList<Card> fieldCards;
 	protected String gameMode;
-	protected LinkedList handCards;
+	protected LinkedList<Card> handCards;
 	protected String highScore;
 	private String ipAdress;
 	private String ipRegex;
@@ -24,19 +31,15 @@ public class GameApp_Model {
 	protected int opponentHandCards;
 	private String password;
 	private String passwordRegex;
-	protected LinkedList playedCards;
+	protected LinkedList<Card> playedCards;
 	private int port;
 	protected boolean won;
-	public Dominion_Main m_Dominion_Main;
-	public Card m_Card;
+
 
 	public GameApp_Model(){
 
 	}
 
-	public void finalize() throws Throwable {
-
-	}
 	/**
 	 * 
 	 * @param moveType
@@ -58,11 +61,11 @@ public class GameApp_Model {
 		return null;
 	}
 
-	public cryptPassword(){
+	public void cryptPassword(){
 
 	}
 
-	private decryptPassword(){
+	private void decryptPassword(){
 
 	}
 
@@ -75,11 +78,11 @@ public class GameApp_Model {
 	 * @param ipAdress
 	 * @param port
 	 */
-	public init(String ipAdress, int port){
+	public void init(String ipAdress, int port){
 
 	}
 
-	public initializeServerListening(){
+	public void initializeServerListening(){
 
 	}
 
@@ -87,7 +90,7 @@ public class GameApp_Model {
 	 * 
 	 * @param cardName
 	 */
-	public sendBuyCard(String cardName){
+	public void sendBuyCard(String cardName){
 
 	}
 
@@ -95,19 +98,19 @@ public class GameApp_Model {
 	 * 
 	 * @param chat
 	 */
-	public sendChat(String chat){
+	public void sendChat(String chat){
 
 	}
 
-	public sendCreateNewPlayer(){
+	public void sendCreateNewPlayer(){
 
 	}
 
-	public sendGameMode(){
+	public void sendGameMode(){
 
 	}
 
-	public sendLogin(){
+	public void sendLogin(){
 
 	}
 
@@ -119,7 +122,7 @@ public class GameApp_Model {
 		return 0;
 	}
 
-	public sendSkipPhase(){
+	public void sendSkipPhase(){
 
 	}
 
@@ -127,7 +130,7 @@ public class GameApp_Model {
 	 * 
 	 * @param gameMode
 	 */
-	public setGameMode(enum gameMode){
+	public void setGameMode(String gameMode){
 
 	}
 
@@ -135,7 +138,7 @@ public class GameApp_Model {
 	 * 
 	 * @param password
 	 */
-	public setPassword(String password){
+	public void setPassword(String password){
 
 	}
 }//end GameApp_Model

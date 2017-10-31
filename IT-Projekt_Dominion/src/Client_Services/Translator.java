@@ -1,4 +1,7 @@
+package Client_Services;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * @author Renate
@@ -9,16 +12,12 @@ public class Translator {
 
 	protected Locale currentLocale;
 	private ResourceBundle resourceBundle;
-	private ServiceLocator sl;
-	public ServiceLocator m_ServiceLocator;
+	private ServiceLocator sl = ServiceLocator.getServiceLocator();
 
 	public Translator(){
 
 	}
 
-	public void finalize() throws Throwable {
-
-	}
 	/**
 	 * 
 	 * @param localeString

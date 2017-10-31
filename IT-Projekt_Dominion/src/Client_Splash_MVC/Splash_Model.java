@@ -1,5 +1,7 @@
 package Client_Splash_MVC;
 
+import Abstract_MVC.Model;
+import Client_Services.ServiceLocator;
 
 /**
  * @author Renate
@@ -8,19 +10,14 @@ package Client_Splash_MVC;
  */
 public class Splash_Model extends Model {
 
-	private ServiceLocator serviceLocator;
-	public ServiceLocator m_ServiceLocator;
+	private ServiceLocator sl = ServiceLocator.getServiceLocator();
 
 
-
-	public void finalize() throws Throwable {
-		super.finalize();
-	}
 	public Splash_Model(){
 
 	}
 
-	public initialize(){
+	public void initialize(){
 
 	}
 }//end Splash_Model

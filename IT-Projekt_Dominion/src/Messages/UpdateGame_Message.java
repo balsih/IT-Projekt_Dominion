@@ -1,5 +1,6 @@
-package Klassendiagramm.Messages;
+package Messages;
 
+import com.sun.xml.internal.txw2.Document;
 
 /**
  * @author Lukas
@@ -8,23 +9,24 @@ package Klassendiagramm.Messages;
  */
 public class UpdateGame_Message extends Message {
 
+	
+	private static final String ELEMENT_ACTIONS = "actions";
+	private static final String ELEMENT_CARDBUYED = "cardBuyed";
+	private static final String ELEMENT_COINS = "coins";
+	private static final String ELEMENT_CURRENTPHASE = "currentPhase";
+	private static final String ELEMENT_CURRENTPLAYER = "currentPlayer";
+	private static final String ELEMENT_DISCARDPILE = "discardPile";
+	private static final String ELEMENT_HANDCARD = "handCard";
+	private static final String ELEMENT_HANDCARDS = "handCards";
+	private static final String ELEMENT_LOG = "log";
+	private static final String ELEMENT_PLAYEDCARD = "playedCard";
+	private static final String ELEMENT_PLAYEDCARDS = "playedCards";
 	private int actions;
 	private String cardBuyed;
 	private int coins;
 	private String currentPhase;
 	private String currentPlayer;
 	private String discardPile;
-	private static final String ELEMENT_ACTIONS;
-	private static final String ELEMENT_CARDBUYED;
-	private static final String ELEMENT_COINS;
-	private static final String ELEMENT_CURRENTPHASE;
-	private static final String ELEMENT_CURRENTPLAYER;
-	private static final String ELEMENT_DISCARDPILE;
-	private static final String ELEMENT_HANDCARD;
-	private static final String ELEMENT_HANDCARDS;
-	private static final String ELEMENT_LOG;
-	private static final String ELEMENT_PLAYEDCARD;
-	private static final String ELEMENT_PLAYEDCARDS;
 	private String handCard;
 	private String handCards;
 	private String log;
@@ -32,10 +34,6 @@ public class UpdateGame_Message extends Message {
 	private String playedCards;
 
 
-
-	public void finalize() throws Throwable {
-		super.finalize();
-	}
 	public UpdateGame_Message(){
 
 	}
@@ -44,7 +42,8 @@ public class UpdateGame_Message extends Message {
 	 * 
 	 * @param docIn
 	 */
-	protected addNodes(Document docIn){
+	@Override
+	protected void addNodes(Document docIn){
 
 	}
 
@@ -96,7 +95,8 @@ public class UpdateGame_Message extends Message {
 	 * 
 	 * @param docIn
 	 */
-	protected init(Document docIn){
+	@Override
+	protected void init(Document docIn){
 
 	}
 
@@ -104,7 +104,7 @@ public class UpdateGame_Message extends Message {
 	 * 
 	 * @param actions
 	 */
-	public setActions(int actions){
+	public void setActions(int actions){
 
 	}
 
@@ -120,7 +120,7 @@ public class UpdateGame_Message extends Message {
 	 * 
 	 * @param coins
 	 */
-	public setCoins(int coins){
+	public void setCoins(int coins){
 
 	}
 
@@ -128,7 +128,7 @@ public class UpdateGame_Message extends Message {
 	 * 
 	 * @param currentPhase
 	 */
-	public setCurrentPhase(String currentPhase){
+	public void setCurrentPhase(String currentPhase){
 
 	}
 
@@ -136,7 +136,7 @@ public class UpdateGame_Message extends Message {
 	 * 
 	 * @param currentPlayer
 	 */
-	public setCurrentPlayer(String currentPlayer){
+	public void setCurrentPlayer(String currentPlayer){
 
 	}
 
@@ -144,7 +144,7 @@ public class UpdateGame_Message extends Message {
 	 * 
 	 * @param discardPile
 	 */
-	public setDiscardPile(String discardPile){
+	public void setDiscardPile(String discardPile){
 
 	}
 
@@ -152,7 +152,7 @@ public class UpdateGame_Message extends Message {
 	 * 
 	 * @param handCard
 	 */
-	public setHandCard(String handCard){
+	public void setHandCard(String handCard){
 
 	}
 
@@ -160,7 +160,7 @@ public class UpdateGame_Message extends Message {
 	 * 
 	 * @param handCards
 	 */
-	public setHandCards(String handCards){
+	public void setHandCards(String handCards){
 
 	}
 
@@ -168,7 +168,7 @@ public class UpdateGame_Message extends Message {
 	 * 
 	 * @param log
 	 */
-	public setLog(String log){
+	public void setLog(String log){
 
 	}
 
@@ -176,7 +176,7 @@ public class UpdateGame_Message extends Message {
 	 * 
 	 * @param playedCard
 	 */
-	public setPlayedCard(String playedCard){
+	public void setPlayedCard(String playedCard){
 
 	}
 
@@ -184,7 +184,7 @@ public class UpdateGame_Message extends Message {
 	 * 
 	 * @param playedCards
 	 */
-	public setPlayedCards(String playedCards){
+	public void setPlayedCards(String playedCards){
 
 	}
 }//end UpdateGame_Message

@@ -1,3 +1,5 @@
+package Server_GameLogic;
+
 
 
 /**
@@ -8,15 +10,11 @@
 public class Bot extends Player {
 
 
-
-	public void finalize() throws Throwable {
-		super.finalize();
-	}
-	public Bot(){
-
+	public Bot(String name){
+		super(name);
 	}
 
-	public execute(){
+	public void execute(){
 
 	}
 }//end Bot

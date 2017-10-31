@@ -1,4 +1,6 @@
+package Client_Services;
 
+import java.util.Properties;
 
 /**
  * @author Renate
@@ -9,14 +11,9 @@ public class Configuration {
 
 	private Properties defaultOptions;
 	private Properties localOptions;
-	private ServiceLocator sl;
-	public ServiceLocator m_ServiceLocator;
+	private ServiceLocator sl = ServiceLocator.getServiceLocator();
 
 
-
-	public void finalize() throws Throwable {
-
-	}
 	public Configuration(){
 
 	}
@@ -29,7 +26,7 @@ public class Configuration {
 		return "";
 	}
 
-	public save(){
+	public void save(){
 
 	}
 
@@ -38,7 +35,7 @@ public class Configuration {
 	 * @param name
 	 * @param value
 	 */
-	public setLocalOption(String name, String value){
+	public void setLocalOption(String name, String value){
 
 	}
 }//end Configuration

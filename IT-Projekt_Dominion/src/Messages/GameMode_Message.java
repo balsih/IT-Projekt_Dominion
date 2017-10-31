@@ -1,5 +1,6 @@
-package Klassendiagramm.Messages;
+package Messages;
 
+import com.sun.xml.internal.txw2.Document;
 
 /**
  * @author Lukas
@@ -8,14 +9,10 @@ package Klassendiagramm.Messages;
  */
 public class GameMode_Message extends Message {
 
-	private static final String ELEMENT_MODE;
+	private static final String ELEMENT_MODE = "mode";
 	private String mode;
 
 
-
-	public void finalize() throws Throwable {
-		super.finalize();
-	}
 	public GameMode_Message(){
 
 	}
@@ -24,7 +21,8 @@ public class GameMode_Message extends Message {
 	 * 
 	 * @param docIn
 	 */
-	protected addNodes(Document docIn){
+	@Override
+	protected void addNodes(Document docIn){
 
 	}
 
@@ -36,7 +34,8 @@ public class GameMode_Message extends Message {
 	 * 
 	 * @param docIn
 	 */
-	protected init(Document docIn){
+	@Override
+	protected void init(Document docIn){
 
 	}
 
@@ -44,7 +43,7 @@ public class GameMode_Message extends Message {
 	 * 
 	 * @param mode
 	 */
-	public setMode(String mode){
+	public void setMode(String mode){
 
 	}
 }//end GameMode_Message
