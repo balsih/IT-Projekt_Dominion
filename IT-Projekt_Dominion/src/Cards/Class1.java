@@ -6,6 +6,11 @@ public class Class1 {
 
 		System.out.println("Is everyone able to see this?");
 		System.out.println("Lukas changed this!!");
+		
+		
+		while(true){
+			break;
+		}
 	}
 
 }
