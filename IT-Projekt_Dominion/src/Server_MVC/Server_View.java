@@ -22,11 +22,9 @@ import javafx.stage.Stage;
  * Adapted from:
  * https://stackoverflow.com/questions/39214586/how-to-align-a-button-right-in-javafx
  */
-public class Server_View{
+public class Server_View extends View<Server_Model>{
 
 	private TextArea txtLog;
-	private Stage stage;
-	private Server_Model model;
 
 	protected Label lblPort;
 	protected TextField txtPort;
@@ -35,8 +33,7 @@ public class Server_View{
 	
 	public Server_View(Stage stage, Server_Model model, TextArea txtLog){
 	
-		this.stage = stage;
-		this.model = model;
+		super(stage, model);
 		this.txtLog = txtLog;
 		
 		this.lblPort = new Label("Port");
@@ -73,6 +70,12 @@ public class Server_View{
 
 	public void start(){
 		stage.show();
+	}
+
+	@Override
+	protected Scene create_GUI() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }//end Server_View
