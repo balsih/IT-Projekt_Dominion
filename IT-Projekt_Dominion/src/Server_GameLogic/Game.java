@@ -20,7 +20,7 @@ import Cards.Woodcutter_Card;
 import Cards.Workshop_Card;
 
 /**
- * @author Lukas
+ * @author Bodo
  * @version 1.0
  * @created 31-Okt-2017 17:08:54
  */

@@ -9,7 +9,7 @@ import Messages.Message;
 import Server_Services.ServiceLocator;
 
 /**
- * @author Lukas
+ * @author Bodo
  * @version 1.0
  * @created 31-Okt-2017 17:09:30
  */

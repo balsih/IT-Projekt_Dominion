@@ -6,7 +6,7 @@ import java.util.Stack;
 import Cards.Card;
 
 /**
- * @author Lukas
+ * @author Bodo
  * @version 1.0
  * @created 31-Okt-2017 17:08:57
  */

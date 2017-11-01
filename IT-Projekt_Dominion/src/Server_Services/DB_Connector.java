@@ -3,7 +3,7 @@ package Server_Services;
 import Server_GameLogic.Player;
 
 /**
- * @author Renate
+ * @author Lukas
  * @version 1.0
  * @created 31-Okt-2017 17:08:48
  */
@@ -14,7 +14,7 @@ public class DB_Connector {
 
 
 	private DB_Connector(){
-
+		
 	}
 
 	/**

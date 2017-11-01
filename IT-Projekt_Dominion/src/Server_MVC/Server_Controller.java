@@ -3,7 +3,7 @@ package Server_MVC;
 import Abstract_MVC.Controller;
 
 /**
- * @author Lukas
+ * @author Bodo
  * @version 1.0
  * @created 31-Okt-2017 17:09:04
  */
