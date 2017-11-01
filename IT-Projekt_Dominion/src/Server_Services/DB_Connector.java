@@ -22,8 +22,8 @@ public class DB_Connector {
 	 * @param name
 	 * @param password
 	 */
-	public void addNewPlayer(String name, String password){
-
+	public boolean addNewPlayer(String name, String password){
+		return false;
 	}
 
 	/**
