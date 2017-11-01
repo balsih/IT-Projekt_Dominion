@@ -5,15 +5,15 @@ import org.w3c.dom.Document;
 /**
  * @author Lukas
  * @version 1.0
- * @created 31-Okt-2017 17:01:17
+ * @created 01-Nov-2017 14:52:31
  */
-public class LoginOrCreateNewPlayerAnswer_Message extends Message {
-
+public class Commit_Message extends Message {
+	
 	private static final String ELEMENT_SUCCESS = "success";
 	private String success;
 
-
-	public LoginOrCreateNewPlayerAnswer_Message(){
+	
+	public Commit_Message(){
 
 	}
 
@@ -26,10 +26,6 @@ public class LoginOrCreateNewPlayerAnswer_Message extends Message {
 
 	}
 
-	public String getSuccess(){
-		return "";
-	}
-
 	/**
 	 * 
 	 * @param docIn
@@ -38,12 +34,12 @@ public class LoginOrCreateNewPlayerAnswer_Message extends Message {
 	protected void init(Document docIn){
 
 	}
-
-	/**
-	 * 
-	 * @param success
-	 */
+	
 	public void setSuccess(String success){
-
+		this.success = success;
 	}
-}//end LoginOrCreateNewPlayerAnswer_Message
+	
+	public String getSuccess(){
+		return this.success;
+	}
+}//end CommitTransmission_Message

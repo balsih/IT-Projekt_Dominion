@@ -1,8 +1,9 @@
 package Messages;
 
-import com.sun.xml.internal.txw2.Document;
+import org.w3c.dom.Document;
 
 /**
+ * 
  * @author Lukas
  * @version 1.0
  * @created 31-Okt-2017 17:01:11
