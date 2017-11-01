@@ -1,60 +1,225 @@
 package Server_GameLogic;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Queue;
 
+import java.util.logging.Logger;
+
+import Messages.Commit_Message;
+import Messages.CreateNewPlayer_Message;
+import Messages.Error_Message;
+import Messages.Login_Message;
 import Messages.Message;
+import Messages.MessageType;
+import Server_Services.DB_Connector;
 import Server_Services.ServiceLocator;
 
+
 /**
- * @author Lukas
+ * @author default: Lukas
  * @version 1.0
  * @created 31-Okt-2017 17:09:30
  */
 public class ServerThreadForClient implements Runnable {
+	
+	private static HashMap<InetAddress, ServerThreadForClient> connections = new HashMap<InetAddress, ServerThreadForClient>();
+	
+	private ServiceLocator sl = ServiceLocator.getServiceLocator();
+	private final Logger logger = Logger.getLogger("");
 
 	private Socket clientSocket;
-	private static HashMap<InetAddress, ServerThreadForClient> connections;
 	private Game gameThread;
 	private Player player;
-	private ServiceLocator sl = ServiceLocator.getServiceLocator();
 	private Queue<Message> waitingMessages;
+	private String gameMode;
 
 
 	private ServerThreadForClient(){
-
+		super();
 	}
 
 	/**
+	 * Factory Pattern, if a new client connects to server, a new Thread will be created.
+	 * If a client already had connected with server, he will have the same Thread as before
 	 * 
-	 * @param clientSocket
-	 */
-	private void addClientSocket(Socket clientSocket){
-
-	}
-
-	/**
-	 * 
-	 * @param inetAddress
-	 * @param clientSocket
+	 * @param inetAddress, the address from the client to validate if a new Thread is necessary
+	 * @param clientSocket, with DOM, a new Socket is required for each connection
+	 * @return client, a new or existing Thread. Depends if a Thread of the client already exists
 	 */
 	public static ServerThreadForClient getServerThreadForClient(InetAddress inetAddress, Socket clientSocket){
+		ServerThreadForClient client;
+		if(connections.containsKey(inetAddress)){
+			client = connections.get(inetAddress);
+		}else{
+			client = new ServerThreadForClient();
+			connections.put(inetAddress, client);
+		}
+		client.addClientSocket(clientSocket);
+		return client;
+	}
+
+	/**
+	 * @author Bradley Richards
+	 * 
+	 * Everytime a Message received from Client, the Message has to be identified and processed
+	 */
+	@Override
+	public void run(){
+		try{			// Read a message from the client
+			Message msgIn = Message.receive(this.clientSocket);
+			Message msgOut = processMessage(msgIn);
+			msgOut.send(clientSocket);		
+		}catch(Exception e) {
+			logger.severe(e.toString());
+		}finally{
+            try { if (clientSocket != null) clientSocket.close(); } catch (IOException e) {}
+		}
+	}
+	
+	/**
+	 * Checks the type of Message and process it
+	 * 
+	 * @param msgIn, the Message to process
+	 * @return msgOut, depends on the type of Message, which new Message will return to client
+	 */
+    private Message processMessage(Message msgIn) {
+		logger.info("Message received from client: "+ msgIn.toString());
+		String clientName = msgIn.getClient();		
+		Message msgOut = null;
+		
+		switch (MessageType.getType(msgIn)) {
+		case AskForChanges:
+			msgOut = this.processAskForChanges(msgIn);
+			break;
+		case BuyCard:
+			msgOut = this.processBuyCard(msgIn);
+			break;
+		case Chat:
+			msgOut = this.processChat(msgIn);
+			break;
+		case CreateGame:
+			msgOut = this.processCreateGame(msgIn);
+			break;
+		case CreateNewPlayer:
+			msgOut = this.processCreateNewPlayer(msgIn);
+			break;
+		case GameMode:
+			msgOut = this.processGameMode(msgIn);
+			break;
+		case HighScore:
+			msgOut = this.processHighScore(msgIn);
+			break;
+		case Login:
+			msgOut = this.processLogin(msgIn);
+			break;
+		case PlayCard:
+			msgOut = this.processPlayCard(msgIn);
+			break;
+		case SkipPhase:
+			msgOut = this.processSkipPhase(msgIn);
+			break;
+		default:
+			msgOut = new Error_Message();
+		}
+		msgOut.setClient(clientName);
+    	return msgOut;
+    }
+
+    /**
+     * Tells the Game to skip the current Phase of this Player
+     * 
+     * @param msgIn, SkipPhase_Message
+     * @return Commit_Message
+     */
+	private Message processSkipPhase(Message msgIn) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private Message processPlayCard(Message msgIn) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	/**
+	 * Checks if the name is stored in the database and if yes,
+	 * it has to be the adequate password
 	 * 
-	 * @param msgIn
+	 * @param msgIn, Login_Message
+	 * @return cmsg, Commit_Message, content depends on if clientName and password are correct
 	 */
-	public Message processMessage(Message msgIn){
+	private Message processLogin(Message msgIn) {
+		Login_Message lmsg = (Login_Message) msgIn;
+		String clientName = lmsg.getClient();
+		String password = lmsg.getPassword();
+		
+		DB_Connector dbConnector = this.sl.getDB_Connector();
+		boolean success = dbConnector.checkPlayerInput(clientName, password);
+		Commit_Message cmsg = new Commit_Message();
+		if(success){
+			cmsg.setSuccess("success");
+		}else{
+			cmsg.setSuccess("failure");
+		}
+		return cmsg;
+	}
+
+	private Message processHighScore(Message msgIn) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public void run(){
+	private Message processGameMode(Message msgIn) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
+    /**
+     * Try to store a new Player into the database
+     * If clientName is unique, the player will be stored successful
+     * 
+     * @param msgIn, SkipPhase_Message
+     * @return ctmsg, Commit_Message. Content of success depends if the clientName was unique or not
+     */
+	private Message processCreateNewPlayer(Message msgIn) {
+		CreateNewPlayer_Message cnpmsg = (CreateNewPlayer_Message) msgIn;
+		String clientName = cnpmsg.getClient();
+		String password = cnpmsg.getPassword();
+		
+		DB_Connector dbConnector = this.sl.getDB_Connector();
+		boolean success = dbConnector.addNewPlayer(clientName, password);
+		Commit_Message ctmsg = new Commit_Message();
+		if(success){
+			ctmsg.setSuccess("success");
+		}else{
+			ctmsg.setSuccess("failure");
+		}
+		return ctmsg;
+	}
+
+	private Message processCreateGame(Message msgIn) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private Message processChat(Message msgIn) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private Message processBuyCard(Message msgIn) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private Message processAskForChanges(Message msgIn) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/**
@@ -63,5 +228,13 @@ public class ServerThreadForClient implements Runnable {
 	 */
 	public void sendMessage(Message message){
 
+	}
+	/**
+	 * Adds a new Socket for client
+	 * 
+	 * @param clientSocket, adds a new Socket for each connection
+	 */
+	private void addClientSocket(Socket clientSocket){
+		this.clientSocket = clientSocket;
 	}
 }//end ServerThreadForClient

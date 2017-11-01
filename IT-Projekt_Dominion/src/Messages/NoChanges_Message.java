@@ -1,16 +1,16 @@
 package Messages;
 
-import com.sun.xml.internal.txw2.Document;
+import org.w3c.dom.Document;
 
 /**
  * @author Lukas
  * @version 1.0
- * @created 31-Okt-2017 17:01:10
+ * @created 01-Nov-2017 14:26:15
  */
-public class AksForChanges_Message extends Message {
+public class NoChanges_Message extends Message {
 
-	public AksForChanges_Message(){
-
+	public NoChanges_Message(){
+		super();
 	}
 
 	/**
@@ -22,17 +22,13 @@ public class AksForChanges_Message extends Message {
 
 	}
 
-	public void AskForChanges(){
-
-	}
-
 	/**
 	 * 
 	 * @param docIn
-	 * @return 
 	 */
 	@Override
 	protected void init(Document docIn){
 
 	}
-}//end AksForChanges_Message
+
+}//end NoChanges_Message
