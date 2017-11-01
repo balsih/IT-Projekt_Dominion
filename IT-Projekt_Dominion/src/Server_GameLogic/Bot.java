@@ -15,6 +15,15 @@ public class Bot extends Player {
 	}
 
 	public void execute(){
-
+		
 	}
+	// Bot wird erst aufgerufen, wenn Mehrspieler-Modus aufgerufen wird 
+	// und dieser gestartet wird. Bot wartet jeweils auf Anweisung der Klasse "Game".
+	
+	// Methode für Aktionskarten erstellen
+	
+	// Methode für Kaufphase erstellen
+	
+	// aufräumen --> extern
+	
 }//end Bot
