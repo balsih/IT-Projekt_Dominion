@@ -25,7 +25,7 @@ public class GameApp_Model extends Model {
 	protected String gameMode;
 	protected LinkedList<Card> handCards;
 	protected String highScore;
-	private String ipAdress;
+	private String ipAddress;
 	private String ipRegex;
 	protected String opponent;
 	protected int opponentHandCards;
@@ -61,7 +61,7 @@ public class GameApp_Model extends Model {
 		return null;
 	}
 
-	public void cryptPassword(){
+	public void encryptPassword(){
 
 	}
 
