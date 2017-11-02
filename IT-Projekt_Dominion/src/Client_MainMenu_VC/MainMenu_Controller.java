@@ -19,5 +19,6 @@ public class MainMenu_Controller extends Controller<GameApp_Model, MainMenu_View
 	 */
 	public MainMenu_Controller(Dominion_Main main, GameApp_Model model, MainMenu_View view){
 		super(model, view);
+		System.out.println("z Bäre");
 	}
 }//end MainMenu_Controller
