@@ -15,26 +15,17 @@ import Server_GameLogic.Player;
  */
 public class DB_Connector {
 
-	private DB_Connector connection;
 	private ServiceLocator sl = ServiceLocator.getServiceLocator();
 	
-	private Connection connect;
-	private Statement statement;
-	private PreparedStatement prepStatement;
-	private ResultSet resultSet;
+	private String driver;
+	private String url;
+	private String user;
+	private String password;
+	
+	private Connection connection;
 
+	private DB_Connector() {
 
-	private DB_Connector(){
-		try{
-			// This will load the MySQL driver, each DB has its own driver
-            Class.forName("com.mysql.jdbc.Driver");
-            // Setup the connection with the DB
-            connect = DriverManager
-                    .getConnection("jdbc:mysql://localhost/feedback?"
-                            + "user=sqluser&password=sqluserpw");
-		} catch (Exception e){
-			
-		}
 	}
 
 	/**
@@ -42,7 +33,7 @@ public class DB_Connector {
 	 * @param name
 	 * @param password
 	 */
-	public boolean addNewPlayer(String name, String password){
+	public boolean addNewPlayer(String name, String password) {
 		return false;
 	}
 
@@ -51,7 +42,7 @@ public class DB_Connector {
 	 * @param player
 	 * @param score
 	 */
-	public int addScore(Player player, int score){
+	public int addScore(Player player, int score) {
 		return 0;
 	}
 
@@ -59,7 +50,7 @@ public class DB_Connector {
 	 * 
 	 * @param name
 	 */
-	public boolean checkNameHighlander(String name){
+	public boolean checkNameHighlander(String name) {
 		return false;
 	}
 
@@ -67,15 +58,34 @@ public class DB_Connector {
 	 * 
 	 * @param name
 	 */
-	public void deletePlayer(String name){
+	public void deletePlayer(String name) {
 
 	}
 
-	public static DB_Connector getConnection(){
-		return null;
-	}
-
-	public String getHighScore(){
+	public String getHighScore() {
 		return "";
 	}
-}//end DB_Connector
+	
+	public Connection getConnection(){
+		this.connection = null;
+		this.driver = "com.mysql.jdbc.Driver";
+		this.url = "jdbc:h2:~/test";
+		this.user = "sa";
+		this.password = "";
+		
+		try {
+			// This will load the MySQL driver, each DB has its own driver
+			Class.forName(driver);
+			// Setup the connection with the DB
+			connection = DriverManager.getConnection(url, user, password);
+
+			if (connection != null)
+				System.out.println("connected");
+		} catch (Exception e) {
+			System.out.println("not connected");
+		}
+		
+		return this.connection;
+	}
+	
+}// end DB_Connector
