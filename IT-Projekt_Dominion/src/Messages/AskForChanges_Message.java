@@ -1,16 +1,19 @@
 package Messages;
 
-import com.sun.xml.internal.txw2.Document;
+import org.w3c.dom.Document;
 
 /**
+ * The client asks the server if something has changed in the game.
+ * If yes, the messages will be waiting in a Queue
+ * 
  * @author Lukas
  * @version 1.0
  * @created 31-Okt-2017 17:01:10
  */
-public class AksForChanges_Message extends Message {
+public class AskForChanges_Message extends Message {
 
-	public AksForChanges_Message(){
-
+	public AskForChanges_Message(){
+		super();
 	}
 
 	/**
@@ -19,10 +22,6 @@ public class AksForChanges_Message extends Message {
 	 */
 	@Override
 	protected void addNodes(Document docIn){
-
-	}
-
-	public void AskForChanges(){
 
 	}
 

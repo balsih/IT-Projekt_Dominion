@@ -5,12 +5,12 @@ import org.w3c.dom.Document;
 /**
  * @author Lukas
  * @version 1.0
- * @created 31-Okt-2017 17:01:21
+ * @created 01-Nov-2017 14:26:15
  */
-public class SkipPhase_Message extends Message {
+public class NoChanges_Message extends Message {
 
-	public SkipPhase_Message(){
-
+	public NoChanges_Message(){
+		super();
 	}
 
 	/**
@@ -31,4 +31,4 @@ public class SkipPhase_Message extends Message {
 
 	}
 
-}//end SkipPhase_Message
+}//end NoChanges_Message
