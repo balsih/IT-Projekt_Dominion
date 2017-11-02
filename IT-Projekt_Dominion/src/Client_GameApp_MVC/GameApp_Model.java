@@ -8,7 +8,7 @@ import Cards.Card;
 import MainClasses.Dominion_Main;
 
 /**
- * @author Renate
+ * @author Adrian
  * @version 1.0
  * @created 31-Okt-2017 17:04:41
  */
