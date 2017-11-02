@@ -29,7 +29,6 @@ public class Server_Model extends Model {
 	public void startServerSocket(int port) throws IOException{
 		String info = "Start Server";
 		logger.info(info);
-		System.out.println(port);
 		try{
 			this.listener = new ServerSocket(port);
 		}catch (IOException e) {
