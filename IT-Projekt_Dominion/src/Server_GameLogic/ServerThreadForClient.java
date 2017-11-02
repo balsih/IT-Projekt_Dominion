@@ -26,7 +26,7 @@ import Server_Services.ServiceLocator;
 
 /**
 <<<<<<< HEAD
- * @author Bodo
+ * @author Lukas
 =======
  * @author default: Lukas
 >>>>>>> branch 'master' of https://github.com/Eagleman1997/IT-Projekt_Dominion.git
