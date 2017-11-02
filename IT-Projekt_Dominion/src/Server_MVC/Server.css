@@ -1,0 +1,13 @@
+/*Adapted from: 
+ * Prof. Bradley Richards, Package: ch.fhnw.richards.lecture11.chatLab.v3_server, Class: style.css
+ * */
+
+.root {
+	-fx-padding: 0px 10px 10px 10px;
+	-fx-spacing: 10px;
+}
+
+.hbox {
+	-fx-padding: 10px 0px 10px 0px;
+	-fx-spacing: 10px;
+}

@@ -3,7 +3,7 @@ package Server_Services;
 
 
 /**
- * @author Lukas
+ * @author Bodo
  * @version 1.0
  * @created 31-Okt-2017 17:09:36
  */

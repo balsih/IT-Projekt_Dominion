@@ -14,11 +14,14 @@ public abstract class Card {
 	private int cost;
 	private ImageView image;
 	private String type;
+	
+	private static Card card;
 
 
-	protected Card(){
-
+	protected Card(String cardNAme){
+		this.cardName = cardName;
 	}
+	
 
 	/**
 	 * 
@@ -42,4 +45,28 @@ public abstract class Card {
 	public String getType(){
 		return "";
 	}
+	
+	// new code -> vorerst dummy Methode 
+
+	public static Card getCard(String cardName) {
+		Card card;
+		switch (cardName) {
+		case "Brronce_Card":
+			card = getBronceCard();
+			break;
+		case "Silver_Card":
+			card = getSilverCard();
+			break;
+		case "Gold_Card":
+			card = getGoldCard();
+			break;
+		default:
+			System.out.println(" no cards available");
+		}
+		return card;
+	}
+	
+	
+	
+	
 }//end Card

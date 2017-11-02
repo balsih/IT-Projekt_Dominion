@@ -11,8 +11,12 @@ import java.util.Queue;
 import java.util.logging.Logger;
 
 import Messages.Commit_Message;
+import Messages.CreateGame_Message;
 import Messages.CreateNewPlayer_Message;
 import Messages.Error_Message;
+import Messages.Failure_Message;
+import Messages.GameMode_Message;
+import Messages.HighScore_Message;
 import Messages.Login_Message;
 import Messages.Message;
 import Messages.MessageType;
@@ -21,7 +25,11 @@ import Server_Services.ServiceLocator;
 
 
 /**
+<<<<<<< HEAD
+ * @author Lukas
+=======
  * @author default: Lukas
+>>>>>>> branch 'master' of https://github.com/Eagleman1997/IT-Projekt_Dominion.git
  * @version 1.0
  * @created 31-Okt-2017 17:09:30
  */
@@ -33,10 +41,9 @@ public class ServerThreadForClient implements Runnable {
 	private final Logger logger = Logger.getLogger("");
 
 	private Socket clientSocket;
-	private Game gameThread;
+	private Game game;
 	private Player player;
 	private Queue<Message> waitingMessages;
-	private String gameMode;
 
 
 	private ServerThreadForClient(){
@@ -102,9 +109,6 @@ public class ServerThreadForClient implements Runnable {
 		case Chat:
 			msgOut = this.processChat(msgIn);
 			break;
-		case CreateGame:
-			msgOut = this.processCreateGame(msgIn);
-			break;
 		case CreateNewPlayer:
 			msgOut = this.processCreateNewPlayer(msgIn);
 			break;
@@ -151,7 +155,7 @@ public class ServerThreadForClient implements Runnable {
 	 * it has to be the adequate password
 	 * 
 	 * @param msgIn, Login_Message
-	 * @return cmsg, Commit_Message, content depends on if clientName and password are correct
+	 * @return Commit_Message, content depends on if clientName and password are correct
 	 */
 	private Message processLogin(Message msgIn) {
 		Login_Message lmsg = (Login_Message) msgIn;
@@ -160,23 +164,51 @@ public class ServerThreadForClient implements Runnable {
 		
 		DB_Connector dbConnector = this.sl.getDB_Connector();
 		boolean success = dbConnector.checkPlayerInput(clientName, password);
-		Commit_Message cmsg = new Commit_Message();
 		if(success){
-			cmsg.setSuccess("success");
+			return new Commit_Message();
 		}else{
-			cmsg.setSuccess("failure");
+			return new Failure_Message();
 		}
-		return cmsg;
 	}
 
+	/**
+	 * Takes the highscore from the database
+	 * 
+	 * @param msgIn, HighScore_Message
+	 * @return hsmsg, content of the top5 (name, points) in one String
+	 */
 	private Message processHighScore(Message msgIn) {
-		// TODO Auto-generated method stub
-		return null;
+		DB_Connector dbConnector = this.sl.getDB_Connector();
+		String highScore = dbConnector.getHighScore();
+		HighScore_Message hsmsg = new HighScore_Message();
+		hsmsg.setHighScore(highScore);
+		return hsmsg;
 	}
 
+	/**
+	 * If GameMode is valid, start a new Game if Game has two Players (including Bot).
+	 * If Client is the first Player in multiplayerMode, client has to wait for second Player
+	 * 
+	 * @param msgIn, GameMode_Message
+	 * @return CreateGame_Message, Commit_Message or Failure_Message, 
+	 * depends if input is valid and if client has to wait for second Player
+	 */
 	private Message processGameMode(Message msgIn) {
-		// TODO Auto-generated method stub
-		return null;
+		GameMode_Message gmmsg = (GameMode_Message) msgIn;
+		String mode = gmmsg.getMode();
+		//get a new Game and add player and Bot (if singlePlayer) to the game, 
+		//Game will start immediately if singlePlayer or your secondPlayer
+		if(mode == "singleplayer" || mode == "multiplayer"){
+			this.player = new Player(gmmsg.getClient());
+			this.game = Game.getGame(this.clientSocket, gmmsg.getMode(), this.player);
+			if(this.game.isReadyToStart())
+				return new CreateGame_Message();
+			return new Commit_Message();
+		}else{
+			//if content is somehow invalid
+			logger.severe("invalid GameMode from "+gmmsg.getClient());
+			return new Failure_Message();
+		}
 	}
 
     /**
@@ -184,7 +216,7 @@ public class ServerThreadForClient implements Runnable {
      * If clientName is unique, the player will be stored successful
      * 
      * @param msgIn, SkipPhase_Message
-     * @return ctmsg, Commit_Message. Content of success depends if the clientName was unique or not
+     * @return Commit_Message or Failure_Message, depends on the answer given from the database
      */
 	private Message processCreateNewPlayer(Message msgIn) {
 		CreateNewPlayer_Message cnpmsg = (CreateNewPlayer_Message) msgIn;
@@ -193,19 +225,13 @@ public class ServerThreadForClient implements Runnable {
 		
 		DB_Connector dbConnector = this.sl.getDB_Connector();
 		boolean success = dbConnector.addNewPlayer(clientName, password);
-		Commit_Message ctmsg = new Commit_Message();
 		if(success){
-			ctmsg.setSuccess("success");
+			return new Commit_Message();
 		}else{
-			ctmsg.setSuccess("failure");
+			return new Failure_Message();
 		}
-		return ctmsg;
 	}
 
-	private Message processCreateGame(Message msgIn) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	private Message processChat(Message msgIn) {
 		// TODO Auto-generated method stub

@@ -21,6 +21,7 @@ public enum MessageType {
 	UpdateGame,
 	NoChanges,
 	Commit,
+	Failure,
 	Error;
 
 	/**
@@ -61,6 +62,7 @@ public enum MessageType {
     	else if (msg instanceof UpdateGame_Message) type = MessageType.UpdateGame;
     	else if (msg instanceof NoChanges_Message) type = MessageType.NoChanges;
     	else if (msg instanceof Commit_Message) type = MessageType.Commit;
+    	else if (msg instanceof Failure_Message) type = MessageType.Failure;
     	return type;
     }	
 }

@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 public class Login_View extends View<GameApp_Model> {
 
 	private ServiceLocator sl = ServiceLocator.getServiceLocator();
+	
 
 	/**
 	 * 
@@ -21,6 +22,7 @@ public class Login_View extends View<GameApp_Model> {
 	 */
 	public Login_View(Stage stage, GameApp_Model model){
 		super(stage, model);
+		
 	}
 
 	@Override

@@ -3,7 +3,7 @@ package Cards;
 import Server_GameLogic.Player;
 
 /**
- * @author Lukas
+ * @author Adrian
  * @version 1.0
  * @created 31-Okt-2017 16:58:01
  */
