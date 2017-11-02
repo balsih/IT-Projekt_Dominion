@@ -5,12 +5,13 @@ import org.w3c.dom.Document;
 /**
  * @author Lukas
  * @version 1.0
- * @created 31-Okt-2017 17:01:21
+ * @created 01-Nov-2017 17:41:42
  */
-public class SkipPhase_Message extends Message {
+public class Failure_Message extends Message {
 
-	public SkipPhase_Message(){
 
+	public Failure_Message(){
+		super();
 	}
 
 	/**
@@ -26,9 +27,7 @@ public class SkipPhase_Message extends Message {
 	 * 
 	 * @param docIn
 	 */
-	@Override
 	protected void init(Document docIn){
 
 	}
-
-}//end SkipPhase_Message
+}//end Failure_Message

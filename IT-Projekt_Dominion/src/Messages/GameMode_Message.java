@@ -1,8 +1,12 @@
 package Messages;
 
-import com.sun.xml.internal.txw2.Document;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
+ * The clients choses to play singleplayer or multiplayer
+ * 
  * @author Lukas
  * @version 1.0
  * @created 31-Okt-2017 17:01:14
@@ -14,7 +18,7 @@ public class GameMode_Message extends Message {
 
 
 	public GameMode_Message(){
-
+		super();
 	}
 
 	/**
@@ -23,12 +27,13 @@ public class GameMode_Message extends Message {
 	 */
 	@Override
 	protected void addNodes(Document docIn){
-
+        Element root = docIn.getDocumentElement();
+		
+		Element mode = docIn.createElement(ELEMENT_MODE);
+		mode.setTextContent(this.mode);
+		root.appendChild(mode);
 	}
 
-	public String getMode(){
-		return "";
-	}
 
 	/**
 	 * 
@@ -36,14 +41,21 @@ public class GameMode_Message extends Message {
 	 */
 	@Override
 	protected void init(Document docIn){
-
+		Element root = docIn.getDocumentElement();
+		
+		NodeList tmpElements = root.getElementsByTagName(ELEMENT_MODE);
+        if (tmpElements.getLength() > 0) {
+            Element mode = (Element) tmpElements.item(0);
+            this.mode = mode.getTextContent();
+        }
 	}
 
-	/**
-	 * 
-	 * @param mode
-	 */
-	public void setMode(String mode){
 
+	public void setMode(String mode){
+		this.mode = mode;
+	}
+	
+	public String getMode(){
+		return this.mode;
 	}
 }//end GameMode_Message
