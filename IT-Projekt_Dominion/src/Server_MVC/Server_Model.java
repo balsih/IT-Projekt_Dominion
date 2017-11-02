@@ -20,7 +20,7 @@ public class Server_Model extends Model {
 	private ServerSocket listener;
 	private final Logger logger = Logger.getLogger("");
 	
-
+	
 	public Server_Model(){
 		super();
 	}
