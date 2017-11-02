@@ -5,7 +5,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * The client want to log in the system. For this purpose he has to be checked
+ * The client wants to log in the system. For this purpose he has to be checked
  * in the database if clientName and password are correct. The password should be crypted by the client.
  * 
  * @author Lukas

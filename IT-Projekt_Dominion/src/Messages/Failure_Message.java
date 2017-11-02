@@ -5,12 +5,12 @@ import org.w3c.dom.Document;
 /**
  * @author Lukas
  * @version 1.0
- * @created 01-Nov-2017 14:52:31
+ * @created 01-Nov-2017 17:41:42
  */
-public class Commit_Message extends Message {
+public class Failure_Message extends Message {
 
-	
-	public Commit_Message(){
+
+	public Failure_Message(){
 		super();
 	}
 
@@ -27,9 +27,7 @@ public class Commit_Message extends Message {
 	 * 
 	 * @param docIn
 	 */
-	@Override
 	protected void init(Document docIn){
 
 	}
-	
-}//end CommitTransmission_Message
+}//end Failure_Message
