@@ -71,4 +71,8 @@ public class Player {
 	public void skipPhase(){
 
 	}
+	
+	protected void shuffle(){
+		
+	}
 }//end Player
