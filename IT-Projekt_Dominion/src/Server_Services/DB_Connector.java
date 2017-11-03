@@ -77,7 +77,7 @@ public class DB_Connector {
 		return this.connector;
 	}
 	
-	public Connection getConnection(){
+	private void createConnection(){
 	
 		try {
 			// This will load the MySQL driver, each DB has its own driver
@@ -90,15 +90,20 @@ public class DB_Connector {
 		} catch (Exception e) {
 			System.out.println("not connected");
 		}
-		
-		return this.connection;
+
 	}
 	
-	public static void main(String[] args){
-		//Test
-		DB_Connector connector = new DB_Connector();
-		connector.getConnection();
+	public void createDB(){
+		this.createConnection();
 		
+		String dbName = "DB_Dominion";
+		String createDB = "CREATE DATABASE IF NOT EXISTS '" + dbName + "'";
+		
+		String createTablePlayer = "CREATE TABLE IF NOT EXISTS 'Player' ("
+				+"'Username' VARCHAR(25) PRIMARY KEY,"
+				+"'Password' VARCHAR(25));";
+		String createTableScoring = "";
+		String createTablePlayer_Scoring = "";
 	}
 	
 }// end DB_Connector
