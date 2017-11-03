@@ -10,16 +10,14 @@ import javafx.scene.image.ImageView;
  */
 public abstract class Card {
 
-	private String cardName;
-	private int cost;
-	private ImageView image;
-	private String type;
+	protected String cardName;
+	protected int cost;
+	protected ImageView image;
+	protected String type; // action, treasure, victory 
 	
-	private static Card card;
 
 
-	protected Card(String cardNAme){
-		this.cardName = cardName;
+	protected Card(){
 	}
 	
 
@@ -46,13 +44,17 @@ public abstract class Card {
 		return "";
 	}
 	
+	public void setImage(ImageView image){
+		this.image = image;
+	}
+	
 	// new code -> vorerst dummy Methode 
 
 	public static Card getCard(String cardName) {
 		Card card;
 		switch (cardName) {
-		case "Brronce_Card":
-			card = getBronceCard();
+		case "Bronce_Card":
+			card = new Bronce_Card();
 			break;
 		case "Silver_Card":
 			card = getSilverCard();
