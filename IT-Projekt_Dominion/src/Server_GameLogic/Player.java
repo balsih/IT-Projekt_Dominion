@@ -12,16 +12,16 @@ import Cards.Card;
  */
 public class Player {
 
-	protected int actions;
-	protected int buys;
-	protected int coins;
-	protected Stack<Card> deckPile;
-	protected Stack<Card> discardPile;
+	private int actions;
+	private int buys;
+	private int coins;
+	private Stack<Card> deckPile;
+	private Stack<Card> discardPile;
 	private Game gameThread;
-	protected LinkedList<Card> handCards;
+	private LinkedList<Card> handCards;
 	private LinkedList<Card> playedCards;
 	private String playerName;
-	protected int victoryPoints;
+	private int victoryPoints;
 
 
 	/**
@@ -70,5 +70,85 @@ public class Player {
 
 	public void skipPhase(){
 
+	}
+
+	public String getPlayerName() {
+		return playerName;
+	}
+
+	public void setPlayerName(String playerName) {
+		this.playerName = playerName;
+	}
+
+	public LinkedList<Card> getPlayedCards() {
+		return playedCards;
+	}
+
+	public void setPlayedCards(LinkedList<Card> playedCards) {
+		this.playedCards = playedCards;
+	}
+
+	public LinkedList<Card> getHandCards() {
+		return handCards;
+	}
+
+	public void setHandCards(LinkedList<Card> handCards) {
+		this.handCards = handCards;
+	}
+
+	public Game getGameThread() {
+		return gameThread;
+	}
+
+	public void setGameThread(Game gameThread) {
+		this.gameThread = gameThread;
+	}
+
+	public Stack<Card> getDiscardPile() {
+		return discardPile;
+	}
+
+	public void setDiscardPile(Stack<Card> discardPile) {
+		this.discardPile = discardPile;
+	}
+
+	public Stack<Card> getDeckPile() {
+		return deckPile;
+	}
+
+	public void setDeckPile(Stack<Card> deckPile) {
+		this.deckPile = deckPile;
+	}
+
+	public int getVictoryPoints() {
+		return victoryPoints;
+	}
+
+	public void setVictoryPoints(int victoryPoints) {
+		this.victoryPoints = victoryPoints;
+	}
+
+	public int getCoins() {
+		return coins;
+	}
+
+	public void setCoins(int coins) {
+		this.coins = coins;
+	}
+
+	public int getBuys() {
+		return buys;
+	}
+
+	public void setBuys(int buys) {
+		this.buys = buys;
+	}
+
+	public int getActions() {
+		return actions;
+	}
+
+	public void setActions(int actions) {
+		this.actions = actions;
 	}
 }//end Player
