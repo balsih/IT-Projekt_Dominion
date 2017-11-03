@@ -21,6 +21,8 @@ public class UpdateGame_Message extends Message {
 	private static final String ELEMENT_LOG = "log";
 	private static final String ELEMENT_PLAYEDCARD = "playedCard";
 	private static final String ELEMENT_PLAYEDCARDS = "playedCards";
+	private static final String ELEMENT_CHAT = "chat";
+	private String chat;
 	private int actions;
 	private String cardBuyed;
 	private int coins;
@@ -46,6 +48,16 @@ public class UpdateGame_Message extends Message {
 	protected void addNodes(Document docIn){
 
 	}
+	
+	/**
+	 * 
+	 * @param docIn
+	 */
+	@Override
+	protected void init(Document docIn){
+
+	}
+	
 
 	public int getActions(){
 		return 0;
@@ -90,100 +102,58 @@ public class UpdateGame_Message extends Message {
 	public String getPlayedCards(){
 		return "";
 	}
-
-	/**
-	 * 
-	 * @param docIn
-	 */
-	@Override
-	protected void init(Document docIn){
-
+	
+	public String getChat(){
+		return this.chat;
 	}
 
-	/**
-	 * 
-	 * @param actions
-	 */
+
+
+
+	public void setChat(String chat){
+		this.chat = chat;
+	}
+	
 	public void setActions(int actions){
 
 	}
 
-	/**
-	 * 
-	 * @param cardBuyed
-	 */
 	public String setCardBuyed(String cardBuyed){
 		return "";
 	}
 
-	/**
-	 * 
-	 * @param coins
-	 */
 	public void setCoins(int coins){
 
 	}
 
-	/**
-	 * 
-	 * @param currentPhase
-	 */
 	public void setCurrentPhase(String currentPhase){
 
 	}
 
-	/**
-	 * 
-	 * @param currentPlayer
-	 */
 	public void setCurrentPlayer(String currentPlayer){
 
 	}
-
-	/**
-	 * 
-	 * @param discardPile
-	 */
+	
 	public void setDiscardPile(String discardPile){
 
 	}
 
-	/**
-	 * 
-	 * @param handCard
-	 */
 	public void setHandCard(String handCard){
 
 	}
 
-	/**
-	 * 
-	 * @param handCards
-	 */
 	public void setHandCards(String handCards){
 
 	}
 
-	/**
-	 * 
-	 * @param log
-	 */
 	public void setLog(String log){
 
 	}
 
-	/**
-	 * 
-	 * @param playedCard
-	 */
 	public void setPlayedCard(String playedCard){
 
 	}
 
-	/**
-	 * 
-	 * @param playedCards
-	 */
 	public void setPlayedCards(String playedCards){
 
 	}

@@ -10,6 +10,7 @@ import java.util.Queue;
 
 import java.util.logging.Logger;
 
+import Messages.Chat_Message;
 import Messages.Commit_Message;
 import Messages.CreateGame_Message;
 import Messages.CreateNewPlayer_Message;
@@ -20,6 +21,7 @@ import Messages.HighScore_Message;
 import Messages.Login_Message;
 import Messages.Message;
 import Messages.MessageType;
+import Messages.UpdateGame_Message;
 import Server_Services.DB_Connector;
 import Server_Services.ServiceLocator;
 
@@ -43,7 +45,7 @@ public class ServerThreadForClient implements Runnable {
 	private Socket clientSocket;
 	private Game game;
 	private Player player;
-	private Queue<Message> waitingMessages;
+	private Queue<UpdateGame_Message> waitingMessages;
 
 
 	private ServerThreadForClient(){
@@ -58,8 +60,9 @@ public class ServerThreadForClient implements Runnable {
 	 * @param clientSocket, with DOM, a new Socket is required for each connection
 	 * @return client, a new or existing Thread. Depends if a Thread of the client already exists
 	 */
-	public static ServerThreadForClient getServerThreadForClient(InetAddress inetAddress, Socket clientSocket){
+	public static ServerThreadForClient getServerThreadForClient(Socket clientSocket){
 		ServerThreadForClient client;
+		InetAddress inetAddress = clientSocket.getInetAddress();
 		if(connections.containsKey(inetAddress)){
 			client = connections.get(inetAddress);
 		}else{
@@ -201,8 +204,14 @@ public class ServerThreadForClient implements Runnable {
 		if(mode == "singleplayer" || mode == "multiplayer"){
 			this.player = new Player(gmmsg.getClient());
 			this.game = Game.getGame(this.clientSocket, gmmsg.getMode(), this.player);
-			if(this.game.isReadyToStart())
-				return new CreateGame_Message();
+			if(this.game.isReadyToStart()){
+				CreateGame_Message cgmsg = new CreateGame_Message();
+				cgmsg.setBuyCards(this.game.getBuyCards());
+				cgmsg.setHandCards(this.player.getHandCards());
+				cgmsg.setDeckPile(this.player.getDeckPile());
+				cgmsg.setOpponent(this.game.getOpponent().getPlayerName());
+				return cgmsg;
+			}
 			return new Commit_Message();
 		}else{
 			//if content is somehow invalid
@@ -233,9 +242,20 @@ public class ServerThreadForClient implements Runnable {
 	}
 
 
+	/**
+	 * 
+	 * 
+	 * @param msgIn
+	 * @return
+	 */
 	private Message processChat(Message msgIn) {
-		// TODO Auto-generated method stub
-		return null;
+		Chat_Message cmsg = (Chat_Message) msgIn;
+		String chat = cmsg.getChat();
+		chat = this.player.getPlayerName()+": "+chat+"\n\n";
+		UpdateGame_Message ugmsg = new UpdateGame_Message();
+		ugmsg.setChat(chat);
+		this.game.sendToOpponent(this, ugmsg);
+		return ugmsg;
 	}
 
 	private Message processBuyCard(Message msgIn) {
@@ -243,9 +263,18 @@ public class ServerThreadForClient implements Runnable {
 		return null;
 	}
 
+	/**
+	 * Client wants to know if something has changed in the Game
+	 * 
+	 * @param msgIn, AskForChanges_Message
+	 * @return If something has changed, UpdateGame_Message. If nothing has changed, Commit_Message.
+	 */
 	private Message processAskForChanges(Message msgIn) {
-		// TODO Auto-generated method stub
-		return null;
+		if(this.waitingMessages.size() > 0){
+			return this.waitingMessages.poll();
+		}else{
+			return new Commit_Message();
+		}
 	}
 
 	/**
@@ -255,6 +284,11 @@ public class ServerThreadForClient implements Runnable {
 	public void sendMessage(Message message){
 
 	}
+	
+	public void addWaitingMessages(UpdateGame_Message ugmsg){
+		this.waitingMessages.offer(ugmsg);
+	}
+	
 	/**
 	 * Adds a new Socket for client
 	 * 
