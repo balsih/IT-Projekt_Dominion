@@ -1,6 +1,7 @@
 package Server_GameLogic;
 
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.Stack;
 
 import Cards.Bronce_Card;
@@ -18,6 +19,7 @@ import Cards.Smithy_Card;
 import Cards.Village_Card;
 import Cards.Woodcutter_Card;
 import Cards.Workshop_Card;
+import Messages.UpdateGame_Message;
 
 /**
  * @author Bodo
@@ -46,6 +48,7 @@ public class Game {
 	private Stack<Village_Card> villagePile;
 	private Stack<Woodcutter_Card> woodcutterPile;
 	private Stack<Workshop_Card> workShopPile;
+	private HashMap<Card, Integer> buyedCards;
 
 	/**
 	 * 
@@ -53,11 +56,11 @@ public class Game {
 	 * @param gameMode
 	 * @param player
 	 */
-	private Game(Socket clientSocket, String gameMode, Player player){
+	private Game(Socket clientSocket, String gameMode, Player player) {
 
 	}
 
-	public boolean checkGameEnding(){
+	public boolean checkGameEnding() {
 		return false;
 	}
 
@@ -67,27 +70,37 @@ public class Game {
 	 * @param gameMode
 	 * @param player
 	 */
-	public static Game getGame(Socket clientSocket, String gameMode, Player player){
+	public static Game getGame(Socket clientSocket, String gameMode, Player player) {
 		return null;
 	}
 
-	public int getGameCouner(){
+	public int getGameCouner() {
 		return 0;
 	}
 
-	public Player getOpponent(){
+	public Player getOpponent() {
 		return null;
 	}
 
-	public boolean isReadyToStart(){
+	public boolean isReadyToStart() {
 		return false;
+	}
+
+	public HashMap<Card, Integer> getBuyedCards() {
+
+		return this.buyedCards;
 	}
 
 	/**
 	 * 
 	 * @param cardName
 	 */
-	public Card removeCard(String cardName){
+	public Card removeCard(String cardName) {
 		return null;
 	}
-}//end Game
+
+	public void sendToOpponent(ServerThreadForClient source, UpdateGame_Message ugmsg) {
+		// An anderen Spieler als source eine waiting message schicken, welche
+		// beim anderen Spieler (Thread) in die Queue gespeichert wird
+	}
+}// end Game

@@ -1,14 +1,25 @@
 package Messages;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Set;
 import java.util.Stack;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.NodeList;
 
+import Cards.Bronce_Card;
 import Cards.Card;
+import Client_Services.ServiceLocator;
+import Client_Services.Translator;
 
 /**
+ * The client wants to start a Game. For this purpose the client chooses a singleplayer or multiplayer Game.
+ * If the client wants to start a singleplayer Game, he/she starts a new Game with a Bot.
+ * If the client wants to start a multiplayer Game, he/she starts a new Game with another Player
+ * 
  * @author Lukas
  * @version 1.0
  * @created 31-Okt-2017 17:01:13
@@ -18,24 +29,19 @@ public class CreateGame_Message extends Message {
 	private static final String ATTR_BUYCARDNUMBER = "buyCardNumber";
 	private static final String ELEMENT_BUYCARD = "buyCard";
 	private static final String ELEMENT_BUYCARDS = "buyCards";
-	private static final String ELEMENT_DECKCARD = "deckCard";
 	private static final String ELEMENT_DECKPILE = "deckPile";
 	private static final String ELEMENT_OPPONENT = "opponent";
-	private static final String ELEMENT_DECKCARDNUMBER = "deckCardNumber";
-	private int buyCardNumber;
-	private int deckCardNumber;
-	private String buyCards;
-	private String deckPile;
+	private final static String ELEMENT_HANDCARDS = "handCards";
+	private final static String ELEMENT_DECKCARD = "deckCard";
+	private final static String ELEMENT_HANDCARD = "handCard";
+	private HashMap<Card, Integer> buyCards;
+	private LinkedList<Card> handCards;
+	private Stack<Card> deckPile;
 	private String opponent;
-	private Stack<Card> deckCard;
-	private Stack<Card> buyCard;
-	private HashMap<Card, Integer> fieldCards;
 
 
 	public CreateGame_Message(){
 		super();
-		this.deckCard = new Stack<Card>();
-		this.buyCard = new Stack<Card>();
 	}
 
 	/**
@@ -46,11 +52,40 @@ public class CreateGame_Message extends Message {
 	protected void addNodes(Document docIn){
         Element root = docIn.getDocumentElement();
 		
+        //insert all deckCards in the right order into the XML_Document
 		Element deckPile = docIn.createElement(ELEMENT_DECKPILE);
-		deckPile.setTextContent(this.deckPile);
+		for(Card card: this.deckPile){
+			Element deckCard = docIn.createElement(ELEMENT_DECKCARD);
+			deckCard.setTextContent(card.getCardName());
+			deckPile.appendChild(deckCard);
+		}
 		root.appendChild(deckPile);
 		
-		Element deckCard = docIn.createElement(ELEMENT_DECKCARD);
+		//insert all buyCards (Cards that can be bought during the Game) created from Game into the XML_Document
+		Element buyCards = docIn.createElement(ELEMENT_BUYCARDS);
+		Set<Card> cardSet = this.buyCards.keySet();
+		for(Card card: cardSet){
+			Element buyCard = docIn.createElement(ELEMENT_BUYCARD);
+			buyCard.setAttribute(ATTR_BUYCARDNUMBER, Integer.toString(this.buyCards.get(card)));
+			buyCard.setTextContent(card.getCardName());
+			buyCards.appendChild(buyCard);
+		}
+		root.appendChild(buyCards);
+		
+		//insert all handCards in the right order into the XML_Document
+		Element handCards = docIn.createElement(ELEMENT_HANDCARDS);
+		for(Card card: this.handCards){
+			Element handCard = docIn.createElement(ELEMENT_HANDCARD);
+			handCard.setTextContent(card.getCardName());
+			handCards.appendChild(handCard);
+		}
+		root.appendChild(handCards);
+		
+		//insert opponents name to show on client
+		Element opponent = docIn.createElement(ELEMENT_OPPONENT);
+		opponent.setTextContent(this.opponent);
+		root.appendChild(opponent);
+	
 	}
 	
 	/**
@@ -59,28 +94,63 @@ public class CreateGame_Message extends Message {
 	 */
 	@Override
 	protected void init(Document docIn){
-
+		ServiceLocator sl = ServiceLocator.getServiceLocator();
+		Translator t = sl.getTranslator();
+		Element root = docIn.getDocumentElement();
+		
+		//creates the deckPile from XML_Document with new CardObjects in the correct language
+		NodeList tmpElements = root.getElementsByTagName(ELEMENT_DECKPILE);
+        this.deckPile = new Stack<Card>();
+        if (tmpElements.getLength() > 0) {
+            Element deckPile = (Element) tmpElements.item(0);
+            NodeList deckElements = deckPile.getElementsByTagName(ELEMENT_DECKCARD);
+            for(int i = deckElements.getLength() -1; i >= 0; i--){
+            	Element deckCard = (Element) deckElements.item(i);
+            	this.deckPile.push(Card.getCard(t.getString(deckCard.getTextContent())));
+            }
+        }
+        
+        //creates all buyCards from XML_Document with new CardObjects in the correct language
+        tmpElements = root.getElementsByTagName(ELEMENT_BUYCARDS);
+        this.buyCards = new HashMap<Card, Integer>();
+        if(tmpElements.getLength() > 0){
+        	Element buyCards = (Element) tmpElements.item(0);
+        	NodeList buyElements = buyCards.getElementsByTagName(ELEMENT_BUYCARD);
+        	for(int i = buyElements.getLength() -1; i >= 0; i--){
+        		Element buyCard = (Element) buyElements.item(i);
+        		Integer numOfCards = Integer.parseInt(buyCard.getAttribute(ATTR_BUYCARDNUMBER));
+        		this.buyCards.put(Card.getCard(t.getString(buyCard.getTextContent())), numOfCards);
+        	}
+        }
+        
+        //creates all handCards from XML_Document with new CardObjects in the correct language
+        tmpElements = root.getElementsByTagName(ELEMENT_HANDCARDS);
+        this.handCards = new LinkedList<Card>();
+        if(tmpElements.getLength() > 0){
+        	Element handCards = (Element) tmpElements.item(0);
+        	NodeList handElements = handCards.getElementsByTagName(ELEMENT_HANDCARD);
+        	for(int i = handElements.getLength() -1; i >= 0; i--){
+        		Element handCard = (Element) handElements.item(i);
+        		this.handCards.add(Card.getCard(t.getString(handCard.getTextContent())));
+        	}
+        }
+        
+        //sets the opponents name
+        tmpElements = root.getElementsByTagName(ELEMENT_OPPONENT);
+        if(tmpElements.getLength() > 0){
+        	Element opponent = (Element) tmpElements.item(0);
+        	this.opponent = opponent.getTextContent();
+        }
 	}
 	
 
-	public Stack<Card> getBuyCard(){
-		return this.buyCard;
-	}
 
-	public int getBuyCardNumber(){
-		return this.buyCardNumber;
-	}
-
-	public String getBuyCards(){
+	public HashMap<Card, Integer> getBuyCards(){
 		return this.buyCards;
 	}
 
-	public Stack<Card> getDeckCard(){
-		return this.deckCard;
-	}
 
-
-	public String getDeckPile(){
+	public Stack<Card> getDeckPile(){
 		return this.deckPile;
 	}
 
@@ -88,40 +158,26 @@ public class CreateGame_Message extends Message {
 		return this.opponent;
 	}
 	
-	public int getDeckCardNumber(){
-		return this.deckCardNumber;
-	}
+
 	
-	public HashMap<Card, Integer> getFieldCards(){
-		return this.fieldCards;
+	public LinkedList<Card> getHandCards(){
+		return this.handCards;
 	}
 
 	
-	public void setFieldCards(HashMap<Card, Integer> fieldCards){
-		this.fieldCards = fieldCards;
-	}
-
-	public void setBuyCard(Stack<Card> buyCard){
-		this.buyCard = buyCard;
-	}
-
-	public void setBuyCardNumber(int buyCardNumber){
-		this.buyCardNumber = buyCardNumber;
+	
+	public void setHandCards(LinkedList<Card> handCards){
+		this.handCards = handCards;
 	}
 	
-	public void setDeckCardNumber(int deckCardNumber){
-		this.deckCardNumber = deckCardNumber;
-	}
+	
 
-	public void setBuyCards(String buyCards){
+	public void setBuyCards(HashMap<Card, Integer> buyCards){
 		this.buyCards = buyCards;
 	}
 
-	public void setDeckCard(Stack<Card> deckCard){
-		this.deckCard = deckCard;
-	}
 
-	public void setDeckPile(String deckPile){
+	public void setDeckPile(Stack<Card> deckPile){
 		this.deckPile = deckPile;
 	}
 

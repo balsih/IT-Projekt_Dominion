@@ -14,12 +14,10 @@ public enum MessageType {
 	GameMode,
 	HighScore,
 	Login,
-	LoginOrCreateNewPlayerAnswer,
 	PlayCard,
 	PlayerSuccess,
 	SkipPhase,
 	UpdateGame,
-	NoChanges,
 	Commit,
 	Failure,
 	Error;
@@ -55,12 +53,10 @@ public enum MessageType {
     	else if (msg instanceof GameMode_Message) type = MessageType.GameMode;
     	else if (msg instanceof HighScore_Message) type = MessageType.HighScore;
     	else if (msg instanceof Login_Message) type = MessageType.Login;
-    	else if (msg instanceof LoginOrCreateNewPlayerAnswer_Message) type = MessageType.LoginOrCreateNewPlayerAnswer;
     	else if (msg instanceof PlayCard_Message) type = MessageType.PlayCard;
     	else if (msg instanceof PlayerSuccess_Message) type = MessageType.PlayerSuccess;
     	else if (msg instanceof SkipPhase_Message) type = MessageType.SkipPhase;
     	else if (msg instanceof UpdateGame_Message) type = MessageType.UpdateGame;
-    	else if (msg instanceof NoChanges_Message) type = MessageType.NoChanges;
     	else if (msg instanceof Commit_Message) type = MessageType.Commit;
     	else if (msg instanceof Failure_Message) type = MessageType.Failure;
     	return type;

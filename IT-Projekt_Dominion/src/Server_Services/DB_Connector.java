@@ -16,6 +16,7 @@ import Server_GameLogic.Player;
 public class DB_Connector {
 
 	private ServiceLocator sl = ServiceLocator.getServiceLocator();
+	private DB_Connector connector;
 	
 	private String driver;
 	private String url;
@@ -25,7 +26,13 @@ public class DB_Connector {
 	private Connection connection;
 
 	private DB_Connector() {
-
+		this.connector = new DB_Connector();
+		
+		this.connection = null;
+		this.driver = "com.mysql.jdbc.Driver";
+		this.url = "jdbc:h2:~/test";
+		this.user = "sa";
+		this.password = "";
 	}
 
 	/**
@@ -66,13 +73,12 @@ public class DB_Connector {
 		return "";
 	}
 	
+	public DB_Connector getDB_Connector(){
+		return this.connector;
+	}
+	
 	public Connection getConnection(){
-		this.connection = null;
-		this.driver = "com.mysql.jdbc.Driver";
-		this.url = "jdbc:h2:~/test";
-		this.user = "sa";
-		this.password = "";
-		
+	
 		try {
 			// This will load the MySQL driver, each DB has its own driver
 			Class.forName(driver);
@@ -86,6 +92,13 @@ public class DB_Connector {
 		}
 		
 		return this.connection;
+	}
+	
+	public static void main(String[] args){
+		//Test
+		DB_Connector connector = new DB_Connector();
+		connector.getConnection();
+		
 	}
 	
 }// end DB_Connector
