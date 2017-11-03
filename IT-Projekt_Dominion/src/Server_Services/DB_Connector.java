@@ -97,6 +97,7 @@ public class DB_Connector {
 		
 	}
 	
+	//Test
 	public static void main(String[] args){
 		DB_Connector connector = new DB_Connector();
 		connector.createDB();
