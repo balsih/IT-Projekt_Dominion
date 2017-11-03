@@ -9,16 +9,17 @@ package Server_Services;
  */
 public class ServiceLocator {
 
-	private DB_Connector connection;
-	private static ServiceLocator ServiceLocator;
+	private DB_Connector connector;
+	private static ServiceLocator serviceLocator;
 
 
-	private ServiceLocator(){
-
+	public static void init(){
+		if(serviceLocator == null)
+			serviceLocator = new ServiceLocator();
 	}
 
-	public DB_Connector getDB_Connector(){
-		return null;
+	public static DB_Connector getDB_Connector(){
+		return serviceLocator.connector;
 	}
 
 	public static ServiceLocator getServiceLocator(){

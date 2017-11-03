@@ -29,7 +29,7 @@ public class Player {
 	 * @param name
 	 */
 	public Player(String name){
-
+		
 	}
 
 	/**
@@ -45,10 +45,12 @@ public class Player {
 	 * @param cardName
 	 */
 	public Card buy(String cardName){
+		
+		
 		return null;
 	}
 
-	private void cleanUp(){
+	public void cleanUp(){
 
 	}
 
@@ -72,7 +74,7 @@ public class Player {
 
 	}
 	
-	protected void shuffle(){
+	public void shuffle(){
 		
 	}
 }//end Player

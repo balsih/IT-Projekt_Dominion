@@ -56,7 +56,7 @@ public class Game {
 	 * @param gameMode
 	 * @param player
 	 */
-	private Game(Socket clientSocket, String gameMode, Player player) {
+	public Game(Socket clientSocket, String gameMode, Player player) {
 
 	}
 

@@ -11,7 +11,9 @@ public class Village_Card extends Card {
 
 
 	public Village_Card(){
-
+		this.cardName = "Village";
+		this.cost = 3;
+		this.type = "action";
 	}
 
 	/**

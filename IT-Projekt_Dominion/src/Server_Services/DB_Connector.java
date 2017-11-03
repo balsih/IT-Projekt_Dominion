@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import Server_GameLogic.Player;
@@ -17,17 +18,16 @@ public class DB_Connector {
 
 	private ServiceLocator sl = ServiceLocator.getServiceLocator();
 	private DB_Connector connector;
-	
+
 	private String driver;
 	private String url;
 	private String user;
 	private String password;
-	
+
 	private Connection connection;
 
-	private DB_Connector() {
-		this.connector = new DB_Connector();
-		
+	protected DB_Connector() {
+
 		this.connection = null;
 		this.driver = "com.mysql.jdbc.Driver";
 		this.url = "jdbc:h2:~/test";
@@ -72,13 +72,13 @@ public class DB_Connector {
 	public String getHighScore() {
 		return "";
 	}
-	
-	public DB_Connector getDB_Connector(){
+
+	public DB_Connector getDB_Connector() {
 		return this.connector;
 	}
-	
-	private void createConnection(){
-	
+
+	private void createConnection() {
+
 		try {
 			// This will load the MySQL driver, each DB has its own driver
 			Class.forName(driver);
@@ -92,18 +92,14 @@ public class DB_Connector {
 		}
 
 	}
-	
-	public void createDB(){
-		this.createConnection();
+
+	public void createDB() {
 		
-		String dbName = "DB_Dominion";
-		String createDB = "CREATE DATABASE IF NOT EXISTS '" + dbName + "'";
-		
-		String createTablePlayer = "CREATE TABLE IF NOT EXISTS 'Player' ("
-				+"'Username' VARCHAR(25) PRIMARY KEY,"
-				+"'Password' VARCHAR(25));";
-		String createTableScoring = "";
-		String createTablePlayer_Scoring = "";
 	}
 	
+	//Test
+	public static void main(String[] args){
+		DB_Connector connector = new DB_Connector();
+		connector.createDB();
+	}
 }// end DB_Connector
