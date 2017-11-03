@@ -18,21 +18,14 @@ public class DB_Connector {
 
 	private ServiceLocator sl = ServiceLocator.getServiceLocator();
 	private DB_Connector connector;
-
-	private String driver;
-	private String url;
-	private String user;
-	private String password;
-
+	
 	private Connection connection;
+	private Statement stmt;
+	private ResultSet rs;
+
 
 	protected DB_Connector() {
-
-		this.connection = null;
-		this.driver = "com.mysql.jdbc.Driver";
-		this.url = "jdbc:h2:~/test";
-		this.user = "sa";
-		this.password = "";
+	    
 	}
 
 	/**
@@ -77,29 +70,56 @@ public class DB_Connector {
 		return this.connector;
 	}
 
-	private void createConnection() {
+	public void createConnection() {
 
-		try {
-			// This will load the MySQL driver, each DB has its own driver
-			Class.forName(driver);
-			// Setup the connection with the DB
-			connection = DriverManager.getConnection(url, user, password);
-
-			if (connection != null)
-				System.out.println("connected");
-		} catch (Exception e) {
-			System.out.println("not connected");
-		}
-
-	}
-
-	public void createDB() {
-		
 	}
 	
-	//Test
-	public static void main(String[] args){
+	public void createDB(){
+		try {
+			this.connection = DriverManager.getConnection("jdbc:h2:~/DB_Dominion", "sa", "");
+			
+			String createPlayer = "create table if not exists Player(Username varchar(25) primary key, Password varchar (25))";
+			String createScoring = "create table if not exists Scoring(Score int primary key)";
+			String createPlayer_Scoring = "create table if not exists Player_Scoring(Username varchar(25) not null, Score int not null, primary key (Username, Score), foreign key (Username) references Player (Username), foreign key (Score) references Scoring (Score))";
+			this.stmt = connection.createStatement();
+			
+			this.stmt.execute(createPlayer);
+			this.stmt.execute(createScoring);
+			this.stmt.execute(createPlayer_Scoring);
+			
+			System.out.println("table created successfully");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void selectPlayer(){
+		try {
+			this.connection = DriverManager.getConnection("jdbc:h2:~/DB_Dominion", "sa", "");
+			String selectPlayer = "select * from Player";
+			String insertIntoPlayer = "insert into Player (Username, Password) values ('dummy', 'abc')";
+			
+			this.stmt = connection.createStatement();
+			this.stmt.execute(insertIntoPlayer);
+			
+			this.rs = stmt.executeQuery(selectPlayer);
+
+			while(this.rs.next()){
+				System.out.println(this.rs.getString("Username"));
+				System.out.println(this.rs.getString("Password"));
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	// Test
+	public static void main(String[] args) {
 		DB_Connector connector = new DB_Connector();
 		connector.createDB();
+		connector.selectPlayer();
 	}
 }// end DB_Connector
