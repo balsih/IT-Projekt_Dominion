@@ -29,7 +29,7 @@ public class Player {
 	 * @param name
 	 */
 	public Player(String name){
-
+		
 	}
 
 	/**
