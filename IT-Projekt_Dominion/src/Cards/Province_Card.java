@@ -3,7 +3,7 @@ package Cards;
 import Server_GameLogic.Player;
 
 /**
- * @author Lukas
+ * @author René
  * @version 1.0
  * @created 31-Okt-2017 16:58:10
  */
@@ -11,7 +11,9 @@ public class Province_Card extends Victory_Card {
 
 
 	public Province_Card(){
-
+		this.cardName = "Province";
+		this.cost = 8;
+		this.type = "victory";
 	}
 
 	/**
@@ -20,6 +22,7 @@ public class Province_Card extends Victory_Card {
 	 */
 	@Override
 	public void executeCard(Player player){
-
+		player.setVictoryPoints(player.getVictoryPoints() + 6);
 	}
+	
 }//end Province_Card

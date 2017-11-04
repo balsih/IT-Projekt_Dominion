@@ -3,7 +3,7 @@ package Cards;
 import Server_GameLogic.Player;
 
 /**
- * @author Renate
+ * @author René
  * @version 1.0
  * @created 31-Okt-2017 16:58:13
  */
@@ -11,7 +11,9 @@ public class Smithy_Card extends Card {
 
 
 	public Smithy_Card(){
-
+		this.cardName = "Smithy";
+		this.cost = 4;
+		this.type = "action";
 	}
 
 	/**
@@ -20,6 +22,8 @@ public class Smithy_Card extends Card {
 	 */
 	@Override
 	public void executeCard(Player player){
-
+		player.setActions(player.getActions() - 1);
+		// 3 Karen aufnehmen 
 	}
+	
 }//end Smithy_Card
