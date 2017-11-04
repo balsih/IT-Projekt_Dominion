@@ -1,6 +1,8 @@
 package Server_GameLogic;
 
+import java.util.Collections;
 import java.util.LinkedList;
+import java.util.Random;
 import java.util.Stack;
 
 import Cards.Card;
@@ -23,20 +25,21 @@ public class Player {
 	protected String playerName;
 	protected int victoryPoints;
 
+	private final int NUM_OF_HANDCARDS = 5;
 
 	/**
 	 * 
 	 * @param name
 	 */
-	public Player(String name){
-		
+	public Player(String name) {
+
 	}
 
 	/**
 	 * 
 	 * @param gameThread
 	 */
-	public void addGameThread(Game gameThread){
+	public void addGameThread(Game gameThread) {
 
 	}
 
@@ -44,38 +47,63 @@ public class Player {
 	 * 
 	 * @param cardName
 	 */
-	public Card buy(String cardName){
-		
-		
+	public Card buy(String cardName) {
+
 		return null;
 	}
 
-	public void cleanUp(){
+	public void cleanUp() {
 
 	}
 
-	/**
-	 * 
-	 * @param number
-	 */
-	public void draw(int number){
+	// If Deckpile is empty, the discard pile fills the deckPile. Eventually
+	// the deckPiles get shuffled and the player draws 5 Cards from deckPile
+	// to HandPile.
+	//
+	// Else If the deckpile size is lower than 5, the rest of deckPiles
+	// will be drawed and the discard pile fills the deckPile.
+	// eventually the deckPiles get shuffled and the player draws the
+	// rest of the Cards until he has 5 Cards in the HandPile.
+	//
+	// Else if they are enough cards in the deckPile, the player draws 5
+	// cards into the handPile
 
+	public void draw(int number) {
+
+		if (deckPile.isEmpty()) {
+			while (!discardPile.isEmpty())
+				deckPile.push(discardPile.pop());
+			Collections.shuffle(deckPile);
+			for (int i = 0; i < NUM_OF_HANDCARDS; i++)
+				handCards.add(deckPile.pop());
+		} else if (deckPile.size() < NUM_OF_HANDCARDS) {
+			while (!deckPile.isEmpty())
+				handCards.add(deckPile.pop());
+			while (!discardPile.isEmpty())
+				deckPile.push(discardPile.pop());
+			Collections.shuffle(deckPile);
+			for (int i = 0; i < NUM_OF_HANDCARDS - handCards.size(); i++)
+				handCards.add(deckPile.pop());
+		} else {
+			for (int i = 0; i < NUM_OF_HANDCARDS; i++)
+				handCards.add(deckPile.pop());
+		}
 	}
 
 	/**
 	 * 
 	 * @param cardName
 	 */
-	public void play(String cardName){
+	public void play(String cardName) {
 
 	}
 
-	public void skipPhase(){
+	public void skipPhase() {
 
 	}
-	
-	public void shuffle(){
-		
+
+	public void shuffle() {
+
 	}
 
 	public int getActions() {
@@ -157,4 +185,4 @@ public class Player {
 	public void setVictoryPoints(int victoryPoints) {
 		this.victoryPoints = victoryPoints;
 	}
-}//end Player
+}// end Player
