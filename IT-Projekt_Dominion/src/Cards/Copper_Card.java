@@ -7,10 +7,10 @@ import Server_GameLogic.Player;
  * @version 1.0
  * @created 31-Okt-2017 16:58:01
  */
-public class Bronce_Card extends Treasure_Card {
+public class Copper_Card extends Treasure_Card {
 
 
-	public Bronce_Card(){
+	public Copper_Card(){
 
 	}
 

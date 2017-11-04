@@ -4,7 +4,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Stack;
 
-import Cards.Bronce_Card;
+import Cards.Copper_Card;
 import Cards.Card;
 import Cards.Cellar_Card;
 import Cards.Duchy_Card;
@@ -28,7 +28,7 @@ import Messages.UpdateGame_Message;
  */
 public class Game {
 
-	private Stack<Bronce_Card> broncePile;
+	private Stack<Copper_Card> broncePile;
 	private Stack<Cellar_Card> cellarPile;
 	private Stack<Duchy_Card> duchyPile;
 	private Stack<Estate_Card> estatePile;

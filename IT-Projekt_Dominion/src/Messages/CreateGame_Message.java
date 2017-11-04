@@ -10,7 +10,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 
-import Cards.Bronce_Card;
+import Cards.Copper_Card;
 import Cards.Card;
 import Client_Services.ServiceLocator;
 import Client_Services.Translator;
