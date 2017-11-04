@@ -32,7 +32,10 @@ public class Player {
 	 * @param name
 	 */
 	public Player(String name) {
-
+		this.deckPile = new Stack<Card>();
+		this.discardPile = new Stack<Card>();
+		this.handCards = new LinkedList<Card>();
+		this.playedCards = new LinkedList<Card>();
 	}
 
 	/**

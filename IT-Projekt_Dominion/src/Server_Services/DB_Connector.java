@@ -25,20 +25,8 @@ public class DB_Connector {
 	private ResultSet rs;
 
 	protected DB_Connector() {
-		try {
-			// Load Driver
-			Class.forName("org.h2.Driver");
-
-			// creates Connection with DB on Server, and creates DB_Dominion if
-			// not exists
-			String path = "jdbc:h2:~/Server_Services/DB_Dominion.mv.db";
-			String user = "sa";
-			String pw = "";
-			this.connection = DriverManager.getConnection(path, user, pw);
-		} catch (ClassNotFoundException | SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		this.createDBConnection();
+		this.createDBStructure();
 	}
 
 	/**
@@ -47,7 +35,6 @@ public class DB_Connector {
 	 * @param password
 	 * @throws SQLException
 	 */
-	//NOCH NICHT FERTIG!
 	public boolean addNewPlayer(String username, String password) {
 		String existingUser = "";
 
@@ -66,11 +53,12 @@ public class DB_Connector {
 				this.prepStmt.setString(1, username);
 				this.prepStmt.setString(2, password);
 				this.prepStmt.execute();
+
 				return true;
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println("Der Benutzername existiert schon");
 		}
 		return false;
 	}
@@ -80,8 +68,22 @@ public class DB_Connector {
 	 * @param player
 	 * @param score
 	 */
-	public int addScore(Player player, int score) {
-		return 0;
+	public boolean addScore(Player player, int score) {
+		try {
+			String insertIntoPlayer_Scoring = "Insert into Player_Scoring (Username, Score) values (?, ?)";
+
+			this.prepStmt = connection.prepareStatement(insertIntoPlayer_Scoring);
+			this.prepStmt.setString(1, player.getPlayerName());
+			this.prepStmt.setInt(1, score);
+			this.prepStmt.execute();
+
+			return true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return false;
 	}
 
 	/**
@@ -96,7 +98,7 @@ public class DB_Connector {
 	 * 
 	 * @param name
 	 */
-	//deletes Player
+	// deletes Player
 	public void deletePlayer(String username) {
 		String deletePlayer = "Delete from Player where Username = ?";
 
@@ -110,7 +112,7 @@ public class DB_Connector {
 
 	}
 
-	//returns playername with highScore
+	// returns playername with highScore
 	public String getHighScore() {
 		String selectHighScore = "Select Username, max(Score) from Player_Scoring group by ?";
 		String username = "username";
@@ -136,11 +138,12 @@ public class DB_Connector {
 	}
 
 	public DB_Connector getDB_Connector() {
+		this.connector = new DB_Connector();
 		return this.connector;
 	}
 
 	// creates the db structure
-	public void createDBStructure() {
+	private void createDBStructure() {
 		try {
 			String createPlayer = "create table if not exists Player(" + "Username varchar(25) primary key,"
 					+ "Password varchar (25))";
@@ -153,6 +156,7 @@ public class DB_Connector {
 			this.stmt = connection.createStatement();
 			this.stmt.execute(createPlayer);
 			this.stmt.execute(createScoring);
+//			this.fillScoring();
 			this.stmt.execute(createPlayer_Scoring);
 
 			System.out.println("created table successfully");
@@ -160,6 +164,46 @@ public class DB_Connector {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	// creates DB Connection
+	private void createDBConnection() {
+		try {
+			// Load Driver
+			Class.forName("org.h2.Driver");
+
+			// creates Connection with DB on Server, and creates DB_Dominion in
+			// workspace of actual user if not exists
+			String presentProjectPath = System.getProperty("user.dir");
+			String path = "jdbc:h2:" + presentProjectPath
+					+ "/IT-Projekt_Dominion/src/Server_Services/DB_Dominion.mv.db";
+			String user = "sa";
+			String pw = "";
+			this.connection = DriverManager.getConnection(path, user, pw);
+		} catch (SQLException | ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	//PROBLEM: DUPLIKATE = EXCEPTION
+	private void fillScoring() {
+		try {
+			int numOfScorePoints = 30;
+			String insertIntoScoring = "Insert into Scoring (Score) values (?)";
+
+			this.prepStmt = connection.prepareStatement(insertIntoScoring);
+
+			for (int i = 0; i <= numOfScorePoints; i++) {
+				this.prepStmt.setInt(1, i);
+				this.prepStmt.execute();
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	// selects the player relation and prints it out
@@ -185,13 +229,7 @@ public class DB_Connector {
 	// Test
 	public static void main(String[] args) {
 		DB_Connector connector = new DB_Connector();
-		connector.createDBStructure();
-
-		// Problem wenn Duplikate = Exception
-		// connector.addNewPlayer("Hausi", "test");
-		connector.deletePlayer("Hausi");
-
-		connector.selectPlayer();
+		System.out.println(connector.getHighScore());
 
 	}
 }// end DB_Connector
