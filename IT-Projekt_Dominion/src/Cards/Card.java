@@ -1,5 +1,8 @@
 package Cards;
 
+import Client_Services.Gallery;
+import Client_Services.ServiceLocator;
+import Client_Services.Translator;
 import Server_GameLogic.Player;
 import javafx.scene.image.ImageView;
 
@@ -9,12 +12,13 @@ import javafx.scene.image.ImageView;
  * @created 31-Okt-2017 16:58:04
  */
 public abstract class Card {
+	
+	ServiceLocator sl = ServiceLocator.getServiceLocator();
 
 	protected String cardName;
 	protected int cost;
 	protected ImageView image;
-	protected String type; // action, treasure, victory 
-	
+	protected String type; // action, treasure, victory 	
 
 
 	protected Card(){
@@ -27,6 +31,7 @@ public abstract class Card {
 	 * @return 
 	 */
 	public abstract void executeCard(Player player);
+	
 
 	public String getCardName(){
 		return "";
@@ -50,11 +55,12 @@ public abstract class Card {
 	
 	// new code -> vorerst dummy Methode 
 
-	public static Card getCard(String cardName) {
+	public static Card getCard(String cardName, Translator t) {
 		Card card;
 		switch (cardName) {
 		case "Bronce_Card":
-			card = new Bronce_Card();
+			card = new Copper_Card();
+			card.setImage(Gallery.getImage(t.getString(cardName)));
 			break;
 		case "Silver_Card":
 			card = getSilverCard();
