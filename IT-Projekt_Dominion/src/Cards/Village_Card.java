@@ -22,8 +22,8 @@ public class Village_Card extends Card {
 	 */
 	@Override
 	public void executeCard(Player player){
-		player.actions 3;
-		
+		player.setActions(player.getActions() + 1); // -1 + 2
+		player.setCoins(player.getCoins() - 3);
 
 	}
 }//end Village_Card
