@@ -28,7 +28,7 @@ import Messages.UpdateGame_Message;
  */
 public class Game {
 
-	private Stack<Copper_Card> broncePile;
+	private Stack<Copper_Card> copperPile;
 	private Stack<Cellar_Card> cellarPile;
 	private Stack<Duchy_Card> duchyPile;
 	private Stack<Estate_Card> estatePile;
@@ -69,14 +69,15 @@ public class Game {
 
 	// Builds stacks for the treasure cards
 	private void buildTreasureCardStacks() {
-		this.broncePile = new Stack<Bronce_Card>();
+		this.copperPile = new Stack<Copper_Card>();
 		this.silverPile = new Stack<Silver_Card>();
 		this.goldPile = new Stack<Gold_Card>();
 
+		//
 		for (int i = 0; i < NUM_OF_TREASURECARDS; i++) {
-			this.broncePile.push(new Bronce_Card());
-			this.silverPile.push(new Silver_Card());
-			this.goldPile.push(new Gold_Card());
+			this.copperPile.push(Card.getCard("Copper_Card", t));
+			this.silverPile.push(Card.getCard("Silver_Card", t));
+			this.goldPile.push(Card.getCard("Gold_Card", t));
 		}
 	}
 
@@ -160,8 +161,8 @@ public class Game {
 		// beim anderen Spieler (Thread) in die Queue gespeichert wird
 	}
 
-	public Stack<Bronce_Card> getBroncePile() {
-		return broncePile;
+	public Stack<Copper_Card> getCopperPile() {
+		return copperPile;
 	}
 
 	public Stack<Silver_Card> getSilverPile() {
