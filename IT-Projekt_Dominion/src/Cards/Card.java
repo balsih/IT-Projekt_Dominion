@@ -7,7 +7,7 @@ import Server_GameLogic.Player;
 import javafx.scene.image.ImageView;
 
 /**
- * @author Renate
+ * @author René
  * @version 1.0
  * @created 31-Okt-2017 16:58:04
  */
