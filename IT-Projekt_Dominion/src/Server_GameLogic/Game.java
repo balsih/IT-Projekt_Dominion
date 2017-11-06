@@ -169,7 +169,7 @@ public class Game {
 		return silverPile;
 	}
 
-	public Stack<Gold_Card> getGildPile() {
+	public Stack<Gold_Card> getGoldPile() {
 		return goldPile;
 	}
 
