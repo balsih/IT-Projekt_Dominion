@@ -14,6 +14,7 @@ public class Silver_Card extends Treasure_Card {
 		this.cardName = "Silver";
 		this.cost = 3;
 		this.type = "treasure";
+		this.coinValue = 2;
 	}
 
 	/**
@@ -22,7 +23,7 @@ public class Silver_Card extends Treasure_Card {
 	 */
 	@Override
 	public void executeCard(Player player){
-		player.setCoins(player.getCoins() + 2); // ?
+		player.setCoins(player.getCoins() + coinValue);
 
 	}
 }//end Silver_Card

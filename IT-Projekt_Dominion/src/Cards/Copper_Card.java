@@ -14,6 +14,7 @@ public class Copper_Card extends Treasure_Card {
 		this.cardName = "Copper";
 		this.cost = 0;
 		this.type = "treasure";
+		this.coinValue = 1;
 	}
 
 	/**
@@ -22,7 +23,7 @@ public class Copper_Card extends Treasure_Card {
 	 */
 	@Override
 	public void executeCard(Player player){
-		player.setCoins(player.getCoins() + 1); // ?
+		player.setCoins(player.getCoins() + coinValue);
 
 	}
 }//end Bronce_Card

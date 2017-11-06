@@ -36,6 +36,8 @@ public class Player {
 		this.discardPile = new Stack<Card>();
 		this.handCards = new LinkedList<Card>();
 		this.playedCards = new LinkedList<Card>();
+		
+		this.coins = 0;
 	}
 
 	/**
@@ -65,7 +67,7 @@ public class Player {
 	//
 	// Else If the deckpile size is lower than 5, the rest of deckPiles
 	// will be drawed and the discard pile fills the deckPile.
-	// eventually the deckPiles get shuffled and the player draws the
+	// eventually the deckPile get shuffled and the player draws the
 	// rest of the Cards until he has 5 Cards in the HandPile.
 	//
 	// Else if they are enough cards in the deckPile, the player draws 5

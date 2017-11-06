@@ -14,6 +14,7 @@ public class Estate_Card extends Victory_Card {
 		this.cardName = "Estade";
 		this.cost = 2;
 		this.type = "victory";
+		this.victoryPoints = 1;
 	}
 
 	/**
@@ -22,7 +23,7 @@ public class Estate_Card extends Victory_Card {
 	 */
 	@Override
 	public void executeCard(Player player){
-		player.setVictoryPoints(player.getVictoryPoints() + 1);
+		player.setVictoryPoints(player.getVictoryPoints() + victoryPoints);
 	}
 	
 }//end Estate_Card

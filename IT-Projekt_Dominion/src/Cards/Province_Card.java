@@ -14,6 +14,7 @@ public class Province_Card extends Victory_Card {
 		this.cardName = "Province";
 		this.cost = 8;
 		this.type = "victory";
+		this.victoryPoints = 6;
 	}
 
 	/**
@@ -22,7 +23,7 @@ public class Province_Card extends Victory_Card {
 	 */
 	@Override
 	public void executeCard(Player player){
-		player.setVictoryPoints(player.getVictoryPoints() + 6);
+		player.setVictoryPoints(player.getVictoryPoints() + victoryPoints);
 	}
 	
 }//end Province_Card
