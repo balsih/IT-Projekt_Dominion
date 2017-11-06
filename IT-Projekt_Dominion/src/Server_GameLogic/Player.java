@@ -1,11 +1,13 @@
 package Server_GameLogic;
 
+import java.net.Socket;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.Stack;
 
 import Cards.Card;
+import Cards.Copper_Card;
 
 /**
  * @author Bodo
@@ -27,6 +29,14 @@ public class Player {
 
 	private final int NUM_OF_HANDCARDS = 5;
 
+	protected Socket clientSocket;
+
+	private boolean isFinished;
+
+	private String actualPhase;
+
+	private static int counter;
+
 	/**
 	 * 
 	 * @param name
@@ -36,8 +46,15 @@ public class Player {
 		this.discardPile = new Stack<Card>();
 		this.handCards = new LinkedList<Card>();
 		this.playedCards = new LinkedList<Card>();
-		
+
 		this.coins = 0;
+		this.actions = 1;
+		this.buys = 0;
+		counter = 0;
+
+		this.isFinished = false;
+
+		this.actualPhase = "";
 	}
 
 	/**
@@ -45,35 +62,114 @@ public class Player {
 	 * @param gameThread
 	 */
 	public void addGameThread(Game gameThread) {
+		this.gameThread = gameThread;
+	}
+
+	/**
+	 * buys a card and lays the buyed card into the discard pile
+	 */
+	public Card buy(String cardName) {
+		Card buyedCard = null;
+		this.actualPhase = "buy";
+
+		switch (cardName) {
+		case "Copper_Card":
+			buyedCard = this.gameThread.getCopperPile().pop();
+			this.discardPile.push(buyedCard);
+			break;
+		case "Cellar_Card":
+			buyedCard = this.gameThread.getCellarPile().pop();
+			this.discardPile.push(buyedCard);
+			break;
+		case "Duchy_Card":
+			buyedCard = this.gameThread.getDuchyPile().pop();
+			this.discardPile.push(buyedCard);
+			break;
+		case "Estate_Card":
+			buyedCard = this.gameThread.getEstatePile().pop();
+			this.discardPile.push(buyedCard);
+			break;
+		case "Gold_Card":
+			buyedCard = this.gameThread.getGoldPile().pop();
+			this.discardPile.push(buyedCard);
+			break;
+		case "Market_Card":
+			buyedCard = this.gameThread.getMarketPile().pop();
+			this.discardPile.push(buyedCard);
+			break;
+		case "Mine_Card":
+			buyedCard = this.gameThread.getMinePile().pop();
+			this.discardPile.push(buyedCard);
+			break;
+		case "Province_Card":
+			buyedCard = this.gameThread.getProvincePile().pop();
+			this.discardPile.push(buyedCard);
+			break;
+		case "Remodel_Card":
+			buyedCard = this.gameThread.getRemodelPile().pop();
+			this.discardPile.push(buyedCard);
+			break;
+		case "Silver_Card":
+			buyedCard = this.gameThread.getSilverPile().pop();
+			this.discardPile.push(buyedCard);
+			break;
+		case "Smithy_Card":
+			buyedCard = this.gameThread.getSmithyPile().pop();
+			this.discardPile.push(buyedCard);
+			break;
+		case "Village_Card":
+			buyedCard = this.gameThread.getVillagePile().pop();
+			this.discardPile.push(buyedCard);
+			break;
+		case "Woodcutter_Card":
+			buyedCard = this.gameThread.getWoodcutterPile().pop();
+			this.discardPile.push(buyedCard);
+			break;
+		case "Workshop_Card":
+			buyedCard = this.gameThread.getWorkshopPile().pop();
+			this.discardPile.push(buyedCard);
+			break;
+		}
+
+		return buyedCard;
+	}
+
+	public void cleanUp() {
+		this.actualPhase = "cleanUp";
+
+		while (!playedCards.isEmpty()) {
+			this.discardPile.push(playedCards.remove());
+		}
+
+		while (!handCards.isEmpty()) {
+			this.discardPile.push(handCards.remove());
+		}
+
+		this.draw();
+
+		this.setFinished(true);
+
+		gameThread.checkGameEnding();
 
 	}
 
 	/**
-	 * 
-	 * @param cardName
+	 * If Deckpile is empty, the discard pile fills the deckPile. Eventually the
+	 * deckPiles get shuffled and the player draws 5 Cards from deckPile to
+	 * HandPile.
+	 *
+	 * Else If the deckpile size is lower than 5, the rest of deckPiles will be
+	 * drawed and the discard pile fills the deckPile. eventually the deckPile
+	 * get shuffled and the player draws the rest of the Cards until he has 5
+	 * Cards in the HandPile.
+	 *
+	 * Else if they are enough cards in the deckPile, the player draws 5 cards
+	 * into the handPile
+	 *
+	 * NOT FINISHED!
 	 */
-	public Card buy(String cardName) {
 
-		return null;
-	}
-
-	public void cleanUp() {
-
-	}
-
-	// If Deckpile is empty, the discard pile fills the deckPile. Eventually
-	// the deckPiles get shuffled and the player draws 5 Cards from deckPile
-	// to HandPile.
-	//
-	// Else If the deckpile size is lower than 5, the rest of deckPiles
-	// will be drawed and the discard pile fills the deckPile.
-	// eventually the deckPile get shuffled and the player draws the
-	// rest of the Cards until he has 5 Cards in the HandPile.
-	//
-	// Else if they are enough cards in the deckPile, the player draws 5
-	// cards into the handPile
-
-	public void draw(int number) {
+	public void draw() {
 
 		if (deckPile.isEmpty()) {
 			while (!discardPile.isEmpty())
@@ -96,19 +192,169 @@ public class Player {
 	}
 
 	/**
-	 * 
-	 * @param cardName
+	 * If Deckpile is empty, the discard pile fills the deckPile. Eventually the
+	 * deckPiles get shuffled and the player draws the number of layed down
+	 * Cards from deckPile to HandPile.
+	 *
+	 * Else If the deckpile size is lower than 5, the rest of deckPiles will be
+	 * drawed and the discard pile fills the deckPile. eventually the deckPile
+	 * get shuffled and the player draws the number of layed down Cards in the
+	 * HandPile.
+	 *
+	 * Else if they are enough cards in the deckPile, the player draws the
+	 * number of layed down cards into the handPile
+	 *
+	 * NOT FINISHED!
+	 */
+
+	public void draw(int number) {
+		for (int i = 0; i < number; i++) {
+			if (deckPile.isEmpty()) {
+				while (!discardPile.isEmpty())
+					deckPile.push(discardPile.pop());
+				Collections.shuffle(deckPile);
+				for (int y = 0; y < number; y++)
+					handCards.add(deckPile.pop());
+			} else if (deckPile.size() < number) {
+				while (!deckPile.isEmpty())
+					handCards.add(deckPile.pop());
+				while (!discardPile.isEmpty())
+					deckPile.push(discardPile.pop());
+				Collections.shuffle(deckPile);
+				for (int y = 0; y < number; y++)
+					handCards.add(deckPile.pop());
+			} else {
+				for (int y = 0; y < number; y++)
+					handCards.add(deckPile.pop());
+			}
+		}
+	}
+
+	/**
+	 * Lays the selected card down from Handcards into discardPile and counts
+	 * the number of layed down cards and returns this number
+	 */
+	public int layDown(String cardName) {
+		Card layedDownCard = null;
+		int index = 0;
+
+		index = this.handCards.indexOf(cardName);
+		layedDownCard = this.handCards.remove(index);
+		this.discardPile.push(layedDownCard);
+
+		counter++;
+		return counter;
+	}
+
+	/**
+	 * plays the selected card and execute this card
+	 *
 	 */
 	public void play(String cardName) {
+		Card playedCard = null;
+		int index = 0;
+		this.actualPhase = "play";
 
+		switch (cardName) {
+		case "Copper_Card":
+			index = this.handCards.indexOf(cardName);
+			playedCard = this.handCards.remove(index);
+			playedCard.executeCard(this);
+			playedCards.add(playedCard);
+			break;
+		case "Cellar_Card":
+			index = this.handCards.indexOf(cardName);
+			playedCard = this.handCards.remove(index);
+			playedCard.executeCard(this);
+			playedCards.add(playedCard);
+			break;
+		case "Duchy_Card":
+			index = this.handCards.indexOf(cardName);
+			playedCard = this.handCards.remove(index);
+			playedCard.executeCard(this);
+			playedCards.add(playedCard);
+			break;
+		case "Estate_Card":
+			index = this.handCards.indexOf(cardName);
+			playedCard = this.handCards.remove(index);
+			playedCard.executeCard(this);
+			playedCards.add(playedCard);
+			break;
+		case "Gold_Card":
+			index = this.handCards.indexOf(cardName);
+			playedCard = this.handCards.remove(index);
+			playedCard.executeCard(this);
+			playedCards.add(playedCard);
+			break;
+		case "Market_Card":
+			index = this.handCards.indexOf(cardName);
+			playedCard = this.handCards.remove(index);
+			playedCard.executeCard(this);
+			playedCards.add(playedCard);
+			break;
+		case "Mine_Card":
+			index = this.handCards.indexOf(cardName);
+			playedCard = this.handCards.remove(index);
+			playedCard.executeCard(this);
+			playedCards.add(playedCard);
+			break;
+		case "Province_Card":
+			index = this.handCards.indexOf(cardName);
+			playedCard = this.handCards.remove(index);
+			playedCard.executeCard(this);
+			playedCards.add(playedCard);
+			break;
+		case "Remodel_Card":
+			index = this.handCards.indexOf(cardName);
+			playedCard = this.handCards.remove(index);
+			playedCard.executeCard(this);
+			playedCards.add(playedCard);
+			break;
+		case "Silver_Card":
+			index = this.handCards.indexOf(cardName);
+			playedCard = this.handCards.remove(index);
+			playedCard.executeCard(this);
+			playedCards.add(playedCard);
+			break;
+		case "Smithy_Card":
+			index = this.handCards.indexOf(cardName);
+			playedCard = this.handCards.remove(index);
+			playedCard.executeCard(this);
+			playedCards.add(playedCard);
+			break;
+		case "Village_Card":
+			index = this.handCards.indexOf(cardName);
+			playedCard = this.handCards.remove(index);
+			playedCard.executeCard(this);
+			playedCards.add(playedCard);
+			break;
+		case "Woodcutter_Card":
+			index = this.handCards.indexOf(cardName);
+			playedCard = this.handCards.remove(index);
+			playedCard.executeCard(this);
+			playedCards.add(playedCard);
+			break;
+		case "Workshop_Card":
+			index = this.handCards.indexOf(cardName);
+			playedCard = this.handCards.remove(index);
+			playedCard.executeCard(this);
+			playedCards.add(playedCard);
+			break;
+		}
 	}
 
+	/**
+	 * skips actual phase and goes to the next phase
+	 */
 	public void skipPhase() {
-
-	}
-
-	public void shuffle() {
-
+		switch (this.actualPhase) {
+		case "play":
+			// ?
+		case "buy":
+			// ?
+		case "cleanUp":
+			// ?
+		}
 	}
 
 	public int getActions() {
@@ -189,5 +435,21 @@ public class Player {
 
 	public void setVictoryPoints(int victoryPoints) {
 		this.victoryPoints = victoryPoints;
+	}
+
+	public boolean isFinished() {
+		return isFinished;
+	}
+
+	public void setFinished(boolean isFinished) {
+		this.isFinished = isFinished;
+	}
+
+	public String getActualPhase() {
+		return actualPhase;
+	}
+
+	public void setActualPhase(String actualPhase) {
+		this.actualPhase = actualPhase;
 	}
 }// end Player

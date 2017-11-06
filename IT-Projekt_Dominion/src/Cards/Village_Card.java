@@ -23,6 +23,7 @@ public class Village_Card extends Card {
 	@Override
 	public void executeCard(Player player){
 		player.setActions(player.getActions() + 1); // -1 + 2
+		player.draw(1); // draw 1 card
 	}
 	
 }//end Village_Card
