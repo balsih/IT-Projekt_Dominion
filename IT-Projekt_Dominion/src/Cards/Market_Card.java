@@ -24,6 +24,7 @@ public class Market_Card extends Card {
 	public void executeCard(Player player){
 		player.setCoins(player.getCoins() + 1);
 		player.setBuys(player.getBuys() + 1);
+		player.draw(1); // draw 1 card
 	}
 	
 }//end Market_Card
