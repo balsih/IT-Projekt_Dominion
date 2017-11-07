@@ -201,11 +201,12 @@ public class DB_Connector {
 	
 	public boolean checkLoginInput(String username, String password){
 		
+		
 		return false;
 	}
 
 	// selects the player relation and prints it out
-	public void selectPlayer() {
+	private void selectPlayer() {
 		try {
 			String selectPlayer = "select * from Player";
 

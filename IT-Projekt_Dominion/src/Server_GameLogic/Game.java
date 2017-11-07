@@ -46,7 +46,7 @@ public class Game {
 	private Stack<Village_Card> villagePile;
 	private Stack<Woodcutter_Card> woodcutterPile;
 	private Stack<Workshop_Card> workshopPile;
-	private HashMap<Card, Integer> buyedCards;
+	private HashMap<Card, Integer> buyCards;
 	private boolean gameEnded;
 
 	private final int NUM_OF_TREASURECARDS = 30;
@@ -146,9 +146,9 @@ public class Game {
 		return false;
 	}
 
-	public HashMap<Card, Integer> getBuyedCards() {
+	public HashMap<Card, Integer> getBuyCards() {
 
-		return this.buyedCards;
+		return this.buyCards;
 	}
 
 	/**
