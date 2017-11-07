@@ -3,6 +3,7 @@ package Cards;
 import Client_Services.Gallery;
 import Client_Services.ServiceLocator;
 import Client_Services.Translator;
+import Messages.UpdateGame_Message;
 import Server_GameLogic.Player;
 import javafx.scene.image.ImageView;
 
@@ -30,7 +31,7 @@ public abstract class Card {
 	 * @param player
 	 * @return 
 	 */
-	public abstract void executeCard(Player player);
+	public abstract UpdateGame_Message executeCard(Player player);
 	
 
 	public String getCardName(){
