@@ -75,9 +75,9 @@ public class Game {
 
 		//
 		for (int i = 0; i < NUM_OF_TREASURECARDS; i++) {
-			this.copperPile.push(Card.getCard("Copper_Card", t));
-			this.silverPile.push(Card.getCard("Silver_Card", t));
-			this.goldPile.push(Card.getCard("Gold_Card", t));
+			this.copperPile.push(new Copper_Card());
+			this.silverPile.push(new Silver_Card());
+			this.goldPile.push(new Gold_Card());
 		}
 	}
 
@@ -169,7 +169,7 @@ public class Game {
 		return silverPile;
 	}
 
-	public Stack<Gold_Card> getGildPile() {
+	public Stack<Gold_Card> getGoldPile() {
 		return goldPile;
 	}
 
