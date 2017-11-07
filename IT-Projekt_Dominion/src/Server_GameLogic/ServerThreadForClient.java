@@ -243,7 +243,8 @@ public class ServerThreadForClient implements Runnable {
 
 
 	/**
-	 * 
+	 * The Chat_Message wrote by client has to be sent to opponent.
+	 * The name has to be adapted to the Chat for better reading
 	 * 
 	 * @param msgIn
 	 * @return

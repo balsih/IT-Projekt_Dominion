@@ -41,14 +41,13 @@ public class Game {
 	private Player player2;
 	private Stack<Province_Card> provincePile;
 	private Stack<Remodel_Card> remodelPile;
-	private ServerThreadForClient serverThreadForClientP1;
-	private ServerThreadForClient serverThreadForClientP2;
 	private Stack<Silver_Card> silverPile;
 	private Stack<Smithy_Card> smithyPile;
 	private Stack<Village_Card> villagePile;
 	private Stack<Woodcutter_Card> woodcutterPile;
 	private Stack<Workshop_Card> workshopPile;
 	private HashMap<Card, Integer> buyedCards;
+	private boolean gameEnded;
 
 	private final int NUM_OF_TREASURECARDS = 30;
 	private final int NUM_OF_VICTORYCARDS = 30;
@@ -61,10 +60,12 @@ public class Game {
 	 * @param player
 	 */
 	public Game(Socket clientSocket, String gameMode, Player player) {
-		//Build treasure stacks for a new game
+		// Build treasure stacks for a new game
 		this.buildTreasureCardStacks();
 		this.buildVictoryCardStacks();
 		this.buildActionCardStacks();
+
+		this.setGameEnded(false);
 	}
 
 	// Builds stacks for the treasure cards
@@ -118,6 +119,8 @@ public class Game {
 	}
 
 	public boolean checkGameEnding() {
+		
+		
 		return false;
 	}
 
@@ -131,7 +134,7 @@ public class Game {
 		return null;
 	}
 
-	public int getGameCouner() {
+	public int getGameCounter() {
 		return 0;
 	}
 
@@ -156,9 +159,10 @@ public class Game {
 		return null;
 	}
 
-	public void sendToOpponent(ServerThreadForClient source, UpdateGame_Message ugmsg) {
-		// An anderen Spieler als source eine waiting message schicken, welche
-		// beim anderen Spieler (Thread) in die Queue gespeichert wird
+	public void sendToOpponent(Player source, UpdateGame_Message ugmsg) {
+
+		source.getServerThreadForClient().addWaitingMessages(ugmsg);
+
 	}
 
 	public Stack<Copper_Card> getCopperPile() {
@@ -205,16 +209,24 @@ public class Game {
 	public Stack<Smithy_Card> getSmithyPile() {
 		return smithyPile;
 	}
-	
-	public Stack<Village_Card> getVillagePile(){
+
+	public Stack<Village_Card> getVillagePile() {
 		return villagePile;
 	}
-	
-	public Stack<Woodcutter_Card> getWoodcutterPile(){
+
+	public Stack<Woodcutter_Card> getWoodcutterPile() {
 		return woodcutterPile;
 	}
-	
-	public Stack<Workshop_Card> getWorkshopPile(){
+
+	public Stack<Workshop_Card> getWorkshopPile() {
 		return workshopPile;
+	}
+
+	public boolean isGameEnded() {
+		return gameEnded;
+	}
+
+	public void setGameEnded(boolean gameEnded) {
+		this.gameEnded = gameEnded;
 	}
 }// end Game

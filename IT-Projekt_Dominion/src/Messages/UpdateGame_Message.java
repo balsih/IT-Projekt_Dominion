@@ -1,6 +1,7 @@
 package Messages;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * @author Lukas
@@ -23,9 +24,7 @@ public class UpdateGame_Message extends Message {
 	private static final String ELEMENT_PLAYEDCARDS = "playedCards";
 	private static final String ELEMENT_CHAT = "chat";
 	private String chat;
-	private int actions;
 	private String cardBuyed;
-	private int coins;
 	private String currentPhase;
 	private String currentPlayer;
 	private String discardPile;
@@ -34,10 +33,21 @@ public class UpdateGame_Message extends Message {
 	private String log;
 	private String playedCard;
 	private String playedCards;
+	private int actions;
+	private int coins;
+	
+    private String[] stringElementNames = new String[]{ELEMENT_CARDBUYED, ELEMENT_CURRENTPHASE,ELEMENT_CURRENTPLAYER, ELEMENT_DISCARDPILE,
+    		ELEMENT_HANDCARD, ELEMENT_HANDCARDS, ELEMENT_LOG, ELEMENT_PLAYEDCARD,ELEMENT_PLAYEDCARDS, ELEMENT_CHAT};
+    private String[] intElementNames = new String[]{ELEMENT_ACTIONS, ELEMENT_COINS};
 
+    private String[] stringElementContents = new String[]{this.cardBuyed, this.currentPhase, this.currentPlayer, this.discardPile,
+    		this.handCard, this.handCards, this.log, this.playedCard, this.playedCards, this.chat};
+    private int[] intElementContents = new int[]{this.actions, this.coins};
+    
+    
 
 	public UpdateGame_Message(){
-
+		super();
 	}
 
 	/**
@@ -46,8 +56,21 @@ public class UpdateGame_Message extends Message {
 	 */
 	@Override
 	protected void addNodes(Document docIn){
-
+        Element root = docIn.getDocumentElement();
+        
+        for(int i = 0; i < this.stringElementNames.length; i++){
+        	Element element = docIn.createElement(this.stringElementNames[i]);
+        	element.setTextContent(this.stringElementContents[i]);
+        	root.appendChild(element);
+        }
+        
+        for(int i = 0; i < this.intElementNames.length; i++){
+        	Element element = docIn.createElement(this.intElementNames[i]);
+        	element.setTextContent(Integer.toString(this.intElementContents[i]));
+        	root.appendChild(element);
+        }
 	}
+	
 	
 	/**
 	 * 
