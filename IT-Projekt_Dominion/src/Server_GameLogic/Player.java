@@ -8,6 +8,7 @@ import java.util.Stack;
 
 import Cards.Card;
 import Cards.Copper_Card;
+import Messages.UpdateGame_Message;
 
 /**
  * @author Bodo
@@ -36,6 +37,10 @@ public class Player {
 	protected String actualPhase;
 
 	protected static int counter;
+	
+	protected String log;
+	
+	private ServerThreadForClient serverThreadForClient;
 
 	/**
 	 * 
@@ -55,6 +60,10 @@ public class Player {
 		this.isFinished = false;
 
 		this.actualPhase = "";
+		
+		this.log = "";
+		
+		this.setServerThreadForClient(ServerThreadForClient.getServerThreadForClient(clientSocket));
 	}
 
 	/**
@@ -133,6 +142,13 @@ public class Player {
 		}
 
 		return buyedCard;
+	}
+	
+	//checks if the card could been buyed
+	public boolean buyed(){
+		
+		
+		return false;
 	}
 
 	public void cleanUp() {
@@ -251,9 +267,10 @@ public class Player {
 	 * plays the selected card and execute this card
 	 *
 	 */
-	public void play(String cardName, int index) {
+	public UpdateGame_Message play(String cardName, int index) {
 		Card playedCard = null;
 		this.actualPhase = "play";
+		UpdateGame_Message ugmsg = new UpdateGame_Message();
 
 		switch (cardName) {
 		case "Copper_Card":
@@ -341,6 +358,9 @@ public class Player {
 			playedCards.add(playedCard);
 			break;
 		}
+		
+		return ugmsg;
+		
 	}
 
 	/**
@@ -451,5 +471,13 @@ public class Player {
 
 	public void setActualPhase(String actualPhase) {
 		this.actualPhase = actualPhase;
+	}
+
+	public ServerThreadForClient getServerThreadForClient() {
+		return serverThreadForClient;
+	}
+
+	public void setServerThreadForClient(ServerThreadForClient serverThreadForClient) {
+		this.serverThreadForClient = serverThreadForClient;
 	}
 }// end Player

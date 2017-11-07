@@ -36,9 +36,9 @@ public class DB_Connector {
 	 * @throws SQLException
 	 */
 	public boolean addNewPlayer(String username, String password) {
-		String existingUser = "";
-
 		try {
+			String existingUser = "";
+			
 			String selectUsername = "select * from Player";
 			this.stmt = connection.createStatement();
 			this.rs = stmt.executeQuery(selectUsername);
@@ -58,8 +58,9 @@ public class DB_Connector {
 			}
 
 		} catch (SQLException e) {
-			System.out.println("Der Benutzername existiert schon");
+			return false;
 		}
+		
 		return false;
 	}
 
@@ -79,11 +80,8 @@ public class DB_Connector {
 
 			return true;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return false;
 		}
-
-		return false;
 	}
 
 	/**
@@ -107,12 +105,12 @@ public class DB_Connector {
 	// returns playername with highScore
 	public String getHighScore() {
 		String selectHighScore = "Select Username, max(Score) from Player_Scoring group by ?";
-		String username = "username";
+		String username = "";
 		String highScore = "";
 
 		try {
 			this.prepStmt = connection.prepareStatement(selectHighScore);
-			this.prepStmt.setString(1, username);
+			this.prepStmt.setString(1, "Username");
 			this.rs = this.prepStmt.executeQuery();
 
 			while (this.rs.next()) {
@@ -129,8 +127,11 @@ public class DB_Connector {
 		return "";
 	}
 
+	// Singleton
 	public DB_Connector getDB_Connector() {
-		this.connector = new DB_Connector();
+		if (this.connector == null) {
+			this.connector = new DB_Connector();
+		}
 		return this.connector;
 	}
 
@@ -148,7 +149,7 @@ public class DB_Connector {
 			this.stmt = connection.createStatement();
 			this.stmt.execute(createPlayer);
 			this.stmt.execute(createScoring);
-//			this.fillScoring();
+			// this.fillScoring();
 			this.stmt.execute(createPlayer_Scoring);
 
 			System.out.println("created table successfully");
@@ -178,7 +179,7 @@ public class DB_Connector {
 		}
 	}
 
-	//PROBLEM: DUPLIKATE = EXCEPTION
+	// PROBLEM: DUPLIKATE = EXCEPTION
 	private void fillScoring() {
 		try {
 			int numOfScorePoints = 30;
@@ -196,6 +197,11 @@ public class DB_Connector {
 			e.printStackTrace();
 		}
 
+	}
+	
+	public boolean checkLoginInput(String username, String password){
+		
+		return false;
 	}
 
 	// selects the player relation and prints it out
