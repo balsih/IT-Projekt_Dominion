@@ -1,5 +1,7 @@
 package Cards;
 
+import Messages.UpdateGame_Message;
+import Server_GameLogic.Game;
 import Server_GameLogic.Player;
 
 /**
@@ -21,9 +23,21 @@ public class Village_Card extends Card {
 	 * @param player
 	 */
 	@Override
-	public void executeCard(Player player){
+	public UpdateGame_Message executeCard(Player player){
+		
 		player.setActions(player.getActions() + 1); // -1 + 2
 		player.draw(1); // draw 1 card
+		
+		Game game = player.getGame();
+		UpdateGame_Message ugmsg = new UpdateGame_Message();
+		
+		ugmsg.setLog(player.getPlayerName()+": played Village card");
+		
+		ugmsg.setActions(player.getActions());
+		ugmsg.setBuys(player.getBuys());
+		ugmsg.setCoins(player.getCoins());
+		
+		return ugmsg;
 	}
 	
 }//end Village_Card

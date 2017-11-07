@@ -24,19 +24,24 @@ public class Remodel_Card extends Card {
 	 * @param player
 	 */
 	@Override
-	public Message executeCard(Player player){
-		Message massage;
+	public UpdateGame_Message executeCard(Player player){
+		
 		player.setActions(player.getActions() - 1);
 		
 		Game game = player.getGame();
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
-		String log = player.getPlayerName()+": choose a Card to get rid of!";
-		ugmsg.setLog(log);
 		
-		message = game.sendToOpponent(player, ugmsg);
+		ugmsg.setLog(player.getPlayerName()+": choose a Card to get rid of!");
 		
-		return message;
+		ugmsg.setActions(player.getActions());
+		ugmsg.setActions(player.getBuys());
+		ugmsg.setActions(player.getCoins());
+		
+		game.sendToOpponent(player, ugmsg);
+		
+		return ugmsg;
 
+		
 		
 		
 		// karte entsorgen + neue aufnehmen die bis zu 2 mehr kostet als entsorgte
