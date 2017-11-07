@@ -24,6 +24,7 @@ public class Workshop_Card extends Card {
 	@Override
 	public void executeCard(Player player){
 		player.setActions(player.getActions() - 1);
+		player.handCards.add()
 		// Karte aufnehmen mit Wert <= 4
 	}
 	

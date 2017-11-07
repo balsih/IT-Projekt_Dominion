@@ -23,7 +23,7 @@ public class Smithy_Card extends Card {
 	@Override
 	public void executeCard(Player player){
 		player.setActions(player.getActions() - 1);
-		// 3 Karen aufnehmen 
+		player.draw(3); // draw 3 cards
 	}
 	
 }//end Smithy_Card

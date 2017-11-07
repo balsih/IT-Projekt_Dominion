@@ -3,7 +3,7 @@ package Client_Services;
 import java.util.Properties;
 
 /**
- * @author Renate
+ * @author René
  * @version 1.0
  * @created 31-Okt-2017 17:03:20
  */
@@ -15,7 +15,7 @@ public class Configuration {
 
 
 	public Configuration(){
-
+		localOptions = new Properties(defaultOptions);
 	}
 
 	/**
@@ -23,7 +23,7 @@ public class Configuration {
 	 * @param name
 	 */
 	public String getOption(String name){
-		return "";
+		return localOptions.getProperty(name);
 	}
 
 	public void save(){
@@ -36,6 +36,6 @@ public class Configuration {
 	 * @param value
 	 */
 	public void setLocalOption(String name, String value){
-
+		localOptions.setProperty(name, value);
 	}
 }//end Configuration

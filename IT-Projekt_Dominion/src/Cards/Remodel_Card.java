@@ -1,5 +1,8 @@
 package Cards;
 
+import Messages.Message;
+import Messages.UpdateGame_Message;
+import Server_GameLogic.Game;
 import Server_GameLogic.Player;
 
 /**
@@ -23,7 +26,36 @@ public class Remodel_Card extends Card {
 	@Override
 	public void executeCard(Player player){
 		player.setActions(player.getActions() - 1);
+		Game game = player.getGame();
+		UpdateGame_Message ugmsg = new UpdateGame_Message();
+		String log = player.getPlayerName()+": choose a Card to get rid of!";
+		ugmsg.setLog(log);
 		// karte entsorgen + neue aufnehmen die bis zu 2 mehr kostet als entsorgte
 	}
+	
+	//public Message executeCard(Player player){
+		Message message = new Message("w");
+		player.setActions(player.getActions() - 1);
+		Game game = player.getGame();
+		UpdateGame_Message ugmsg = new UpdateGame_Message();
+		String log = player.getPlayerName()+": choose a Card to get rid of!";
+		ugmsg.setLog(log);
+		// karte entsorgen + neue aufnehmen die bis zu 2 mehr kostet als entsorgte
+		
+		if ()
+			
+		// Commit(Server -> Client): oder Failure(Server -> Client):
+
+		
+		return message;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }//end Remodel_Card
