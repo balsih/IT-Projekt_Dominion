@@ -90,14 +90,6 @@ public class DB_Connector {
 	 * 
 	 * @param name
 	 */
-	public boolean checkNameHighlander(String name) {
-		return false;
-	}
-
-	/**
-	 * 
-	 * @param name
-	 */
 	// deletes Player
 	public void deletePlayer(String username) {
 		String deletePlayer = "Delete from Player where Username = ?";
