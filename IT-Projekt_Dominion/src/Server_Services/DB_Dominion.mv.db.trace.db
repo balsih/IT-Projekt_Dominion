@@ -18,3 +18,6 @@ Insert ignore into Scoring (Score) values (?) [42001-195]
 org.h2.jdbc.JdbcSQLException: Syntax Fehler in SQL Befehl "INSERT IF[*] NOT EXISTS IGNORE INTO SCORING (SCORE) VALUES (?) "; erwartet "INTO"
 Syntax error in SQL statement "INSERT IF[*] NOT EXISTS IGNORE INTO SCORING (SCORE) VALUES (?) "; expected "INTO"; SQL statement:
 Insert if not exists ignore into Scoring (Score) values (?) [42001-195]
+2017-11-08 16:43:07 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Keine Daten verfügbar
+No data is available [2000-195]

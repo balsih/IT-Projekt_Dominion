@@ -38,7 +38,7 @@ public class DB_Connector {
 	public boolean addNewPlayer(String username, String password) {
 		try {
 			String existingUser = "";
-			
+
 			String selectUsername = "select * from Player";
 			this.stmt = connection.createStatement();
 			this.rs = stmt.executeQuery(selectUsername);
@@ -60,7 +60,7 @@ public class DB_Connector {
 		} catch (SQLException e) {
 			return false;
 		}
-		
+
 		return false;
 	}
 
@@ -179,7 +179,7 @@ public class DB_Connector {
 		}
 	}
 
-	// PROBLEM: DUPLIKATE = EXCEPTION
+	// PROBLEM: DUPLICATES = EXCEPTION
 	private void fillScoring() {
 		try {
 			int numOfScorePoints = 30;
@@ -198,11 +198,29 @@ public class DB_Connector {
 		}
 
 	}
-	
-	public boolean checkLoginInput(String username, String password){
-		
-		
-		return false;
+
+	//Returns true, if Login is correct/exists. Else returns false.
+	public boolean checkLoginInput(String username, String password) {
+		try {
+			String checkLogin = "Select * from Player where username = (?)" + "and password = (?)";
+
+			String result = "";
+
+			this.prepStmt = connection.prepareStatement(checkLogin);
+			this.prepStmt.setString(1, username);
+			this.prepStmt.setString(2, password);
+			this.rs = prepStmt.executeQuery();
+
+			while (rs.next())
+				result = this.rs.getString("Username") + this.rs.getString("Password");
+
+			if (result.equals(username + password))
+				return true;
+			else
+				return false;
+		} catch (SQLException e) {
+			return false;
+		}
 	}
 
 	// selects the player relation and prints it out
@@ -228,7 +246,7 @@ public class DB_Connector {
 	// Test
 	public static void main(String[] args) {
 		DB_Connector connector = new DB_Connector();
-		System.out.println(connector.getHighScore());
-
+		connector.selectPlayer();
+		System.out.println(connector.checkLoginInput("Bodo", "abc"));
 	}
 }// end DB_Connector
