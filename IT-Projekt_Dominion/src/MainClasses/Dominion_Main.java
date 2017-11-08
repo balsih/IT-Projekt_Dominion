@@ -1,5 +1,8 @@
 package MainClasses;
 
+import Abstract_MVC.Controller;
+import Abstract_MVC.Model;
+import Abstract_MVC.View;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -20,12 +23,13 @@ public class Dominion_Main extends Application {
 	 * @param args
 	 */
 	public static void main(String[] args){
+		launch(args);
 		
 	}
 
 	@Override
 	public void start(Stage stage) throws Exception{
-
+		
 	}
 
 	public void startCreateNewPlayer(){
