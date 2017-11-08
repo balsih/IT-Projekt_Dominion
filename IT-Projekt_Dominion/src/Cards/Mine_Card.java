@@ -1,5 +1,7 @@
 package Cards;
 
+import Messages.UpdateGame_Message;
+import Server_GameLogic.Game;
 import Server_GameLogic.Player;
 
 /**
@@ -11,7 +13,7 @@ public class Mine_Card extends Card {
 
 
 	public Mine_Card(){
-		this.cardName = "Mine";
+		this.cardName = "Mine_Card";
 		this.cost = 5;
 		this.type = "action";
 	}
@@ -21,11 +23,27 @@ public class Mine_Card extends Card {
 	 * @param player
 	 */
 	@Override
-	public void executeCard(Player player){
+	public UpdateGame_Message executeCard(Player player){
 		player.setActions(player.getActions() - 1);
 		player.setCoins(player.getCoins() ); //?
+		
+		
 		// eine geldkarte entsorgen und eine andere aufnehmen in die hand
-
+		
+		
+		// noch fehlender Code bzw. Funktionalität 
+		
+		Game game = player.getGame();
+		UpdateGame_Message ugmsg = new UpdateGame_Message();
+				
+		ugmsg.setLog(player.getPlayerName()+": played Mine card");
+		game.sendToOpponent(player, ugmsg); // info for opponent
+				
+		// update game Messages -> XML 
+		ugmsg.setActions(player.getActions());
+		ugmsg.setBuys(player.getBuys());
+		ugmsg.setCoins(player.getCoins());
+				
+		return ugmsg;
 	}
-	
 }//end Mine_Card

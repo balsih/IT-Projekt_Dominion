@@ -13,7 +13,7 @@ public class Estate_Card extends Victory_Card {
 
 
 	public Estate_Card(){
-		this.cardName = "Estade";
+		this.cardName = "Estade_Card";
 		this.cost = 2;
 		this.type = "victory";
 		this.victoryPoints = 1;
@@ -32,9 +32,6 @@ public class Estate_Card extends Victory_Card {
 		
 		ugmsg.setLog(player.getPlayerName()+": played Estade card");
 		game.sendToOpponent(player, ugmsg); // info for opponent
-		
-		// update game Messages -> XML 
-		//ugmsg.set
 		
 		return ugmsg;
 	}
