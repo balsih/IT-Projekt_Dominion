@@ -35,7 +35,7 @@ public abstract class Card {
 	
 
 	public String getCardName(){
-		return "";
+		return this.cardName;
 	}
 
 	public int getCost(){
@@ -64,7 +64,8 @@ public abstract class Card {
 			card.setImage(Gallery.getImage(t.getString(cardName)));
 			break;
 		case "Silver_Card":
-			card = getSilverCard();
+			card = new Copper_Card();
+			card.setImage(Gallery.getImage(t.getString(cardName)));
 			break;
 		case "Gold_Card":
 			card = getGoldCard();

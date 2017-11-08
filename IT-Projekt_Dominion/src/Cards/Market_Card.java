@@ -13,7 +13,7 @@ public class Market_Card extends Card {
 
 
 	public Market_Card(){
-		this.cardName = "Market";
+		this.cardName = "Market_Card";
 		this.cost = 5;
 		this.type = "action";
 	}
@@ -33,7 +33,9 @@ public class Market_Card extends Card {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
 		ugmsg.setLog(player.getPlayerName()+": played Market card");
+		game.sendToOpponent(player, ugmsg); // info for opponent
 		
+		// update game Messages -> XML 
 		ugmsg.setActions(player.getActions());
 		ugmsg.setBuys(player.getBuys());
 		ugmsg.setCoins(player.getCoins());

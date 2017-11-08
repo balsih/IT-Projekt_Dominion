@@ -1,5 +1,6 @@
 package Cards;
 
+import Messages.UpdateGame_Message;
 import Server_GameLogic.Player;
 
 /**
@@ -11,7 +12,7 @@ public class Copper_Card extends Treasure_Card {
 
 
 	public Copper_Card(){
-		this.cardName = "Copper";
+		this.cardName = "Copper_Card";
 		this.cost = 0;
 		this.type = "treasure";
 		this.coinValue = 1;
@@ -22,8 +23,8 @@ public class Copper_Card extends Treasure_Card {
 	 * @param player
 	 */
 	@Override
-	public void executeCard(Player player){
-		player.setCoins(player.getCoins() + coinValue);
+	public UpdateGame_Message executeCard(Player player){
+		player.setCoins(player.getCoins() + coinValue); // increment coin value
 
 	}
 }//end Bronce_Card
