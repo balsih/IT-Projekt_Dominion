@@ -6,7 +6,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import Abstract_MVC.Model;
+import Client_Services.Configuration;
+import Client_Services.Gallery;
 import Client_Services.ServiceLocator;
+import Client_Services.Translator;
 import javafx.concurrent.Task;
 
 /**
@@ -16,7 +19,7 @@ import javafx.concurrent.Task;
  */
 public class Splash_Model extends Model {
 
-	private ServiceLocator sl = ServiceLocator.getServiceLocator();
+	private ServiceLocator sl;
 
 
 	public Splash_Model(){
@@ -25,29 +28,47 @@ public class Splash_Model extends Model {
 	
 	
 	final Task<Void> initializer = new Task<Void>() {
-        @Override
+        
+		@Override
         protected Void call() throws Exception {
+			this.updateProgress(1, 5); // step one of total 4 
+			
+			//Thread.sleep(500);
+			
+        	sl = ServiceLocator.getServiceLocator();
+        	this.updateProgress(2, 5); // step two of total 4 
+        	
+        	sl.setConfiguration(new Configuration());
+        	this.updateProgress(3, 5); // step two of total 4 
+        	
+        	String language = sl.getConfiguration().getOption("Language");
+        	sl.setTranslator(new Translator(language));
+        	this.updateProgress(4, 5); // step three of total 4
+        	
+        	sl.setGallery(new Gallery(language));
+        	this.updateProgress(5, 5); // step four of total 4
+        	
 
-            // First, take some time, update progress
-            Integer i = 0;
-            for (; i < 1000000000; i++) {
-                if ((i % 1000000) == 0)
-                    this.updateProgress(i, 1000000000);
-            }
-
-            // Create the service locator to hold our resources
-            sl = ServiceLocator.getServiceLocator();
-
-            // Initialize the resources in the service locator
-           // sl.setLogger(configureLogging());
-
-            // ... more resources would go here...
+//            // First, take some time, update progress
+//            Integer i = 0;
+//            for (; i < 1000000000; i++) {
+//                if ((i % 1000000) == 0)
+//                    this.updateProgress(i, 1000000000);
+//            }
+//
+//            // Create the service locator to hold our resources
+//            sl = ServiceLocator.getServiceLocator();
+//
+//            // Initialize the resources in the service locator
+//           // sl.setLogger(configureLogging());
+//
+//            // ... more resources would go here...
 
             return null;
         }
     };
 	
-    private Logger configureLogging() {
+    /*private Logger configureLogging() {
         Logger rootLogger = Logger.getLogger("");
         rootLogger.setLevel(Level.FINEST);
 
@@ -72,7 +93,7 @@ public class Splash_Model extends Model {
         }
 
         return ourLogger;
-    }
+    }*/
     
     
     
@@ -80,6 +101,6 @@ public class Splash_Model extends Model {
 	
 
 	public void initialize(){
-
+		new Thread(initializer).start();
 	}
 }//end Splash_Model

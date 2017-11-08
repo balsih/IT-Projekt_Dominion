@@ -45,8 +45,8 @@ public class Splash_View extends View<Splash_Model> {
         root.setBottom(bottomBox);
 
         Scene scene = new Scene(root, 300, 300, Color.TRANSPARENT);
-        scene.getStylesheets().addAll(
-                this.getClass().getResource("splash.css").toExternalForm());
+        //scene.getStylesheets().addAll(
+                //this.getClass().getResource("splash.css").toExternalForm());
 
         return scene;
 	}
