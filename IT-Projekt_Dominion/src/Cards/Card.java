@@ -64,11 +64,12 @@ public abstract class Card {
 			card.setImage(Gallery.getImage(t.getString(cardName)));
 			break;
 		case "Silver_Card":
-			card = new Copper_Card();
+			card = new Silver_Card();
 			card.setImage(Gallery.getImage(t.getString(cardName)));
 			break;
 		case "Gold_Card":
-			card = getGoldCard();
+			card = new Gold_Card();
+			card.setImage(Gallery.getImage(t.getString(cardName)));
 			break;
 		default:
 			System.out.println(" no cards available");

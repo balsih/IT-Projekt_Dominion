@@ -15,7 +15,7 @@ public class Translator {
 	private ResourceBundle resourceBundle;
 	private ServiceLocator sl = ServiceLocator.getServiceLocator();
 
-//	public Translator(){  wird dieser benötigt??
+//	public Translator(){  wird Konstruktor ohne Parameter benötigt??
 //
 //	}
 

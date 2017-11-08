@@ -31,34 +31,23 @@ public class Splash_Model extends Model {
         
 		@Override
         protected Void call() throws Exception {
-			this.updateProgress(1, 5); // step one of total 4 
+			this.updateProgress(1, 5); // step 1 of total 5 
 			
 			//Thread.sleep(500);
 			
         	sl = ServiceLocator.getServiceLocator();
-        	this.updateProgress(2, 5); // step two of total 4 
+        	this.updateProgress(2, 5); // step 2 of total 5
         	
         	sl.setConfiguration(new Configuration());
-        	this.updateProgress(3, 5); // step two of total 4 
+        	this.updateProgress(3, 5); // step 3 of total 5 
         	
         	String language = sl.getConfiguration().getOption("Language");
         	sl.setTranslator(new Translator(language));
-        	this.updateProgress(4, 5); // step three of total 4
+        	this.updateProgress(4, 5); // step 4 of total 5
         	
         	sl.setGallery(new Gallery(language));
-        	this.updateProgress(5, 5); // step four of total 4
-        	
+        	this.updateProgress(5, 5); // step 5 of total 5
 
-//            // First, take some time, update progress
-//            Integer i = 0;
-//            for (; i < 1000000000; i++) {
-//                if ((i % 1000000) == 0)
-//                    this.updateProgress(i, 1000000000);
-//            }
-//
-//            // Create the service locator to hold our resources
-//            sl = ServiceLocator.getServiceLocator();
-//
 //            // Initialize the resources in the service locator
 //           // sl.setLogger(configureLogging());
 //
