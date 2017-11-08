@@ -120,6 +120,12 @@ public abstract class Card {
 		}
 		return card;
 	}
+
+	
+	public String toString() {
+		return this.cardName;
+	}
+	
 	
 	
 	

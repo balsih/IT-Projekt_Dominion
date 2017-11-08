@@ -41,6 +41,7 @@ public class Dominion_Main extends Application {
 	}
 
 	public void startCreateNewPlayer(){
+		this.startCreateNewPlayer();
 
 	}
 
