@@ -1,9 +1,13 @@
 package Client_Splash_MVC;
 
+import java.net.URISyntaxException;
+
 import Abstract_MVC.View;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -19,6 +23,8 @@ public class Splash_View extends View<Splash_Model> {
 
 	protected ProgressBar progress;
 	private Label lblStatus;
+	
+	private ImageView imageView;
 
 	/**
 	 * 
@@ -35,8 +41,15 @@ public class Splash_View extends View<Splash_Model> {
 		BorderPane root = new BorderPane();
         root.setId("splash");
 
-        lblStatus = new Label("Woof");
+        lblStatus = new Label("Loading please wait...");
         root.setCenter(lblStatus);
+        
+        try {
+			Image img = new Image(getClass().getResource("/resources/image.jpg").toURI().toString());
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         
         progress = new ProgressBar();
         HBox bottomBox = new HBox();

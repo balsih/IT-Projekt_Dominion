@@ -49,6 +49,8 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		password = new Label();
 		vBox = new VBox();
 		
+		root.setPrefSize(250,300);
+	
 		// dummy mässig, muss über Translator gesetzt werden
 		createNewPlayer.setText("Neuer Spieler erstellen");
 		name.setText("Name:");
@@ -58,7 +60,9 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		
 		root.setBottom(save);
 		root.setCenter(vBox);
-		vBox.getChildren().addAll(createNewPlayer, name, name_text, password, password_text);
+		root.setTop(createNewPlayer);
+		vBox.getChildren().addAll(name, name_text, password, password_text);
+		//vBox.getChildren().addAll(createNewPlayer, name, name_text, password, password_text);
 		
 		// Fill borderpane
 		
