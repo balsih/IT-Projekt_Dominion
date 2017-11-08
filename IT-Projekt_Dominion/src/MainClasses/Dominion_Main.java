@@ -1,5 +1,8 @@
 package MainClasses;
 
+import Client_CreatePlayer_VC.CreatePlayer_Controller;
+import Client_CreatePlayer_VC.CreatePlayer_View;
+import Client_GameApp_MVC.GameApp_Model;
 import Client_Services.ServiceLocator;
 import Client_Services.Translator;
 import Client_Splash_MVC.Splash_Controller;
@@ -37,12 +40,15 @@ public class Dominion_Main extends Application {
 		Splash_Controller splashController = new Splash_Controller(this, splashModel, splashView);
 		splashView.start();
 		splashModel.initialize();
-
+		this.startCreateNewPlayer(); // zur Kontrolle nicht in Reihenfolge gestartet 
+		// noch anpassen, im Moment startet create new Player zeitgleich mit Splash
 	}
 
 	public void startCreateNewPlayer(){
-		this.startCreateNewPlayer();
-
+		GameApp_Model model = new GameApp_Model();
+		CreatePlayer_View view = new CreatePlayer_View(new Stage(), model);
+		CreatePlayer_Controller controller = new CreatePlayer_Controller(this, model, view);
+		view.start();
 	}
 
 	public void startGameApp(){
