@@ -74,26 +74,21 @@ public class UpdateGame_Message extends Message {
 		this.stringElementContents = new LinkedList<String>();
 		this.stringElementNames.addAll(Arrays.asList(ELEMENT_CARDBUYED, ELEMENT_CURRENTPHASE,ELEMENT_CURRENTPLAYER, 
 	    	ELEMENT_LOG, ELEMENT_CHAT, ELEMENT_DISCARDPILE, ELEMENT_DECKPILE));
-		this.stringElementContents.addAll(Arrays.asList(this.cardBuyed, this.currentPhase, this.currentPlayer, 
-				this.log, this.chat,this.discardPile, null));
 		
 		//Top-Level Integer Elements
 		this.intElementNames = new LinkedList<String>();
 		this.intElementContents = new LinkedList<Integer>();
 		this.intElementNames.addAll(Arrays.asList(ELEMENT_ACTIONS, ELEMENT_COINS, ELEMENT_BUYS));
-		this.intElementContents.addAll(Arrays.asList(this.actions, this.coins, this.buys));
 		
 		//This Elements will be filled in the appropriate setterMethods. The size depends on how many Cards are in use
 		this.handCardElementNames = new LinkedList<String>();
 		this.playedCardElementNames = new LinkedList<String>();
 		
 		//Link the Elements with the Attributes
+		this.attrValues = new HashMap<String, Integer>();
 		this.attrElements = new HashMap<String, String>();
 		this.attrElements.put(ELEMENT_DECKPILE, ATTR_DECKPILECARDNUMBER);
 		this.attrElements.put(ELEMENT_DISCARDPILE, ATTR_DISCARDPILECARDNUMBER);
-		this.attrValues = new HashMap<String, Integer>();
-		this.attrValues.put(ATTR_DECKPILECARDNUMBER, this.deckPileCardNumber);
-		this.attrValues.put(ATTR_DISCARDPILECARDNUMBER, this.discardPileCardNumber);
 		}
 
 	/**
@@ -103,6 +98,13 @@ public class UpdateGame_Message extends Message {
 	@Override
 	protected void addNodes(Document docIn){
         Element root = docIn.getDocumentElement();
+        
+        //stores the content of the variables into the appropriate structure
+		this.stringElementContents.addAll(Arrays.asList(this.cardBuyed, this.currentPhase, this.currentPlayer, 
+				this.log, this.chat,this.discardPile, null));
+		this.intElementContents.addAll(Arrays.asList(this.actions, this.coins, this.buys));
+		this.attrValues.put(ATTR_DECKPILECARDNUMBER, this.deckPileCardNumber);
+		this.attrValues.put(ATTR_DISCARDPILECARDNUMBER, this.discardPileCardNumber);
         
         //adds the Top-Level Elements to XML
         this.addContentElements(docIn, root, this.stringElementNames, this.stringElementContents);
@@ -120,12 +122,13 @@ public class UpdateGame_Message extends Message {
 	}
 	
 	/**
-	 * Helps the addNodes method to add Elements in the given root
+	 * Helps the addNodes method to add elements in the given root
+	 * If an element intends to have an attribute, it will be set
 	 * 
 	 * The elementNames and elementContents have to be suitable to each other (correct number and order)
 	 * 
-	 * @param docIn, to create further Elements
-	 * @param root, the current root to add Elements
+	 * @param docIn, to create further elements
+	 * @param root, the current root to add elements
 	 * @param elementNames, list of Element names, dependence on elementContents
 	 * @param elementContents, generic list of the content, dependence on elementNames
 	 */
@@ -134,7 +137,7 @@ public class UpdateGame_Message extends Message {
         	Element element = docIn.createElement(elementNames.get(i));
         	if(this.attrElements.containsKey(elementNames.get(i))){//if an element contains an attribute, it will be set
         		element.setAttribute
-        		(this.attrElements.get(elementNames.get(i)), this.attrValues.get(this.attrElements.get(elementNames.get(i))).toString());
+       		(this.attrElements.get(elementNames.get(i)), this.attrValues.get(this.attrElements.get(elementNames.get(i))).toString());
         	}
         	if(elementContents.get(i) != null && elementContents.get(i).toString().length() > 0)//if content has changed, it will be set
         		element.setTextContent(elementContents.get(i).toString());
