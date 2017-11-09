@@ -109,10 +109,8 @@ public class DB_Connector {
 			return username + ": " + highScore;
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return "";
 		}
-		return "";
 	}
 
 	// Singleton
