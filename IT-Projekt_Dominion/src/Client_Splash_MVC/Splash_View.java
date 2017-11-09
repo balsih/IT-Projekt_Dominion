@@ -38,29 +38,30 @@ public class Splash_View extends View<Splash_Model> {
 
 	@Override
 	protected Scene create_GUI(){
+
 		BorderPane root = new BorderPane();
         root.setId("splash");
-
+        
         lblStatus = new Label("Loading please wait...");
         root.setCenter(lblStatus);
         
-        try {
-			Image img = new Image(getClass().getResource("/resources/image.jpg").toURI().toString());
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		//Image image = new Image(getClass().getResource("waiting.gif").toURI().toString());
+		//imageView = new ImageView(image);
         
+        //root.setBottom(imageView);
         progress = new ProgressBar();
         HBox bottomBox = new HBox();
         bottomBox.setId("progressbox");
         bottomBox.getChildren().add(progress);
         root.setBottom(bottomBox);
-
+        
         Scene scene = new Scene(root, 300, 300, Color.TRANSPARENT);
         //scene.getStylesheets().addAll(
-                //this.getClass().getResource("splash.css").toExternalForm());
-
+       
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+	    //this.getClass().getResource("splash.css").toExternalForm());
+		
         return scene;
 	}
 }//end Splash_View
