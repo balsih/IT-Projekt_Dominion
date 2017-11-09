@@ -8,6 +8,7 @@ import java.util.Stack;
 
 import Cards.Card;
 import Cards.Copper_Card;
+import Messages.UpdateGame_Message;
 
 /**
  * @author Bodo
@@ -21,21 +22,25 @@ public class Player {
 	protected int coins;
 	protected Stack<Card> deckPile;
 	protected Stack<Card> discardPile;
-	protected Game gameThread;
+	protected Game game;
 	protected LinkedList<Card> handCards;
 	protected LinkedList<Card> playedCards;
 	protected String playerName;
 	protected int victoryPoints;
 
-	private final int NUM_OF_HANDCARDS = 5;
+	protected final int NUM_OF_HANDCARDS = 5;
 
 	protected Socket clientSocket;
 
-	private boolean isFinished;
+	protected boolean isFinished;
 
-	private String actualPhase;
+	protected String actualPhase;
 
-	private static int counter;
+	protected static int counter;
+	
+	protected String log;
+	
+	private ServerThreadForClient serverThreadForClient;
 
 	/**
 	 * 
@@ -55,15 +60,20 @@ public class Player {
 		this.isFinished = false;
 
 		this.actualPhase = "";
+		
+		this.log = "";
+		
+		this.setServerThreadForClient(ServerThreadForClient.getServerThreadForClient(clientSocket));
 	}
 
 	/**
 	 * 
 	 * @param gameThread
 	 */
-	public void addGameThread(Game gameThread) {
-		this.gameThread = gameThread;
+	public void addGame(Game game) {
+		this.game = game;
 	}
+	
 
 	/**
 	 * buys a card and lays the buyed card into the discard pile
@@ -74,64 +84,71 @@ public class Player {
 
 		switch (cardName) {
 		case "Copper_Card":
-			buyedCard = this.gameThread.getCopperPile().pop();
+			buyedCard = this.game.getCopperPile().pop();
 			this.discardPile.push(buyedCard);
 			break;
 		case "Cellar_Card":
-			buyedCard = this.gameThread.getCellarPile().pop();
+			buyedCard = this.game.getCellarPile().pop();
 			this.discardPile.push(buyedCard);
 			break;
 		case "Duchy_Card":
-			buyedCard = this.gameThread.getDuchyPile().pop();
+			buyedCard = this.game.getDuchyPile().pop();
 			this.discardPile.push(buyedCard);
 			break;
 		case "Estate_Card":
-			buyedCard = this.gameThread.getEstatePile().pop();
+			buyedCard = this.game.getEstatePile().pop();
 			this.discardPile.push(buyedCard);
 			break;
 		case "Gold_Card":
-			buyedCard = this.gameThread.getGoldPile().pop();
+			buyedCard = this.game.getGoldPile().pop();
 			this.discardPile.push(buyedCard);
 			break;
 		case "Market_Card":
-			buyedCard = this.gameThread.getMarketPile().pop();
+			buyedCard = this.game.getMarketPile().pop();
 			this.discardPile.push(buyedCard);
 			break;
 		case "Mine_Card":
-			buyedCard = this.gameThread.getMinePile().pop();
+			buyedCard = this.game.getMinePile().pop();
 			this.discardPile.push(buyedCard);
 			break;
 		case "Province_Card":
-			buyedCard = this.gameThread.getProvincePile().pop();
+			buyedCard = this.game.getProvincePile().pop();
 			this.discardPile.push(buyedCard);
 			break;
 		case "Remodel_Card":
-			buyedCard = this.gameThread.getRemodelPile().pop();
+			buyedCard = this.game.getRemodelPile().pop();
 			this.discardPile.push(buyedCard);
 			break;
 		case "Silver_Card":
-			buyedCard = this.gameThread.getSilverPile().pop();
+			buyedCard = this.game.getSilverPile().pop();
 			this.discardPile.push(buyedCard);
 			break;
 		case "Smithy_Card":
-			buyedCard = this.gameThread.getSmithyPile().pop();
+			buyedCard = this.game.getSmithyPile().pop();
 			this.discardPile.push(buyedCard);
 			break;
 		case "Village_Card":
-			buyedCard = this.gameThread.getVillagePile().pop();
+			buyedCard = this.game.getVillagePile().pop();
 			this.discardPile.push(buyedCard);
 			break;
 		case "Woodcutter_Card":
-			buyedCard = this.gameThread.getWoodcutterPile().pop();
+			buyedCard = this.game.getWoodcutterPile().pop();
 			this.discardPile.push(buyedCard);
 			break;
 		case "Workshop_Card":
-			buyedCard = this.gameThread.getWorkshopPile().pop();
+			buyedCard = this.game.getWorkshopPile().pop();
 			this.discardPile.push(buyedCard);
 			break;
 		}
 
 		return buyedCard;
+	}
+	
+	//checks if the card could been buyed
+	public boolean buyed(){
+		
+		
+		return false;
 	}
 
 	public void cleanUp() {
@@ -149,7 +166,7 @@ public class Player {
 
 		this.setFinished(true);
 
-		gameThread.checkGameEnding();
+		game.checkGameEnding();
 
 	}
 
@@ -250,97 +267,100 @@ public class Player {
 	 * plays the selected card and execute this card
 	 *
 	 */
-	public void play(String cardName) {
+	public UpdateGame_Message play(String cardName, int index) {
 		Card playedCard = null;
-		int index = 0;
 		this.actualPhase = "play";
+		UpdateGame_Message ugmsg = new UpdateGame_Message();
 
 		switch (cardName) {
 		case "Copper_Card":
-			index = this.handCards.indexOf(cardName);
+//			index = this.handCards.indexOf(cardName);
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
 		case "Cellar_Card":
-			index = this.handCards.indexOf(cardName);
+//			index = this.handCards.indexOf(cardName);
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
 		case "Duchy_Card":
-			index = this.handCards.indexOf(cardName);
+//			index = this.handCards.indexOf(cardName);
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
 		case "Estate_Card":
-			index = this.handCards.indexOf(cardName);
+//			index = this.handCards.indexOf(cardName);
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
 		case "Gold_Card":
-			index = this.handCards.indexOf(cardName);
+//			index = this.handCards.indexOf(cardName);
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
 		case "Market_Card":
-			index = this.handCards.indexOf(cardName);
+//			index = this.handCards.indexOf(cardName);
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
 		case "Mine_Card":
-			index = this.handCards.indexOf(cardName);
+//			index = this.handCards.indexOf(cardName);
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
 		case "Province_Card":
-			index = this.handCards.indexOf(cardName);
+//			index = this.handCards.indexOf(cardName);
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
 		case "Remodel_Card":
-			index = this.handCards.indexOf(cardName);
+//			index = this.handCards.indexOf(cardName);
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
 		case "Silver_Card":
-			index = this.handCards.indexOf(cardName);
+//			index = this.handCards.indexOf(cardName);
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
 		case "Smithy_Card":
-			index = this.handCards.indexOf(cardName);
+//			index = this.handCards.indexOf(cardName);
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
 		case "Village_Card":
-			index = this.handCards.indexOf(cardName);
+//			index = this.handCards.indexOf(cardName);
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
 		case "Woodcutter_Card":
-			index = this.handCards.indexOf(cardName);
+//			index = this.handCards.indexOf(cardName);
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
 		case "Workshop_Card":
-			index = this.handCards.indexOf(cardName);
+//			index = this.handCards.indexOf(cardName);
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
 		}
+		
+		return ugmsg;
+		
 	}
 
 	/**
@@ -349,11 +369,9 @@ public class Player {
 	public void skipPhase() {
 		switch (this.actualPhase) {
 		case "play":
-			// ?
+			//this.buy(cardName);
 		case "buy":
-			// ?
-		case "cleanUp":
-			// ?
+			this.cleanUp();
 		}
 	}
 
@@ -397,12 +415,12 @@ public class Player {
 		this.handCards = handCards;
 	}
 
-	public Game getGameThread() {
-		return gameThread;
+	public Game getGame() {
+		return game;
 	}
 
-	public void setGameThread(Game gameThread) {
-		this.gameThread = gameThread;
+	public void setGame(Game game) {
+		this.game = game;
 	}
 
 	public Stack<Card> getDiscardPile() {
@@ -451,5 +469,13 @@ public class Player {
 
 	public void setActualPhase(String actualPhase) {
 		this.actualPhase = actualPhase;
+	}
+
+	public ServerThreadForClient getServerThreadForClient() {
+		return serverThreadForClient;
+	}
+
+	public void setServerThreadForClient(ServerThreadForClient serverThreadForClient) {
+		this.serverThreadForClient = serverThreadForClient;
 	}
 }// end Player

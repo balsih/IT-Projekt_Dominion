@@ -1,5 +1,6 @@
 package Client_Services;
 
+import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -13,26 +14,26 @@ public class Configuration {
 	private Properties defaultOptions;
 	private Properties localOptions;
 	private ServiceLocator sl = ServiceLocator.getServiceLocator();
-	private Logger logger = sl.getLogger();
+	// private Logger logger = sl.getLogger();
 
+	public Configuration() {
 
-	public Configuration(){
-		
 		defaultOptions = new Properties();
 		String defaultFilename = sl.getAPP_NAME() + "_defaults.cfg";
 		InputStream inStream = sl.getAPP_CLASS().getResourceAsStream(defaultFilename);
 		try {
-		defaultOptions.load(inStream);
-		logger.config("Default configuration file found");
+			defaultOptions.load(inStream);
+			// logger.config("Default configuration file found");
 		} catch (Exception e) {
-		logger.warning("No default configuration file found: " + defaultFilename);
+			// logger.warning("No default configuration file found: " +
+			// defaultFilename);
+			e.printStackTrace();
 		} finally {
-		try {
-		inStream.close();
-		} catch (Exception ignore) {
+			try {
+				inStream.close();
+			} catch (Exception ignore) {
+			}
 		}
-		}
-		
 		localOptions = new Properties(defaultOptions);
 	}
 
@@ -40,11 +41,11 @@ public class Configuration {
 	 * 
 	 * @param name
 	 */
-	public String getOption(String name){
+	public String getOption(String name) {
 		return localOptions.getProperty(name);
 	}
 
-	public void save(){
+	public void save() {
 
 	}
 
@@ -53,7 +54,7 @@ public class Configuration {
 	 * @param name
 	 * @param value
 	 */
-	public void setLocalOption(String name, String value){
+	public void setLocalOption(String name, String value) {
 		localOptions.setProperty(name, value);
 	}
-}//end Configuration
+}// end Configuration

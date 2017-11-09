@@ -16,7 +16,7 @@ public class Gallery {
 	private ServiceLocator sl = ServiceLocator.getServiceLocator();
 
 
-	public Gallery(){
+	public Gallery(String language){
 
 	}
 

@@ -166,7 +166,7 @@ public class ServerThreadForClient implements Runnable {
 		String password = lmsg.getPassword();
 		
 		DB_Connector dbConnector = this.sl.getDB_Connector();
-		boolean success = dbConnector.checkPlayerInput(clientName, password);
+		boolean success = dbConnector.checkLoginInput(clientName, password);
 		if(success){
 			return new Commit_Message();
 		}else{
@@ -243,7 +243,8 @@ public class ServerThreadForClient implements Runnable {
 
 
 	/**
-	 * 
+	 * The Chat_Message wrote by client has to be sent to opponent.
+	 * The name has to be adapted to the Chat for better reading
 	 * 
 	 * @param msgIn
 	 * @return
@@ -254,7 +255,7 @@ public class ServerThreadForClient implements Runnable {
 		chat = this.player.getPlayerName()+": "+chat+"\n\n";
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		ugmsg.setChat(chat);
-		this.game.sendToOpponent(this, ugmsg);
+		this.game.sendToOpponent(this.player, ugmsg);
 		return ugmsg;
 	}
 

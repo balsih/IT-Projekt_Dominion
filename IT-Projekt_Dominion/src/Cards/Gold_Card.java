@@ -1,5 +1,7 @@
 package Cards;
 
+import Messages.UpdateGame_Message;
+import Server_GameLogic.Game;
 import Server_GameLogic.Player;
 
 /**
@@ -11,7 +13,7 @@ public class Gold_Card extends Treasure_Card {
 
 
 	public Gold_Card(){
-		this.cardName = "Gold";
+		this.cardName = "Gold_Card";
 		this.cost = 6;
 		this.type = "treasure";
 		this.coinValue = 3;
@@ -22,8 +24,19 @@ public class Gold_Card extends Treasure_Card {
 	 * @param player
 	 */
 	@Override
-	public void executeCard(Player player){
-		player.setCoins(player.getCoins() + coinValue);
+	public UpdateGame_Message executeCard(Player player){
+		player.setCoins(player.getCoins() + coinValue); // increment coin value
+		
+		Game game = player.getGame();
+		UpdateGame_Message ugmsg = new UpdateGame_Message();
+		
+		ugmsg.setLog(player.getPlayerName()+": played Gold card");
+		game.sendToOpponent(player, ugmsg); // info for opponent
+		
+		// update game Messages -> XML 
+		ugmsg.setCoins(player.getCoins());
+		
+		return ugmsg;
 	}
 	
 }//end Gold_Card

@@ -5,7 +5,7 @@ import Client_GameApp_MVC.GameApp_Model;
 import MainClasses.Dominion_Main;
 
 /**
- * @author Renate
+ * @author René
  * @version 1.0
  * @created 31-Okt-2017 17:03:44
  */

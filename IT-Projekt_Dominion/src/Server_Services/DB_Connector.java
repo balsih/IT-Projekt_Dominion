@@ -36,31 +36,18 @@ public class DB_Connector {
 	 * @throws SQLException
 	 */
 	public boolean addNewPlayer(String username, String password) {
-		String existingUser = "";
-
 		try {
-			String selectUsername = "select * from Player";
-			this.stmt = connection.createStatement();
-			this.rs = stmt.executeQuery(selectUsername);
+			String insertIntoPlayer = "insert into Player (Username, Password) values (?,?)";
+			this.prepStmt = this.connection.prepareStatement(insertIntoPlayer);
+			this.prepStmt.setString(1, username);
+			this.prepStmt.setString(2, password);
+			this.prepStmt.execute();
 
-			while (this.rs.next()) {
-				existingUser = rs.getString("Username");
-			}
-
-			if (username != existingUser) {
-				String insertIntoPlayer = "insert into Player (Username, Password) values (?,?)";
-				this.prepStmt = this.connection.prepareStatement(insertIntoPlayer);
-				this.prepStmt.setString(1, username);
-				this.prepStmt.setString(2, password);
-				this.prepStmt.execute();
-
-				return true;
-			}
+			return true;
 
 		} catch (SQLException e) {
-			System.out.println("Der Benutzername existiert schon");
+			return false;
 		}
-		return false;
 	}
 
 	/**
@@ -79,19 +66,8 @@ public class DB_Connector {
 
 			return true;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return false;
 		}
-
-		return false;
-	}
-
-	/**
-	 * 
-	 * @param name
-	 */
-	public boolean checkNameHighlander(String name) {
-		return false;
 	}
 
 	/**
@@ -99,15 +75,17 @@ public class DB_Connector {
 	 * @param name
 	 */
 	// deletes Player
-	public void deletePlayer(String username) {
+	public boolean deletePlayer(String username) {
 		String deletePlayer = "Delete from Player where Username = ?";
 
 		try {
 			this.prepStmt = connection.prepareStatement(deletePlayer);
 			this.prepStmt.setString(1, username);
 			this.prepStmt.execute();
+
+			return true;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			return false;
 		}
 
 	}
@@ -115,12 +93,12 @@ public class DB_Connector {
 	// returns playername with highScore
 	public String getHighScore() {
 		String selectHighScore = "Select Username, max(Score) from Player_Scoring group by ?";
-		String username = "username";
+		String username = "";
 		String highScore = "";
 
 		try {
 			this.prepStmt = connection.prepareStatement(selectHighScore);
-			this.prepStmt.setString(1, username);
+			this.prepStmt.setString(1, "Username");
 			this.rs = this.prepStmt.executeQuery();
 
 			while (this.rs.next()) {
@@ -137,13 +115,16 @@ public class DB_Connector {
 		return "";
 	}
 
+	// Singleton
 	public DB_Connector getDB_Connector() {
-		this.connector = new DB_Connector();
+		if (this.connector == null) {
+			this.connector = new DB_Connector();
+		}
 		return this.connector;
 	}
 
 	// creates the db structure
-	private void createDBStructure() {
+	private boolean createDBStructure() {
 		try {
 			String createPlayer = "create table if not exists Player(" + "Username varchar(25) primary key,"
 					+ "Password varchar (25))";
@@ -156,18 +137,17 @@ public class DB_Connector {
 			this.stmt = connection.createStatement();
 			this.stmt.execute(createPlayer);
 			this.stmt.execute(createScoring);
-//			this.fillScoring();
+			this.fillScoring();
 			this.stmt.execute(createPlayer_Scoring);
 
-			System.out.println("created table successfully");
+			return true;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return false;
 		}
 	}
 
 	// creates DB Connection
-	private void createDBConnection() {
+	private boolean createDBConnection() {
 		try {
 			// Load Driver
 			Class.forName("org.h2.Driver");
@@ -180,14 +160,15 @@ public class DB_Connector {
 			String user = "sa";
 			String pw = "";
 			this.connection = DriverManager.getConnection(path, user, pw);
+			
+			return true;
 		} catch (SQLException | ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return false;
 		}
 	}
 
-	//PROBLEM: DUPLIKATE = EXCEPTION
-	private void fillScoring() {
+	// fills table Scoring with the Scorerpoints if not exists
+	private boolean fillScoring() {
 		try {
 			int numOfScorePoints = 30;
 			String insertIntoScoring = "Insert into Scoring (Score) values (?)";
@@ -199,15 +180,43 @@ public class DB_Connector {
 				this.prepStmt.execute();
 			}
 
+			return true;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return false;
 		}
 
 	}
 
-	// selects the player relation and prints it out
-	public void selectPlayer() {
+	// Returns true, if Login is correct/exists. Else returns false.
+	public boolean checkLoginInput(String username, String password) {
+		try {
+			String checkLogin = "Select * from Player where username = (?)" + "and password = (?)";
+
+			String existingUsername = "";
+			String existingPassword = "";
+
+			this.prepStmt = connection.prepareStatement(checkLogin);
+			this.prepStmt.setString(1, username);
+			this.prepStmt.setString(2, password);
+			this.rs = prepStmt.executeQuery();
+
+			while (rs.next()){
+				existingUsername = this.rs.getString("Username");
+				existingPassword = this.rs.getString("Password");
+			}
+
+			if (existingUsername.equals(username) && existingPassword.equals(password))
+				return true;
+			else
+				return false;
+			
+		} catch (SQLException e) {
+			return false;
+		}
+	}
+
+	// HILFSMETHODE ZUM TESTEN!! selects the player relation and prints it out
+	private void selectPlayer() {
 		try {
 			String selectPlayer = "select * from Player";
 
@@ -226,10 +235,12 @@ public class DB_Connector {
 		}
 	}
 
-	// Test
+	// TEST
 	public static void main(String[] args) {
 		DB_Connector connector = new DB_Connector();
-		System.out.println(connector.getHighScore());
-
+		connector.addNewPlayer("Test", "tester");
+		connector.selectPlayer();
+		System.out.println(connector.checkLoginInput("Bodo", "abc"));
+		System.out.println(connector.checkLoginInput("Test", "tester"));
 	}
 }// end DB_Connector
