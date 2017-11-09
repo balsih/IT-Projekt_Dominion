@@ -21,6 +21,7 @@ import Messages.HighScore_Message;
 import Messages.Login_Message;
 import Messages.Message;
 import Messages.MessageType;
+import Messages.PlayCard_Message;
 import Messages.UpdateGame_Message;
 import Server_Services.DB_Connector;
 import Server_Services.ServiceLocator;
@@ -130,6 +131,9 @@ public class ServerThreadForClient implements Runnable {
 		case SkipPhase:
 			msgOut = this.processSkipPhase(msgIn);
 			break;
+		case GiveUp:
+			msgOut = this.processGiveUp(msgIn);
+			break;
 		default:
 			msgOut = new Error_Message();
 		}
@@ -137,7 +141,7 @@ public class ServerThreadForClient implements Runnable {
     	return msgOut;
     }
 
-    /**
+	/**
      * Tells the Game to skip the current Phase of this Player
      * 
      * @param msgIn, SkipPhase_Message
@@ -148,9 +152,24 @@ public class ServerThreadForClient implements Runnable {
 		return null;
 	}
 
+	/**
+	 * Checks if the hands of client and server are equal
+	 * If yes (should be usual), Player "trys" to play card. If not able it will be visible in the ugmsg
+	 * 
+	 * @param msgIn, PlayCard_Message
+	 * @return UpdateGame_Message, content depends if player was able to play the card or Failure_Message
+	 */
 	private Message processPlayCard(Message msgIn) {
-		// TODO Auto-generated method stub
-		return null;
+		PlayCard_Message pcmsg = (PlayCard_Message) msgIn;
+		String cardName = pcmsg.getCard();
+		Integer index = pcmsg.getIndex();
+		if(cardName == this.player.getHandCards().get(index).getCardName()){
+			UpdateGame_Message ugmsg = this.player.play(cardName, index);
+			return ugmsg;
+		}else{//the cards on the client and server are not the same(should not be possible)
+			this.logger.severe(pcmsg.getClient()+"'s handcards aren't equals to the cards in the game");
+			return new Failure_Message();
+		}
 	}
 
 	/**
@@ -158,18 +177,19 @@ public class ServerThreadForClient implements Runnable {
 	 * it has to be the adequate password
 	 * 
 	 * @param msgIn, Login_Message
-	 * @return Commit_Message, content depends on if clientName and password are correct
+	 * @return Commit_Message, content depends on if clientName and password are correct, or Failure_Message
 	 */
 	private Message processLogin(Message msgIn) {
 		Login_Message lmsg = (Login_Message) msgIn;
 		String clientName = lmsg.getClient();
-		String password = lmsg.getPassword();
 		
 		DB_Connector dbConnector = this.sl.getDB_Connector();
-		boolean success = dbConnector.checkLoginInput(clientName, password);
+		boolean success = dbConnector.checkLoginInput(clientName, lmsg.getPassword());
 		if(success){
+			this.logger.severe(clientName+" login succeeded");
 			return new Commit_Message();
 		}else{
+			this.logger.severe(clientName+" login failed");
 			return new Failure_Message();
 		}
 	}
@@ -178,13 +198,14 @@ public class ServerThreadForClient implements Runnable {
 	 * Takes the highscore from the database
 	 * 
 	 * @param msgIn, HighScore_Message
-	 * @return hsmsg, content of the top5 (name, points) in one String
+	 * @return HighScore_Message, content of the top5 (name, points) in one String
 	 */
 	private Message processHighScore(Message msgIn) {
 		DB_Connector dbConnector = this.sl.getDB_Connector();
 		String highScore = dbConnector.getHighScore();
 		HighScore_Message hsmsg = new HighScore_Message();
 		hsmsg.setHighScore(highScore);
+		this.logger.severe("send highscore to "+hsmsg.getClient());
 		return hsmsg;
 	}
 
@@ -203,19 +224,21 @@ public class ServerThreadForClient implements Runnable {
 		//Game will start immediately if singlePlayer or your secondPlayer
 		if(mode == "singleplayer" || mode == "multiplayer"){
 			this.player = new Player(gmmsg.getClient(), this);
-			this.game = Game.getGame(this.clientSocket, gmmsg.getMode(), this.player);
+			this.game = Game.getGame(this.clientSocket, mode, this.player);
 			if(this.game.isReadyToStart()){
 				CreateGame_Message cgmsg = new CreateGame_Message();
 				cgmsg.setBuyCards(this.game.getBuyCards());
 				cgmsg.setHandCards(this.player.getHandCards());
 				cgmsg.setDeckPile(this.player.getDeckPile());
 				cgmsg.setOpponent(this.game.getOpponent().getPlayerName());
+				this.logger.severe(gmmsg.getClient()+" starts a"+mode+" game");
 				return cgmsg;
 			}
+			this.logger.severe(gmmsg.getClient()+"waits for opponent");
 			return new Commit_Message();
 		}else{
 			//if content is somehow invalid
-			logger.severe("invalid GameMode from "+gmmsg.getClient());
+			this.logger.severe("invalid GameMode from "+gmmsg.getClient());
 			return new Failure_Message();
 		}
 	}
@@ -235,8 +258,10 @@ public class ServerThreadForClient implements Runnable {
 		DB_Connector dbConnector = this.sl.getDB_Connector();
 		boolean success = dbConnector.addNewPlayer(clientName, password);
 		if(success){
+			this.logger.severe(clientName+"'s storation succeeded");
 			return new Commit_Message();
 		}else{
+			this.logger.severe(clientName+"'s storation failed");
 			return new Failure_Message();
 		}
 	}
@@ -246,8 +271,8 @@ public class ServerThreadForClient implements Runnable {
 	 * The Chat_Message wrote by client has to be sent to opponent.
 	 * The name has to be adapted to the Chat for better reading
 	 * 
-	 * @param msgIn
-	 * @return
+	 * @param msgIn, Chat_Message
+	 * @return UpdateGame_Message with chatContent
 	 */
 	private Message processChat(Message msgIn) {
 		Chat_Message cmsg = (Chat_Message) msgIn;
@@ -256,6 +281,7 @@ public class ServerThreadForClient implements Runnable {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		ugmsg.setChat(chat);
 		this.game.sendToOpponent(this.player, ugmsg);
+		this.logger.severe(cmsg.getClient()+" has sent chat to"+this.game.getOpponent().getPlayerName()+": "+cmsg.getChat());
 		return ugmsg;
 	}
 
@@ -268,7 +294,7 @@ public class ServerThreadForClient implements Runnable {
 	 * Client wants to know if something has changed in the Game
 	 * 
 	 * @param msgIn, AskForChanges_Message
-	 * @return If something has changed, UpdateGame_Message. If nothing has changed, Commit_Message.
+	 * @return UpdateGame_Message if something has changed. Commit_Message if nothing has changed
 	 */
 	private Message processAskForChanges(Message msgIn) {
 		if(this.waitingMessages.size() > 0){
@@ -276,6 +302,16 @@ public class ServerThreadForClient implements Runnable {
 		}else{
 			return new Commit_Message();
 		}
+	}
+	
+	/**
+	 * 
+	 * @param msgIn
+	 * @return
+	 */
+    private Message processGiveUp(Message msgIn) {
+		
+		return null;
 	}
 
 	/**

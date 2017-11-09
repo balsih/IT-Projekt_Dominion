@@ -20,7 +20,8 @@ public enum MessageType {
 	UpdateGame,
 	Commit,
 	Failure,
-	Error;
+	Error,
+	GiveUp;
 
 	/**
 	 * Converts a String into enum MessageType if it exists
@@ -59,6 +60,7 @@ public enum MessageType {
     	else if (msg instanceof UpdateGame_Message) type = MessageType.UpdateGame;
     	else if (msg instanceof Commit_Message) type = MessageType.Commit;
     	else if (msg instanceof Failure_Message) type = MessageType.Failure;
+    	else if (msg instanceof GiveUp_Message) type = MessageType.GiveUp;
     	return type;
     }	
 }
