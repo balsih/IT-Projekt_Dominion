@@ -202,7 +202,7 @@ public class ServerThreadForClient implements Runnable {
 		//get a new Game and add player and Bot (if singlePlayer) to the game, 
 		//Game will start immediately if singlePlayer or your secondPlayer
 		if(mode == "singleplayer" || mode == "multiplayer"){
-			this.player = new Player(gmmsg.getClient());
+			this.player = new Player(gmmsg.getClient(), this);
 			this.game = Game.getGame(this.clientSocket, gmmsg.getMode(), this.player);
 			if(this.game.isReadyToStart()){
 				CreateGame_Message cgmsg = new CreateGame_Message();
