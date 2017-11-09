@@ -83,7 +83,7 @@ public class Bot extends Player {
 			if (actioncardlist.contains("Village_Card")) {
 				index = this.handCards.indexOf(Village_Card);
 				playedCard = this.handCards.remove(index);
-				playedCard.executeCard(this); jjj
+				playedCard.executeCard(this);
 				playedCards.add(playedCard);
 
 				actions--;
