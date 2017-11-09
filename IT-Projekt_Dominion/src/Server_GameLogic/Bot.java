@@ -1,13 +1,13 @@
 package Server_GameLogic;
 
 import java.util.ArrayList;
-
 import Cards.Card;
 
 /**
  * @author Simon
- * @version 1.0
+ * @version 2.0
  * @created 31-Okt-2017 17:08:40
+ * @lastEdited 09-Nov-2017 20:00:00
  */
 public class Bot extends Player {
 
@@ -58,9 +58,7 @@ public class Bot extends Player {
 						buyActionCards();
 					} else {
 						buyMixedCards();
-
 					}
-
 				}
 			}
 			numturns++;
@@ -78,16 +76,58 @@ public class Bot extends Player {
 	// helper methods
 	private void playActionCards() {
 		while (actions >= 1) {
+			String stringCase = null;
+			if (actioncardlist.contains("Village_Card")) {
+				stringCase = "Village_Card";
+			} else {
+				if (actioncardlist.contains("Smithy_Card")) {
+					stringCase = "Smithy_Card";
+				} else {
+					if (actioncardlist.contains("Workshop_Card")) {
+						stringCase = "Workshop";
+					} else {
+						if (actioncardlist.contains("Cellar_Card")) {
+							stringCase = "Cellar_Card";
+						}
+					}
+				}
+			} // oder execute(stringCase) --> René fragen
 			Card playedCard = null;
 			int index;
-			if (actioncardlist.contains("Village_Card")) {
-				index = this.handCards.indexOf(Village_Card);
+			switch (stringCase) {
+			case "Village_Card":
+				index = this.handCards.indexOf("Village_Card");
 				playedCard = this.handCards.remove(index);
 				playedCard.executeCard(this);
 				playedCards.add(playedCard);
-
-				actions--;
+				actioncardlist.remove("Village_Card");
+				break;
+			case "Smithy_Card":
+				index = this.handCards.indexOf("Smithy_Card");
+				playedCard = this.handCards.remove(index);
+				playedCard.executeCard(this);
+				playedCards.add(playedCard);
+				actioncardlist.remove("Smithy_Card");
+				break;
+			case "Workshop_Card":
+				index = this.handCards.indexOf("Workshop_Card");
+				playedCard = this.handCards.remove(index);
+				playedCard.executeCard(this);
+				playedCards.add(playedCard);
+				actioncardlist.remove("Workshop_Card");
+				break;
+			case "Cellar_Card":
+				index = this.handCards.indexOf("Cellar_Card");
+				playedCard = this.handCards.remove(index);
+				playedCard.executeCard(this);
+				playedCards.add(playedCard);
+				actioncardlist.remove("Cellar_Card");
+				break;
+			default:
+				actioncardlist.clear();
+				actions = 0;
 			}
+
 		}
 	}
 
