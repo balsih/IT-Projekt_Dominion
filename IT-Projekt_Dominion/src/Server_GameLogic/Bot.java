@@ -1,5 +1,11 @@
 package Server_GameLogic;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Stack;
+
+import Cards.Card;
+
 /**
  * @author Simon
  * @version 1.0
@@ -7,18 +13,18 @@ package Server_GameLogic;
  */
 public class Bot extends Player {
 
-	// private String actualbuy;
+	private static final int NUMSTAGE_1 = 4;
+	private static final int NUMSTAGE_2 = 7;
+	private static final int MAXVILLAGECARDS = 2;
+	private static final int MAXSMITHYCARDS = 1;
+	private static final int MAXWORKSHOPCARDS = 2;
+	private static final int MAXCELLARCARDS = 2;
 	private int numturns = 0;
-	private final int NUMSTAGE_1 = 4;
-	private final int NUMSTAGE_2 = 7;
-	private final int MAXVILLAGECARDS = 2;
-	private final int MAXSMITHYCARDS = 1;
-	private final int MAXWORKSHOPCARDS = 2;
-	private final int MAXCELLARCARDS = 2;
 	private int numvillagecards;
 	private int numsmithycards;
 	private int numworkshopcards;
 	private int numcellarcards;
+	private ArrayList<String> actioncardlist = new ArrayList<String>(5);
 
 	public Bot(String name) {
 		super(name);
@@ -27,93 +33,113 @@ public class Bot extends Player {
 	// main method
 	public void execute() {
 		// action phase
-		//...
-		// COUNT COINS AND BUYS!
-		
-		
+		if (actions >= 1) {
+			for (int i = 0; i < handCards.size(); i++) {
+				String tempCard = null;
+				if (handCards.get(i).getType().equals("action")) {
+					tempCard = handCards.get(i).getCardName();
+					actioncardlist.add(tempCard);
+				}
+			}
+		} else {
+			skipPhase();
+		}
+
 		// buy phase
-		while (buys != 0) {
-			if (numturns < NUMSTAGE_1) {
-				buytreasurecards();
-			} else {
-				if (numturns < NUMSTAGE_2) {
-					buyactioncards();
+		try {
+			while (buys != 0) {
+				if (numturns < NUMSTAGE_1) {
+					buyTreasureCards();
 				} else {
-					switch (coins) {
-					case 8:
-						Player.buy(Province_Card);
-						break;
-					case 7:
-						Player.buy(Gold_Card);
-						break;
-					case 6:
-						Player.buy(Gold_Card);
-						break;
-					case 5:
-						Player.buy(Duchy_Card);
-						break;
-					case 4:
-						buyactioncards();
-						break;
-					case 3:
-						buyactioncards();
-						break;
-					case 2:
-						buyactioncards();
-						break;
-					case 1:
-						Player.buy(Bronze_Card);
-						break;
-					default:
-						Player.buy(Bronze_Card);
-						break;
+					if (numturns < NUMSTAGE_2) {
+						buyActionCards();
+					} else {
+						buyMixedCards();
 
 					}
 
 				}
-
 			}
+			numturns++;
+
+		} catch (Exception e) {
+			skipPhase();
+			numturns++;
+			e.getMessage().toString();
+			System.out.println(e);
 		}
-		numturns++;
+		// clean up phase
+		cleanUp();
+	} // end of execute methode
 
-	}// end of execute methode
-
-// helper methods
-	private void buytreasurecards() {
+	// helper methods
+	private void buyTreasureCards() {
 		if (coins >= 6) {
-			Player.buy(Gold_Card);
+			buy("Gold_Card");
 		} else {
 			if (coins >= 3) {
-				Player.buy(Silver_Card);
+				buy("Silver_Card");
 			} else {
 				if (coins == 2) {
 					if (numcellarcards < MAXCELLARCARDS)
-						Player.buy(Cellar_Card);
+						buy("Cellar_Card");
 				} else {
-					Player.buy(Bronze_Card);
+					buy("Bronze_Card");
 				}
 			}
 		}
 
 	}
 
-	private void buyactioncards() {
+	private void buyMixedCards() {
+		switch (coins) {
+		case 8:
+			buy("Province_Card");
+			break;
+		case 7:
+			buy("Gold_Card");
+			break;
+		case 6:
+			buy("Gold_Card");
+			break;
+		case 5:
+			buy("Duchy_Card");
+			break;
+		case 4:
+			buyActionCards();
+			break;
+		case 3:
+			buyActionCards();
+			break;
+		case 2:
+			buyActionCards();
+			break;
+		case 1:
+			buy("Bronze_Card");
+			break;
+		default:
+			buy("Bronze_Card");
+			break;
+		}
+	}
+
+	private void buyActionCards() {
 		if (coins >= 8) {
-			Player.buy(Province_Card);
+			buy("Province_Card");
 		} else {
 			if (coins >= 6) {
-				Player.buy(Gold_Card);
+				buy("Gold_Card");
 			} else {
 				if (numvillagecards < MAXVILLAGECARDS && coins >= 3) {
-					Player.buy(Village_Card);
+					buy("Village_Card");
 				} else {
 					if (numsmithycards < MAXSMITHYCARDS && coins >= 4) {
-						Player.buy(Smithy_Card);
+						buy("Smithy_Card");
 					} else {
 						if (numworkshopcards < MAXWORKSHOPCARDS && coins >= 3) {
-							Player.buy(Workshop_Card);
+							buy("Workshop_Card");
 						} else {
-							buytreasurecards();
+							buyTreasureCards();
 						}
 					}
 				}

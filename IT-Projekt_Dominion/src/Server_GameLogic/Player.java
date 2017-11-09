@@ -63,7 +63,7 @@ public class Player {
 		
 		this.log = "";
 		
-		this.setServerThreadForClient(ServerThreadForClient.getServerThreadForClient(clientSocket));
+		//this.setServerThreadForClient(ServerThreadForClient.getServerThreadForClient(clientSocket));
 	}
 
 	/**
