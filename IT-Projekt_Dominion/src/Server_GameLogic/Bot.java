@@ -91,7 +91,7 @@ public class Bot extends Player {
 						}
 					}
 				}
-			} // oder execute(stringCase) --> René fragen
+			} // René fragen
 			Card playedCard = null;
 			int index;
 			switch (stringCase) {
