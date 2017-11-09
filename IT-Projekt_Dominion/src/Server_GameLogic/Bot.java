@@ -1,8 +1,6 @@
 package Server_GameLogic;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Stack;
 
 import Cards.Card;
 
@@ -33,21 +31,26 @@ public class Bot extends Player {
 	// main method
 	public void execute() {
 		// action phase
-		if (actions >= 1) {
+		try {
+			this.actualPhase = "play";
 			for (int i = 0; i < handCards.size(); i++) {
-				String tempCard = null;
 				if (handCards.get(i).getType().equals("action")) {
-					tempCard = handCards.get(i).getCardName();
-					actioncardlist.add(tempCard);
+					actioncardlist.add(handCards.get(i).getCardName());
 				}
 			}
-		} else {
+			while (!actioncardlist.isEmpty()) {
+				playActionCards();
+			}
+		} catch (Exception e) {
 			skipPhase();
-		}
+			e.getMessage().toString();
+			System.out.println(e);
+		} // next step buy phase... (Method necessary?)
+		skipPhase();
 
 		// buy phase
 		try {
-			while (buys != 0) {
+			while (buys != 0) { // number of buys where to change?
 				if (numturns < NUMSTAGE_1) {
 					buyTreasureCards();
 				} else {
@@ -70,9 +73,24 @@ public class Bot extends Player {
 		}
 		// clean up phase
 		cleanUp();
-	} // end of execute methode
+	} // end of execute method
 
 	// helper methods
+	private void playActionCards() {
+		while (actions >= 1) {
+			Card playedCard = null;
+			int index;
+			if (actioncardlist.contains("Village_Card")) {
+				index = this.handCards.indexOf(Village_Card);
+				playedCard = this.handCards.remove(index);
+				playedCard.executeCard(this);
+				playedCards.add(playedCard);
+
+				actions--;
+			}
+		}
+	}
+
 	private void buyTreasureCards() {
 		if (coins >= 6) {
 			buy("Gold_Card");
