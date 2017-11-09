@@ -28,7 +28,7 @@ public class Remodel_Card extends Card {
 		
 		player.setActions(player.getActions() - 1);
 		
-		ugmsg.setLog(player.getPlayerName()+": choose a Card to get rid of!"); // usw.
+		//ugmsg.setLog(player.getPlayerName()+": choose a Card to get rid of!"); // usw.
 		
 		
 		
