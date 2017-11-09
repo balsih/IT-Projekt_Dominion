@@ -55,7 +55,8 @@ public abstract class Card {
 	
 	// Method gives a card back based on the cardName and the language
 	// and sets the corresponding image 
-	public static Card getCard(String cardName, Translator t) {
+	public static Card getCard(String cardName) {
+		Translator t = ServiceLocator.getServiceLocator().getTranslator();
 		Card card;
 		switch (cardName) {
 		case "Copper_Card":
