@@ -369,11 +369,9 @@ public class Player {
 	public void skipPhase() {
 		switch (this.actualPhase) {
 		case "play":
-			// ?
+			//this.buy(cardName);
 		case "buy":
-			// ?
-		case "cleanUp":
-			// ?
+			this.cleanUp();
 		}
 	}
 
