@@ -2,6 +2,8 @@ package Server_GameLogic;
 
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Stack;
 
 import Cards.Copper_Card;
@@ -119,8 +121,33 @@ public class Game {
 	}
 
 	public boolean checkGameEnding() {
-
-		return false;
+		int counter = 0;
+		LinkedList<Stack> allStacks = new LinkedList<Stack>();
+		allStacks.add(this.cellarPile);
+		allStacks.add(this.copperPile);
+		allStacks.add(this.duchyPile);
+		allStacks.add(this.estatePile);
+		allStacks.add(this.goldPile);
+		allStacks.add(this.marketPile);
+		allStacks.add(this.minePile);
+		allStacks.add(this.remodelPile);
+		allStacks.add(this.silverPile);
+		allStacks.add(this.smithyPile);
+		allStacks.add(this.villagePile);
+		allStacks.add(this.woodcutterPile);
+		allStacks.add(this.workshopPile);
+		
+		Iterator<Stack> iter = allStacks.iterator();
+		
+		while(iter.hasNext()){
+			if(iter.next().isEmpty())
+				counter++;
+		}
+		
+		if(this.provincePile.isEmpty() || counter == 3)
+			return true;
+		else
+			return false;
 	}
 
 	/**

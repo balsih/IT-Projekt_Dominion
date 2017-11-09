@@ -44,12 +44,12 @@ public class Splash_View extends View<Splash_Model> {
         lblStatus = new Label("Loading please wait...");
         root.setCenter(lblStatus);
         
-        try {
-			Image img = new Image(getClass().getResource("/resources/image.jpg").toURI().toString());
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//        try {
+//			Image img = new Image(getClass().getResource("/resources/image.jpg").toURI().toString());
+//		} catch (URISyntaxException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
         
         progress = new ProgressBar();
         HBox bottomBox = new HBox();
