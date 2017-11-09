@@ -2,6 +2,7 @@ package Messages;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.Stack;
 
 import Cards.Card;
@@ -10,12 +11,23 @@ import Cards.Mine_Card;
 import Cards.Smithy_Card;
 import Cards.Village_Card;
 import Cards.Woodcutter_Card;
+import Client_Services.ServiceLocator;
 
 public class TestMessages {
 
 	public static void main(String[] args) {
-		testUpdateGame_Message();
-
+		test("hallo");
+		
+	}
+	
+	private static <T> void test(T testElement){
+		String t1 = "";
+		try{
+			t1 = (String) testElement;
+		}catch(Exception e){
+			
+		}
+		System.out.println(t1);
 	}
 	
 	private static void testUpdateGame_Message(){
@@ -41,16 +53,14 @@ public class TestMessages {
 		
 		String chat = "how are you?";
 		
+		String playedCard = "newSmithyCard";
+		
 		LinkedList<Card> handCards = new LinkedList<Card>();
 		handCards.add(new Smithy_Card());
 		handCards.add(new Mine_Card());
 		handCards.add(new Market_Card());
 		
-		LinkedList<Card> playedCards = new LinkedList<Card>();
-		playedCards.add(new Village_Card());
-		playedCards.add(new Woodcutter_Card());
-		
-		
+
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		ugmsg.setLog(log);
 		ugmsg.setCurrentPlayer(currentPlayer);
@@ -63,8 +73,8 @@ public class TestMessages {
 		ugmsg.setDeckPileCardNumber(deckPileCardNumber);
 		ugmsg.setCardBuyed(cardBuyed);
 		ugmsg.setChat(chat);
-		ugmsg.setHandCards(handCards);
-		ugmsg.setPlayedCards(playedCards);
+		ugmsg.setNewHandCards(handCards);
+		ugmsg.setPlayedCards(playedCard);
 		
 		ugmsg.toString();
 		System.out.println(ugmsg);
