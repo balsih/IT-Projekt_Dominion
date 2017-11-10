@@ -1,8 +1,19 @@
 package MainClasses;
 
+<<<<<<< HEAD
 import Abstract_MVC.Controller;
 import Abstract_MVC.Model;
 import Abstract_MVC.View;
+=======
+import Client_CreatePlayer_VC.CreatePlayer_Controller;
+import Client_CreatePlayer_VC.CreatePlayer_View;
+import Client_GameApp_MVC.GameApp_Model;
+import Client_Services.ServiceLocator;
+import Client_Services.Translator;
+import Client_Splash_MVC.Splash_Controller;
+import Client_Splash_MVC.Splash_Model;
+import Client_Splash_MVC.Splash_View;
+>>>>>>> branch 'master' of https://github.com/Eagleman1997/IT-Projekt_Dominion.git
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -12,7 +23,8 @@ import javafx.stage.Stage;
  * @created 31-Okt-2017 17:28:23
  */
 public class Dominion_Main extends Application {
-	
+	Splash_View splashView;
+	ServiceLocator sl;
 
 	public Dominion_Main(){
 
@@ -23,21 +35,55 @@ public class Dominion_Main extends Application {
 	 * @param args
 	 */
 	public static void main(String[] args){
+<<<<<<< HEAD
 		launch(args);
+=======
+		launch(args); 
+>>>>>>> branch 'master' of https://github.com/Eagleman1997/IT-Projekt_Dominion.git
 		
 	}
 
 	@Override
 	public void start(Stage stage) throws Exception{
+<<<<<<< HEAD
 		
+=======
+		Splash_Model splashModel = new Splash_Model();
+		splashView = new Splash_View(stage, splashModel);
+		Splash_Controller splashController = new Splash_Controller(this, splashModel, splashView);
+		splashView.start();
+		splashModel.initialize();
+		this.startCreateNewPlayer(); // zur Kontrolle nicht in Reihenfolge gestartet 
+		// noch anpassen, im Moment startet create new Player zeitgleich mit Splash
+>>>>>>> branch 'master' of https://github.com/Eagleman1997/IT-Projekt_Dominion.git
 	}
 
 	public void startCreateNewPlayer(){
-
+		GameApp_Model model = new GameApp_Model();
+		CreatePlayer_View view = new CreatePlayer_View(new Stage(), model);
+		CreatePlayer_Controller controller = new CreatePlayer_Controller(this, model, view);
+		view.start();
 	}
 
 	public void startGameApp(){
+		// Create game mvc
+		
+		sl = ServiceLocator.getServiceLocator();
 
+		//--- Testcode
+		// Button: Language DE
+		sl.setTranslator(new Translator("de"));
+		// Button: Language EN
+		//sl.setTranslator(new Translator("en"));
+		// Get label texts from translator
+		Translator t = sl.getTranslator();
+		System.out.println(t.getString("program.menu.file"));
+		System.out.println(t.getString("program.menu.file.language"));
+		System.out.println(t.getString("program.menu.help"));
+		System.out.println(t.getString("login"));
+		//---
+		
+		splashView.stop(); // Hides splashscreen
 	}
 
 	public void startLogin(){

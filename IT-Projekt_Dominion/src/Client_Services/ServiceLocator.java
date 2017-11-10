@@ -5,7 +5,7 @@ import java.util.Locale;
 import MainClasses.Dominion_Main;
 
 /**
- * @author Renate
+ * @author René
  * @version 1.0
  * @created 31-Okt-2017 17:05:16
  */
@@ -19,40 +19,40 @@ public class ServiceLocator {
 	private static ServiceLocator serviceLocator;
 	private Translator translator;
 
-
-
-	private ServiceLocator(){
-
+	private ServiceLocator() {
+		//
 	}
 
 	public Class<?> getAPP_CLASS(){
-		return null;
+		return APP_CLASS;
 	}
 
 	public String getAPP_NAME(){
-		return "";
+		return APP_NAME;
 	}
 
 	public Configuration getConfiguration(){
-		return null;
+		return configuration;
 	}
 
 	public Gallery getGallery(){
-		return null;
+		return gallery;
 	}
 
 	public Locale[] getLocales(){
-		return null;
+		return locales;
 	}
 
 	public static ServiceLocator getServiceLocator(){
 		if(serviceLocator == null)
-			return new ServiceLocator();
+			serviceLocator = new ServiceLocator();
 		return serviceLocator;
 	}
 
 	public Translator getTranslator(){
-		return null;
+		if(translator == null)
+			translator = new Translator(APP_NAME);
+		return translator;
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class ServiceLocator {
 	 * @param configuration
 	 */
 	public void setConfiguration(Configuration configuration){
-
+		this.configuration = configuration;
 	}
 
 	/**
@@ -68,7 +68,7 @@ public class ServiceLocator {
 	 * @param gallery
 	 */
 	public void setGallery(Gallery gallery){
-
+		this.gallery = gallery;
 	}
 
 	/**
@@ -76,6 +76,6 @@ public class ServiceLocator {
 	 * @param translator
 	 */
 	public void setTranslator(Translator translator){
-
+		this.translator = translator;
 	}
 }//end ServiceLocator

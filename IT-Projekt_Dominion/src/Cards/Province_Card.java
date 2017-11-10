@@ -1,5 +1,7 @@
 package Cards;
 
+import Messages.UpdateGame_Message;
+import Server_GameLogic.Game;
 import Server_GameLogic.Player;
 
 /**
@@ -11,7 +13,7 @@ public class Province_Card extends Victory_Card {
 
 
 	public Province_Card(){
-		this.cardName = "Province";
+		this.cardName = "Province_Card";
 		this.cost = 8;
 		this.type = "victory";
 		this.victoryPoints = 6;
@@ -22,8 +24,16 @@ public class Province_Card extends Victory_Card {
 	 * @param player
 	 */
 	@Override
-	public void executeCard(Player player){
+	public UpdateGame_Message executeCard(Player player){
 		player.setVictoryPoints(player.getVictoryPoints() + victoryPoints);
+		
+		Game game = player.getGame();
+		UpdateGame_Message ugmsg = new UpdateGame_Message();
+		
+		ugmsg.setLog(player.getPlayerName()+": played Province card");
+		game.sendToOpponent(player, ugmsg); // info for opponent
+		
+		return ugmsg;
 	}
 	
 }//end Province_Card
