@@ -135,7 +135,7 @@ public class GUI_Test extends Application {
 		root.add(vboxHandCards, 1, 3, 7, 1);
 		root.add(vboxCurrentPlayer, 8, 3, 1, 1);
 
-		Scene scene = new Scene(root, 1000, 1000);
+		Scene scene = new Scene(root, 1000, 600);
 		stage.setScene(scene);
 		stage.setTitle("Dominion");
 		stage.show();
@@ -171,8 +171,29 @@ public class GUI_Test extends Application {
 		vboxCurrentPlayer.getStyleClass().add("vbox");
 		gridpCurrentPlayer.setHgap(20);
 		
-		root.getStyleClass().add("gaps");
+		root.getStyleClass().add("root_format");
 	
+		// Resize vBoxes to available size
+		root.setHgrow(vboxActionCards, Priority.ALWAYS);
+		root.setVgrow(vboxActionCards, Priority.ALWAYS);
+		root.setHgrow(vboxTreasureCards, Priority.ALWAYS);
+		root.setVgrow(vboxTreasureCards, Priority.ALWAYS);
+		root.setHgrow(vboxVictoryCards, Priority.ALWAYS);
+		root.setVgrow(vboxVictoryCards, Priority.ALWAYS);
+		root.setHgrow(vboxChatArea, Priority.ALWAYS);
+		root.setVgrow(vboxChatArea, Priority.ALWAYS);
+		root.setHgrow(vboxLog, Priority.ALWAYS);
+		root.setVgrow(vboxLog, Priority.ALWAYS);
+		root.setHgrow(vboxDiscard, Priority.ALWAYS);
+		root.setVgrow(vboxDiscard, Priority.ALWAYS);
+		root.setHgrow(vboxDeck, Priority.ALWAYS);
+		root.setVgrow(vboxDeck, Priority.ALWAYS);
+		root.setHgrow(vboxPlayedCards, Priority.ALWAYS);
+		root.setVgrow(vboxPlayedCards, Priority.ALWAYS);
+		root.setHgrow(vboxHandCards, Priority.ALWAYS);
+		root.setVgrow(vboxHandCards, Priority.ALWAYS);
+		root.setHgrow(vboxCurrentPlayer, Priority.ALWAYS);
+		root.setVgrow(vboxCurrentPlayer, Priority.ALWAYS);
 		
 	}
 }
