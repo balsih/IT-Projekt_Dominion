@@ -16,8 +16,7 @@ import Server_GameLogic.Player;
  */
 public class DB_Connector {
 
-	private ServiceLocator sl = ServiceLocator.getServiceLocator();
-	private DB_Connector connector;
+	private static DB_Connector connector;
 
 	private Connection connection;
 	private Statement stmt;
@@ -61,11 +60,12 @@ public class DB_Connector {
 
 			this.prepStmt = connection.prepareStatement(insertIntoPlayer_Scoring);
 			this.prepStmt.setString(1, player.getPlayerName());
-			this.prepStmt.setInt(1, score);
+			this.prepStmt.setInt(2, score);
 			this.prepStmt.execute();
 
 			return true;
 		} catch (SQLException e) {
+			System.out.println(e.toString());
 			return false;
 		}
 	}
@@ -92,7 +92,7 @@ public class DB_Connector {
 
 	// returns playername with highScore
 	public String getHighScore() {
-		String selectHighScore = "Select Username, max(Score) from Player_Scoring group by ?";
+		String selectHighScore = "Select max(Score) from Player_Scoring where (?) in (Select * order by Score desc limit 5)";
 		String username = "";
 		String highScore = "";
 
@@ -102,25 +102,23 @@ public class DB_Connector {
 			this.rs = this.prepStmt.executeQuery();
 
 			while (this.rs.next()) {
-				username = rs.getString("Username");
-				highScore = rs.getString("Score");
+				highScore += rs.getString("Score") +"\n";
 			}
 
-			return username + ": " + highScore;
+			return highScore;
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println(e.toString());
+			return "";
 		}
-		return "";
 	}
 
 	// Singleton
-	public DB_Connector getDB_Connector() {
-		if (this.connector == null) {
-			this.connector = new DB_Connector();
+	public static DB_Connector getDB_Connector() {
+		if (connector == null) {
+			connector = new DB_Connector();
 		}
-		return this.connector;
+		return connector;
 	}
 
 	// creates the db structure
@@ -128,20 +126,18 @@ public class DB_Connector {
 		try {
 			String createPlayer = "create table if not exists Player(" + "Username varchar(25) primary key,"
 					+ "Password varchar (25))";
-			String createScoring = "create table if not exists Scoring(" + "Score int primary key)";
 			String createPlayer_Scoring = "create table if not exists Player_Scoring("
-					+ "Username varchar(25) not null," + "Score int not null," + "primary key (Username, Score),"
-					+ "foreign key (Username) references Player (Username),"
-					+ "foreign key (Score) references Scoring (Score))";
+					+ "ID int not null auto_increment primary key,"
+					+ "Username varchar(25) not null," + "Score int not null,"
+					+ "foreign key (Username) references Player (Username))";
 
 			this.stmt = connection.createStatement();
 			this.stmt.execute(createPlayer);
-			this.stmt.execute(createScoring);
-			this.fillScoring();
 			this.stmt.execute(createPlayer_Scoring);
 
 			return true;
 		} catch (SQLException e) {
+			System.out.println(e.toString());
 			return false;
 		}
 	}
@@ -165,26 +161,6 @@ public class DB_Connector {
 		} catch (SQLException | ClassNotFoundException e) {
 			return false;
 		}
-	}
-
-	// fills table Scoring with the Scorerpoints if not exists
-	private boolean fillScoring() {
-		try {
-			int numOfScorePoints = 30;
-			String insertIntoScoring = "Insert into Scoring (Score) values (?)";
-
-			this.prepStmt = connection.prepareStatement(insertIntoScoring);
-
-			for (int i = 0; i <= numOfScorePoints; i++) {
-				this.prepStmt.setInt(1, i);
-				this.prepStmt.execute();
-			}
-
-			return true;
-		} catch (SQLException e) {
-			return false;
-		}
-
 	}
 
 	// Returns true, if Login is correct/exists. Else returns false.
@@ -234,13 +210,21 @@ public class DB_Connector {
 			e.printStackTrace();
 		}
 	}
-
-	// TEST
-	public static void main(String[] args) {
-		DB_Connector connector = new DB_Connector();
-		connector.addNewPlayer("Test", "tester");
-		connector.selectPlayer();
-		System.out.println(connector.checkLoginInput("Bodo", "abc"));
-		System.out.println(connector.checkLoginInput("Test", "tester"));
+	
+	// HILFSMETHODE ZUM TESTEN!! selects the player_Scoring relation and prints it out
+	private void selectPlayer_Scoring(){
+		String selectPlayer_Scoring = "select * from Player_Scoring";
+		
+		try{
+			this.stmt = connection.createStatement();
+			this.rs = stmt.executeQuery(selectPlayer_Scoring);
+			
+			while(rs.next()){
+				System.out.println(this.rs.getString(2) + ": " + this.rs.getInt(3));
+			}
+		} catch (SQLException e){
+			e.printStackTrace();
+		}
 	}
+
 }// end DB_Connector

@@ -46,7 +46,7 @@ public class Player {
 	 * 
 	 * @param name
 	 */
-	public Player(String name) {
+	public Player(String name, ServerThreadForClient serverThreadForClient) {
 		this.deckPile = new Stack<Card>();
 		this.discardPile = new Stack<Card>();
 		this.handCards = new LinkedList<Card>();
@@ -63,9 +63,9 @@ public class Player {
 		
 		this.log = "";
 		
-		//this.setServerThreadForClient(ServerThreadForClient.getServerThreadForClient(clientSocket));
+		this.serverThreadForClient = serverThreadForClient;
 	}
-
+	
 	/**
 	 * 
 	 * @param gameThread
@@ -144,13 +144,17 @@ public class Player {
 		return buyedCard;
 	}
 	
-	//checks if the card could been buyed
-	public boolean buyed(){
+	//checks if the card can be buyed
+	public boolean buyed(String cardName){
+		Card buyedCard = this.buy(cardName);
 		
-		
-		return false;
+		if(buyedCard.getCost() <= this.getCoins() && this.getBuys() > 0)
+			return true;
+		else
+			return false;
 	}
 
+	//Cleans up
 	public void cleanUp() {
 		this.actualPhase = "cleanUp";
 
@@ -162,50 +166,11 @@ public class Player {
 			this.discardPile.push(handCards.remove());
 		}
 
-		this.draw();
+		this.draw(this.NUM_OF_HANDCARDS);
 
 		this.setFinished(true);
 
 		game.checkGameEnding();
-
-	}
-
-	/**
-	 * If Deckpile is empty, the discard pile fills the deckPile. Eventually the
-	 * deckPiles get shuffled and the player draws 5 Cards from deckPile to
-	 * HandPile.
-	 *
-	 * Else If the deckpile size is lower than 5, the rest of deckPiles will be
-	 * drawed and the discard pile fills the deckPile. eventually the deckPile
-	 * get shuffled and the player draws the rest of the Cards until he has 5
-	 * Cards in the HandPile.
-	 *
-	 * Else if they are enough cards in the deckPile, the player draws 5 cards
-	 * into the handPile
-	 *
-	 * NOT FINISHED!
-	 */
-
-	public void draw() {
-
-		if (deckPile.isEmpty()) {
-			while (!discardPile.isEmpty())
-				deckPile.push(discardPile.pop());
-			Collections.shuffle(deckPile);
-			for (int i = 0; i < NUM_OF_HANDCARDS; i++)
-				handCards.add(deckPile.pop());
-		} else if (deckPile.size() < NUM_OF_HANDCARDS) {
-			while (!deckPile.isEmpty())
-				handCards.add(deckPile.pop());
-			while (!discardPile.isEmpty())
-				deckPile.push(discardPile.pop());
-			Collections.shuffle(deckPile);
-			for (int i = 0; i < NUM_OF_HANDCARDS - handCards.size(); i++)
-				handCards.add(deckPile.pop());
-		} else {
-			for (int i = 0; i < NUM_OF_HANDCARDS; i++)
-				handCards.add(deckPile.pop());
-		}
 	}
 
 	/**
@@ -219,29 +184,26 @@ public class Player {
 	 * HandPile.
 	 *
 	 * Else if they are enough cards in the deckPile, the player draws the
-	 * number of layed down cards into the handPile
-	 *
-	 * NOT FINISHED!
+	 * number of layed down cards respectively 5 Cards into the handPile
 	 */
-
-	public void draw(int number) {
-		for (int i = 0; i < number; i++) {
+	public void draw(int numOfCards) {
+		for (int i = 0; i < numOfCards; i++) {
 			if (deckPile.isEmpty()) {
 				while (!discardPile.isEmpty())
 					deckPile.push(discardPile.pop());
 				Collections.shuffle(deckPile);
-				for (int y = 0; y < number; y++)
+				for (int y = 0; y < numOfCards; y++)
 					handCards.add(deckPile.pop());
-			} else if (deckPile.size() < number) {
+			} else if (deckPile.size() < numOfCards) {
 				while (!deckPile.isEmpty())
 					handCards.add(deckPile.pop());
 				while (!discardPile.isEmpty())
 					deckPile.push(discardPile.pop());
 				Collections.shuffle(deckPile);
-				for (int y = 0; y < number; y++)
+				for (int y = 0; y < numOfCards; y++)
 					handCards.add(deckPile.pop());
 			} else {
-				for (int y = 0; y < number; y++)
+				for (int y = 0; y < numOfCards - handCards.size(); y++)
 					handCards.add(deckPile.pop());
 			}
 		}
@@ -359,8 +321,15 @@ public class Player {
 			break;
 		}
 		
-		return ugmsg;
-		
+		return ugmsg;	
+	}
+	
+	//Checks if a card can be played
+	public boolean played(){
+		if(this.getActions() > 0)
+			return true;
+		else
+			return false;
 	}
 
 	/**

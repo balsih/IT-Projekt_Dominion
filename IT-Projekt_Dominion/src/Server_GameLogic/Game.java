@@ -61,7 +61,8 @@ public class Game {
 	 * @param gameMode
 	 * @param player
 	 */
-	public Game(Socket clientSocket, String gameMode, Player player) {
+	//Factory Pattern getter mit gameCounter und parameter gameMode und player
+	private Game(String gameMode, Player player) {
 		// Build treasure stacks for a new game
 		this.buildTreasureCardStacks();
 		this.buildVictoryCardStacks();
