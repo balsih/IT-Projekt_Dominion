@@ -66,24 +66,6 @@ public class Player {
 		this.serverThreadForClient = serverThreadForClient;
 	}
 	
-	public Player(String name) {
-		this.deckPile = new Stack<Card>();
-		this.discardPile = new Stack<Card>();
-		this.handCards = new LinkedList<Card>();
-		this.playedCards = new LinkedList<Card>();
-
-		this.coins = 0;
-		this.actions = 1;
-		this.buys = 0;
-		counter = 0;
-
-		this.isFinished = false;
-
-		this.actualPhase = "";
-		
-		this.log = "";
-	}
-
 	/**
 	 * 
 	 * @param gameThread
