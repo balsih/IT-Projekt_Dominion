@@ -51,7 +51,7 @@ public class Splash_View extends View<Splash_Model> {
 		ServiceLocator sl; 
 		
 		sl = ServiceLocator.getServiceLocator();
-		sl.setTranslator(new Translator("en"));
+		sl.setTranslator(new Translator("de"));
 		t = sl.getTranslator();
 		
 		BorderPane root = new BorderPane();
