@@ -22,8 +22,7 @@ public class Splash_Controller extends Controller<Splash_Model, Splash_View> {
 		
 		view.progress.progressProperty().bind(model.initializer.progressProperty()); // Connects progress task with progress bar
 		
-		
-		
+	
 		model.initializer.stateProperty().addListener(     (observable, oldValue, newValue) -> {
                     if (newValue == Worker.State.SUCCEEDED)
                         main.startGameApp(); // starts game app after initializer is finish 

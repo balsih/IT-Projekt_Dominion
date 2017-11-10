@@ -17,6 +17,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -29,7 +30,6 @@ public class Splash_View extends View<Splash_Model> {
 
 	protected ProgressBar progress;
 	private Label lblStatus;
-	
 	
 	
 	private ImageView imageView;
@@ -54,34 +54,52 @@ public class Splash_View extends View<Splash_Model> {
 		sl.setTranslator(new Translator("de"));
 		t = sl.getTranslator();
 		
-		BorderPane root = new BorderPane();
-		root.setId("splash");
+		//BorderPane root = new BorderPane();
 		
-        
+		//root.setId("splash");
 		
 		lblStatus = new Label(t.getString("splash.loading"));
+		lblStatus.setTextAlignment(TextAlignment.CENTER);
+		lblStatus.setId("loading");
+		
         progress = new ProgressBar();
+        //progress.setL
+		progress.setId("progress");
+		
 		
 	
-		VBox vBox = new VBox();
-		root.setCenter(vBox);
+		VBox root = new VBox(lblStatus, progress);
+		root.setId("root");
+		
+		root.setAlignment(Pos.CENTER);
+		
+		
+		
+		
+		
+		
+		//root.setCenter(vBox);
 		
 		//vBox.setVgrow(lblStatus, Priority.ALWAYS);
 		
-		//root.setAlignment(vBox, Pos.CENTER);
 		
-		//vBox.setSpacing(50);
+		
+		//vBox.setSpacing(180);
+		
+		// -fx-background-image: url("loading.jpg");
 
        
-		vBox.getChildren().addAll(lblStatus, progress);
+		//vBox.getChildren().addAll(lblStatus, progress);
 		
         
-        Scene scene = new Scene(root, 300, 300, Color.TRANSPARENT);
-        //scene.getStylesheets().addAll(
+        Scene scene = new Scene(root, 300, 300);
+        //Scene scene = new Scene(root, 300, 300, Color.TRANSPARENT);
+        //Scene scene = new Scene(root);
+        scene.getStylesheets().addAll(this.getClass().getResource("splash.css").toExternalForm());
         
 			// TODO Auto-generated catch block
 			//e.printStackTrace();
-	    //this.getClass().getResource("splash.css").toExternalForm());
+	    
 		
         return scene;
 	}
