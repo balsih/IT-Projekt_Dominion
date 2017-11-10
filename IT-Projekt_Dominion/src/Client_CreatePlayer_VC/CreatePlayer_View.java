@@ -21,15 +21,8 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 
 	private ServiceLocator sl = ServiceLocator.getServiceLocator();
 	
-	protected BorderPane root;
-	protected Button save;
-	protected TextField name_text;
-	protected TextField password_text;
-	protected Label createNewPlayer; 
-	protected Label name;
-	protected Label password;
-	protected VBox vBox;
 	
+
 	/**
 	 * 
 	 * @param model
@@ -40,14 +33,21 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 
 	@Override
 	protected Scene create_GUI(){
-		root = new BorderPane();
-		save = new Button();
-		name_text = new TextField();
-		password_text = new TextField();
-		createNewPlayer = new Label();
-		name = new Label();
-		password = new Label();
-		vBox = new VBox();
+		
+		VBox root = new VBox();
+		root.setId("root");
+		Button save = new Button();
+		save.setId("save");
+		TextField name_text = new TextField();
+		name_text.setId("name_text");
+		TextField password_text = new TextField();
+		password_text.setId("password_text");
+		Label createNewPlayer = new Label();
+		createNewPlayer.setId("createNewPlayer");
+		Label name = new Label();
+		name.setId("name");
+		Label password = new Label();
+		password.setId("password");
 		
 		root.setPrefSize(250,300);
 	
@@ -58,17 +58,14 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		
 		save.setText("Speichern");
 		
-		root.setBottom(save);
-		root.setCenter(vBox);
-		root.setTop(createNewPlayer);
-		vBox.getChildren().addAll(name, name_text, password, password_text);
+		root.getChildren().addAll(name, name_text, password, password_text);
 		//vBox.getChildren().addAll(createNewPlayer, name, name_text, password, password_text);
 		
 		// Fill borderpane
 		
 		Scene scene = new Scene(root);
 		this.stage.setScene(scene);
-		this.root.setBottom(save);
+		//this.root.setBottom(save);
 		return scene;
 	}
 	
