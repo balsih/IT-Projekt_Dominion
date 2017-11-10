@@ -50,12 +50,12 @@ public class GameMode_Message extends Message {
         }
 	}
 
-
-	public void setMode(String mode){
-		this.mode = mode;
-	}
 	
 	public String getMode(){
 		return this.mode;
+	}
+	
+	public void setMode(String mode){
+		this.mode = mode;
 	}
 }//end GameMode_Message

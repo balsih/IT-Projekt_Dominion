@@ -3,6 +3,10 @@ package Client_Splash_MVC;
 import java.net.URISyntaxException;
 
 import Abstract_MVC.View;
+import Client_Services.ServiceLocator;
+import Client_Services.Translator;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -10,6 +14,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -23,6 +29,8 @@ public class Splash_View extends View<Splash_Model> {
 
 	protected ProgressBar progress;
 	private Label lblStatus;
+	
+	
 	
 	private ImageView imageView;
 
@@ -38,34 +46,39 @@ public class Splash_View extends View<Splash_Model> {
 
 	@Override
 	protected Scene create_GUI(){
-
+	
+		Translator t;
+		ServiceLocator sl; 
+		
+		sl = ServiceLocator.getServiceLocator();
+		sl.setTranslator(new Translator("de"));
+		t = sl.getTranslator();
+		
 		BorderPane root = new BorderPane();
-        root.setId("splash");
+		root.setId("splash");
+		
         
-        lblStatus = new Label("Loading please wait...");
-        root.setCenter(lblStatus);
-        
-
-		//Image image = new Image(getClass().getResource("waiting.gif").toURI().toString());
-		//imageView = new ImageView(image);
-
-//        try {
-//			Image img = new Image(getClass().getResource("/resources/image.jpg").toURI().toString());
-//		} catch (URISyntaxException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-
-        //root.setBottom(imageView);
+		
+		lblStatus = new Label(t.getString("splash.loading"));
         progress = new ProgressBar();
-        HBox bottomBox = new HBox();
-        bottomBox.setId("progressbox");
-        bottomBox.getChildren().add(progress);
-        root.setBottom(bottomBox);
+		
+	
+		VBox vBox = new VBox();
+		root.setCenter(vBox);
+		
+		//vBox.setVgrow(lblStatus, Priority.ALWAYS);
+		
+		//root.setAlignment(vBox, Pos.CENTER);
+		
+		//vBox.setSpacing(50);
+
+       
+		vBox.getChildren().addAll(lblStatus, progress);
+		
         
         Scene scene = new Scene(root, 300, 300, Color.TRANSPARENT);
         //scene.getStylesheets().addAll(
-       
+        
 			// TODO Auto-generated catch block
 			//e.printStackTrace();
 	    //this.getClass().getResource("splash.css").toExternalForm());

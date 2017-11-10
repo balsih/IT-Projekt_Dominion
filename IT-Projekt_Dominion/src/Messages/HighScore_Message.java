@@ -50,12 +50,12 @@ public class HighScore_Message extends Message {
         }
 	}
 
-
-	public void setHighScore(String highScore){
-		this.highScore = highScore;
-	}
 	
 	public String getHighScore(){
 		return this.highScore;
+	}
+
+	public void setHighScore(String highScore){
+		this.highScore = highScore;
 	}
 }//end HighScore_Message

@@ -1,6 +1,8 @@
 package Messages;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * 
@@ -10,12 +12,12 @@ import org.w3c.dom.Document;
  */
 public class BuyCard_Message extends Message {
 
-	private String card;
 	private static final String ELEMENT_CARD = "card";
+	private String card;
 
 
 	public BuyCard_Message(){
-
+		super();
 	}
 
 	/**
@@ -24,12 +26,13 @@ public class BuyCard_Message extends Message {
 	 */
 	@Override
 	protected void addNodes(Document docIn){
-
+        Element root = docIn.getDocumentElement();
+		
+		Element card = docIn.createElement(ELEMENT_CARD);
+		card.setTextContent(this.card);
+		root.appendChild(card);
 	}
 
-	public String getCard(){
-		return "";
-	}
 
 	/**
 	 * 
@@ -37,14 +40,20 @@ public class BuyCard_Message extends Message {
 	 */
 	@Override
 	protected void init(Document docIn){
-
+		Element root = docIn.getDocumentElement();
+		
+		NodeList tmpElements = root.getElementsByTagName(ELEMENT_CARD);
+        if (tmpElements.getLength() > 0) {
+            Element card = (Element) tmpElements.item(0);
+            this.card = card.getTextContent();
+            }
 	}
 
-	/**
-	 * 
-	 * @param card
-	 */
+	public String getCard(){
+		return this.card;
+	}
+	
 	public void setCard(String card){
-
+		this.card = card;
 	}
 }//end BuyCard_Message

@@ -1,0 +1,31 @@
+.button{
+	-fx-background-color: #a9a9a9;
+	-fx-text-fill: #000000;
+}
+
+.button:hover{
+	-fx-background-color: #d3d3d3;
+	-fx-text-fill: #000000;
+}
+
+Label {
+	-fx-font-weight: bold;
+}
+
+.vbox{
+	-fx-padding: 10px;
+	-fx-spacing: 10px;
+	-fx-background-color: #f0f8ff;
+	-fx-border-width: 2;
+	-fx-border-radius: 5;
+	-fx-border-color: black;
+}
+
+.hbox{
+	-fx-spacing: 10px;
+}
+
+.gaps{
+	-fx-hgap: 10px;
+	-fx-vgap: 10px;
+}

@@ -1,6 +1,8 @@
 package Messages;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * @author Lukas
@@ -14,7 +16,7 @@ public class Chat_Message extends Message {
 
 
 	public Chat_Message(){
-
+		super();
 	}
 
 	/**
@@ -23,11 +25,11 @@ public class Chat_Message extends Message {
 	 */
 	@Override
 	protected void addNodes(Document docIn){
-
-	}
-
-	public String getChat(){
-		return "";
+        Element root = docIn.getDocumentElement();
+		
+		Element chat = docIn.createElement(ELEMENT_CHAT);
+		chat.setTextContent(this.chat);
+		root.appendChild(chat);
 	}
 
 	/**
@@ -36,14 +38,20 @@ public class Chat_Message extends Message {
 	 */
 	@Override
 	protected void init(Document docIn){
-
+		Element root = docIn.getDocumentElement();
+		
+		NodeList tmpElements = root.getElementsByTagName(ELEMENT_CHAT);
+        if (tmpElements.getLength() > 0) {
+            Element chat = (Element) tmpElements.item(0);
+            this.chat = chat.getTextContent();
+        }
 	}
 
-	/**
-	 * 
-	 * @param chat
-	 */
-	public void setChat(String chat){
+	public String getChat(){
+		return this.chat;
+	}
 
+	public void setChat(String chat){
+		this.chat = chat;
 	}
 }//end Chat_Message

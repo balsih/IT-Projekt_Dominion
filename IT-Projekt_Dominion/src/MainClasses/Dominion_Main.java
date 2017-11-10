@@ -1,5 +1,9 @@
 package MainClasses;
 
+import Abstract_MVC.Controller;
+import Abstract_MVC.Model;
+import Abstract_MVC.View;
+
 import Client_CreatePlayer_VC.CreatePlayer_Controller;
 import Client_CreatePlayer_VC.CreatePlayer_View;
 import Client_GameApp_MVC.GameApp_Model;
@@ -29,7 +33,7 @@ public class Dominion_Main extends Application {
 	 * @param args
 	 */
 	public static void main(String[] args){
-		launch(args); 
+		launch(args);
 		
 	}
 

@@ -7,13 +7,9 @@ import java.util.Stack;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 
-import Cards.Copper_Card;
 import Cards.Card;
-import Client_Services.ServiceLocator;
-import Client_Services.Translator;
 
 /**
  * The client wants to start a Game. For this purpose the client chooses a singleplayer or multiplayer Game.
@@ -97,8 +93,6 @@ public class CreateGame_Message extends Message {
 	 */
 	@Override
 	protected void init(Document docIn){
-		ServiceLocator sl = ServiceLocator.getServiceLocator();
-		Translator t = sl.getTranslator();
 		Element root = docIn.getDocumentElement();
 		
 		//creates the deckPile from XML_Document with new CardObjects in the correct language

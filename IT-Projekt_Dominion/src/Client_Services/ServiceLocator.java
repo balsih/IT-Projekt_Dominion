@@ -5,7 +5,7 @@ import java.util.Locale;
 import MainClasses.Dominion_Main;
 
 /**
- * @author Renate
+ * @author René
  * @version 1.0
  * @created 31-Okt-2017 17:05:16
  */
@@ -50,6 +50,8 @@ public class ServiceLocator {
 	}
 
 	public Translator getTranslator(){
+		if(translator == null)
+			translator = new Translator(APP_NAME);
 		return translator;
 	}
 
