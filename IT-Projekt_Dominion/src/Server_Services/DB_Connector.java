@@ -17,7 +17,7 @@ import Server_GameLogic.Player;
 public class DB_Connector {
 
 	private ServiceLocator sl = ServiceLocator.getServiceLocator();
-	private DB_Connector connector;
+	private static DB_Connector connector;
 
 	private Connection connection;
 	private Statement stmt;
@@ -92,7 +92,7 @@ public class DB_Connector {
 
 	// returns playername with highScore
 	public String getHighScore() {
-		String selectHighScore = "Select Username, max(Score) from Player_Scoring group by ?";
+		String selectHighScore = "Select max(Score) from Player_Scoring where (?) in (Select * order by Score desc limit 5)";
 		String username = "";
 		String highScore = "";
 
@@ -102,23 +102,23 @@ public class DB_Connector {
 			this.rs = this.prepStmt.executeQuery();
 
 			while (this.rs.next()) {
-				username = rs.getString("Username");
-				highScore = rs.getString("Score");
+				highScore += rs.getString("Score") +"\n";
 			}
 
-			return username + ": " + highScore;
+			return highScore;
 
 		} catch (SQLException e) {
+			System.out.println(e.toString());
 			return "";
 		}
 	}
 
 	// Singleton
-	public DB_Connector getDB_Connector() {
-		if (this.connector == null) {
-			this.connector = new DB_Connector();
+	public static DB_Connector getDB_Connector() {
+		if (connector == null) {
+			connector = new DB_Connector();
 		}
-		return this.connector;
+		return connector;
 	}
 
 	// creates the db structure
@@ -236,9 +236,12 @@ public class DB_Connector {
 	// TEST
 	public static void main(String[] args) {
 		DB_Connector connector = new DB_Connector();
+		Player tester = new Player("Bodo");
 		connector.addNewPlayer("Test", "tester");
 		connector.selectPlayer();
 		System.out.println(connector.checkLoginInput("Bodo", "abc"));
 		System.out.println(connector.checkLoginInput("Test", "tester"));
+		connector.addScore(tester, 5);
+		System.out.println(connector.getHighScore());
 	}
 }// end DB_Connector

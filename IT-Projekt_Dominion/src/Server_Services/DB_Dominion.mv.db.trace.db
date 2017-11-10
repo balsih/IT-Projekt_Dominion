@@ -21,3 +21,78 @@ Insert if not exists ignore into Scoring (Score) values (?) [42001-195]
 2017-11-08 16:43:07 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLException: Keine Daten verfügbar
 No data is available [2000-195]
+2017-11-10 14:30:01 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Parameter "#2" wurde nicht gesetzt
+Parameter "#2" is not set; SQL statement:
+Insert into Player_Scoring (Username, Score) values (?, ?) [90012-195]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:345)
+	at org.h2.message.DbException.get(DbException.java:179)
+	at org.h2.message.DbException.get(DbException.java:155)
+	at org.h2.expression.Parameter.checkSet(Parameter.java:81)
+	at org.h2.command.Prepared.checkParameters(Prepared.java:164)
+	at org.h2.command.CommandContainer.update(CommandContainer.java:100)
+	at org.h2.command.Command.executeUpdate(Command.java:260)
+	at org.h2.jdbc.JdbcPreparedStatement.execute(JdbcPreparedStatement.java:207)
+	at Server_Services.DB_Connector.addScore(DB_Connector.java:65)
+	at Server_Services.DB_Connector.main(DB_Connector.java:243)
+2017-11-10 14:30:01 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Feld "Score" nicht gefunden
+Column "Score" not found [42122-195]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:345)
+	at org.h2.message.DbException.get(DbException.java:179)
+	at org.h2.message.DbException.get(DbException.java:155)
+	at org.h2.jdbc.JdbcResultSet.getColumnIndex(JdbcResultSet.java:3180)
+	at org.h2.jdbc.JdbcResultSet.get(JdbcResultSet.java:3246)
+	at org.h2.jdbc.JdbcResultSet.getString(JdbcResultSet.java:314)
+	at Server_Services.DB_Connector.getHighScore(DB_Connector.java:105)
+	at Server_Services.DB_Connector.main(DB_Connector.java:244)
+2017-11-10 14:30:43 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Parameter "#2" wurde nicht gesetzt
+Parameter "#2" is not set; SQL statement:
+Insert into Player_Scoring (Username, Score) values (?, ?) [90012-195]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:345)
+	at org.h2.message.DbException.get(DbException.java:179)
+	at org.h2.message.DbException.get(DbException.java:155)
+	at org.h2.expression.Parameter.checkSet(Parameter.java:81)
+	at org.h2.command.Prepared.checkParameters(Prepared.java:164)
+	at org.h2.command.CommandContainer.update(CommandContainer.java:100)
+	at org.h2.command.Command.executeUpdate(Command.java:260)
+	at org.h2.jdbc.JdbcPreparedStatement.execute(JdbcPreparedStatement.java:207)
+	at Server_Services.DB_Connector.addScore(DB_Connector.java:65)
+	at Server_Services.DB_Connector.main(DB_Connector.java:244)
+2017-11-10 14:30:43 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Feld "Score" nicht gefunden
+Column "Score" not found [42122-195]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:345)
+	at org.h2.message.DbException.get(DbException.java:179)
+	at org.h2.message.DbException.get(DbException.java:155)
+	at org.h2.jdbc.JdbcResultSet.getColumnIndex(JdbcResultSet.java:3180)
+	at org.h2.jdbc.JdbcResultSet.get(JdbcResultSet.java:3246)
+	at org.h2.jdbc.JdbcResultSet.getString(JdbcResultSet.java:314)
+	at Server_Services.DB_Connector.getHighScore(DB_Connector.java:105)
+	at Server_Services.DB_Connector.main(DB_Connector.java:245)
+2017-11-10 14:31:22 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Parameter "#2" wurde nicht gesetzt
+Parameter "#2" is not set; SQL statement:
+Insert into Player_Scoring (Username, Score) values (?, ?) [90012-195]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:345)
+	at org.h2.message.DbException.get(DbException.java:179)
+	at org.h2.message.DbException.get(DbException.java:155)
+	at org.h2.expression.Parameter.checkSet(Parameter.java:81)
+	at org.h2.command.Prepared.checkParameters(Prepared.java:164)
+	at org.h2.command.CommandContainer.update(CommandContainer.java:100)
+	at org.h2.command.Command.executeUpdate(Command.java:260)
+	at org.h2.jdbc.JdbcPreparedStatement.execute(JdbcPreparedStatement.java:207)
+	at Server_Services.DB_Connector.addScore(DB_Connector.java:65)
+	at Server_Services.DB_Connector.main(DB_Connector.java:244)
+2017-11-10 14:31:22 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Feld "Score" nicht gefunden
+Column "Score" not found [42122-195]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:345)
+	at org.h2.message.DbException.get(DbException.java:179)
+	at org.h2.message.DbException.get(DbException.java:155)
+	at org.h2.jdbc.JdbcResultSet.getColumnIndex(JdbcResultSet.java:3180)
+	at org.h2.jdbc.JdbcResultSet.get(JdbcResultSet.java:3246)
+	at org.h2.jdbc.JdbcResultSet.getString(JdbcResultSet.java:314)
+	at Server_Services.DB_Connector.getHighScore(DB_Connector.java:105)
+	at Server_Services.DB_Connector.main(DB_Connector.java:245)
