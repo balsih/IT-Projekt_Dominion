@@ -1,6 +1,8 @@
 package Messages;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * @author Lukas
@@ -14,7 +16,7 @@ public class PlayerSuccess_Message extends Message {
 
 
 	public PlayerSuccess_Message(){
-
+		super();
 	}
 
 	/**
@@ -23,12 +25,13 @@ public class PlayerSuccess_Message extends Message {
 	 */
 	@Override
 	protected void addNodes(Document docIn){
-
+        Element root = docIn.getDocumentElement();
+		
+		Element success = docIn.createElement(ELEMENT_SUCCESS);
+		success.setTextContent(this.success);
+		root.appendChild(success);
 	}
 
-	public String getSuccess(){
-		return "";
-	}
 
 	/**
 	 * 
@@ -36,14 +39,20 @@ public class PlayerSuccess_Message extends Message {
 	 */
 	@Override
 	protected void init(Document docIn){
-
+		Element root = docIn.getDocumentElement();
+		
+		NodeList tmpElements = root.getElementsByTagName(ELEMENT_SUCCESS);
+        if (tmpElements.getLength() > 0) {
+            Element success = (Element) tmpElements.item(0);
+            this.success = success.getTextContent();
+        }
 	}
 
-	/**
-	 * 
-	 * @param success
-	 */
+	public String getSuccess(){
+		return this.success;
+	}
+	
 	public void setSuccess(String success){
-
+		this.success = success;
 	}
 }//end PlayerSuccess_Message

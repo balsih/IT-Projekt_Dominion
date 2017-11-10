@@ -49,12 +49,12 @@ public class Login_Message extends Message {
             this.password = password.getTextContent();
         }
 	}
-
-	public void setPassword(String password){
-		this.password = password;
-	}
 	
 	public String getPassword(){
 		return this.password;
+	}
+
+	public void setPassword(String password){
+		this.password = password;
 	}
 }//end Login_Message

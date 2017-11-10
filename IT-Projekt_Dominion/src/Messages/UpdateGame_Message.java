@@ -46,7 +46,6 @@ public class UpdateGame_Message extends Message {
 	private Integer buys = null;
 	private Integer actions = null;
 	private Integer coins = null;
-	private LinkedList<Card> newHandCards = null;
     
     private HashMap<String, String> stringElements;
     private HashMap<String, Integer> integerElements;
@@ -116,18 +115,15 @@ public class UpdateGame_Message extends Message {
 		this.attrValues.put(ATTR_DISCARDPILECARDNUMBER, this.discardPileCardNumber);
 		this.attrElements.put(ELEMENT_DECKPILE, ATTR_DECKPILECARDNUMBER);
 		this.attrElements.put(ELEMENT_DISCARDPILE, ATTR_DISCARDPILECARDNUMBER);
-		
 	}
 
 	/**
 	 * Helps the addNodes method to add elements in the given root
 	 * If an element intends to have an attribute, it will be set
 	 * 
-	 * The elementNames and elementContents have to be suitable to each other (correct number and order)
-	 * 
 	 * @param docIn, to create further elements
 	 * @param root, the current root to add elements
-	 * @param contents, generic HashMap, consists the elements as keys(<String>) and the input as values(<T>)
+	 * @param contents, generic HashMap, consists the elements or attributes as keys(<String>) and the input as values(<T>)
 	 */
 	private <T> void addContentElements(Document docIn, Element root, HashMap<String, T> content){
 		Set<String> keys = content.keySet();
@@ -164,15 +160,17 @@ public class UpdateGame_Message extends Message {
 		initializeMaps();
 		
 		this.parseContent(root, this.stringElements);
-		
-        NodeList tmpElements = root.getElementsByTagName(ELEMENT_CHAT);
-        if(tmpElements.getLength() > 0){
-        	Element chat = (Element) tmpElements.item(0);
-        	this.chat = chat.getTextContent();
-        }
+		this.parseContent(root, this.integerElements);
+		this.parseContent(root, this.cardElements);
 
 	}
 	
+	/**
+	 * Helps the init method to parse the content in the appropriate structure
+	 * 
+	 * @param root, consists the parsing elements
+	 * @param content, generic HashMap, consist the elements or attributes as keys (<String>) and the input as values (<T>)
+	 */
 	private <T> void parseContent(Element root, HashMap<String, T> content){
 		Set<String> keys = content.keySet();
 		for(String key: keys){
@@ -208,55 +206,55 @@ public class UpdateGame_Message extends Message {
 	
 	
 	public String getCurrentPlayer(){
-		return this.currentPlayer;
+		return this.stringElements.get(ELEMENT_CURRENTPLAYER);
 	}
 
 	public String getCurrentPhase(){
-		return this.currentPhase;
+		return this.stringElements.get(ELEMENT_CURRENTPHASE);
 	}
 	
 	public String getChat(){
-		return this.chat;
+		return this.stringElements.get(ELEMENT_CHAT);
 	}
 
 	public String getLog(){
-		return this.log;
+		return this.stringElements.get(ELEMENT_LOG);
 	}
 
 	public String getPlayedCard(){
-		return this.playedCard;
+		return this.stringElements.get(ELEMENT_PLAYEDCARD);
 	}
 
 	public String getCardBuyed(){
-		return this.cardBuyed;
+		return this.stringElements.get(ELEMENT_CARDBUYED);
 	}
 	
 	public String getDiscardPile(){
-		return this.discardPile;
+		return this.stringElements.get(ELEMENT_DISCARDPILE);
 	}
 	
 	public Integer getDiscardPileCardNumber(){
-		return this.discardPileCardNumber;
+		return this.attrValues.get(ATTR_DISCARDPILECARDNUMBER);
 	}
 	
 	public Integer getDeckPileCardNumber(){
-		return this.deckPileCardNumber;
+		return this.attrValues.get(ATTR_DECKPILECARDNUMBER);
 	}
 
 	public Integer getActions(){
-		return this.actions;
+		return this.integerElements.get(ELEMENT_ACTIONS);
 	}
 
 	public Integer getCoins(){
-		return this.coins;
+		return this.integerElements.get(ELEMENT_COINS);
 	}
 	
 	public Integer getBuys(){
-		return this.buys;
+		return this.integerElements.get(ELEMENT_BUYS);
 	}
 
 	public LinkedList<Card> getNewHandCards(){
-		return this.newHandCards;
+		return this.cardElements.get(ELEMENT_NEWHANDCARDS);
 	}
 
 
@@ -311,7 +309,6 @@ public class UpdateGame_Message extends Message {
 
 	//fill the handCardElementNames to use addContentElements
 	public void setNewHandCards(LinkedList<Card> newHandCards){
-		this.newHandCards = newHandCards;
 		for(int i = 0; i < newHandCards.size(); i++)
 			this.cardElements.put(ELEMENT_NEWHANDCARD, newHandCards);	
 	}

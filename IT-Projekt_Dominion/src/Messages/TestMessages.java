@@ -16,19 +16,10 @@ import Client_Services.ServiceLocator;
 public class TestMessages {
 
 	public static void main(String[] args) {
-		test("hallo");
+		testUpdateGame_Message();
 		
 	}
-	
-	private static <T> void test(T testElement){
-		String t1 = "";
-		try{
-			t1 = (String) testElement;
-		}catch(Exception e){
-			
-		}
-		System.out.println(t1);
-	}
+
 	
 	private static void testUpdateGame_Message(){
 		

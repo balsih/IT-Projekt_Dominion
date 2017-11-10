@@ -1,6 +1,8 @@
 package Messages;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * @author Lukas
@@ -9,12 +11,14 @@ import org.w3c.dom.Document;
  */
 public class PlayCard_Message extends Message {
 
-	private String card;
 	private static final String ELEMENT_CARD = "card";
+	private static final String ATTR_INDEX = "index";
+	private String card;
+	private Integer index;
 
 
 	public PlayCard_Message(){
-
+		super();
 	}
 
 	/**
@@ -23,11 +27,12 @@ public class PlayCard_Message extends Message {
 	 */
 	@Override
 	protected void addNodes(Document docIn){
-
-	}
-
-	public String getCard(){
-		return "";
+        Element root = docIn.getDocumentElement();
+		
+		Element card = docIn.createElement(ELEMENT_CARD);
+		card.setTextContent(this.card);
+		card.setAttribute(ATTR_INDEX, this.index.toString());
+		root.appendChild(card);
 	}
 
 	/**
@@ -36,14 +41,29 @@ public class PlayCard_Message extends Message {
 	 */
 	@Override
 	protected void init(Document docIn){
-
+		Element root = docIn.getDocumentElement();
+		
+		NodeList tmpElements = root.getElementsByTagName(ELEMENT_CARD);
+        if (tmpElements.getLength() > 0) {
+            Element card = (Element) tmpElements.item(0);
+            this.card = card.getTextContent();
+            this.index = Integer.parseInt(card.getAttribute(ATTR_INDEX));
+        }
+	}
+	
+	
+	public Integer getIndex(){
+		return this.index;
 	}
 
-	/**
-	 * 
-	 * @param card
-	 */
+	public String getCard(){
+		return this.card;
+	}
+	
+	public void setIndex(Integer index){
+		this.index = index;
+	}
 	public void setCard(String card){
-
+		this.card = card;
 	}
 }//end PlayCard_Message

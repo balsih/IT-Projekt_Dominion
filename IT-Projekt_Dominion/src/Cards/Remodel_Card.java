@@ -31,20 +31,19 @@ public class Remodel_Card extends Card {
 		//ugmsg.setLog(player.getPlayerName()+": choose a Card to get rid of!"); // usw.
 		
 		
-		
 		// noch fehlender Code bzw. Funktionalität 
 		
 		Game game = player.getGame();
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
-				
+		
 		ugmsg.setLog(player.getPlayerName()+": played Remodel card");
 		game.sendToOpponent(player, ugmsg); // info for opponent
-				
+		
 		// update game Messages -> XML 
 		ugmsg.setActions(player.getActions());
 		ugmsg.setBuys(player.getBuys());
 		ugmsg.setCoins(player.getCoins());
-				
+		
 		return ugmsg;
 	}
 }//end Remodel_Card
