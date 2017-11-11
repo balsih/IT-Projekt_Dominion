@@ -3,12 +3,15 @@ package Client_CreatePlayer_VC;
 import Abstract_MVC.View;
 import Client_GameApp_MVC.GameApp_Model;
 import Client_Services.ServiceLocator;
+import Client_Services.Translator;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -19,8 +22,7 @@ import javafx.stage.Stage;
  */
 public class CreatePlayer_View extends View<GameApp_Model> {
 
-	private ServiceLocator sl = ServiceLocator.getServiceLocator();
-	
+	//private ServiceLocator sl = ServiceLocator.getServiceLocator(); // muss dieser als Instanzvariable vorhanden sein bzw warum? 
 	
 
 	/**
@@ -34,38 +36,41 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 	@Override
 	protected Scene create_GUI(){
 		
+		ServiceLocator sl = ServiceLocator.getServiceLocator();
+		//sl.setTranslator(new Translator("de"));
+		Translator t = sl.getTranslator();
+		
+		BorderPane pane = new BorderPane();
+		
+		
 		VBox root = new VBox();
 		root.setId("root");
-		Button save = new Button();
+		Button save = new Button(t.getString("cnp.saveButton"));
 		save.setId("save");
 		TextField name_text = new TextField();
 		name_text.setId("name_text");
 		TextField password_text = new TextField();
 		password_text.setId("password_text");
-		Label createNewPlayer = new Label();
+		Label createNewPlayer = new Label(t.getString("cnp.createNewPlayer"));
 		createNewPlayer.setId("createNewPlayer");
-		Label name = new Label();
+		Label name = new Label(t.getString("cnp.name"));
 		name.setId("name");
-		Label password = new Label();
+		Label password = new Label(t.getString("cnp.password"));
 		password.setId("password");
 		
 		root.setPrefSize(250,300);
+		
+
+		save.setAlignment(Pos.BOTTOM_RIGHT);
+		root.setVgrow(pane, Priority.ALWAYS);
+
 	
-		// dummy mässig, muss über Translator gesetzt werden
-		createNewPlayer.setText("Neuer Spieler erstellen");
-		name.setText("Name:");
-		password.setText("Passwort:");
+		root.getChildren().addAll(name, name_text, password, password_text, save);
 		
-		save.setText("Speichern");
-		
-		root.getChildren().addAll(name, name_text, password, password_text);
-		//vBox.getChildren().addAll(createNewPlayer, name, name_text, password, password_text);
-		
-		// Fill borderpane
 		
 		Scene scene = new Scene(root);
 		this.stage.setScene(scene);
-		//this.root.setBottom(save);
+
 		return scene;
 	}
 	

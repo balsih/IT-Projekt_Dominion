@@ -1,0 +1,47 @@
+#root {
+
+    -fx-background-color: black;
+    -fx-background-repeat: stretch;   
+    -fx-background-size: 300 300;
+    -fx-background-position: center center;
+    -fx-border-color: black;
+}
+
+#progress  {
+	-fx-alignment: center;
+	-fx-size: 200;
+}
+
+#loading {
+	
+    -fx-background-color: transparent;
+    -fx-background-repeat: stretch;   
+    -fx-background-size: 500 500;
+    -fx-background-position: center center;
+    -fx-font-size: 20px;
+    -fx-text-fill: white;
+}
+
+
+#root {
+	
+}
+#save {
+	-fx-background-color: #a9a9a9;
+	
+}
+#name_text {
+	
+}
+#password_text {
+	
+}
+#createNewPlayer {
+	
+}
+#name {
+	
+}
+#password {
+	
+}

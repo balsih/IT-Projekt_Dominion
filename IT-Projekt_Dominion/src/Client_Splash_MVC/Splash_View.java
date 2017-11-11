@@ -46,19 +46,16 @@ public class Splash_View extends View<Splash_Model> {
 
 	@Override
 	protected Scene create_GUI(){
-	
-		Translator t;
-		ServiceLocator sl; 
-		
-		sl = ServiceLocator.getServiceLocator();
-		sl.setTranslator(new Translator("de"));
-		t = sl.getTranslator();
+
+		ServiceLocator sl = ServiceLocator.getServiceLocator();
+		//sl.setTranslator(new Translator("de"));
+		Translator t = sl.getTranslator();
 		
 		//BorderPane root = new BorderPane();
 		
 		//root.setId("splash");
 		
-		lblStatus = new Label(t.getString("splash.loading"));
+		lblStatus = new Label(t.getString("splash.label"));
 		lblStatus.setTextAlignment(TextAlignment.CENTER);
 		lblStatus.setId("loading");
 		
