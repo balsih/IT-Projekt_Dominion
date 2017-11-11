@@ -11,17 +11,12 @@ import Cards.Card;
  */
 public class Bot extends Player {
 
-	private static final int NUMSTAGE_1 = 4;
-	private static final int NUMSTAGE_2 = 7;
-	private static final int MAXVILLAGECARDS = 2;
-	private static final int MAXSMITHYCARDS = 1;
-	private static final int MAXWORKSHOPCARDS = 2;
-	private static final int MAXCELLARCARDS = 2;
-	private int numturns = 0;
-	private int numvillagecards;
-	private int numsmithycards;
-	private int numworkshopcards;
-	private int numcellarcards;
+	private static final int NUM_STAGE_1 = 3, NUM_STAGE_2 = 5, NUM_STAGE_3 = 14, MAX_VILLAGE_CARDS = 2,
+			MAX_SMITHY_CARDS = 1, MAX_WORKSHOP_CARDS = 2, MAX_CELLAR_CARDS = 2, MAX_GOLD_CARDS = 6,
+			MAX_SILVER_CARDS = 4, MAX_COOPER_CARDS = 6, MIN_TIME_BEFORE_EXECUTING = 100,
+			MAX_TIME_BEFORE_EXECUTING = 900;
+	private int numbuys = 0, numvillagecards, numsmithycards, numworkshopcards, numcellarcards, numgoldcards,
+			numsilvercards, numcoopercards;
 	private ArrayList<String> actioncardlist = new ArrayList<String>(5);
 
 	public Bot(String name) {
@@ -51,21 +46,20 @@ public class Bot extends Player {
 		// buy phase
 		try {
 			while (buys != 0) { // number of buys where to change?
-				if (numturns < NUMSTAGE_1) {
+				if (numbuys <= NUM_STAGE_1)
 					buyTreasureCards();
-				} else {
-					if (numturns < NUMSTAGE_2) {
-						buyActionCards();
-					} else {
-						buyMixedCards();
-					}
-				}
+				else if (numbuys <= NUM_STAGE_2)
+					buyActionCards();
+				else if (numbuys <= NUM_STAGE_3)
+					buyMixedCards();
+				else
+					buyVictoryCards(); // after 16 buys --> only buy Victory_Cards
+
 			}
-			numturns++;
+			numbuys++;
 
 		} catch (Exception e) {
 			skipPhase();
-			numturns++;
 			e.getMessage().toString();
 			System.out.println(e);
 		}
@@ -79,19 +73,15 @@ public class Bot extends Player {
 			String stringCase = null;
 			if (actioncardlist.contains("Village_Card")) {
 				stringCase = "Village_Card";
-			} else {
-				if (actioncardlist.contains("Smithy_Card")) {
-					stringCase = "Smithy_Card";
-				} else {
-					if (actioncardlist.contains("Workshop_Card")) {
-						stringCase = "Workshop";
-					} else {
-						if (actioncardlist.contains("Cellar_Card")) {
-							stringCase = "Cellar_Card";
-						}
-					}
-				}
-			} // René fragen
+			} else if (actioncardlist.contains("Smithy_Card")) {
+				stringCase = "Smithy_Card";
+			} else if (actioncardlist.contains("Workshop_Card")) {
+				stringCase = "Workshop";
+			} else if (actioncardlist.contains("Cellar_Card")) {
+				stringCase = "Cellar_Card";
+			}
+
+			// René fragen
 			Card playedCard = null;
 			int index;
 			switch (stringCase) {
@@ -131,77 +121,84 @@ public class Bot extends Player {
 		}
 	}
 
-	private void buyTreasureCards() {
-		if (coins >= 6) {
-			buy("Gold_Card");
-		} else {
-			if (coins >= 3) {
-				buy("Silver_Card");
-			} else {
-				if (coins == 2) {
-					if (numcellarcards < MAXCELLARCARDS)
-						buy("Cellar_Card");
-				} else {
-					buy("Bronze_Card");
-				}
-			}
-		}
-
-	}
-
 	private void buyMixedCards() {
-		switch (coins) {
-		case 8:
-			buy("Province_Card");
-			break;
-		case 7:
-			buy("Gold_Card");
-			break;
-		case 6:
-			buy("Gold_Card");
-			break;
-		case 5:
-			buy("Duchy_Card");
-			break;
-		case 4:
-			buyActionCards();
-			break;
-		case 3:
-			buyActionCards();
-			break;
-		case 2:
-			buyActionCards();
-			break;
-		case 1:
-			buy("Bronze_Card");
-			break;
-		default:
-			buy("Bronze_Card");
-			break;
+		if (coins >= 8) {
+			buyVictoryCards(); // more than 8 coins --> buy Province_Card
+		} else {
+			switch (coins) {
+			case 7: // treasurecard else actioncard else coopercard
+				buyTreasureCards();
+				break;
+			case 6:
+				if (numgoldcards <= MAX_GOLD_CARDS) // if Bot has 6 coins, always try to buy a Gold_Card
+					buyTreasureCards();
+				else
+					buyActionCards();
+				break;
+			case 5:
+				buyVictoryCards(); // sure about that?
+				break;
+			case 4:
+				buyActionCards(); // could buy a SilverCard! Change this!
+				break;
+			case 3:
+				if (numsilvercards <= MAX_SILVER_CARDS)
+					buyTreasureCards();
+				else
+					buyActionCards();
+				break;
+			case 2:
+				buyActionCards();
+				break;
+			case 1:
+				buyTreasureCards();
+				break;
+			default:
+				buyTreasureCards();
+				break;
+			}
 		}
 	}
 
 	private void buyActionCards() {
-		if (coins >= 8) {
-			buy("Province_Card");
+		if (numvillagecards <= MAX_VILLAGE_CARDS && coins >= 3) {
+			buy("Village_Card");
+			numvillagecards++;
+		} else if (numsmithycards <= MAX_SMITHY_CARDS && coins >= 4) {
+			buy("Smithy_Card");
+			numsmithycards++;
+		} else if (numworkshopcards <= MAX_WORKSHOP_CARDS && coins >= 3) {
+			buy("Workshop_Card");
+			numworkshopcards++;
+		} else if (numcellarcards <= MAX_CELLAR_CARDS && coins >= 2) {
+			buy("Cellar_Card");
+			numcellarcards++;
 		} else {
-			if (coins >= 6) {
-				buy("Gold_Card");
-			} else {
-				if (numvillagecards < MAXVILLAGECARDS && coins >= 3) {
-					buy("Village_Card");
-				} else {
-					if (numsmithycards < MAXSMITHYCARDS && coins >= 4) {
-						buy("Smithy_Card");
-					} else {
-						if (numworkshopcards < MAXWORKSHOPCARDS && coins >= 3) {
-							buy("Workshop_Card");
-						} else {
-							buyTreasureCards();
-						}
-					}
-				}
-			}
+			buyTreasureCards(); // if Bot has reached maximum Action_Cards, only buy Treasure_Cards
 		}
+	}
+
+	private void buyTreasureCards() {
+		if (coins >= 6) {
+			buy("Gold_Card");
+			numgoldcards++;
+		} else if (coins >= 3) {
+			buy("Silver_Card");
+			numsilvercards++;
+		} else {
+			buy("Cooper_Card"); // a Cooper_Card is free --> so this is always the ultimate possibility
+			numcoopercards++;
+		}
+	}
+
+	private void buyVictoryCards() {
+		if (coins >= 8)
+			buy("Province_Card");
+		else if (coins >= 5)
+			buy("Duchy_Card");
+		else if (coins >= 2)
+			buy("Estade_Card");
+		else
+			buyTreasureCards(); // if no Victory_Card can be bought --> buy a Cooper_Card
 	}
 }// end Bot
