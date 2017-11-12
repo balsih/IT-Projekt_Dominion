@@ -7,30 +7,29 @@
     -fx-border-color: black;
 }
 
-#save {
+.button {
 	-fx-background-color: #a9a9a9;
 	-fx-alignment: center;
 	-fx-size: 2000;
 	-fx-font-size: 15px;
     -fx-text-fill: white;
 	-fx-font-weight: bold;
+	-fx-padding: 5 20 5 20;
 }
 
 .button:hover{
-	-fx-background-color: #d3d3d3;
+	-fx-background-color: #6699CC;
 	-fx-text-fill: #000000;
 }
 
 .TextField {
-	
-	
+
 }
+
 #createNewPlayer {
-	-fx-font-size: 30px;
+	-fx-font-size: 25px;
     -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-stroke: red;
-    -fx-stroke-width: 2px;
 }
 
 .label {
@@ -40,29 +39,22 @@
 }
 
 
-
-
-
-
-
-
-
-
-
-.vbox{
+#vBox{
+	-fx-border-width: 10 2 3 4;
 	-fx-padding: 10px;
 	-fx-spacing: 10px;
-	-fx-background-color: #f0f8ff;
-	-fx-border-width: 20;
-	-fx-border-radius: 50;
-	-fx-border-color: black;
+	-fx-background-color: rgba(0, 0, 0, 0.5);
+	-fx-hgap: 20px;
+	-fx-vgap: 20px;
+	
 }
 
-.hbox{
+#buttonBox{
 	-fx-spacing: 10px;
+	-fx-background-color: transparent;
+	-fx-hgap: 10px;
+	-fx-vgap: 10px;
+	
 }
 
-.gaps{
-	-fx-hgap: 100px;
-	-fx-vgap: 100px;
-}
+
