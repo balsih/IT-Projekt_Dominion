@@ -10,6 +10,7 @@ import java.util.Queue;
 
 import java.util.logging.Logger;
 
+import Messages.BuyCard_Message;
 import Messages.Chat_Message;
 import Messages.Commit_Message;
 import Messages.CreateGame_Message;
@@ -22,9 +23,10 @@ import Messages.Login_Message;
 import Messages.Message;
 import Messages.MessageType;
 import Messages.PlayCard_Message;
+import Messages.PlayerSuccess_Message;
+import Messages.SkipPhase_Message;
 import Messages.UpdateGame_Message;
 import Server_Services.DB_Connector;
-import Server_Services.ServiceLocator;
 
 
 /**
@@ -40,13 +42,12 @@ public class ServerThreadForClient implements Runnable {
 	
 	private static HashMap<InetAddress, ServerThreadForClient> connections = new HashMap<InetAddress, ServerThreadForClient>();
 	
-	private ServiceLocator sl = ServiceLocator.getServiceLocator();
 	private final Logger logger = Logger.getLogger("");
 
 	private Socket clientSocket;
 	private Game game;
 	private Player player;
-	private Queue<UpdateGame_Message> waitingMessages;
+	private Queue<Message> waitingMessages;
 
 
 	private ServerThreadForClient(){
@@ -148,8 +149,7 @@ public class ServerThreadForClient implements Runnable {
      * @return Commit_Message
      */
 	private Message processSkipPhase(Message msgIn) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.player.skipPhase();
 	}
 
 	/**
@@ -158,14 +158,14 @@ public class ServerThreadForClient implements Runnable {
 	 * 
 	 * @param msgIn, PlayCard_Message
 	 * @return UpdateGame_Message, content depends if player was able to play the card or Failure_Message
+	 * PlayerSuccess_Message if player ended the game with this move
 	 */
 	private Message processPlayCard(Message msgIn) {
 		PlayCard_Message pcmsg = (PlayCard_Message) msgIn;
 		String cardName = pcmsg.getCard();
 		Integer index = pcmsg.getIndex();
 		if(cardName == this.player.getHandCards().get(index).getCardName()){
-			UpdateGame_Message ugmsg = this.player.play(cardName, index);
-			return ugmsg;
+			return this.player.play(cardName, index);
 		}else{//the cards on the client and server are not the same(should not be possible)
 			this.logger.severe(pcmsg.getClient()+"'s handcards aren't equals to the cards in the game");
 			return new Failure_Message();
@@ -183,7 +183,7 @@ public class ServerThreadForClient implements Runnable {
 		Login_Message lmsg = (Login_Message) msgIn;
 		String clientName = lmsg.getClient();
 		
-		DB_Connector dbConnector = this.sl.getDB_Connector();
+		DB_Connector dbConnector = DB_Connector.getDB_Connector();
 		boolean success = dbConnector.checkLoginInput(clientName, lmsg.getPassword());
 		if(success){
 			this.logger.severe(clientName+" login succeeded");
@@ -201,7 +201,7 @@ public class ServerThreadForClient implements Runnable {
 	 * @return HighScore_Message, content of the top5 (name, points) in one String
 	 */
 	private Message processHighScore(Message msgIn) {
-		DB_Connector dbConnector = this.sl.getDB_Connector();
+		DB_Connector dbConnector = DB_Connector.getDB_Connector();
 		String highScore = dbConnector.getHighScore();
 		HighScore_Message hsmsg = new HighScore_Message();
 		hsmsg.setHighScore(highScore);
@@ -223,7 +223,7 @@ public class ServerThreadForClient implements Runnable {
 		//get a new Game and add player and Bot (if singlePlayer) to the game, 
 		//Game will start immediately if singlePlayer or your secondPlayer
 		if(mode == "singleplayer" || mode == "multiplayer"){
-			this.player = new Player(gmmsg.getClient(), this);
+			this.player = new Player(gmmsg.getClient());
 			this.game = Game.getGame(this.clientSocket, mode, this.player);
 			if(this.game.isReadyToStart()){
 				CreateGame_Message cgmsg = new CreateGame_Message();
@@ -255,7 +255,7 @@ public class ServerThreadForClient implements Runnable {
 		String clientName = cnpmsg.getClient();
 		String password = cnpmsg.getPassword();
 		
-		DB_Connector dbConnector = this.sl.getDB_Connector();
+		DB_Connector dbConnector = DB_Connector.getDB_Connector();
 		boolean success = dbConnector.addNewPlayer(clientName, password);
 		if(success){
 			this.logger.severe(clientName+"'s storation succeeded");
@@ -285,9 +285,16 @@ public class ServerThreadForClient implements Runnable {
 		return ugmsg;
 	}
 
+	/**
+	 * Try to buy a card
+	 * 
+	 * @param msgIn, BuyCard_Message
+	 * @return UpdateGame_Message with the correct buyed card or Failure_Message if player wasn't able to buy
+	 * PlayerSuccess_Message if the player ended the game with this buy
+	 */
 	private Message processBuyCard(Message msgIn) {
-		// TODO Auto-generated method stub
-		return null;
+		BuyCard_Message bcmsg = new BuyCard_Message();
+		return this.player.buy(bcmsg.getCard());
 	}
 
 	/**
@@ -305,13 +312,19 @@ public class ServerThreadForClient implements Runnable {
 	}
 	
 	/**
+	 * The player gave up his game. Opponent has to know he that he won
 	 * 
-	 * @param msgIn
-	 * @return
+	 * @param msgIn, GiveUp_Message
+	 * @return PlayerSuccess_Message, you lost
 	 */
     private Message processGiveUp(Message msgIn) {
-		
-		return null;
+    	PlayerSuccess_Message psmsgOpponent = new PlayerSuccess_Message();
+    	psmsgOpponent.setSuccess("won");
+    	this.game.sendToOpponent(msgIn.getClient(), psmsgOpponent);
+    	PlayerSuccess_Message psmsgSelf = new PlayerSuccess_Message();
+    	psmsgSelf.setSuccess("lost");
+    	this.logger.severe(this.game.getOpponent().getPlayerName()+" won!");
+    	return psmsgSelf;
 	}
 
 	/**
@@ -322,7 +335,7 @@ public class ServerThreadForClient implements Runnable {
 
 	}
 	
-	public void addWaitingMessages(UpdateGame_Message ugmsg){
+	public void addWaitingMessages(Message ugmsg){
 		this.waitingMessages.offer(ugmsg);
 	}
 	

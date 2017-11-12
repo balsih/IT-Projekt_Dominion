@@ -8,6 +8,8 @@ import java.util.Stack;
 
 import Cards.Card;
 import Cards.Copper_Card;
+import Messages.Failure_Message;
+import Messages.Message;
 import Messages.UpdateGame_Message;
 
 /**
@@ -41,6 +43,9 @@ public class Player {
 	protected String log;
 	
 	private ServerThreadForClient serverThreadForClient;
+	
+	private UpdateGame_Message ugmsg;
+	private Failure_Message fmsg;
 
 	/**
 	 * 
@@ -63,7 +68,32 @@ public class Player {
 		
 		this.log = "";
 		
+		
 		this.serverThreadForClient = serverThreadForClient;
+		
+		this.ugmsg = new UpdateGame_Message();
+		this.fmsg = new Failure_Message();
+	}
+	
+	public Player(String name){
+		this.deckPile = new Stack<Card>();
+		this.discardPile = new Stack<Card>();
+		this.handCards = new LinkedList<Card>();
+		this.playedCards = new LinkedList<Card>();
+
+		this.coins = 0;
+		this.actions = 1;
+		this.buys = 0;
+		counter = 0;
+
+		this.isFinished = false;
+
+		this.actualPhase = "";
+		
+		this.log = "";
+		
+		this.ugmsg = new UpdateGame_Message();
+		this.fmsg = new Failure_Message();
 	}
 	
 	/**
@@ -78,10 +108,10 @@ public class Player {
 	/**
 	 * buys a card and lays the buyed card into the discard pile
 	 */
-	public Card buy(String cardName) {
+	public Message buy(String cardName) {
 		Card buyedCard = null;
 		this.actualPhase = "buy";
-
+		
 		switch (cardName) {
 		case "Copper_Card":
 			buyedCard = this.game.getCopperPile().pop();
@@ -141,18 +171,35 @@ public class Player {
 			break;
 		}
 
-		return buyedCard;
+		if(buyedCard.getCost() <= this.getCoins() && this.getBuys() > 0){
+			this.ugmsg.setLog("");
+			this.ugmsg.setCurrentPlayer(this.getPlayerName());
+			this.ugmsg.setCoins(this.getCoins());
+			this.ugmsg.setActions(this.getActions());
+			this.ugmsg.setBuys(this.getBuys());
+			this.ugmsg.setCurrentPhase(actualPhase);
+			this.ugmsg.setDiscardPile(this.discardPile.firstElement().getCardName());
+			this.ugmsg.setDiscardPileCardNumber(this.discardPile.size());
+			this.ugmsg.setDeckPileCardNumber(this.deckPile.size());
+			this.ugmsg.setCardBuyed(buyedCard.getCardName());
+			this.ugmsg.setNewHandCards(this.handCards);
+			this.ugmsg.setChat("");
+			
+			return this.ugmsg;
+		} else
+			return this.fmsg;
+
 	}
 	
-	//checks if the card can be buyed
-	public boolean buyed(String cardName){
-		Card buyedCard = this.buy(cardName);
-		
-		if(buyedCard.getCost() <= this.getCoins() && this.getBuys() > 0)
-			return true;
-		else
-			return false;
-	}
+//	//checks if the card can be buyed
+//	public boolean buyed(String cardName){
+//		Card buyedCard = this.buy(cardName);
+//		
+//		if(buyedCard.getCost() <= this.getCoins() && this.getBuys() > 0)
+//			return true;
+//		else
+//			return false;
+//	}
 
 	//Cleans up
 	public void cleanUp() {
@@ -229,119 +276,123 @@ public class Player {
 	 * plays the selected card and execute this card
 	 *
 	 */
-	public UpdateGame_Message play(String cardName, int index) {
+	public Message play(String cardName, int index) {
 		Card playedCard = null;
 		this.actualPhase = "play";
-		UpdateGame_Message ugmsg = new UpdateGame_Message();
 
 		switch (cardName) {
 		case "Copper_Card":
-//			index = this.handCards.indexOf(cardName);
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
 		case "Cellar_Card":
-//			index = this.handCards.indexOf(cardName);
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
 		case "Duchy_Card":
-//			index = this.handCards.indexOf(cardName);
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
 		case "Estate_Card":
-//			index = this.handCards.indexOf(cardName);
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
 		case "Gold_Card":
-//			index = this.handCards.indexOf(cardName);
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
 		case "Market_Card":
-//			index = this.handCards.indexOf(cardName);
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
 		case "Mine_Card":
-//			index = this.handCards.indexOf(cardName);
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
 		case "Province_Card":
-//			index = this.handCards.indexOf(cardName);
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
 		case "Remodel_Card":
-//			index = this.handCards.indexOf(cardName);
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
 		case "Silver_Card":
-//			index = this.handCards.indexOf(cardName);
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
 		case "Smithy_Card":
-//			index = this.handCards.indexOf(cardName);
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
 		case "Village_Card":
-//			index = this.handCards.indexOf(cardName);
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
 		case "Woodcutter_Card":
-//			index = this.handCards.indexOf(cardName);
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
 		case "Workshop_Card":
-//			index = this.handCards.indexOf(cardName);
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
 		}
 		
-		return ugmsg;	
+		if (this.getActions() > 0){
+			this.ugmsg.setLog("");
+			this.ugmsg.setCurrentPlayer(this.getPlayerName());
+			this.ugmsg.setCoins(this.getCoins());
+			this.ugmsg.setActions(this.getActions());
+			this.ugmsg.setBuys(this.getBuys());
+			this.ugmsg.setCurrentPhase(this.actualPhase);
+			this.ugmsg.setDiscardPile(this.discardPile.firstElement().getCardName());
+			this.ugmsg.setDiscardPileCardNumber(this.discardPile.size());
+			this.ugmsg.setDeckPileCardNumber(this.deckPile.size());
+			this.ugmsg.setNewHandCards(handCards);
+			this.ugmsg.setPlayedCards(playedCard.getCardName());
+			this.ugmsg.setChat("");
+			
+			return this.ugmsg;	
+		}
+		else
+			return this.fmsg;
 	}
 	
-	//Checks if a card can be played
-	public boolean played(){
-		if(this.getActions() > 0)
-			return true;
-		else
-			return false;
-	}
+//	//Checks if a card can be played
+//	public boolean played(){
+//		if(this.getActions() > 0)
+//			return true;
+//		else
+//			return false;
+//	}
 
 	/**
 	 * skips actual phase and goes to the next phase
 	 */
-	public void skipPhase() {
+	public Message skipPhase() {
 		switch (this.actualPhase) {
 		case "play":
 			//this.buy(cardName);
 		case "buy":
 			this.cleanUp();
 		}
+		
+		return this.ugmsg;
 	}
 
 	public int getActions() {
