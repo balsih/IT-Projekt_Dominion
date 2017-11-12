@@ -1,5 +1,6 @@
 package Cards;
 
+import Messages.MessageType;
 
 /**
  * @author Lukas
@@ -21,5 +22,20 @@ public enum CardName {
 	Village,
 	Woodcutter,
 	Workshop;
+	
+	/**
+	 * @author Bradley Richards
+	 * Parses the enum-Type for creating new cards on client
+	 * 
+	 * @param cardName
+	 * @return CardName, enum of the given cardName
+	 */
+    public static CardName parseType(String cardName) {
+    	CardName cardType = null;
+    	for (CardName value : CardName.values()) {
+    		if (value.toString().equals(cardName)) cardType = value;
+    	}
+    	return cardType;
+    }
 
 }
