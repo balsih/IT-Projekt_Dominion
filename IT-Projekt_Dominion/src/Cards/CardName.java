@@ -1,6 +1,5 @@
 package Cards;
 
-import Messages.MessageType;
 
 /**
  * @author Lukas

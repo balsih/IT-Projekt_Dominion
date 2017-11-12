@@ -10,6 +10,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import Cards.Card;
+import Cards.CardName;
 
 /**
  * The client wants to start a Game. For this purpose the client chooses a singleplayer or multiplayer Game.
@@ -30,7 +31,7 @@ public class CreateGame_Message extends Message {
 	private final static String ELEMENT_HANDCARDS = "handCards";
 	private final static String ELEMENT_DECKCARD = "deckCard";
 	private final static String ELEMENT_HANDCARD = "handCard";
-	private HashMap<String, Integer> buyCards;
+	private HashMap<CardName, Integer> buyCards;
 	private LinkedList<Card> handCards;
 	private Stack<Card> deckPile;
 	private String opponent;
@@ -39,7 +40,7 @@ public class CreateGame_Message extends Message {
 	public CreateGame_Message(){
 		super();
         this.deckPile = new Stack<Card>();
-        this.buyCards = new HashMap<String, Integer>();
+        this.buyCards = new HashMap<CardName, Integer>();
         this.handCards = new LinkedList<Card>();
 	}
 
@@ -102,7 +103,7 @@ public class CreateGame_Message extends Message {
             NodeList deckElements = deckPile.getElementsByTagName(ELEMENT_DECKCARD);
             for(int i = deckElements.getLength() -1; i >= 0; i--){
             	Element deckCard = (Element) deckElements.item(i);
-//            	this.deckPile.push(Card.getCard(deckCard.getTextContent()));
+            	this.deckPile.push(Card.getCard(CardName.parseType(deckCard.getTextContent())));
             }
         }
         
@@ -114,7 +115,7 @@ public class CreateGame_Message extends Message {
         	for(int i = buyElements.getLength() -1; i >= 0; i--){
         		Element buyCard = (Element) buyElements.item(i);
         		Integer numOfCards = Integer.parseInt(buyCard.getAttribute(ATTR_BUYCARDNUMBER));
-//        		this.buyCards.put(Card.getCard(buyCard.getTextContent()), numOfCards);
+        		this.buyCards.put(CardName.parseType(buyCard.getTextContent()), numOfCards);
         	}
         }
         
@@ -139,7 +140,7 @@ public class CreateGame_Message extends Message {
 	
 
 
-	public HashMap<String, Integer> getBuyCards(){
+	public HashMap<CardName, Integer> getBuyCards(){
 		return this.buyCards;
 	}
 
@@ -166,7 +167,7 @@ public class CreateGame_Message extends Message {
 	
 	
 
-	public void setBuyCards(HashMap<String, Integer> buyCards){
+	public void setBuyCards(HashMap<CardName, Integer> buyCards){
 		this.buyCards = buyCards;
 	}
 
