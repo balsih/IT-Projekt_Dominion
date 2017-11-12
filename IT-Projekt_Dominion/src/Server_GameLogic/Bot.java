@@ -25,8 +25,12 @@ public class Bot extends Player {
 		super(name, serverThreadForClient);
 	}
 
-	// main method
-	public void execute() throws InterruptedException {
+	/**
+	 * executes the Bot with all its stages: play, buy and cleanup
+	 * 
+	 * @throws InterruptedException
+	 */
+	public void execute() {
 		try {
 			this.actualPhase = "play";
 			for (int i = 0; i < handCards.size(); i++) {
@@ -75,11 +79,15 @@ public class Bot extends Player {
 	 * 
 	 * @throws InterruptedException
 	 */
-	private void makeabreak() throws InterruptedException {
+	private void makeabreak() {
 		Random rand = new Random();
 		int time = rand.nextInt((MAX_TIME_BEFORE_EXECUTING - MIN_TIME_BEFORE_EXECUTING) + 1)
 				+ MIN_TIME_BEFORE_EXECUTING;
-		Thread.sleep(time);
+		try {
+			Thread.sleep(time);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
