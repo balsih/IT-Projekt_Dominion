@@ -1,11 +1,13 @@
 package Server_GameLogic;
 
 import java.util.ArrayList;
+import java.util.Random;
+
 import Cards.Card;
 
 /**
  * @author Simon
- * @version 2.0
+ * @version 3.0
  * @created 31-Okt-2017 17:08:40
  * @lastEdited 09-Nov-2017 20:00:00
  */
@@ -20,12 +22,11 @@ public class Bot extends Player {
 	private ArrayList<String> actioncardlist = new ArrayList<String>(5);
 
 	public Bot(String name) {
-		super(name);
+		super(name, serverThreadForClient);
 	}
 
 	// main method
-	public void execute() {
-		// action phase
+	public void execute() throws InterruptedException {
 		try {
 			this.actualPhase = "play";
 			for (int i = 0; i < handCards.size(); i++) {
@@ -34,18 +35,19 @@ public class Bot extends Player {
 				}
 			}
 			while (!actioncardlist.isEmpty()) {
+				makeabreak();
 				playActionCards();
 			}
 		} catch (Exception e) {
 			skipPhase();
 			e.getMessage().toString();
 			System.out.println(e);
-		} // next step buy phase... (Method necessary?)
-		skipPhase();
+		}
+		skipPhase();// next step buy phase... (Method necessary?)
 
-		// buy phase
 		try {
 			while (buys != 0) { // number of buys where to change?
+				makeabreak();
 				if (numbuys <= NUM_STAGE_1)
 					buyTreasureCards();
 				else if (numbuys <= NUM_STAGE_2)
@@ -64,10 +66,25 @@ public class Bot extends Player {
 			System.out.println(e);
 		}
 		// clean up phase
+		makeabreak();
 		cleanUp();
-	} // end of execute method
+	}
 
-	// helper methods
+	/**
+	 * wait for a few milliseconds before executing the next step
+	 * 
+	 * @throws InterruptedException
+	 */
+	private void makeabreak() throws InterruptedException {
+		Random rand = new Random();
+		int time = rand.nextInt((MAX_TIME_BEFORE_EXECUTING - MIN_TIME_BEFORE_EXECUTING) + 1)
+				+ MIN_TIME_BEFORE_EXECUTING;
+		Thread.sleep(time);
+	}
+
+	/**
+	 * plays Action_Cards according some rules of priority
+	 */
 	private void playActionCards() {
 		while (actions >= 1) {
 			String stringCase = null;
@@ -121,6 +138,9 @@ public class Bot extends Player {
 		}
 	}
 
+	/**
+	 * buys mixed cards
+	 */
 	private void buyMixedCards() {
 		if (coins >= 8) {
 			buyVictoryCards(); // more than 8 coins --> buy Province_Card
@@ -136,10 +156,13 @@ public class Bot extends Player {
 					buyActionCards();
 				break;
 			case 5:
-				buyVictoryCards(); // sure about that?
+				if (numvillagecards <= MAX_VILLAGE_CARDS)
+					buyActionCards();
+				else
+					buyVictoryCards();
 				break;
 			case 4:
-				buyActionCards(); // could buy a SilverCard! Change this!
+				buyActionCards();
 				break;
 			case 3:
 				if (numsilvercards <= MAX_SILVER_CARDS)
@@ -160,6 +183,10 @@ public class Bot extends Player {
 		}
 	}
 
+	/**
+	 * buys Action_Cards and if the limit of each Action_Card is reached, it will
+	 * buy Treasure_Cards
+	 */
 	private void buyActionCards() {
 		if (numvillagecards <= MAX_VILLAGE_CARDS && coins >= 3) {
 			buy("Village_Card");
@@ -178,6 +205,9 @@ public class Bot extends Player {
 		}
 	}
 
+	/**
+	 * buys Treasure_Cards
+	 */
 	private void buyTreasureCards() {
 		if (coins >= 6) {
 			buy("Gold_Card");
@@ -191,6 +221,9 @@ public class Bot extends Player {
 		}
 	}
 
+	/**
+	 * buys Victory_Cards and if that is not possible, it will buy Treasure_Cards
+	 */
 	private void buyVictoryCards() {
 		if (coins >= 8)
 			buy("Province_Card");
