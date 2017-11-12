@@ -22,7 +22,7 @@ public class Bot extends Player {
 	private ArrayList<String> actioncardlist = new ArrayList<String>(5);
 
 	public Bot(String name) {
-		super(name, serverThreadForClient);
+		super(name);
 	}
 
 	/**
