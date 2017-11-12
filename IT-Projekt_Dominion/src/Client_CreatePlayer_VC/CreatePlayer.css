@@ -11,8 +11,9 @@
 	-fx-background-color: #a9a9a9;
 	-fx-alignment: center;
 	-fx-size: 2000;
-	-fx-alignment: center;
-	
+	-fx-font-size: 15px;
+    -fx-text-fill: white;
+	-fx-font-weight: bold;
 }
 
 .button:hover{
@@ -24,17 +25,20 @@
 	
 	
 }
-.label {
+#createNewPlayer {
 	-fx-font-size: 30px;
     -fx-text-fill: white;
     -fx-font-weight: bold;
+    -fx-stroke: red;
+    -fx-stroke-width: 2px;
 }
-#passwordd {
+
+.label {
 	-fx-font-size: 20px;
     -fx-text-fill: white;
-	-fx-background-color: transparent;
-	
+    -fx-font-weight: bold;
 }
+
 
 
 

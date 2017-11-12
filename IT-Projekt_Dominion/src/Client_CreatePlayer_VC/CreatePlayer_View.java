@@ -39,7 +39,7 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 	 */
 	public CreatePlayer_View(Stage stage, GameApp_Model model){
 		super(stage, model);
-		//stage.initStyle(StageStyle.TRANSPARENT);
+		stage.initStyle(StageStyle.TRANSPARENT);
 	}
 
 	@Override
@@ -82,15 +82,15 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		// wir legen den Mediaplayer an und weisen ihm das Media Objekt zu
 		final MediaPlayer mediaPlayer = new MediaPlayer(media);
 		
-		//mediaPlayer.play();
+		mediaPlayer.play();
 		//mediaPlayer.stop();
 		
-		root.add(createNewPlayer, 0, 2, 4, 2);
-		root.add(name, 0, 12, 4, 2);
-		root.add(name_text, 0, 14, 4, 2);
-		root.add(password, 0, 16, 4, 2);
-		root.add(password_text, 0, 18, 4, 2);
-		root.add(save, 4, 22, 4, 2);
+		root.add(createNewPlayer, 0, 0, 4, 2);
+		root.add(name, 0, 2, 4, 2);
+		root.add(name_text, 0, 4, 4, 2);
+		root.add(password, 0, 6, 4, 2);
+		root.add(password_text, 0, 8, 4, 2);
+		root.add(save, 0, 10, 4, 2);
 		
 		
 		root.setPrefSize(1280,720); 		
