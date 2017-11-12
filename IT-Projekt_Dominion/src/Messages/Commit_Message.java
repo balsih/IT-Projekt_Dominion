@@ -8,6 +8,11 @@ import org.w3c.dom.Document;
  * @created 01-Nov-2017 14:52:31
  */
 public class Commit_Message extends Message {
+	
+	private static final String ELEMENT_NOTIFICATION = "notification";
+	private static final String ATTR_MOVE = "move";
+	private String notification;
+	private String move;
 
 	
 	public Commit_Message(){

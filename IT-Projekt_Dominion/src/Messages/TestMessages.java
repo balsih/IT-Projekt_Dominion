@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.Stack;
 
 import Cards.Card;
+import Cards.CardName;
 import Cards.Market_Card;
 import Cards.Mine_Card;
 import Cards.Smithy_Card;
@@ -40,7 +41,7 @@ public class TestMessages {
 		
 		Integer deckPileCardNumber = 21;
 		
-		String cardBuyed = "smithy";
+		String cardBuyed = CardName.Gold.toString();
 		
 		String chat = "how are you?";
 		
