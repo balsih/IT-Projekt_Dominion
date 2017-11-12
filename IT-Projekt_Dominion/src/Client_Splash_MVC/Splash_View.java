@@ -31,8 +31,6 @@ public class Splash_View extends View<Splash_Model> {
 	protected ProgressBar progress;
 	private Label lblStatus;
 	
-	
-	private ImageView imageView;
 
 	/**
 	 * 
@@ -51,20 +49,13 @@ public class Splash_View extends View<Splash_Model> {
 		//sl.setTranslator(new Translator("de"));
 		Translator t = sl.getTranslator();
 		
-		//BorderPane root = new BorderPane();
-		
-		//root.setId("splash");
-		
 		lblStatus = new Label(t.getString("splash.label"));
 		lblStatus.setTextAlignment(TextAlignment.CENTER);
 		lblStatus.setId("loading");
 		
         progress = new ProgressBar();
-        //progress.setL
 		progress.setId("progress");
 		
-		
-	
 		VBox root = new VBox(lblStatus, progress);
 		root.setId("root");
 		

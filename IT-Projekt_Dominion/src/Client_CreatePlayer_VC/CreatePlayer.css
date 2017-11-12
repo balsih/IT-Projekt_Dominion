@@ -1,47 +1,64 @@
-#root {
 
-    -fx-background-color: black;
-    -fx-background-repeat: stretch;   
-    -fx-background-size: 300 300;
+#root {
+	
+	-fx-background-image: url("001.jpg");
+    -fx-background-size: cover;
     -fx-background-position: center center;
     -fx-border-color: black;
 }
 
-#progress  {
-	-fx-alignment: center;
-	-fx-size: 200;
-}
-
-#loading {
-	
-    -fx-background-color: transparent;
-    -fx-background-repeat: stretch;   
-    -fx-background-size: 500 500;
-    -fx-background-position: center center;
-    -fx-font-size: 20px;
-    -fx-text-fill: white;
-}
-
-
-#root {
-	
-}
 #save {
 	-fx-background-color: #a9a9a9;
+	-fx-alignment: center;
+	-fx-size: 2000;
+	-fx-alignment: center;
 	
 }
-#name_text {
+
+.button:hover{
+	-fx-background-color: #d3d3d3;
+	-fx-text-fill: #000000;
+}
+
+.TextField {
+	
 	
 }
-#password_text {
+.label {
+	-fx-font-size: 30px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+#passwordd {
+	-fx-font-size: 20px;
+    -fx-text-fill: white;
+	-fx-background-color: transparent;
 	
 }
-#createNewPlayer {
-	
+
+
+
+
+
+
+
+
+
+
+.vbox{
+	-fx-padding: 10px;
+	-fx-spacing: 10px;
+	-fx-background-color: #f0f8ff;
+	-fx-border-width: 20;
+	-fx-border-radius: 50;
+	-fx-border-color: black;
 }
-#name {
-	
+
+.hbox{
+	-fx-spacing: 10px;
 }
-#password {
-	
+
+.gaps{
+	-fx-hgap: 100px;
+	-fx-vgap: 100px;
 }
