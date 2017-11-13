@@ -197,7 +197,7 @@ public class UpdateGame_Message extends Message {
 				LinkedList<Card> newHandCards = this.cardElements.get(key);
 				for(int i = 0; i < cardList.getLength(); i++){
 					Element cardElement = (Element) cardList.item(i);
-					newHandCards.add(Card.getCard(CardName.parseType(cardElement.getTextContent())));
+					newHandCards.add(Card.getCard(CardName.parseName(cardElement.getTextContent())));
 				}
 				this.cardElements.put(key, newHandCards);
 				}catch(Exception e){}

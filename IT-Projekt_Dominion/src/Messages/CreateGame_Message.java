@@ -56,18 +56,18 @@ public class CreateGame_Message extends Message {
 		Element deckPile = docIn.createElement(ELEMENT_DECKPILE);
 		for(Card card: this.deckPile){
 			Element deckCard = docIn.createElement(ELEMENT_DECKCARD);
-			deckCard.setTextContent(card.getCardName());
+			deckCard.setTextContent(card.getCardName().toString());
 			deckPile.appendChild(deckCard);
 		}
 		root.appendChild(deckPile);
 		
 		//insert all buyCards (Cards that can be bought during the Game) created from Game into the XML_Document
 		Element buyCards = docIn.createElement(ELEMENT_BUYCARDS);
-		Set<String> cardSet = this.buyCards.keySet();
-		for(String cardName: cardSet){
+		Set<CardName> cardSet = this.buyCards.keySet();
+		for(CardName cardName: cardSet){
 			Element buyCard = docIn.createElement(ELEMENT_BUYCARD);
 			buyCard.setAttribute(ATTR_BUYCARDNUMBER, Integer.toString(this.buyCards.get(cardName)));
-			buyCard.setTextContent(cardName);
+			buyCard.setTextContent(cardName.toString());
 			buyCards.appendChild(buyCard);
 		}
 		root.appendChild(buyCards);
@@ -76,7 +76,7 @@ public class CreateGame_Message extends Message {
 		Element handCards = docIn.createElement(ELEMENT_HANDCARDS);
 		for(Card card: this.handCards){
 			Element handCard = docIn.createElement(ELEMENT_HANDCARD);
-			handCard.setTextContent(card.getCardName());
+			handCard.setTextContent(card.getCardName().toString());
 			handCards.appendChild(handCard);
 		}
 		root.appendChild(handCards);
@@ -103,7 +103,7 @@ public class CreateGame_Message extends Message {
             NodeList deckElements = deckPile.getElementsByTagName(ELEMENT_DECKCARD);
             for(int i = deckElements.getLength() -1; i >= 0; i--){
             	Element deckCard = (Element) deckElements.item(i);
-            	this.deckPile.push(Card.getCard(CardName.parseType(deckCard.getTextContent())));
+            	this.deckPile.push(Card.getCard(CardName.parseName(deckCard.getTextContent())));
             }
         }
         
@@ -115,7 +115,7 @@ public class CreateGame_Message extends Message {
         	for(int i = buyElements.getLength() -1; i >= 0; i--){
         		Element buyCard = (Element) buyElements.item(i);
         		Integer numOfCards = Integer.parseInt(buyCard.getAttribute(ATTR_BUYCARDNUMBER));
-        		this.buyCards.put(CardName.parseType(buyCard.getTextContent()), numOfCards);
+        		this.buyCards.put(CardName.parseName(buyCard.getTextContent()), numOfCards);
         	}
         }
         

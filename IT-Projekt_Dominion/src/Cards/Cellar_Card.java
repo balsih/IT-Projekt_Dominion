@@ -13,9 +13,9 @@ public class Cellar_Card extends Card {
 
 
 	public Cellar_Card(){
-		this.cardName = "Cellar_Card";
+		this.cardName = CardName.Cellar;
 		this.cost = 2;
-		this.type = "action";
+		this.type = CardType.Action;
 	}
 
 	/**
@@ -35,7 +35,7 @@ public class Cellar_Card extends Card {
 		Game game = player.getGame();
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
-		ugmsg.setLog(player.getPlayerName()+": played Cellar card");
+		ugmsg.setLog(player.getPlayerName()+": played "+this.cardName.toString()+" card");
 		game.sendToOpponent(player, ugmsg); // info for opponent
 		
 		// update game Messages -> XML 

@@ -13,9 +13,9 @@ public class Market_Card extends Card {
 
 
 	public Market_Card(){
-		this.cardName = "Market_Card";
+		this.cardName = CardName.Market;
 		this.cost = 5;
-		this.type = "action";
+		this.type = CardType.Action;
 	}
 
 	/**
@@ -32,7 +32,7 @@ public class Market_Card extends Card {
 		Game game = player.getGame();
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
-		ugmsg.setLog(player.getPlayerName()+": played Market card");
+		ugmsg.setLog(player.getPlayerName()+": played "+this.cardName.toString()+" card");
 		game.sendToOpponent(player, ugmsg); // info for opponent
 		
 		// update game Messages -> XML 

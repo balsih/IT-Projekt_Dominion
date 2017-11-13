@@ -13,9 +13,9 @@ public class Silver_Card extends Treasure_Card {
 
 
 	public Silver_Card(){
-		this.cardName = "Silver_Card";
+		this.cardName = CardName.Silver;
 		this.cost = 3;
-		this.type = "treasure";
+		this.type = CardType.Treasure;
 		this.coinValue = 2;
 	}
 
@@ -30,7 +30,7 @@ public class Silver_Card extends Treasure_Card {
 		Game game = player.getGame();
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
-		ugmsg.setLog(player.getPlayerName()+": played Silver card");
+		ugmsg.setLog(player.getPlayerName()+": played "+this.cardName.toString()+" card");
 		game.sendToOpponent(player, ugmsg); // info for opponent
 		
 		// update game Messages -> XML 

@@ -76,9 +76,9 @@ public class TestMessages {
 		
 		String opponent = "mordrag";
 		
-		HashMap<String, Integer> buyCards = new HashMap<String, Integer>();
-		buyCards.put("duchy", 5);
-		buyCards.put("smithy", 12);
+		HashMap<CardName, Integer> buyCards = new HashMap<CardName, Integer>();
+		buyCards.put(CardName.Duchy, 5);
+		buyCards.put(CardName.Smithy, 12);
 		
 		Stack<Card> deckPile = new Stack<Card>();
 		deckPile.push(new Village_Card());

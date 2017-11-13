@@ -13,9 +13,9 @@ public class Mine_Card extends Card {
 
 
 	public Mine_Card(){
-		this.cardName = "Mine_Card";
+		this.cardName = CardName.Mine;
 		this.cost = 5;
-		this.type = "action";
+		this.type = CardType.Action;
 	}
 
 	/**
