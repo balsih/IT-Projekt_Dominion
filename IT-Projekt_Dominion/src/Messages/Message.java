@@ -49,6 +49,7 @@ public abstract class Message {
     private long id;
     private long timestamp;
     private String client;
+    private MessageType type;
 
     // Generator for a unique message ID
     private static long messageID = 0;
@@ -157,7 +158,7 @@ public abstract class Message {
         	msg.setInfo("Error parsing received XML");
         	newMessage = msg;
         }
-        
+        newMessage.setType(type);
         if (type != MessageType.Error) {
 	        newMessage.setId(Long.parseLong(root.getAttribute(ATTR_ID)));
 	        newMessage.setTimestamp(Long.parseLong(root.getAttribute(ATTR_TIMESTAMP)));
@@ -258,6 +259,13 @@ public abstract class Message {
 		return xmlString;
 	}
 	
+	public MessageType getType(){
+		return this.type;
+	}
+	
+	public void setType(MessageType type){
+		this.type= type;
+	}
 	
 }
 //end Message

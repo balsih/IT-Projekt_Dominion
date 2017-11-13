@@ -297,7 +297,7 @@ public class ServerThreadForClient implements Runnable {
 	private Message processChat(Message msgIn) {
 		Chat_Message cmsg = (Chat_Message) msgIn;
 		String chat = cmsg.getChat();
-		chat = this.player.getPlayerName()+": "+chat+"\n\n";
+		chat = this.player.getPlayerName()+": "+chat;
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		ugmsg.setChat(chat);
 		this.game.sendToOpponent(this.player, ugmsg);
