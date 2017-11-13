@@ -16,10 +16,10 @@ public abstract class Card {
 	
 	ServiceLocator sl = ServiceLocator.getServiceLocator();
 
-	protected String cardName;
+	protected CardName cardName;
 	protected int cost;
 	protected ImageView image;
-	protected String type; // action, treasure, victory 	
+	protected CardType type; // action, treasure, victory 	
 
 	protected Card(){
 	}
@@ -33,7 +33,7 @@ public abstract class Card {
 	public abstract UpdateGame_Message executeCard(Player player);
 	
 
-	public String getCardName(){
+	public CardName getCardName(){
 		return this.cardName;
 	}
 
@@ -45,7 +45,7 @@ public abstract class Card {
 		return this.image;
 	}
 
-	public String getType(){
+	public CardType getType(){
 		return this.type;
 	}
 	
@@ -55,76 +55,73 @@ public abstract class Card {
 	
 	// Method gives a card back based on the cardName and the language
 	// and sets the corresponding image 
-	public static Card getCard(String cardName) {
+	public static Card getCard(CardName cardName) {
 		Translator t = ServiceLocator.getServiceLocator().getTranslator();
-		Card card;
+		Card card = null;
 		switch (cardName) {
-		case "Copper_Card":
+		case Copper:
 			card = new Copper_Card();
-			card.setImage(Gallery.getImage(t.getString(cardName)));
+			card.setImage(Gallery.getImage(t.getString(cardName.toString())));
 			break;
-		case "Cellar_Card":
+		case Cellar:
 			card = new Cellar_Card();
-			card.setImage(Gallery.getImage(t.getString(cardName)));
+			card.setImage(Gallery.getImage(t.getString(cardName.toString())));
 			break;
-		case "Duchy_Card":
+		case Duchy:
 			card = new Duchy_Card();
-			card.setImage(Gallery.getImage(t.getString(cardName)));
+			card.setImage(Gallery.getImage(t.getString(cardName.toString())));
 			break;
-		case "Estate_Card":
+		case Estate:
 			card = new Estate_Card();
-			card.setImage(Gallery.getImage(t.getString(cardName)));
+			card.setImage(Gallery.getImage(t.getString(cardName.toString())));
 			break;
-		case "Gold_Card":
+		case Gold:
 			card = new Gold_Card();
-			card.setImage(Gallery.getImage(t.getString(cardName)));
+			card.setImage(Gallery.getImage(t.getString(cardName.toString())));
 			break;
-		case "Market_Card":
+		case Market:
 			card = new Market_Card();
-			card.setImage(Gallery.getImage(t.getString(cardName)));
+			card.setImage(Gallery.getImage(t.getString(cardName.toString())));
 			break;
-		case "Mine_Card":
+		case Mine:
 			card = new Mine_Card();
-			card.setImage(Gallery.getImage(t.getString(cardName)));
+			card.setImage(Gallery.getImage(t.getString(cardName.toString())));
 			break;
-		case "Province_Card":
+		case Province:
 			card = new Province_Card();
-			card.setImage(Gallery.getImage(t.getString(cardName)));
+			card.setImage(Gallery.getImage(t.getString(cardName.toString())));
 			break;
-		case "Remodel_Card":
+		case Remodel:
 			card = new Remodel_Card();
-			card.setImage(Gallery.getImage(t.getString(cardName)));
+			card.setImage(Gallery.getImage(t.getString(cardName.toString())));
 			break;
-		case "Silver_Card":
+		case Silver:
 			card = new Silver_Card();
-			card.setImage(Gallery.getImage(t.getString(cardName)));
+			card.setImage(Gallery.getImage(t.getString(cardName.toString())));
 			break;
-		case "Smithy_Card":
+		case Smithy:
 			card = new Smithy_Card();
-			card.setImage(Gallery.getImage(t.getString(cardName)));
+			card.setImage(Gallery.getImage(t.getString(cardName.toString())));
 			break;
-		case "Village_Card":
+		case Village:
 			card = new Village_Card();
-			card.setImage(Gallery.getImage(t.getString(cardName)));
+			card.setImage(Gallery.getImage(t.getString(cardName.toString())));
 			break;
-		case "Woodcutter_Card":
+		case Woodcutter:
 			card = new Woodcutter_Card();
-			card.setImage(Gallery.getImage(t.getString(cardName)));
+			card.setImage(Gallery.getImage(t.getString(cardName.toString())));
 			break;
-		case "Workshop_Card":
+		case Workshop:
 			card = new Workshop_Card();
-			card.setImage(Gallery.getImage(t.getString(cardName)));
+			card.setImage(Gallery.getImage(t.getString(cardName.toString())));
 			break;
-		default:
-			card = null;
-			//System.out.println(" no cards available");
 		}
 		return card;
 	}
 
 	
 	public String toString() {
-		return this.cardName;
+		return this.cardName.toString();
 	}
 	
 	

@@ -4,6 +4,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import Cards.Card;
+import Cards.CardName;
+
 /**
  * @author Lukas
  * @version 1.0
@@ -13,7 +16,7 @@ public class PlayCard_Message extends Message {
 
 	private static final String ELEMENT_CARD = "card";
 	private static final String ATTR_INDEX = "index";
-	private String card;
+	private Card card;
 	private Integer index;
 
 
@@ -30,7 +33,7 @@ public class PlayCard_Message extends Message {
         Element root = docIn.getDocumentElement();
 		
 		Element card = docIn.createElement(ELEMENT_CARD);
-		card.setTextContent(this.card);
+		card.setTextContent(this.card.toString());
 		card.setAttribute(ATTR_INDEX, this.index.toString());
 		root.appendChild(card);
 	}
@@ -46,7 +49,7 @@ public class PlayCard_Message extends Message {
 		NodeList tmpElements = root.getElementsByTagName(ELEMENT_CARD);
         if (tmpElements.getLength() > 0) {
             Element card = (Element) tmpElements.item(0);
-            this.card = card.getTextContent();
+            this.card = Card.getCard(CardName.parseName(card.getTextContent()));
             this.index = Integer.parseInt(card.getAttribute(ATTR_INDEX));
         }
 	}
@@ -56,14 +59,14 @@ public class PlayCard_Message extends Message {
 		return this.index;
 	}
 
-	public String getCard(){
+	public Card getCard(){
 		return this.card;
 	}
 	
 	public void setIndex(Integer index){
 		this.index = index;
 	}
-	public void setCard(String card){
+	public void setCard(Card card){
 		this.card = card;
 	}
 }//end PlayCard_Message

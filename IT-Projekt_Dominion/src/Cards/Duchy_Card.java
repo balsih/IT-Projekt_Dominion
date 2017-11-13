@@ -13,9 +13,9 @@ public class Duchy_Card extends Victory_Card {
 
 
 	public Duchy_Card(){
-		this.cardName = "Duchy_Card";
+		this.cardName = CardName.Duchy;
 		this.cost = 5;
-		this.type = "victory";
+		this.type = CardType.Victory;
 		this.victoryPoints = 3;
 	}
 
@@ -30,7 +30,7 @@ public class Duchy_Card extends Victory_Card {
 		Game game = player.getGame();
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
-		ugmsg.setLog(player.getPlayerName()+": played Duchy card");
+		ugmsg.setLog(player.getPlayerName()+": played "+this.cardName.toString()+" card");
 		game.sendToOpponent(player, ugmsg); // info for opponent
 		
 		return ugmsg;

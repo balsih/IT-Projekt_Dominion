@@ -13,9 +13,9 @@ public class Estate_Card extends Victory_Card {
 
 
 	public Estate_Card(){
-		this.cardName = "Estade_Card";
+		this.cardName = CardName.Estate;
 		this.cost = 2;
-		this.type = "victory";
+		this.type = CardType.Victory;
 		this.victoryPoints = 1;
 	}
 
@@ -30,7 +30,7 @@ public class Estate_Card extends Victory_Card {
 		Game game = player.getGame();
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
-		ugmsg.setLog(player.getPlayerName()+": played Estade card");
+		ugmsg.setLog(player.getPlayerName()+": played "+this.cardName.toString()+" card");
 		game.sendToOpponent(player, ugmsg); // info for opponent
 		
 		return ugmsg;

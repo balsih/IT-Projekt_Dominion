@@ -13,9 +13,9 @@ public class Woodcutter_Card extends Card {
 
 
 	public Woodcutter_Card(){
-		this.cardName = "Woodcutter_Card";
+		this.cardName = CardName.Woodcutter;
 		this.cost = 3;
-		this.type = "action";
+		this.type = CardType.Action;
 	}
 
 	/**
@@ -32,7 +32,7 @@ public class Woodcutter_Card extends Card {
 		Game game = player.getGame();
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
-		ugmsg.setLog(player.getPlayerName()+": played Woodcutter card");
+		ugmsg.setLog(player.getPlayerName()+": played "+this.cardName.toString()+" card");
 		game.sendToOpponent(player, ugmsg); // info for opponent
 		
 		// update game Messages -> XML 

@@ -14,9 +14,9 @@ public class Remodel_Card extends Card {
 
 
 	public Remodel_Card(){
-		this.cardName = "Remodel_Card";
+		this.cardName = CardName.Remodel;
 		this.cost = 4;
-		this.type = "action";
+		this.type = CardType.Action;
 	}
 
 	/**
@@ -36,7 +36,7 @@ public class Remodel_Card extends Card {
 		Game game = player.getGame();
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
-		ugmsg.setLog(player.getPlayerName()+": played Remodel card");
+		ugmsg.setLog(player.getPlayerName()+": played "+this.cardName.toString()+" card");
 		game.sendToOpponent(player, ugmsg); // info for opponent
 		
 		// update game Messages -> XML 

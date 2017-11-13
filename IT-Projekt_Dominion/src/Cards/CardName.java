@@ -29,7 +29,7 @@ public enum CardName {
 	 * @param cardName
 	 * @return CardName, enum of the given cardName
 	 */
-    public static CardName parseType(String cardName) {
+    public static CardName parseName(String cardName) {
     	CardName cardType = null;
     	for (CardName value : CardName.values()) {
     		if (value.toString().equals(cardName)) cardType = value;

@@ -13,9 +13,9 @@ public class Smithy_Card extends Card {
 
 
 	public Smithy_Card(){
-		this.cardName = "Smithy_Card";
+		this.cardName = CardName.Smithy;
 		this.cost = 4;
-		this.type = "action";
+		this.type = CardType.Action;
 	}
 
 	/**
@@ -31,7 +31,7 @@ public class Smithy_Card extends Card {
 		Game game = player.getGame();
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
-		ugmsg.setLog(player.getPlayerName()+": played Smithy card");
+		ugmsg.setLog(player.getPlayerName()+": played "+this.cardName.toString()+" card");
 		game.sendToOpponent(player, ugmsg); // info for opponent
 		
 		// update game Messages -> XML 

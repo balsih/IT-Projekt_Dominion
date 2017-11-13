@@ -13,9 +13,9 @@ public class Province_Card extends Victory_Card {
 
 
 	public Province_Card(){
-		this.cardName = "Province_Card";
+		this.cardName = CardName.Province;
 		this.cost = 8;
-		this.type = "victory";
+		this.type = CardType.Victory;
 		this.victoryPoints = 6;
 	}
 
@@ -30,7 +30,7 @@ public class Province_Card extends Victory_Card {
 		Game game = player.getGame();
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
-		ugmsg.setLog(player.getPlayerName()+": played Province card");
+		ugmsg.setLog(player.getPlayerName()+": played "+this.cardName.toString()+" card");
 		game.sendToOpponent(player, ugmsg); // info for opponent
 		
 		return ugmsg;

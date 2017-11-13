@@ -8,6 +8,7 @@ import java.util.Stack;
 
 import Cards.Copper_Card;
 import Cards.Card;
+import Cards.CardName;
 import Cards.Cellar_Card;
 import Cards.Duchy_Card;
 import Cards.Estate_Card;
@@ -21,6 +22,7 @@ import Cards.Smithy_Card;
 import Cards.Village_Card;
 import Cards.Woodcutter_Card;
 import Cards.Workshop_Card;
+import Messages.Message;
 import Messages.UpdateGame_Message;
 
 /**
@@ -48,7 +50,7 @@ public class Game {
 	private Stack<Village_Card> villagePile;
 	private Stack<Woodcutter_Card> woodcutterPile;
 	private Stack<Workshop_Card> workshopPile;
-	private HashMap<String, Integer> buyCards;
+	private HashMap<CardName, Integer> buyCards;
 	private boolean gameEnded;
 	
 	private static Game existingGame;
@@ -71,7 +73,7 @@ public class Game {
 		this.buildActionCardStacks();
 
 		this.setGameEnded(false);
-		this.buyCards = new HashMap<String, Integer>();
+		this.buyCards = new HashMap<CardName, Integer>();
 	}
 
 	// Builds stacks for the treasure cards
@@ -177,7 +179,7 @@ public class Game {
 
 	// Fills a HashMap with the cardName and size of the actual stack of the
 	// cards, which the player could buy
-	public HashMap<String, Integer> getBuyCards() {
+	public HashMap<CardName, Integer> getBuyCards() {
 		for (int i = 0; i < NUM_OF_VICTORYCARDS; i++) {
 			this.buyCards.put(this.provincePile.firstElement().getCardName(), this.provincePile.size());
 			this.buyCards.put(this.duchyPile.firstElement().getCardName(), this.duchyPile.size());
@@ -237,7 +239,7 @@ public class Game {
 		}
 	}
 
-	public void sendToOpponent(Player source, UpdateGame_Message ugmsg) {
+	public void sendToOpponent(Player source, Message ugmsg) {
 
 		source.getServerThreadForClient().addWaitingMessages(ugmsg);
 

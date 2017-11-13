@@ -10,6 +10,7 @@ import java.util.Queue;
 
 import java.util.logging.Logger;
 
+import Cards.CardName;
 import Messages.BuyCard_Message;
 import Messages.Chat_Message;
 import Messages.Commit_Message;
@@ -162,7 +163,7 @@ public class ServerThreadForClient implements Runnable {
 	 */
 	private Message processPlayCard(Message msgIn) {
 		PlayCard_Message pcmsg = (PlayCard_Message) msgIn;
-		String cardName = pcmsg.getCard();
+		CardName cardName = pcmsg.getCard().getCardName();
 		Integer index = pcmsg.getIndex();
 		if(cardName == this.player.getHandCards().get(index).getCardName()){
 			return this.player.play(cardName, index);
@@ -294,7 +295,7 @@ public class ServerThreadForClient implements Runnable {
 	 */
 	private Message processBuyCard(Message msgIn) {
 		BuyCard_Message bcmsg = new BuyCard_Message();
-		return this.player.buy(bcmsg.getCard());
+		return this.player.buy(bcmsg.getCard().getCardName());
 	}
 
 	/**
@@ -320,7 +321,7 @@ public class ServerThreadForClient implements Runnable {
     private Message processGiveUp(Message msgIn) {
     	PlayerSuccess_Message psmsgOpponent = new PlayerSuccess_Message();
     	psmsgOpponent.setSuccess("won");
-    	this.game.sendToOpponent(msgIn.getClient(), psmsgOpponent);
+    	this.game.sendToOpponent(this.player, psmsgOpponent);
     	PlayerSuccess_Message psmsgSelf = new PlayerSuccess_Message();
     	psmsgSelf.setSuccess("lost");
     	this.logger.severe(this.game.getOpponent().getPlayerName()+" won!");
