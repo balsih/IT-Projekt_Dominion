@@ -179,10 +179,10 @@ public class Player {
 			this.ugmsg.setActions(this.getActions());
 			this.ugmsg.setBuys(this.getBuys());
 			this.ugmsg.setCurrentPhase(actualPhase);
-			this.ugmsg.setDiscardPile(this.discardPile.firstElement().getCardName());
+			this.ugmsg.setDiscardPileTopCard(this.discardPile.firstElement());
 			this.ugmsg.setDiscardPileCardNumber(this.discardPile.size());
 			this.ugmsg.setDeckPileCardNumber(this.deckPile.size());
-			this.ugmsg.setCardBuyed(buyedCard.getCardName());
+			this.ugmsg.setBuyedCard(buyedCard);
 			this.ugmsg.setNewHandCards(this.handCards);
 			this.ugmsg.setChat("");
 			
@@ -280,79 +280,10 @@ public class Player {
 	public Message play(CardName cardName, int index) {
 		Card playedCard = null;
 		this.actualPhase = "play";
-
-		switch (cardName) {
-		case Copper:
-			playedCard = this.handCards.remove(index);
-			playedCard.executeCard(this);
-			playedCards.add(playedCard);
-			break;
-		case Cellar:
-			playedCard = this.handCards.remove(index);
-			playedCard.executeCard(this);
-			playedCards.add(playedCard);
-			break;
-		case Duchy:
-			playedCard = this.handCards.remove(index);
-			playedCard.executeCard(this);
-			playedCards.add(playedCard);
-			break;
-		case Estate:
-			playedCard = this.handCards.remove(index);
-			playedCard.executeCard(this);
-			playedCards.add(playedCard);
-			break;
-		case Gold:
-			playedCard = this.handCards.remove(index);
-			playedCard.executeCard(this);
-			playedCards.add(playedCard);
-			break;
-		case Market:
-			playedCard = this.handCards.remove(index);
-			playedCard.executeCard(this);
-			playedCards.add(playedCard);
-			break;
-		case Mine:
-			playedCard = this.handCards.remove(index);
-			playedCard.executeCard(this);
-			playedCards.add(playedCard);
-			break;
-		case Province:
-			playedCard = this.handCards.remove(index);
-			playedCard.executeCard(this);
-			playedCards.add(playedCard);
-			break;
-		case Remodel:
-			playedCard = this.handCards.remove(index);
-			playedCard.executeCard(this);
-			playedCards.add(playedCard);
-			break;
-		case Silver:
-			playedCard = this.handCards.remove(index);
-			playedCard.executeCard(this);
-			playedCards.add(playedCard);
-			break;
-		case Smithy:
-			playedCard = this.handCards.remove(index);
-			playedCard.executeCard(this);
-			playedCards.add(playedCard);
-			break;
-		case Village:
-			playedCard = this.handCards.remove(index);
-			playedCard.executeCard(this);
-			playedCards.add(playedCard);
-			break;
-		case Woodcutter:
-			playedCard = this.handCards.remove(index);
-			playedCard.executeCard(this);
-			playedCards.add(playedCard);
-			break;
-		case Workshop:
-			playedCard = this.handCards.remove(index);
-			playedCard.executeCard(this);
-			playedCards.add(playedCard);
-			break;
-		}
+		
+		playedCard = this.handCards.remove(index);
+		playedCard.executeCard(this);
+		playedCards.add(playedCard);
 		
 		if (this.getActions() > 0){
 			this.ugmsg.setLog("");
@@ -361,11 +292,11 @@ public class Player {
 			this.ugmsg.setActions(this.getActions());
 			this.ugmsg.setBuys(this.getBuys());
 			this.ugmsg.setCurrentPhase(this.actualPhase);
-			this.ugmsg.setDiscardPile(this.discardPile.firstElement().getCardName());
+			this.ugmsg.setDiscardPileTopCard(this.discardPile.firstElement());
 			this.ugmsg.setDiscardPileCardNumber(this.discardPile.size());
 			this.ugmsg.setDeckPileCardNumber(this.deckPile.size());
 			this.ugmsg.setNewHandCards(handCards);
-			this.ugmsg.setPlayedCards(playedCard.getCardName());
+			this.ugmsg.setPlayedCards(playedCard);
 			this.ugmsg.setChat("");
 			
 			return this.ugmsg;	

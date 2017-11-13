@@ -23,7 +23,6 @@ import Cards.Village_Card;
 import Cards.Woodcutter_Card;
 import Cards.Workshop_Card;
 import Messages.Message;
-import Messages.UpdateGame_Message;
 
 /**
  * @author Bodo
