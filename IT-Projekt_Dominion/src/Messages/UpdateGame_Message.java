@@ -1,6 +1,5 @@
 package Messages;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Set;
@@ -20,37 +19,37 @@ import Cards.CardName;
 public class UpdateGame_Message extends Message {
 
 	
-	private static final String ELEMENT_ACTIONS = "actions";
-	private static final String ELEMENT_BUYEDCARD = "buyedCard";
-	private static final String ELEMENT_COINS = "coins";
-	private static final String ELEMENT_CURRENTPHASE = "currentPhase";
-	private static final String ELEMENT_CURRENTPLAYER = "currentPlayer";
-	private static final String ELEMENT_DISCARDPILETOPCARD = "discardPileTopCard";
 	private static final String ELEMENT_DECKPILE = "deckPile";
 	private static final String ELEMENT_NEWHANDCARD = "newHandCard";
-	private static final String ELEMENT_NEWHANDCARDS = "newHandCards";
-	private static final String ELEMENT_LOG = "log";
-	private static final String ELEMENT_PLAYEDCARD = "playedCard";
-	private static final String ELEMENT_CHAT = "chat";
-	private static final String ELEMENT_BUYS = "buys";
-	private static final String ATTR_DECKPILECARDNUMBER = "deckPileCardNumber";
-	private static final String ATTR_DISCARDPILECARDNUMBER = "discardPileCardNumber";
 	
+	private static final String ELEMENT_CHAT = "chat";
+	private static final String ELEMENT_CURRENTPHASE = "currentPhase";
+	private static final String ELEMENT_CURRENTPLAYER = "currentPlayer";
+	private static final String ELEMENT_LOG = "log";
 	private String chat = null;
 	private String currentPhase = null;
 	private String currentPlayer = null;
 	private String log = null;
 	
-	private Integer deckPileCardNumber = null;
-	private Integer discardPileCardNumber = null;
+	private static final String ELEMENT_BUYS = "buys";
+	private static final String ELEMENT_ACTIONS = "actions";
+	private static final String ELEMENT_COINS = "coins";
+	private static final String ATTR_DECKPILECARDNUMBER = "deckPileCardNumber";
+	private static final String ATTR_DISCARDPILECARDNUMBER = "discardPileCardNumber";
 	private Integer buys = null;
 	private Integer actions = null;
 	private Integer coins = null;
+	private Integer deckPileCardNumber = null;
+	private Integer discardPileCardNumber = null;
 	
+	private static final String ELEMENT_BUYEDCARD = "buyedCard";
+	private static final String ELEMENT_PLAYEDCARD = "playedCard";
+	private static final String ELEMENT_DISCARDPILETOPCARD = "discardPileTopCard";
 	private Card buyedCard = null;
 	private Card playedCard = null;
 	private Card discardPileTopCard = null;
     
+	private static final String ELEMENT_NEWHANDCARDS = "newHandCards";
     private HashMap<String, String> stringElements;
     private HashMap<String, Integer> integerElements;
     private HashMap<String, Card> cardElements;

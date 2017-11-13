@@ -22,6 +22,7 @@ import Messages.GameMode_Message;
 import Messages.HighScore_Message;
 import Messages.Login_Message;
 import Messages.Message;
+import Messages.Content;
 import Messages.MessageType;
 import Messages.PlayCard_Message;
 import Messages.PlayerSuccess_Message;
@@ -169,7 +170,9 @@ public class ServerThreadForClient implements Runnable {
 			return this.player.play(cardName, index);
 		}else{//the cards on the client and server are not the same(should not be possible)
 			this.logger.severe(pcmsg.getClient()+"'s handcards aren't equals to the cards in the game");
-			return new Failure_Message();
+			Failure_Message fmsg = new Failure_Message();
+			fmsg.setMove(Content.PlayCard);
+			return fmsg;
 		}
 	}
 
@@ -187,11 +190,16 @@ public class ServerThreadForClient implements Runnable {
 		DB_Connector dbConnector = DB_Connector.getDB_Connector();
 		boolean success = dbConnector.checkLoginInput(clientName, lmsg.getPassword());
 		if(success){
-			this.logger.severe(clientName+" login succeeded");
-			return new Commit_Message();
+			this.logger.severe(clientName+" "+Content.Login.toString()+" succeeded");
+			Commit_Message cmsg = new Commit_Message();
+			cmsg.setMove(Content.Login);
+			return cmsg;
 		}else{
-			this.logger.severe(clientName+" login failed");
-			return new Failure_Message();
+			this.logger.severe(clientName+" "+Content.Login.toString()+" failed");
+			Failure_Message fmsg = new Failure_Message();
+			fmsg.setMove(Content.Login);
+			fmsg.setNotification(Content.Login.toString()+" failed");
+			return fmsg;
 		}
 	}
 
@@ -203,9 +211,8 @@ public class ServerThreadForClient implements Runnable {
 	 */
 	private Message processHighScore(Message msgIn) {
 		DB_Connector dbConnector = DB_Connector.getDB_Connector();
-		String highScore = dbConnector.getHighScore();
 		HighScore_Message hsmsg = new HighScore_Message();
-		hsmsg.setHighScore(highScore);
+		hsmsg.setHighScore(dbConnector.getHighScore());
 		this.logger.severe("send highscore to "+hsmsg.getClient());
 		return hsmsg;
 	}
@@ -220,10 +227,11 @@ public class ServerThreadForClient implements Runnable {
 	 */
 	private Message processGameMode(Message msgIn) {
 		GameMode_Message gmmsg = (GameMode_Message) msgIn;
-		String mode = gmmsg.getMode();
+		Content mode = gmmsg.getMode();
+		Content move = Content.GameMode;
 		//get a new Game and add player and Bot (if singlePlayer) to the game, 
 		//Game will start immediately if singlePlayer or your secondPlayer
-		if(mode == "singleplayer" || mode == "multiplayer"){
+		if(mode == Content.SinglePlayer || mode == Content.MultiPlayer){
 			this.player = new Player(gmmsg.getClient());
 			this.game = Game.getGame(this.clientSocket, mode, this.player);
 			if(this.game.isReadyToStart()){
@@ -232,15 +240,20 @@ public class ServerThreadForClient implements Runnable {
 				cgmsg.setHandCards(this.player.getHandCards());
 				cgmsg.setDeckPile(this.player.getDeckPile());
 				cgmsg.setOpponent(this.game.getOpponent().getPlayerName());
-				this.logger.severe(gmmsg.getClient()+" starts a"+mode+" game");
+				this.logger.severe(gmmsg.getClient()+" starts a"+mode.toString()+" game");
 				return cgmsg;
 			}
 			this.logger.severe(gmmsg.getClient()+"waits for opponent");
-			return new Commit_Message();
+			Commit_Message cmsg = new Commit_Message();
+			cmsg.setMove(move);
+			cmsg.setNotification("Waiting for opponent");
+			return cmsg;
 		}else{
-			//if content is somehow invalid
-			this.logger.severe("invalid GameMode from "+gmmsg.getClient());
-			return new Failure_Message();
+			//if content is somehow invalid (should not be possible)
+			this.logger.severe("invalid "+Content.GameMode.toString()+" from "+gmmsg.getClient());
+			Failure_Message fmsg = new Failure_Message();
+			fmsg.setMove(move);
+			return fmsg;
 		}
 	}
 
@@ -258,12 +271,18 @@ public class ServerThreadForClient implements Runnable {
 		
 		DB_Connector dbConnector = DB_Connector.getDB_Connector();
 		boolean success = dbConnector.addNewPlayer(clientName, password);
+		Content move = Content.CreateNewPlayer;
 		if(success){
 			this.logger.severe(clientName+"'s storation succeeded");
-			return new Commit_Message();
+			Commit_Message cmsg = new Commit_Message();
+			cmsg.setMove(move);
+			return cmsg;
 		}else{
 			this.logger.severe(clientName+"'s storation failed");
-			return new Failure_Message();
+			Failure_Message fmsg = new Failure_Message();
+			fmsg.setMove(move);
+			fmsg.setNotification(clientName+" is already occupied");
+			return fmsg;
 		}
 	}
 
@@ -308,7 +327,9 @@ public class ServerThreadForClient implements Runnable {
 		if(this.waitingMessages.size() > 0){
 			return this.waitingMessages.poll();
 		}else{
-			return new Commit_Message();
+			Commit_Message cmsg = new Commit_Message();
+			cmsg.setMove(Content.AskForChanges);
+			return cmsg;
 		}
 	}
 	
@@ -320,21 +341,14 @@ public class ServerThreadForClient implements Runnable {
 	 */
     private Message processGiveUp(Message msgIn) {
     	PlayerSuccess_Message psmsgOpponent = new PlayerSuccess_Message();
-    	psmsgOpponent.setSuccess("won");
+    	psmsgOpponent.setSuccess(Content.Won);
     	this.game.sendToOpponent(this.player, psmsgOpponent);
     	PlayerSuccess_Message psmsgSelf = new PlayerSuccess_Message();
-    	psmsgSelf.setSuccess("lost");
-    	this.logger.severe(this.game.getOpponent().getPlayerName()+" won!");
+    	psmsgSelf.setSuccess(Content.Lost);
+    	this.logger.severe(this.game.getOpponent().getPlayerName()+" "+Content.Won.toString()+"!");
     	return psmsgSelf;
 	}
 
-	/**
-	 * 
-	 * @param message
-	 */
-	public void sendMessage(Message message){
-
-	}
 	
 	public void addWaitingMessages(Message ugmsg){
 		this.waitingMessages.offer(ugmsg);

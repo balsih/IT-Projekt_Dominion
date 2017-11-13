@@ -12,7 +12,7 @@ import org.w3c.dom.NodeList;
 public class PlayerSuccess_Message extends Message {
 
 	private static final String ELEMENT_SUCCESS = "success";
-	private String success;
+	private Content success;
 
 
 	public PlayerSuccess_Message(){
@@ -28,7 +28,7 @@ public class PlayerSuccess_Message extends Message {
         Element root = docIn.getDocumentElement();
 		
 		Element success = docIn.createElement(ELEMENT_SUCCESS);
-		success.setTextContent(this.success);
+		success.setTextContent(this.success.toString());
 		root.appendChild(success);
 	}
 
@@ -44,15 +44,15 @@ public class PlayerSuccess_Message extends Message {
 		NodeList tmpElements = root.getElementsByTagName(ELEMENT_SUCCESS);
         if (tmpElements.getLength() > 0) {
             Element success = (Element) tmpElements.item(0);
-            this.success = success.getTextContent();
+            this.success = Content.parseContent(success.getTextContent());
         }
 	}
 
-	public String getSuccess(){
+	public Content getSuccess(){
 		return this.success;
 	}
 	
-	public void setSuccess(String success){
+	public void setSuccess(Content success){
 		this.success = success;
 	}
 }//end PlayerSuccess_Message
