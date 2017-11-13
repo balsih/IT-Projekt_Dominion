@@ -22,7 +22,7 @@ public class Server_Model extends Model {
 	private final Logger logger = Logger.getLogger("");
 	
 	//Clients?
-	//protected ObservableList<Client> clients = FXCollections.observableArrayList();
+	protected ObservableList<Client> clients = FXCollections.observableArrayList();
 	
 	String info;
 	private volatile boolean stop = false;
@@ -47,7 +47,8 @@ public class Server_Model extends Model {
 						try{
 							Socket socket = listener.accept();
 							//Client Object?
-							//Client client = new Client(Server_Model.this, socket);
+							Client client = new Client(socket);
+							clients.add(client);
 						} catch (Exception e){
 							logger.info(e.toString());
 						}
@@ -65,8 +66,8 @@ public class Server_Model extends Model {
 	
 	public void stopServer(){
 		//Clients?
-		//this.info = "Stop all clients";
-		//this.logger.info(info);
+		this.info = "Stop all clients";
+		this.logger.info(info);
 		
 		this.info = "Stop Server";
 		this.logger.info(info);

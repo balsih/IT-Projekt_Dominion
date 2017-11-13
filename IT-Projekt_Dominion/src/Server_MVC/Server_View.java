@@ -60,7 +60,7 @@ public class Server_View extends View<Server_Model>{
 		
 		HBox boxTop = new HBox(lblPort, txtPort, spacer, btnStart);
 		boxTop.getStyleClass().add("hbox");
-		boxTop.setHgrow(spacer, Priority.ALWAYS);
+		HBox.setHgrow(spacer, Priority.ALWAYS);
 		
 		root.setTop(boxTop);
 		root.setCenter(txtLog);
@@ -78,6 +78,19 @@ public class Server_View extends View<Server_Model>{
 	protected Scene create_GUI() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	/**updates the txtLog with connected clients.
+	 *Adapted from: 
+	 * Prof. Bradley Richards
+	 * */
+	protected void updateClients(){
+		StringBuffer sb = new StringBuffer();
+		for (Client c : model.clients){
+			sb.append(c.toString());
+			sb.append("\n");
+		}
+		txtLog.setText(sb.toString());
 	}
 	
 }//end Server_View
