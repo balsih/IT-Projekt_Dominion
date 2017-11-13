@@ -3,6 +3,7 @@ package Server_MVC;
 import java.io.IOException;
 
 import Abstract_MVC.Controller;
+import javafx.collections.ListChangeListener;
 
 /**
  * @author Bodo
@@ -38,6 +39,8 @@ public class Server_Controller extends Controller<Server_Model, Server_View> {
 		});
 		
 		view.stage.setOnCloseRequest(event -> model.stopServer());
+		
+		model.clients.addListener((ListChangeListener) (event -> view.updateClients()));
 	}
 
 	/*
