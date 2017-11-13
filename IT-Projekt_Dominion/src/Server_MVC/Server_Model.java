@@ -2,11 +2,13 @@ package Server_MVC;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-
+import java.net.Socket;
 import java.util.logging.Logger;
 
 import Abstract_MVC.Model;
 import Server_GameLogic.ServerThreadForClient;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 /**
  * @author Bodo
@@ -19,6 +21,12 @@ public class Server_Model extends Model {
 	private ServerSocket listener;
 	private final Logger logger = Logger.getLogger("");
 	
+	//Clients?
+	protected ObservableList<Client> clients = FXCollections.observableArrayList();
+	
+	String info;
+	private volatile boolean stop = false;
+	
 	
 	public Server_Model(){
 		super();
@@ -26,13 +34,50 @@ public class Server_Model extends Model {
 
 	//starts the server with the entered port
 	public void startServerSocket(int port) throws IOException{
-		String info = "Start Server";
+		this.info = "Start Server";
 		logger.info(info);
 		System.out.println(port);
 		try{
 			this.listener = new ServerSocket(port);
+			//Accept connections in separate thread
+			Runnable r = new Runnable(){
+				@Override
+				public void run() {
+					while(!stop){
+						try{
+							Socket socket = listener.accept();
+							//Client Object?
+							Client client = new Client(socket);
+							clients.add(client);
+						} catch (Exception e){
+							logger.info(e.toString());
+						}
+					}
+				}
+				
+			};
+			//start the thread
+			Thread t = new Thread(r, "ServerSocket");
+			t.start();
 		}catch (IOException e) {
 			this.logger.info(e.toString());
+		}
+	}
+	
+	public void stopServer(){
+		//Clients?
+		this.info = "Stop all clients";
+		this.logger.info(info);
+		
+		this.info = "Stop Server";
+		this.logger.info(info);
+		this.stop = true;
+		if(this.listener != null){
+			try{
+				this.listener.close();
+			} catch (IOException e){
+				//Nothing to do here
+			}
 		}
 	}
 	

@@ -7,6 +7,7 @@ import java.util.Random;
 import java.util.Stack;
 
 import Cards.Card;
+import Cards.CardName;
 import Cards.Copper_Card;
 import Messages.Failure_Message;
 import Messages.Message;
@@ -108,64 +109,64 @@ public class Player {
 	/**
 	 * buys a card and lays the buyed card into the discard pile
 	 */
-	public Message buy(String cardName) {
+	public Message buy(CardName cardName) {
 		Card buyedCard = null;
 		this.actualPhase = "buy";
 		
 		switch (cardName) {
-		case "Copper_Card":
+		case Copper:
 			buyedCard = this.game.getCopperPile().pop();
 			this.discardPile.push(buyedCard);
 			break;
-		case "Cellar_Card":
+		case Cellar:
 			buyedCard = this.game.getCellarPile().pop();
 			this.discardPile.push(buyedCard);
 			break;
-		case "Duchy_Card":
+		case Duchy:
 			buyedCard = this.game.getDuchyPile().pop();
 			this.discardPile.push(buyedCard);
 			break;
-		case "Estate_Card":
+		case Estate:
 			buyedCard = this.game.getEstatePile().pop();
 			this.discardPile.push(buyedCard);
 			break;
-		case "Gold_Card":
+		case Gold:
 			buyedCard = this.game.getGoldPile().pop();
 			this.discardPile.push(buyedCard);
 			break;
-		case "Market_Card":
+		case Market:
 			buyedCard = this.game.getMarketPile().pop();
 			this.discardPile.push(buyedCard);
 			break;
-		case "Mine_Card":
+		case Mine:
 			buyedCard = this.game.getMinePile().pop();
 			this.discardPile.push(buyedCard);
 			break;
-		case "Province_Card":
+		case Province:
 			buyedCard = this.game.getProvincePile().pop();
 			this.discardPile.push(buyedCard);
 			break;
-		case "Remodel_Card":
+		case Remodel:
 			buyedCard = this.game.getRemodelPile().pop();
 			this.discardPile.push(buyedCard);
 			break;
-		case "Silver_Card":
+		case Silver:
 			buyedCard = this.game.getSilverPile().pop();
 			this.discardPile.push(buyedCard);
 			break;
-		case "Smithy_Card":
+		case Smithy:
 			buyedCard = this.game.getSmithyPile().pop();
 			this.discardPile.push(buyedCard);
 			break;
-		case "Village_Card":
+		case Village:
 			buyedCard = this.game.getVillagePile().pop();
 			this.discardPile.push(buyedCard);
 			break;
-		case "Woodcutter_Card":
+		case Woodcutter:
 			buyedCard = this.game.getWoodcutterPile().pop();
 			this.discardPile.push(buyedCard);
 			break;
-		case "Workshop_Card":
+		case Workshop:
 			buyedCard = this.game.getWorkshopPile().pop();
 			this.discardPile.push(buyedCard);
 			break;
@@ -276,77 +277,77 @@ public class Player {
 	 * plays the selected card and execute this card
 	 *
 	 */
-	public Message play(String cardName, int index) {
+	public Message play(CardName cardName, int index) {
 		Card playedCard = null;
 		this.actualPhase = "play";
 
 		switch (cardName) {
-		case "Copper_Card":
+		case Copper:
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
-		case "Cellar_Card":
+		case Cellar:
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
-		case "Duchy_Card":
+		case Duchy:
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
-		case "Estate_Card":
+		case Estate:
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
-		case "Gold_Card":
+		case Gold:
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
-		case "Market_Card":
+		case Market:
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
-		case "Mine_Card":
+		case Mine:
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
-		case "Province_Card":
+		case Province:
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
-		case "Remodel_Card":
+		case Remodel:
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
-		case "Silver_Card":
+		case Silver:
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
-		case "Smithy_Card":
+		case Smithy:
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
-		case "Village_Card":
+		case Village:
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
-		case "Woodcutter_Card":
+		case Woodcutter:
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
 			break;
-		case "Workshop_Card":
+		case Workshop:
 			playedCard = this.handCards.remove(index);
 			playedCard.executeCard(this);
 			playedCards.add(playedCard);
