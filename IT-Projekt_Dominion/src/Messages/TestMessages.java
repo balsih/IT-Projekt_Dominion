@@ -41,7 +41,7 @@ public class TestMessages {
 		
 		Integer deckPileCardNumber = 21;
 		
-		String cardBuyed = CardName.Gold.toString();
+		String buyedCard = CardName.Gold.toString();
 		
 		String chat = "how are you?";
 		
@@ -60,10 +60,10 @@ public class TestMessages {
 		ugmsg.setActions(actions);
 		ugmsg.setBuys(buys);
 		ugmsg.setCurrentPhase(currentPhase);
-		ugmsg.setDiscardPile(discardPileTopCard);
+		ugmsg.setDiscardPileTopCard(discardPileTopCard);
 		ugmsg.setDiscardPileCardNumber(discardPileCardNumber);
 		ugmsg.setDeckPileCardNumber(deckPileCardNumber);
-		ugmsg.setCardBuyed(cardBuyed);
+		ugmsg.setBuyedCard(buyedCard);
 		ugmsg.setChat(chat);
 		ugmsg.setNewHandCards(handCards);
 		ugmsg.setPlayedCards(playedCard);

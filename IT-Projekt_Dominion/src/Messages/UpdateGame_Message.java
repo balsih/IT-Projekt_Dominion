@@ -21,11 +21,11 @@ public class UpdateGame_Message extends Message {
 
 	
 	private static final String ELEMENT_ACTIONS = "actions";
-	private static final String ELEMENT_CARDBUYED = "cardBuyed";
+	private static final String ELEMENT_BUYEDCARD = "buyedCard";
 	private static final String ELEMENT_COINS = "coins";
 	private static final String ELEMENT_CURRENTPHASE = "currentPhase";
 	private static final String ELEMENT_CURRENTPLAYER = "currentPlayer";
-	private static final String ELEMENT_DISCARDPILE = "discardPile";
+	private static final String ELEMENT_DISCARDPILETOPCARD = "discardPileTopCard";
 	private static final String ELEMENT_DECKPILE = "deckPile";
 	private static final String ELEMENT_NEWHANDCARD = "newHandCard";
 	private static final String ELEMENT_NEWHANDCARDS = "newHandCards";
@@ -36,17 +36,18 @@ public class UpdateGame_Message extends Message {
 	private static final String ATTR_DECKPILECARDNUMBER = "deckPileCardNumber";
 	private static final String ATTR_DISCARDPILECARDNUMBER = "discardPileCardNumber";
 	private String chat = null;
-	private String cardBuyed = null;
-	private String playedCard = null;
 	private String currentPhase = null;
 	private String currentPlayer = null;
-	private String discardPile = null;
 	private String log = null;
 	private Integer deckPileCardNumber = null;
 	private Integer discardPileCardNumber = null;
 	private Integer buys = null;
 	private Integer actions = null;
 	private Integer coins = null;
+	
+	private String buyedCard = null;
+	private String playedCard = null;
+	private String discardPileTopCard = null;
     
     private HashMap<String, String> stringElements;
     private HashMap<String, Integer> integerElements;
@@ -104,8 +105,8 @@ public class UpdateGame_Message extends Message {
 		this.stringElements.put(ELEMENT_CHAT, this.chat);
 		this.stringElements.put(ELEMENT_LOG, this.log);
 		this.stringElements.put(ELEMENT_PLAYEDCARD, this.playedCard);
-		this.stringElements.put(ELEMENT_CARDBUYED, this.cardBuyed);
-		this.stringElements.put(ELEMENT_DISCARDPILE, this.discardPile);
+		this.stringElements.put(ELEMENT_BUYEDCARD, this.buyedCard);
+		this.stringElements.put(ELEMENT_DISCARDPILETOPCARD, this.discardPileTopCard);
 		this.stringElements.put(ELEMENT_DECKPILE, null);
 		
 		this.integerElements.put(ELEMENT_ACTIONS, this.actions);
@@ -115,7 +116,7 @@ public class UpdateGame_Message extends Message {
 		this.attrValues.put(ATTR_DECKPILECARDNUMBER, this.deckPileCardNumber);
 		this.attrValues.put(ATTR_DISCARDPILECARDNUMBER, this.discardPileCardNumber);
 		this.attrElements.put(ELEMENT_DECKPILE, ATTR_DECKPILECARDNUMBER);
-		this.attrElements.put(ELEMENT_DISCARDPILE, ATTR_DISCARDPILECARDNUMBER);
+		this.attrElements.put(ELEMENT_DISCARDPILETOPCARD, ATTR_DISCARDPILECARDNUMBER);
 	}
 
 	/**
@@ -226,12 +227,12 @@ public class UpdateGame_Message extends Message {
 		return this.stringElements.get(ELEMENT_PLAYEDCARD);
 	}
 
-	public String getCardBuyed(){
-		return this.stringElements.get(ELEMENT_CARDBUYED);
+	public String getBuyedCard(){
+		return this.stringElements.get(ELEMENT_BUYEDCARD);
 	}
 	
-	public String getDiscardPile(){
-		return this.stringElements.get(ELEMENT_DISCARDPILE);
+	public String getDiscardPileTopCard(){
+		return this.stringElements.get(ELEMENT_DISCARDPILETOPCARD);
 	}
 	
 	public Integer getDiscardPileCardNumber(){
@@ -280,12 +281,12 @@ public class UpdateGame_Message extends Message {
 		this.playedCard = playedCard;
 	}
 
-	public String setCardBuyed(String cardBuyed){
-		return this.cardBuyed = cardBuyed;
+	public String setBuyedCard(String buyedCard){
+		return this.buyedCard = buyedCard;
 	}
 	
-	public void setDiscardPile(String discardPile){
-		this.discardPile = discardPile;
+	public void setDiscardPileTopCard(String discardPileTopCard){
+		this.discardPileTopCard = discardPileTopCard;
 	}
 	
 	public void setDiscardPileCardNumber(Integer discardPileCardNumber){
