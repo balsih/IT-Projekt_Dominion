@@ -35,23 +35,26 @@ public class UpdateGame_Message extends Message {
 	private static final String ELEMENT_BUYS = "buys";
 	private static final String ATTR_DECKPILECARDNUMBER = "deckPileCardNumber";
 	private static final String ATTR_DISCARDPILECARDNUMBER = "discardPileCardNumber";
+	
 	private String chat = null;
 	private String currentPhase = null;
 	private String currentPlayer = null;
 	private String log = null;
+	
 	private Integer deckPileCardNumber = null;
 	private Integer discardPileCardNumber = null;
 	private Integer buys = null;
 	private Integer actions = null;
 	private Integer coins = null;
 	
-	private String buyedCard = null;
-	private String playedCard = null;
-	private String discardPileTopCard = null;
+	private Card buyedCard = null;
+	private Card playedCard = null;
+	private Card discardPileTopCard = null;
     
     private HashMap<String, String> stringElements;
     private HashMap<String, Integer> integerElements;
-    private HashMap<String, LinkedList<Card>> cardElements;
+    private HashMap<String, Card> cardElements;
+    private HashMap<String, LinkedList<Card>> handCardElements;
     
     private HashMap<String, String> attrElements;
     private HashMap<String, Integer> attrValues;
@@ -63,14 +66,13 @@ public class UpdateGame_Message extends Message {
      */
 	public UpdateGame_Message(){
 		super();
-		//Top_Level String Elements
+		//Top_Level Elements
 		this.stringElements = new HashMap<String, String>();
-		
-		//Top-Level Integer Elements
 		this.integerElements = new HashMap<String, Integer>();
-		this.cardElements = new HashMap<String, LinkedList<Card>>();
+		this.cardElements = new HashMap<String, Card>();
+		this.handCardElements = new HashMap<String, LinkedList<Card>>();
 		
-		//Link the Elements with the Attributes
+		//Top_Level Attributes
 		this.attrValues = new HashMap<String, Integer>();
 		this.attrElements = new HashMap<String, String>();
 		}
@@ -88,10 +90,11 @@ public class UpdateGame_Message extends Message {
         //adds the Top-Level Elements to XML
         this.addContentElements(docIn, root, this.stringElements);
         this.addContentElements(docIn, root, this.integerElements);
+        this.addContentElements(docIn, root, this.cardElements);
         
         //adds the Top-Level Element HANDCARDS to XML and the subElements HANDCARD
         Element handCardsElement = docIn.createElement(ELEMENT_NEWHANDCARDS);
-        this.addContentElements(docIn, handCardsElement, this.cardElements);
+        this.addContentElements(docIn, handCardsElement, this.handCardElements);
         root.appendChild(handCardsElement);
 	}
 	
@@ -104,14 +107,15 @@ public class UpdateGame_Message extends Message {
 		this.stringElements.put(ELEMENT_CURRENTPHASE, this.currentPhase);
 		this.stringElements.put(ELEMENT_CHAT, this.chat);
 		this.stringElements.put(ELEMENT_LOG, this.log);
-		this.stringElements.put(ELEMENT_PLAYEDCARD, this.playedCard);
-		this.stringElements.put(ELEMENT_BUYEDCARD, this.buyedCard);
-		this.stringElements.put(ELEMENT_DISCARDPILETOPCARD, this.discardPileTopCard);
 		this.stringElements.put(ELEMENT_DECKPILE, null);
 		
 		this.integerElements.put(ELEMENT_ACTIONS, this.actions);
 		this.integerElements.put(ELEMENT_COINS, this.coins);
 		this.integerElements.put(ELEMENT_BUYS, this.buys);
+		
+		this.cardElements.put(ELEMENT_PLAYEDCARD, this.playedCard);
+		this.cardElements.put(ELEMENT_BUYEDCARD, this.buyedCard);
+		this.cardElements.put(ELEMENT_DISCARDPILETOPCARD, this.discardPileTopCard);
 		
 		this.attrValues.put(ATTR_DECKPILECARDNUMBER, this.deckPileCardNumber);
 		this.attrValues.put(ATTR_DISCARDPILECARDNUMBER, this.discardPileCardNumber);
@@ -163,7 +167,7 @@ public class UpdateGame_Message extends Message {
 		
 		this.parseContent(root, this.stringElements);
 		this.parseContent(root, this.integerElements);
-		this.parseContent(root, this.cardElements);
+		this.parseContent(root, this.handCardElements);
 
 	}
 	
@@ -195,12 +199,12 @@ public class UpdateGame_Message extends Message {
 				}catch(Exception e){}
 				try{HashMap<String, LinkedList<Card>> cardMap = (HashMap<String, LinkedList<Card>>) content;
 				NodeList cardList = element.getElementsByTagName(key);
-				LinkedList<Card> newHandCards = this.cardElements.get(key);
+				LinkedList<Card> newHandCards = this.handCardElements.get(key);
 				for(int i = 0; i < cardList.getLength(); i++){
 					Element cardElement = (Element) cardList.item(i);
 					newHandCards.add(Card.getCard(CardName.parseName(cardElement.getTextContent())));
 				}
-				this.cardElements.put(key, newHandCards);
+				this.handCardElements.put(key, newHandCards);
 				}catch(Exception e){}
 			}
 		}
@@ -223,16 +227,16 @@ public class UpdateGame_Message extends Message {
 		return this.stringElements.get(ELEMENT_LOG);
 	}
 
-	public String getPlayedCard(){
-		return this.stringElements.get(ELEMENT_PLAYEDCARD);
+	public Card getPlayedCard(){
+		return this.cardElements.get(ELEMENT_PLAYEDCARD);
 	}
 
-	public String getBuyedCard(){
-		return this.stringElements.get(ELEMENT_BUYEDCARD);
+	public Card getBuyedCard(){
+		return this.cardElements.get(ELEMENT_BUYEDCARD);
 	}
 	
-	public String getDiscardPileTopCard(){
-		return this.stringElements.get(ELEMENT_DISCARDPILETOPCARD);
+	public Card getDiscardPileTopCard(){
+		return this.cardElements.get(ELEMENT_DISCARDPILETOPCARD);
 	}
 	
 	public Integer getDiscardPileCardNumber(){
@@ -256,7 +260,7 @@ public class UpdateGame_Message extends Message {
 	}
 
 	public LinkedList<Card> getNewHandCards(){
-		return this.cardElements.get(ELEMENT_NEWHANDCARDS);
+		return this.handCardElements.get(ELEMENT_NEWHANDCARDS);
 	}
 
 
@@ -277,15 +281,15 @@ public class UpdateGame_Message extends Message {
 		this.log = log;
 	}
 
-	public void setPlayedCards(String playedCard){
+	public void setPlayedCards(Card playedCard){
 		this.playedCard = playedCard;
 	}
 
-	public String setBuyedCard(String buyedCard){
-		return this.buyedCard = buyedCard;
+	public void setBuyedCard(Card buyedCard){
+		this.buyedCard = buyedCard;
 	}
 	
-	public void setDiscardPileTopCard(String discardPileTopCard){
+	public void setDiscardPileTopCard(Card discardPileTopCard){
 		this.discardPileTopCard = discardPileTopCard;
 	}
 	
@@ -312,6 +316,6 @@ public class UpdateGame_Message extends Message {
 	//fill the handCardElementNames to use addContentElements
 	public void setNewHandCards(LinkedList<Card> newHandCards){
 		for(int i = 0; i < newHandCards.size(); i++)
-			this.cardElements.put(ELEMENT_NEWHANDCARD, newHandCards);	
+			this.handCardElements.put(ELEMENT_NEWHANDCARD, newHandCards);	
 	}
 }//end UpdateGame_Message

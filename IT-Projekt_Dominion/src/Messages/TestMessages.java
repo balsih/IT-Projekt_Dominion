@@ -7,6 +7,7 @@ import java.util.Stack;
 
 import Cards.Card;
 import Cards.CardName;
+import Cards.Gold_Card;
 import Cards.Market_Card;
 import Cards.Mine_Card;
 import Cards.Smithy_Card;
@@ -36,16 +37,17 @@ public class TestMessages {
 		
 		String currentPhase = "actionPhase";
 		
-		String discardPileTopCard = "gold";
 		Integer discardPileCardNumber = 13;
 		
 		Integer deckPileCardNumber = 21;
 		
-		String buyedCard = CardName.Gold.toString();
-		
 		String chat = "how are you?";
 		
-		String playedCard = "newSmithyCard";
+		Card playedCard = new Smithy_Card();
+		
+		Card buyedCard = new Market_Card();
+		
+		Card discardPileTopCard = new Gold_Card();
 		
 		LinkedList<Card> handCards = new LinkedList<Card>();
 		handCards.add(new Smithy_Card());
