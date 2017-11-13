@@ -30,10 +30,12 @@ public class Server_View extends View<Server_Model>{
 	protected TextField txtPort;
 	protected Button btnStart;
 	protected Pane spacer;
+	protected Stage stage;
 	
 	public Server_View(Stage stage, Server_Model model, TextArea txtLog){
 	
 		super(stage, model);
+		this.stage = stage;
 		this.txtLog = txtLog;
 		
 		this.lblPort = new Label("Port");
