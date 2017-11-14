@@ -34,7 +34,7 @@ public class Bot extends Player {
 	//public String getBotName(){
 	//	String name;
 	//  return name;
-		
+	// 
 	//}
 	
 	/**
