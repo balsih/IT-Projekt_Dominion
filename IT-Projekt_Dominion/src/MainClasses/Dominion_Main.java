@@ -7,6 +7,8 @@ import Abstract_MVC.View;
 import Client_CreatePlayer_VC.CreatePlayer_Controller;
 import Client_CreatePlayer_VC.CreatePlayer_View;
 import Client_GameApp_MVC.GameApp_Model;
+import Client_Login_VC.Login_Controller;
+import Client_Login_VC.Login_View;
 import Client_Services.ServiceLocator;
 import Client_Services.Translator;
 import Client_Splash_MVC.Splash_Controller;
@@ -53,6 +55,10 @@ public class Dominion_Main extends Application {
 		CreatePlayer_View view = new CreatePlayer_View(new Stage(), model);
 		CreatePlayer_Controller controller = new CreatePlayer_Controller(this, model, view);
 		view.start();
+		
+		//Thread.sleep(3000);
+
+		view.stop();
 	}
 
 	public void startGameApp(){
@@ -76,7 +82,11 @@ public class Dominion_Main extends Application {
 		splashView.stop(); // Hides splashscreen
 	}
 
-	public void startLogin(){
+	public void startLogin(){  /// -> nicht sicher ob das so gemacht wird
+		GameApp_Model model = new GameApp_Model(null);
+		Login_View view = new Login_View(new Stage(), model);
+		Login_Controller controller = new Login_Controller(this, model, view);
+		view.start();
 
 	}
 
