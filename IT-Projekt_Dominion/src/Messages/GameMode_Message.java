@@ -14,7 +14,7 @@ import org.w3c.dom.NodeList;
 public class GameMode_Message extends Message {
 
 	private static final String ELEMENT_MODE = "mode";
-	private String mode;
+	private Content mode;
 
 
 	public GameMode_Message(){
@@ -30,7 +30,7 @@ public class GameMode_Message extends Message {
         Element root = docIn.getDocumentElement();
 		
 		Element mode = docIn.createElement(ELEMENT_MODE);
-		mode.setTextContent(this.mode);
+		mode.setTextContent(this.mode.toString());
 		root.appendChild(mode);
 	}
 
@@ -46,16 +46,16 @@ public class GameMode_Message extends Message {
 		NodeList tmpElements = root.getElementsByTagName(ELEMENT_MODE);
         if (tmpElements.getLength() > 0) {
             Element mode = (Element) tmpElements.item(0);
-            this.mode = mode.getTextContent();
+            this.mode = Content.parseContent(mode.getTextContent());
         }
 	}
 
 	
-	public String getMode(){
+	public Content getMode(){
 		return this.mode;
 	}
 	
-	public void setMode(String mode){
+	public void setMode(Content mode){
 		this.mode = mode;
 	}
 }//end GameMode_Message

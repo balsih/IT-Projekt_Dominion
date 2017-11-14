@@ -14,7 +14,7 @@ public class Commit_Message extends Message {
 	private static final String ELEMENT_NOTIFICATION = "notification";
 	private static final String ATTR_MOVE = "move";
 	private String notification;
-	private String move;
+	private Content move;
 
 	
 	public Commit_Message(){
@@ -31,7 +31,7 @@ public class Commit_Message extends Message {
 		
 		Element notification = docIn.createElement(ELEMENT_NOTIFICATION);
 		notification.setTextContent(this.notification);
-		notification.setAttribute(ATTR_MOVE, this.move);
+		notification.setAttribute(ATTR_MOVE, this.move.toString());
 		root.appendChild(notification);
 	}
 
@@ -47,7 +47,7 @@ public class Commit_Message extends Message {
         if (tmpElements.getLength() > 0) {
             Element notification = (Element) tmpElements.item(0);
             this.notification = notification.getTextContent();
-            this.move = notification.getAttribute(ATTR_MOVE);
+            this.move = Content.parseContent(notification.getAttribute(ATTR_MOVE));
         }
 	}
 
@@ -58,7 +58,7 @@ public class Commit_Message extends Message {
 	}
 	
 
-	public String getMove() {
+	public Content getMove() {
 		return move;
 	}
 	
@@ -68,7 +68,7 @@ public class Commit_Message extends Message {
 	}
 
 
-	public void setMove(String move) {
+	public void setMove(Content move) {
 		this.move = move;
 	}
 	

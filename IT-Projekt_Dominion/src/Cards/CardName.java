@@ -24,7 +24,7 @@ public enum CardName {
 	
 	/**
 	 * @author Bradley Richards
-	 * Parses the enum-Type for creating new cards on client
+	 * Parses the enum-Name for creating new cards on client
 	 * 
 	 * @param cardName
 	 * @return CardName, enum of the given cardName
