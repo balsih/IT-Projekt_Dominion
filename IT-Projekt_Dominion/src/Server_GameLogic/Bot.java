@@ -31,7 +31,7 @@ public class Bot extends Player {
 	}
 
 	// Random BotName
-	//public String getBotName(){
+	// public String getBotName(){
 	//	String name;
 	//  return name;
 	// 
