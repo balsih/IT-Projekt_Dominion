@@ -1,9 +1,12 @@
 package Server_GameLogic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 import Cards.Card;
+import Cards.CardName;
+import Cards.CardType;
 
 /**
  * @author Simon
@@ -20,11 +23,20 @@ public class Bot extends Player {
 	private int numbuys = 0, numvillagecards, numsmithycards, numworkshopcards, numcellarcards, numgoldcards,
 			numsilvercards, numcoopercards;
 	private ArrayList<String> actioncardlist = new ArrayList<String>(5);
+//	private Arrays[] array;
 
 	public Bot(String name) {
 		super(name);
+		//Fill Array with names or get Names from DB?
 	}
 
+	// Random BotName
+	//public String getBotName(){
+	//	String name;
+	//  return name;
+		
+	//}
+	
 	/**
 	 * executes the Bot with all its stages: play, buy and cleanup
 	 * 
@@ -34,8 +46,8 @@ public class Bot extends Player {
 		try {
 			this.actualPhase = "play";
 			for (int i = 0; i < handCards.size(); i++) {
-				if (handCards.get(i).getType().equals("action")) {
-					actioncardlist.add(handCards.get(i).getCardName());
+				if (handCards.get(i).getType().equals(CardType.Action)) {
+					actioncardlist.add(handCards.get(i).getCardName().toString());
 				}
 			}
 			while (!actioncardlist.isEmpty()) {
@@ -95,54 +107,22 @@ public class Bot extends Player {
 	 */
 	private void playActionCards() {
 		while (actions >= 1) {
-			String stringCase = null;
+			CardName name = null;
+			int index = 0;
 			if (actioncardlist.contains("Village_Card")) {
-				stringCase = "Village_Card";
+				name = CardName.Village;
+				index = handCards.indexOf(CardName.Village);
 			} else if (actioncardlist.contains("Smithy_Card")) {
-				stringCase = "Smithy_Card";
+				name = CardName.Smithy;
+				index = handCards.indexOf(CardName.Smithy);
 			} else if (actioncardlist.contains("Workshop_Card")) {
-				stringCase = "Workshop";
+				name = CardName.Workshop;
+				index = handCards.indexOf(CardName.Workshop);
 			} else if (actioncardlist.contains("Cellar_Card")) {
-				stringCase = "Cellar_Card";
+				name = CardName.Cellar;
+				index = handCards.indexOf(CardName.Cellar);
 			}
-
-			// René fragen
-			Card playedCard = null;
-			int index;
-			switch (stringCase) {
-			case "Village_Card":
-				index = this.handCards.indexOf("Village_Card");
-				playedCard = this.handCards.remove(index);
-				playedCard.executeCard(this);
-				playedCards.add(playedCard);
-				actioncardlist.remove("Village_Card");
-				break;
-			case "Smithy_Card":
-				index = this.handCards.indexOf("Smithy_Card");
-				playedCard = this.handCards.remove(index);
-				playedCard.executeCard(this);
-				playedCards.add(playedCard);
-				actioncardlist.remove("Smithy_Card");
-				break;
-			case "Workshop_Card":
-				index = this.handCards.indexOf("Workshop_Card");
-				playedCard = this.handCards.remove(index);
-				playedCard.executeCard(this);
-				playedCards.add(playedCard);
-				actioncardlist.remove("Workshop_Card");
-				break;
-			case "Cellar_Card":
-				index = this.handCards.indexOf("Cellar_Card");
-				playedCard = this.handCards.remove(index);
-				playedCard.executeCard(this);
-				playedCards.add(playedCard);
-				actioncardlist.remove("Cellar_Card");
-				break;
-			default:
-				actioncardlist.clear();
-				actions = 0;
-			}
-
+			play(name, index);
 		}
 	}
 
@@ -197,16 +177,16 @@ public class Bot extends Player {
 	 */
 	private void buyActionCards() {
 		if (numvillagecards <= MAX_VILLAGE_CARDS && coins >= 3) {
-			buy("Village_Card");
+			buy(CardName.Village);
 			numvillagecards++;
 		} else if (numsmithycards <= MAX_SMITHY_CARDS && coins >= 4) {
-			buy("Smithy_Card");
+			buy(CardName.Smithy);
 			numsmithycards++;
 		} else if (numworkshopcards <= MAX_WORKSHOP_CARDS && coins >= 3) {
-			buy("Workshop_Card");
+			buy(CardName.Workshop);
 			numworkshopcards++;
 		} else if (numcellarcards <= MAX_CELLAR_CARDS && coins >= 2) {
-			buy("Cellar_Card");
+			buy(CardName.Cellar);
 			numcellarcards++;
 		} else {
 			buyTreasureCards(); // if Bot has reached maximum Action_Cards, only buy Treasure_Cards
@@ -218,13 +198,13 @@ public class Bot extends Player {
 	 */
 	private void buyTreasureCards() {
 		if (coins >= 6) {
-			buy("Gold_Card");
+			buy(CardName.Gold);
 			numgoldcards++;
 		} else if (coins >= 3) {
-			buy("Silver_Card");
+			buy(CardName.Silver);
 			numsilvercards++;
 		} else {
-			buy("Cooper_Card"); // a Cooper_Card is free --> so this is always the ultimate possibility
+			buy(CardName.Copper); // a Cooper_Card is free --> so this is always the ultimate possibility
 			numcoopercards++;
 		}
 	}
@@ -234,11 +214,11 @@ public class Bot extends Player {
 	 */
 	private void buyVictoryCards() {
 		if (coins >= 8)
-			buy("Province_Card");
+			buy(CardName.Province);
 		else if (coins >= 5)
-			buy("Duchy_Card");
+			buy(CardName.Duchy);
 		else if (coins >= 2)
-			buy("Estade_Card");
+			buy(CardName.Estate);
 		else
 			buyTreasureCards(); // if no Victory_Card can be bought --> buy a Cooper_Card
 	}
