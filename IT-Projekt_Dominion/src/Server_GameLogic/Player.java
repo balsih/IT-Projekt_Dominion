@@ -172,6 +172,7 @@ public class Player {
 			break;
 		}
 
+		//Prüfen: richtige Phase, richtiger Player, 
 		if(buyedCard.getCost() <= this.getCoins() && this.getBuys() > 0){
 			this.ugmsg.setLog("");
 			this.ugmsg.setCurrentPlayer(this.getPlayerName());
@@ -285,6 +286,7 @@ public class Player {
 		playedCard.executeCard(this);
 		playedCards.add(playedCard);
 		
+		//Prüfen ob richtige Phase und richtiger Player
 		if (this.getActions() > 0){
 			this.ugmsg.setLog("");
 			this.ugmsg.setCurrentPlayer(this.getPlayerName());

@@ -36,7 +36,6 @@ public class Game {
 	private Stack<Duchy_Card> duchyPile;
 	private Stack<Estate_Card> estatePile;
 	private static int gameCounter = 0;
-	private String gameMode;
 	private Stack<Gold_Card> goldPile;
 	private Stack<Market_Card> marketPile;
 	private Stack<Mine_Card> minePile;
@@ -154,16 +153,6 @@ public class Game {
 			return false;
 	}
 
-	/**
-	 * 
-	 * @param clientSocket
-	 * @param gameMode
-	 * @param player
-	 */
-	public static Game getGame(Socket clientSocket, String gameMode, Player player) {
-		return null;
-	}
-
 	public int getGameCounter() {
 		return 0;
 	}
@@ -172,7 +161,11 @@ public class Game {
 		return null;
 	}
 
+	//Sobald player 2 hinzugefügt = true
 	public boolean isReadyToStart() {
+		if(player2 != null)
+			return true;
+		
 		return false;
 	}
 
@@ -213,29 +206,31 @@ public class Game {
 		return null;
 	}
 
-	public static Game createGame(String gameMode, Player player) {
+	public static Game getGame(String gameMode, Player player) {
+		//enums für gameMode
 		if(gameMode.equals("multiplayer")){
 			if (gameCounter % 2 == 0) {
 				Game game = new Game();
 				
-				setPlayer1(player);
+				game.setPlayer1(player);
+				existingGame = game;
 				
 				gameCounter++;
-				return game;
 			}
 			else{
-				setPlayer2(player);
+				existingGame.setPlayer2(player);
 				gameCounter++;
-				return existingGame;
 			}
+			return existingGame;
 		}
 		else{
 			Game game = new Game();
-			Bot bot = new Bot(player.getPlayerName());
-			setPlayer1(player);
-			setPlayer2(bot);
+			Bot bot = new Bot("Bobby");
+			game.setPlayer1(player);
+			game.setPlayer2(bot);
 			return game;
 		}
+		
 	}
 
 	public void sendToOpponent(Player source, Message ugmsg) {
@@ -313,7 +308,7 @@ public class Game {
 		return player1;
 	}
 
-	public static void setPlayer1(Player player1) {
+	public void setPlayer1(Player player1) {
 		player1 = player1;
 	}
 
@@ -321,7 +316,7 @@ public class Game {
 		return player2;
 	}
 
-	public static void setPlayer2(Player player2) {
+	public void setPlayer2(Player player2) {
 		player2 = player2;
 	}
 }// end Game
