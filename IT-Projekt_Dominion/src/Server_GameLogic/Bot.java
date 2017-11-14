@@ -3,8 +3,6 @@ package Server_GameLogic;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
-
-import Cards.Card;
 import Cards.CardName;
 import Cards.CardType;
 
