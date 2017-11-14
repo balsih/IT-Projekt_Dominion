@@ -49,7 +49,7 @@ public class Dominion_Main extends Application {
 	}
 
 	public void startCreateNewPlayer(){
-		GameApp_Model model = new GameApp_Model();
+		GameApp_Model model = new GameApp_Model(null);
 		CreatePlayer_View view = new CreatePlayer_View(new Stage(), model);
 		CreatePlayer_Controller controller = new CreatePlayer_Controller(this, model, view);
 		view.start();

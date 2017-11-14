@@ -51,7 +51,7 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 	protected Scene create_GUI(){
 		
 		ServiceLocator sl = ServiceLocator.getServiceLocator();
-		//sl.setTranslator(new Translator("de"));
+		//sl.setTranslator(new Translator("en"));
 		Translator t = sl.getTranslator();
 		
 		// layouts
