@@ -58,7 +58,7 @@ public class Dominion_Main extends Application {
 		
 		//Thread.sleep(3000);
 
-		view.stop();
+		//view.stop();
 	}
 
 	public void startGameApp(){
@@ -82,13 +82,13 @@ public class Dominion_Main extends Application {
 		splashView.stop(); // Hides splashscreen
 	}
 
-	public void startLogin(){  /// -> nicht sicher ob das so gemacht wird
-		GameApp_Model model = new GameApp_Model(null);
-		Login_View view = new Login_View(new Stage(), model);
-		Login_Controller controller = new Login_Controller(this, model, view);
-		view.start();
-
-	}
+//	public void startLogin(){  /// -> nicht sicher ob das so gemacht wird
+//		GameApp_Model model = new GameApp_Model(null);
+//		Login_View view = new Login_View(new Stage(), model);
+//		Login_Controller controller = new Login_Controller(this, model, view);
+//		view.start();
+//
+//	}
 
 	public void startMainMenu(){
 
