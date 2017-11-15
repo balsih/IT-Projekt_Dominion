@@ -10,7 +10,7 @@ import java.sql.Statement;
 import Server_GameLogic.Player;
 
 /**
- * @author Bodo Grütter A database connector which builds a connection to the
+ * @author Bodo Gruetter A database connector which builds a connection to the
  *         embedded h2 database. This class allows Select statements of relevant
  *         data and data manipulation with DML in SQL.
  * 
@@ -27,7 +27,7 @@ public class DB_Connector {
 	private ResultSet rs;
 
 	/**
-	 * @author Bodo Grütter The constructor creates a connection to the database
+	 * @author Bodo Gruetter The constructor creates a connection to the database
 	 *         and if creates if not exists the database structure.
 	 * 
 	 */
@@ -37,7 +37,7 @@ public class DB_Connector {
 	}
 
 	/**
-	 * @author Bodo Grütter creates a new user in database with a username as
+	 * @author Bodo Gruetter creates a new user in database with a username as
 	 *         primary key and a password if not already exists.
 	 * 
 	 * @param the
@@ -65,7 +65,7 @@ public class DB_Connector {
 	}
 
 	/**
-	 * @autor Bodo Grütter inserts an existing player with his score of a game
+	 * @autor Bodo Gruetter inserts an existing player with his score of a game
 	 *        into the database.
 	 * 
 	 * @param the
@@ -91,7 +91,7 @@ public class DB_Connector {
 	}
 
 	/**
-	 * @author Bodo Grütter deletes an existing player from the database.
+	 * @author Bodo Gruetter deletes an existing player from the database.
 	 * 
 	 * @param username
 	 *            of the player which should been deleted.
@@ -116,7 +116,7 @@ public class DB_Connector {
 	}
 
 	/**
-	 * @author Bodo Grütter selects the 5 highscores in the database
+	 * @author Bodo Gruetter selects the 5 highscores in the database
 	 * 
 	 * @return the 5 highscores
 	 */
@@ -142,7 +142,7 @@ public class DB_Connector {
 	}
 
 	/**
-	 * @author Bodo Grütter creates a new instance of database if not exists
+	 * @author Bodo Gruetter creates a new instance of database if not exists
 	 * 
 	 * @return existing connector
 	 */
@@ -154,7 +154,7 @@ public class DB_Connector {
 	}
 
 	/**
-	 * @author Bodo Grütter creates the database schema with two tables if no
+	 * @author Bodo Gruetter creates the database schema with two tables if no
 	 *         database exists.
 	 * 
 	 * @return true or false depending on the create table statement works.
@@ -178,7 +178,7 @@ public class DB_Connector {
 	}
 
 	/**
-	 * @author Bodo Grütter creates Connection with DB on Server, and creates
+	 * @author Bodo Gruetter creates Connection with DB on Server, and creates
 	 *         DB_Dominion in workspace of actual user if not exists.
 	 * 
 	 * @return true or false depending on the connection could been created.
@@ -206,7 +206,7 @@ public class DB_Connector {
 	}
 
 	/**
-	 * @author Bodo Grütter checks if the player inputs the correct user data to
+	 * @author Bodo Gruetter checks if the player inputs the correct user data to
 	 *         login.
 	 * 
 	 * @pram username and password of a player
@@ -241,7 +241,7 @@ public class DB_Connector {
 	}
 
 	/**
-	 * @author Bodo Grütter service method which allows to select the existing
+	 * @author Bodo Gruetter service method which allows to select the existing
 	 *         player in database and print them out in console.
 	 */
 	private void selectPlayer() {
@@ -264,7 +264,7 @@ public class DB_Connector {
 	}
 
 	/**
-	 * @author Bodo Grütter service method which allows to select the existing
+	 * @author Bodo Gruetter service method which allows to select the existing
 	 *         player_scores in database and print them out in console.
 	 */
 	private void selectPlayer_Scoring() {
