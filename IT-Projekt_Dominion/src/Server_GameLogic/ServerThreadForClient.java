@@ -234,6 +234,7 @@ public class ServerThreadForClient implements Runnable {
 		if(mode == Content.SinglePlayer || mode == Content.MultiPlayer){
 			this.player = new Player(gmmsg.getClient());
 			this.game = Game.getGame(mode, this.player);
+			this.player.addGame(this.game);
 			if(this.game.isReadyToStart()){
 				CreateGame_Message cgmsg = new CreateGame_Message();
 				cgmsg.setBuyCards(this.game.getBuyCards());

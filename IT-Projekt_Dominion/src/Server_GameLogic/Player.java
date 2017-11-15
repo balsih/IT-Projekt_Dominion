@@ -37,14 +37,12 @@ public class Player {
 
 	protected boolean isFinished;
 
-	protected String actualPhase;
+	protected Phase actualPhase;
 
 	protected static int counter;
-	
-	protected String log;
-	
+
 	private ServerThreadForClient serverThreadForClient;
-	
+
 	private UpdateGame_Message ugmsg;
 	private Failure_Message fmsg;
 
@@ -65,18 +63,10 @@ public class Player {
 
 		this.isFinished = false;
 
-		this.actualPhase = "";
-		
-		this.log = "";
-		
-		
 		this.serverThreadForClient = serverThreadForClient;
-		
-		this.ugmsg = new UpdateGame_Message();
-		this.fmsg = new Failure_Message();
 	}
-	
-	public Player(String name){
+
+	public Player(String name) {
 		this.deckPile = new Stack<Card>();
 		this.discardPile = new Stack<Card>();
 		this.handCards = new LinkedList<Card>();
@@ -89,14 +79,10 @@ public class Player {
 
 		this.isFinished = false;
 
-		this.actualPhase = "";
-		
-		this.log = "";
-		
 		this.ugmsg = new UpdateGame_Message();
 		this.fmsg = new Failure_Message();
 	}
-	
+
 	/**
 	 * 
 	 * @param gameThread
@@ -104,15 +90,16 @@ public class Player {
 	public void addGame(Game game) {
 		this.game = game;
 	}
-	
 
 	/**
 	 * buys a card and lays the buyed card into the discard pile
 	 */
 	public Message buy(CardName cardName) {
 		Card buyedCard = null;
-		this.actualPhase = "buy";
-		
+		this.actualPhase = Phase.Buy;
+		ugmsg = new UpdateGame_Message();
+		fmsg = new Failure_Message();
+
 		switch (cardName) {
 		case Copper:
 			buyedCard = this.game.getCopperPile().pop();
@@ -172,40 +159,35 @@ public class Player {
 			break;
 		}
 
-		//Prüfen: richtige Phase, richtiger Player, 
-		if(buyedCard.getCost() <= this.getCoins() && this.getBuys() > 0){
-			this.ugmsg.setLog("");
-			this.ugmsg.setCurrentPlayer(this.getPlayerName());
-			this.ugmsg.setCoins(this.getCoins());
-			this.ugmsg.setActions(this.getActions());
-			this.ugmsg.setBuys(this.getBuys());
-			this.ugmsg.setCurrentPhase(actualPhase);
-			this.ugmsg.setDiscardPileTopCard(this.discardPile.firstElement());
-			this.ugmsg.setDiscardPileCardNumber(this.discardPile.size());
-			this.ugmsg.setDeckPileCardNumber(this.deckPile.size());
-			this.ugmsg.setBuyedCard(buyedCard);
-			this.ugmsg.setNewHandCards(this.handCards);
-			this.ugmsg.setChat("");
-			
+		/**
+		 * checks if the buy of the current player is valid, then actualize the updateGame_Message.
+		 * else the method returns a failure_Message.
+		 */
+		if (buyedCard.getCost() <= this.getCoins() && this.getBuys() > 0 && this.actualPhase == Phase.Buy
+				&& this.equals(game.getCurrentPlayer())) {
+			ugmsg.setLog("");
+			ugmsg.setCurrentPlayer(this.getPlayerName());
+			ugmsg.setCoins(this.getCoins());
+			ugmsg.setActions(this.getActions());
+			ugmsg.setBuys(this.getBuys());
+			ugmsg.setCurrentPhase(actualPhase);
+			ugmsg.setDiscardPileTopCard(this.discardPile.firstElement());
+			ugmsg.setDiscardPileCardNumber(this.discardPile.size());
+			ugmsg.setDeckPileCardNumber(this.deckPile.size());
+			ugmsg.setBuyedCard(buyedCard);
+			ugmsg.setNewHandCards(this.handCards);
+
 			return this.ugmsg;
-		} else
-			return this.fmsg;
+		}
+		return this.fmsg;
 
 	}
-	
-//	//checks if the card can be buyed
-//	public boolean buyed(String cardName){
-//		Card buyedCard = this.buy(cardName);
-//		
-//		if(buyedCard.getCost() <= this.getCoins() && this.getBuys() > 0)
-//			return true;
-//		else
-//			return false;
-//	}
 
-	//Cleans up
+	// Cleans up
 	public void cleanUp() {
-		this.actualPhase = "cleanUp";
+		
+		ugmsg = new UpdateGame_Message();
+		fmsg = new Failure_Message();
 
 		while (!playedCards.isEmpty()) {
 			this.discardPile.push(playedCards.remove());
@@ -220,6 +202,15 @@ public class Player {
 		this.setFinished(true);
 
 		game.checkGameEnding();
+
+		this.actualPhase = Phase.Action;
+
+		if (this.equals(game.getPlayer1())) {
+			game.setCurrentPlayer(game.getPlayer2());
+		} else {
+			game.setCurrentPlayer(game.getPlayer1());
+		}
+
 	}
 
 	/**
@@ -235,7 +226,10 @@ public class Player {
 	 * Else if they are enough cards in the deckPile, the player draws the
 	 * number of layed down cards respectively 5 Cards into the handPile
 	 */
-	public void draw(int numOfCards) {
+	public UpdateGame_Message draw(int numOfCards) {
+		
+		ugmsg = new UpdateGame_Message();
+
 		for (int i = 0; i < numOfCards; i++) {
 			if (deckPile.isEmpty()) {
 				while (!discardPile.isEmpty())
@@ -256,6 +250,9 @@ public class Player {
 					handCards.add(deckPile.pop());
 			}
 		}
+		
+		return ugmsg;
+
 	}
 
 	/**
@@ -280,14 +277,15 @@ public class Player {
 	 */
 	public Message play(CardName cardName, int index) {
 		Card playedCard = null;
-		this.actualPhase = "play";
-		
+
 		playedCard = this.handCards.remove(index);
 		playedCard.executeCard(this);
 		playedCards.add(playedCard);
+
+		ugmsg = new UpdateGame_Message();
+		fmsg = new Failure_Message();
 		
-		//Prüfen ob richtige Phase und richtiger Player
-		if (this.getActions() > 0){
+		if (this.getActions() > 0 && this.actualPhase == Phase.Action && this.equals(game.getCurrentPlayer())) {
 			this.ugmsg.setLog("");
 			this.ugmsg.setCurrentPlayer(this.getPlayerName());
 			this.ugmsg.setCoins(this.getCoins());
@@ -299,34 +297,39 @@ public class Player {
 			this.ugmsg.setDeckPileCardNumber(this.deckPile.size());
 			this.ugmsg.setNewHandCards(handCards);
 			this.ugmsg.setPlayedCards(playedCard);
-			this.ugmsg.setChat("");
-			
-			return this.ugmsg;	
+
+			return ugmsg;
 		}
-		else
-			return this.fmsg;
+
+		return fmsg;
 	}
-	
-//	//Checks if a card can be played
-//	public boolean played(){
-//		if(this.getActions() > 0)
-//			return true;
-//		else
-//			return false;
-//	}
 
 	/**
 	 * skips actual phase and goes to the next phase
 	 */
 	public Message skipPhase() {
-		switch (this.actualPhase) {
-		case "play":
-			//this.buy(cardName);
-		case "buy":
-			this.cleanUp();
-		}
 		
-		return this.ugmsg;
+		ugmsg = new UpdateGame_Message();
+		fmsg = new Failure_Message();
+		
+		
+		if (this.equals(game.getCurrentPlayer())) {
+			switch (this.actualPhase) {
+			case Action:
+				this.actualPhase = Phase.Buy;
+				
+			case Buy:
+				this.actualPhase = Phase.CleanUp;
+				this.cleanUp();
+				
+			default:
+				break;
+			}
+			
+			return this.ugmsg;
+		}
+
+		return this.fmsg;
 	}
 
 	public int getActions() {
@@ -417,11 +420,11 @@ public class Player {
 		this.isFinished = isFinished;
 	}
 
-	public String getActualPhase() {
+	public Phase getActualPhase() {
 		return actualPhase;
 	}
 
-	public void setActualPhase(String actualPhase) {
+	public void setActualPhase(Phase actualPhase) {
 		this.actualPhase = actualPhase;
 	}
 

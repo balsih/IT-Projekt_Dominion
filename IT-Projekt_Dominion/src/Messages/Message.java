@@ -220,8 +220,8 @@ public abstract class Message {
             eltMessage.setAttribute(ATTR_CLIENT, this.client);
             
             // Create the <type> attribute
-            MessageType type = MessageType.getType(this);
-            eltMessage.setAttribute(ATTR_TYPE, type.toString());
+            this.type = MessageType.getType(this);
+            eltMessage.setAttribute(ATTR_TYPE, this.type.toString());
 
             // Let the subclass add additional nodes, as required
             this.addNodes(this.xmlDocument);

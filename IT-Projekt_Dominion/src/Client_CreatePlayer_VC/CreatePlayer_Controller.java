@@ -10,8 +10,9 @@ import MainClasses.Dominion_Main;
  * @created 31-Okt-2017 17:03:44
  */
 public class CreatePlayer_Controller extends Controller<GameApp_Model, CreatePlayer_View> {
+	
 	private Dominion_Main main;
-
+	
 	/**
 	 * 
 	 * @param main
@@ -21,4 +22,5 @@ public class CreatePlayer_Controller extends Controller<GameApp_Model, CreatePla
 	public CreatePlayer_Controller(Dominion_Main main, GameApp_Model model, CreatePlayer_View view){
 		super(model, view);
 	}
+	
 }//end CreatePlayer_Controller

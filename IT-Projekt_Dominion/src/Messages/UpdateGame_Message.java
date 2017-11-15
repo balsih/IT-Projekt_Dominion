@@ -209,6 +209,44 @@ public class UpdateGame_Message extends Message {
 		}
 	}
 	
+	/**
+	 * @author Bodo Grütter
+	 * merges two UpdateGame_Messages together
+	 * 
+	 * @param a first message which gets merged with a second message
+	 * @return the first message with the merged content
+	 */
+	public static UpdateGame_Message merge(UpdateGame_Message first, UpdateGame_Message second){
+		if(first.getActions() == null)
+			first.setActions(second.getActions());
+		if(first.getBuys() == null)
+			first.setBuys(second.getBuys());
+		if(first.getCoins() == null)
+			first.setCoins(second.getCoins());
+		if(first.getChat() == null)
+			first.setChat(second.getChat());
+		if(first.getCurrentPhase() == null)
+			first.setCurrentPhase(second.getCurrentPhase());
+		if(first.getCurrentPlayer() == null)
+			first.setCurrentPlayer(second.getCurrentPlayer());
+		if(first.getDeckPileCardNumber() == null)
+			first.setDeckPileCardNumber(second.getDeckPileCardNumber());
+		if(first.getDiscardPileCardNumber() == null)
+			first.setDiscardPileCardNumber(second.getDiscardPileCardNumber());
+		if(first.getDiscardPileTopCard() == null)
+			first.setDiscardPileTopCard(second.getDiscardPileTopCard());
+		if(first.getLog() == null)
+			first.setLog(second.getLog());
+		if(first.getNewHandCards() == null)
+			first.setNewHandCards(second.getNewHandCards());
+		if(first.getPlayedCard() == null)
+			first.setPlayedCards(second.getPlayedCard());
+		if(first.getBuyedCard() == null)
+			first.setBuyedCard(second.getBuyedCard());
+		
+		return first;
+	}
+	
 	
 	public String getCurrentPlayer(){
 		return this.stringElements.get(ELEMENT_CURRENTPLAYER);
