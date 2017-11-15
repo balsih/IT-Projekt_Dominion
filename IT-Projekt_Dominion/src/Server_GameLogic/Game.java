@@ -41,6 +41,7 @@ public class Game {
 	private Stack<Mine_Card> minePile;
 	private Player player1;
 	private Player player2;
+	private Player currentPlayer;
 	private Stack<Province_Card> provincePile;
 	private Stack<Remodel_Card> remodelPile;
 	private Stack<Silver_Card> silverPile;
@@ -154,11 +155,14 @@ public class Game {
 	}
 
 	public int getGameCounter() {
-		return 0;
+		return gameCounter;
 	}
 
-	public Player getOpponent() {
-		return null;
+	public Player getOpponent(Player source) {
+		if(source.equals(player1))
+			return player2;
+		
+		return player1;
 	}
 
 	//Sobald player 2 hinzugefügt = true
@@ -198,17 +202,8 @@ public class Game {
 		return this.buyCards;
 	}
 
-	/**
-	 * 
-	 * @param cardName
-	 */
-	public Card removeCard(String cardName) {
-		return null;
-	}
-
-	public static Game getGame(String gameMode, Player player) {
-		//enums für gameMode
-		if(gameMode.equals("multiplayer")){
+	public static Game getGame(GameMode gameMode, Player player) {
+		if(gameMode == GameMode.Multiplayer){
 			if (gameCounter % 2 == 0) {
 				Game game = new Game();
 				
@@ -228,15 +223,14 @@ public class Game {
 			Bot bot = new Bot("Bobby");
 			game.setPlayer1(player);
 			game.setPlayer2(bot);
+			bot.addGame(game);
 			return game;
 		}
 		
 	}
 
 	public void sendToOpponent(Player source, Message ugmsg) {
-
 		source.getServerThreadForClient().addWaitingMessages(ugmsg);
-
 	}
 
 	public Stack<Copper_Card> getCopperPile() {
@@ -318,5 +312,13 @@ public class Game {
 
 	public void setPlayer2(Player player2) {
 		player2 = player2;
+	}
+
+	public Player getCurrentPlayer() {
+		return currentPlayer;
+	}
+
+	public void setCurrentPlayer(Player currentPlayer) {
+		this.currentPlayer = currentPlayer;
 	}
 }// end Game
