@@ -2,6 +2,7 @@ package Client_Services;
 
 import java.util.ResourceBundle;
 
+import Cards.CardName;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -19,13 +20,21 @@ public class Gallery {
 	public Gallery(String language){
 
 	}
-
+	
 	/**
 	 * 
 	 * @param key
 	 */
-	public static ImageView getImage(String cardName){
-		Image image = new Image(Gallery.class.getResourceAsStream(cardName)); // name korrespondiert mit Bildname .jpg
+//	public static ImageView getImage(String cardName){
+//		Image image = new Image(Gallery.class.getResourceAsStream(cardName)); // name korrespondiert mit Bildname .jpg
+//		return new ImageView(image);
+//	}
+	
+	
+	public static ImageView getImage(Enum cardName){
+		Image image = new Image(Gallery.class.getResourceAsStream(cardName.toString())); // name korrespondiert mit Bildname .jpg
 		return new ImageView(image);
 	}
+	
+	
 }//end Gallery
