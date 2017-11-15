@@ -8,6 +8,7 @@ import java.util.Stack;
 
 import Cards.Copper_Card;
 import Cards.Card;
+import Cards.CardName;
 import Cards.Cellar_Card;
 import Cards.Duchy_Card;
 import Cards.Estate_Card;
@@ -21,7 +22,7 @@ import Cards.Smithy_Card;
 import Cards.Village_Card;
 import Cards.Woodcutter_Card;
 import Cards.Workshop_Card;
-import Messages.UpdateGame_Message;
+import Messages.Message;
 
 /**
  * @author Bodo
@@ -35,7 +36,6 @@ public class Game {
 	private Stack<Duchy_Card> duchyPile;
 	private Stack<Estate_Card> estatePile;
 	private static int gameCounter = 0;
-	private String gameMode;
 	private Stack<Gold_Card> goldPile;
 	private Stack<Market_Card> marketPile;
 	private Stack<Mine_Card> minePile;
@@ -48,8 +48,10 @@ public class Game {
 	private Stack<Village_Card> villagePile;
 	private Stack<Woodcutter_Card> woodcutterPile;
 	private Stack<Workshop_Card> workshopPile;
-	private HashMap<String, Integer> buyCards;
+	private HashMap<CardName, Integer> buyCards;
 	private boolean gameEnded;
+	
+	private static Game existingGame;
 
 	private final int NUM_OF_TREASURECARDS = 30;
 	private final int NUM_OF_VICTORYCARDS = 30;
@@ -61,14 +63,15 @@ public class Game {
 	 * @param gameMode
 	 * @param player
 	 */
-	public Game(Socket clientSocket, String gameMode, Player player) {
+	// Factory Pattern getter mit gameCounter und parameter gameMode und player
+	private Game() {
 		// Build treasure stacks for a new game
 		this.buildTreasureCardStacks();
 		this.buildVictoryCardStacks();
 		this.buildActionCardStacks();
 
 		this.setGameEnded(false);
-		this.buyCards = new HashMap<String, Integer>();
+		this.buyCards = new HashMap<CardName, Integer>();
 	}
 
 	// Builds stacks for the treasure cards
@@ -136,28 +139,18 @@ public class Game {
 		allStacks.add(this.villagePile);
 		allStacks.add(this.woodcutterPile);
 		allStacks.add(this.workshopPile);
-		
+
 		Iterator<Stack> iter = allStacks.iterator();
-		
-		while(iter.hasNext()){
-			if(iter.next().isEmpty())
+
+		while (iter.hasNext()) {
+			if (iter.next().isEmpty())
 				counter++;
 		}
-		
-		if(this.provincePile.isEmpty() || counter == 3)
+
+		if (this.provincePile.isEmpty() || counter == 3)
 			return true;
 		else
 			return false;
-	}
-
-	/**
-	 * 
-	 * @param clientSocket
-	 * @param gameMode
-	 * @param player
-	 */
-	public static Game getGame(Socket clientSocket, String gameMode, Player player) {
-		return null;
 	}
 
 	public int getGameCounter() {
@@ -168,82 +161,30 @@ public class Game {
 		return null;
 	}
 
+	//Sobald player 2 hinzugefügt = true
 	public boolean isReadyToStart() {
+		if(player2 != null)
+			return true;
+		
 		return false;
 	}
 
 	// Fills a HashMap with the cardName and size of the actual stack of the
 	// cards, which the player could buy
-	public HashMap<String, Integer> getBuyCards() {
-//		while (!this.copperPile.isEmpty()) {
-//			this.buyCards.put(this.copperPile.firstElement().getCardName(), this.copperPile.size());
-//		}
-
-//		while (!this.cellarPile.isEmpty()) {
-//			this.buyCards.put(this.cellarPile.firstElement().getCardName(), this.cellarPile.size());
-//		}
-
-//		while (!this.duchyPile.isEmpty()) {
-//			this.buyCards.put(this.duchyPile.firstElement().getCardName(), this.duchyPile.size());
-//		}
-
-//		while (!this.estatePile.isEmpty()) {
-//			this.buyCards.put(this.estatePile.firstElement().getCardName(), this.estatePile.size());
-//		}
-//
-//		while (!this.goldPile.isEmpty()) {
-//			this.buyCards.put(this.goldPile.firstElement().getCardName(), this.goldPile.size());
-//		}
-
-//		while (!this.marketPile.isEmpty()) {
-//			this.buyCards.put(this.marketPile.firstElement().getCardName(), this.marketPile.size());
-//		}
-//
-//		while (!this.minePile.isEmpty()) {
-//			this.buyCards.put(this.minePile.firstElement().getCardName(), this.minePile.size());
-//		}
-
-//		while (!this.provincePile.isEmpty()) {
-//			this.buyCards.put(this.provincePile.firstElement().getCardName(), this.provincePile.size());
-//		}
-
-//		while (!this.remodelPile.isEmpty()) {
-//			this.buyCards.put(this.remodelPile.firstElement().getCardName(), this.remodelPile.size());
-//		}
-
-//		while (!this.silverPile.isEmpty()) {
-//			this.buyCards.put(this.silverPile.firstElement().getCardName(), this.silverPile.size());
-//		}
-
-//		while (!this.smithyPile.isEmpty()) {
-//			this.buyCards.put(this.smithyPile.firstElement().getCardName(), this.smithyPile.size());
-//		}
-//
-//		while (!this.villagePile.isEmpty()) {
-//			this.buyCards.put(this.villagePile.firstElement().getCardName(), this.villagePile.size());
-//		}
-//
-//		while (!this.woodcutterPile.isEmpty()) {
-//			this.buyCards.put(this.woodcutterPile.firstElement().getCardName(), this.woodcutterPile.size());
-//		}
-//
-//		while (!this.workshopPile.isEmpty()) {
-//			this.buyCards.put(this.workshopPile.firstElement().getCardName(), this.workshopPile.size());
-//		}
-		
-		for(int i = 0; i < NUM_OF_VICTORYCARDS; i++){
+	public HashMap<CardName, Integer> getBuyCards() {
+		for (int i = 0; i < NUM_OF_VICTORYCARDS; i++) {
 			this.buyCards.put(this.provincePile.firstElement().getCardName(), this.provincePile.size());
 			this.buyCards.put(this.duchyPile.firstElement().getCardName(), this.duchyPile.size());
 			this.buyCards.put(this.estatePile.firstElement().getCardName(), this.estatePile.size());
 		}
-		
-		for(int i = 0; i < NUM_OF_TREASURECARDS; i++){
+
+		for (int i = 0; i < NUM_OF_TREASURECARDS; i++) {
 			this.buyCards.put(this.copperPile.firstElement().getCardName(), this.copperPile.size());
 			this.buyCards.put(this.goldPile.firstElement().getCardName(), this.goldPile.size());
 			this.buyCards.put(this.silverPile.firstElement().getCardName(), this.silverPile.size());
 		}
-		
-		for(int i = 0; i < NUM_OF_ACTIONCARDS; i++){
+
+		for (int i = 0; i < NUM_OF_ACTIONCARDS; i++) {
 			this.buyCards.put(this.workshopPile.firstElement().getCardName(), this.workshopPile.size());
 			this.buyCards.put(this.woodcutterPile.firstElement().getCardName(), this.woodcutterPile.size());
 			this.buyCards.put(this.villagePile.firstElement().getCardName(), this.villagePile.size());
@@ -253,7 +194,6 @@ public class Game {
 			this.buyCards.put(this.marketPile.firstElement().getCardName(), this.marketPile.size());
 			this.buyCards.put(this.cellarPile.firstElement().getCardName(), this.cellarPile.size());
 		}
-
 
 		return this.buyCards;
 	}
@@ -266,7 +206,34 @@ public class Game {
 		return null;
 	}
 
-	public void sendToOpponent(Player source, UpdateGame_Message ugmsg) {
+	public static Game getGame(String gameMode, Player player) {
+		//enums für gameMode
+		if(gameMode.equals("multiplayer")){
+			if (gameCounter % 2 == 0) {
+				Game game = new Game();
+				
+				game.setPlayer1(player);
+				existingGame = game;
+				
+				gameCounter++;
+			}
+			else{
+				existingGame.setPlayer2(player);
+				gameCounter++;
+			}
+			return existingGame;
+		}
+		else{
+			Game game = new Game();
+			Bot bot = new Bot("Bobby");
+			game.setPlayer1(player);
+			game.setPlayer2(bot);
+			return game;
+		}
+		
+	}
+
+	public void sendToOpponent(Player source, Message ugmsg) {
 
 		source.getServerThreadForClient().addWaitingMessages(ugmsg);
 
@@ -335,5 +302,21 @@ public class Game {
 
 	public void setGameEnded(boolean gameEnded) {
 		this.gameEnded = gameEnded;
+	}
+
+	public Player getPlayer1() {
+		return player1;
+	}
+
+	public void setPlayer1(Player player1) {
+		player1 = player1;
+	}
+
+	public Player getPlayer2() {
+		return player2;
+	}
+
+	public void setPlayer2(Player player2) {
+		player2 = player2;
 	}
 }// end Game

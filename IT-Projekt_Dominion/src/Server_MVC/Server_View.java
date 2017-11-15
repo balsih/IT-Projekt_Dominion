@@ -1,7 +1,6 @@
 package Server_MVC;
 
 import Abstract_MVC.View;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -11,7 +10,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 /**
@@ -30,10 +28,12 @@ public class Server_View extends View<Server_Model>{
 	protected TextField txtPort;
 	protected Button btnStart;
 	protected Pane spacer;
+	protected Stage stage;
 	
 	public Server_View(Stage stage, Server_Model model, TextArea txtLog){
 	
 		super(stage, model);
+		this.stage = stage;
 		this.txtLog = txtLog;
 		
 		this.lblPort = new Label("Port");
@@ -58,7 +58,7 @@ public class Server_View extends View<Server_Model>{
 		
 		HBox boxTop = new HBox(lblPort, txtPort, spacer, btnStart);
 		boxTop.getStyleClass().add("hbox");
-		boxTop.setHgrow(spacer, Priority.ALWAYS);
+		HBox.setHgrow(spacer, Priority.ALWAYS);
 		
 		root.setTop(boxTop);
 		root.setCenter(txtLog);
@@ -76,6 +76,19 @@ public class Server_View extends View<Server_Model>{
 	protected Scene create_GUI() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	/**updates the txtLog with connected clients.
+	 *Adapted from: 
+	 * Prof. Bradley Richards
+	 * */
+	protected void updateClients(){
+		StringBuffer sb = new StringBuffer();
+		for (Client c : model.clients){
+			sb.append(c.toString());
+			sb.append("\n");
+		}
+		txtLog.setText(sb.toString());
 	}
 	
 }//end Server_View

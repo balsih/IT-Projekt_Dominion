@@ -6,6 +6,8 @@ import java.util.Set;
 import java.util.Stack;
 
 import Cards.Card;
+import Cards.CardName;
+import Cards.Gold_Card;
 import Cards.Market_Card;
 import Cards.Mine_Card;
 import Cards.Smithy_Card;
@@ -35,16 +37,17 @@ public class TestMessages {
 		
 		String currentPhase = "actionPhase";
 		
-		String discardPileTopCard = "gold";
 		Integer discardPileCardNumber = 13;
 		
 		Integer deckPileCardNumber = 21;
 		
-		String cardBuyed = "smithy";
-		
 		String chat = "how are you?";
 		
-		String playedCard = "newSmithyCard";
+		Card playedCard = new Smithy_Card();
+		
+		Card buyedCard = new Market_Card();
+		
+		Card discardPileTopCard = new Gold_Card();
 		
 		LinkedList<Card> handCards = new LinkedList<Card>();
 		handCards.add(new Smithy_Card());
@@ -59,10 +62,10 @@ public class TestMessages {
 		ugmsg.setActions(actions);
 		ugmsg.setBuys(buys);
 		ugmsg.setCurrentPhase(currentPhase);
-		ugmsg.setDiscardPile(discardPileTopCard);
+		ugmsg.setDiscardPileTopCard(discardPileTopCard);
 		ugmsg.setDiscardPileCardNumber(discardPileCardNumber);
 		ugmsg.setDeckPileCardNumber(deckPileCardNumber);
-		ugmsg.setCardBuyed(cardBuyed);
+		ugmsg.setBuyedCard(buyedCard);
 		ugmsg.setChat(chat);
 		ugmsg.setNewHandCards(handCards);
 		ugmsg.setPlayedCards(playedCard);
@@ -75,9 +78,9 @@ public class TestMessages {
 		
 		String opponent = "mordrag";
 		
-		HashMap<String, Integer> buyCards = new HashMap<String, Integer>();
-		buyCards.put("duchy", 5);
-		buyCards.put("smithy", 12);
+		HashMap<CardName, Integer> buyCards = new HashMap<CardName, Integer>();
+		buyCards.put(CardName.Duchy, 5);
+		buyCards.put(CardName.Smithy, 12);
 		
 		Stack<Card> deckPile = new Stack<Card>();
 		deckPile.push(new Village_Card());

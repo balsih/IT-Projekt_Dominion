@@ -13,9 +13,9 @@ public class Workshop_Card extends Card {
 
 
 	public Workshop_Card(){
-		this.cardName = "Workshop_Card";
+		this.cardName = CardName.Workshop;
 		this.cost = 3;
-		this.type = "action";
+		this.type = CardType.Action;
 
 	}
 
@@ -34,7 +34,7 @@ public class Workshop_Card extends Card {
 		Game game = player.getGame();
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 				
-		ugmsg.setLog(player.getPlayerName()+": played Workshop card");
+		ugmsg.setLog(player.getPlayerName()+": played "+this.cardName.toString()+" card");
 		game.sendToOpponent(player, ugmsg); // info for opponent
 				
 		// update game Messages -> XML 
