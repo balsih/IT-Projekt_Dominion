@@ -21,7 +21,9 @@ import Messages.GameMode_Message;
 import Messages.Login_Message;
 import Messages.Message;
 import Messages.MessageType;
+import Messages.PlayCard_Message;
 import Messages.PlayerSuccess_Message;
+import Messages.SkipPhase_Message;
 import Messages.UpdateGame_Message;
 
 /**
@@ -171,8 +173,9 @@ public class GameApp_Model extends Model {
 	 * @param password
 	 * @return String, usually only necessary if clientName is already occupied
 	 */
-	public String sendCreateNewPlayer(String password){
+	public String sendCreateNewPlayer(String clientName, String password){
 		String result = NO_CONNECTION;
+		this.clientName = clientName;
 		Socket socket = connect();
 		if(socket != null){
 			CreateNewPlayer_Message cnpmsg = new CreateNewPlayer_Message();
@@ -288,8 +291,9 @@ public class GameApp_Model extends Model {
 	 * @param password
 	 * @return String, usually only necessary if clientName and password don't work
 	 */
-	public String sendLogin(String password){
+	public String sendLogin(String clientName, String password){
         String result = NO_CONNECTION;
+        this.clientName = clientName;
         Socket socket = connect();
         if (socket != null) {
     		Login_Message lmsg = new Login_Message();
@@ -300,8 +304,7 @@ public class GameApp_Model extends Model {
     			lmsg.send(socket);
     			Message msgIn = Message.receive(socket);
     			if(msgIn.getType().equals(MessageType.Commit)){
-    				Commit_Message cmsg = (Commit_Message) msgIn;//login succeeded
-    				this.main.startMainMenu();
+    				this.main.startMainMenu();//login succeeded
     			}else if(msgIn.getType().equals(MessageType.Failure)){
     				Failure_Message fmsg = (Failure_Message) msgIn;//login failed, no password with clientName available
     				return fmsg.getNotification();
@@ -314,40 +317,63 @@ public class GameApp_Model extends Model {
         return result;
 	}
 
-
-	public int sendPlayCard(CardName cardName){
-		String result = NO_CONNECTION;
+	/**
+	 * @author Lukas
+	 * The client wants to play a chosen Card. The result depends on the validity of the move
+	 * 
+	 * @param card, chosen Card
+	 * @param index, index of the chosen Card
+	 */
+	public void sendPlayCard(Card card, Integer index){
 		Socket socket = connect();
 		if(socket != null){
-			//work toDo here
+			PlayCard_Message pcmsg = new PlayCard_Message();
+			pcmsg.setCard(card);
+			pcmsg.setIndex(index);
 			try{
-				//work toDo here
+				pcmsg.send(socket);
+				Message msgIn = Message.receive(socket);
+				if(msgIn.getType().equals(MessageType.UpdateGame)){
+					this.processUpdateGame(msgIn);
+				}else if(msgIn.getType().equals(MessageType.Failure)){
+					//nothing toDo here
+				}
 			}catch(Exception e){
 				System.out.println(e.toString());
 			}
 			try { if (socket != null) socket.close(); } catch (IOException e) {}
 		}
-//		return result;
-		return 0;
-	}
-
-	public void sendSkipPhase(){
-		String result = NO_CONNECTION;
-		Socket socket = connect();
-		if(socket != null){
-			//work toDo here
-			try{
-				//work toDo here
-			}catch(Exception e){
-				System.out.println(e.toString());
-			}
-			try { if (socket != null) socket.close(); } catch (IOException e) {}
-		}
-//		return result;
 	}
 	
+	/**
+	 * @author Lukas
+	 * The client wants to skip the currentPhase. Success depends on if it is his turn or not
+	 */
+	public void sendSkipPhase(){
+		Socket socket = connect();
+		if(socket != null){
+			SkipPhase_Message spmsg = new SkipPhase_Message();
+			try{
+				spmsg.send(socket);
+				Message msgIn = Message.receive(socket);
+				if(msgIn.getType().equals(MessageType.UpdateGame)){
+					this.processUpdateGame(msgIn);
+				}else if(msgIn.getType().equals(MessageType.Failure)){
+					//nothing toDo here
+				}
+			}catch(Exception e){
+				System.out.println(e.toString());
+			}
+			try { if (socket != null) socket.close(); } catch (IOException e) {}
+		}
+	}
+	
+	/**
+	 * @author Lukas
+	 * This method starts the ServerListening
+	 */
 	public void initializeServerListening(){
-
+		new Thread(new ServerListening()).start();
 	}
 	
 	/**
