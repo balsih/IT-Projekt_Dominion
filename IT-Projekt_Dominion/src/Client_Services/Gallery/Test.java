@@ -1,5 +1,6 @@
-package Client_Services;
+package Client_Services.Gallery;
 
+import Cards.CardName;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -22,9 +23,13 @@ public class Test extends Application{
 		
 		//Image image = new Image(Gallery.class.getResourceAsStream("Gold_Card.jpg"));
 		
-		//Image image = new Image(Gallery.class.getResourceAsStream("Gold_Card.jpg"));
+		Enum card = CardName.Gold;
+		
+		String s = cardName.toString();
+		
+		Image image = new Image(Gallery.class.getResourceAsStream("cardName.toString()"));
 
-		Image image = new Image("/CardName.Gold_Card.jpg");
+		//Image image = new Image("/CardName.Gold_Card.jpg");
 	    ImageView iv = new ImageView();
 	    iv.setImage(image);
 	    
@@ -39,6 +44,5 @@ public class Test extends Application{
 		}
 		
 	}
-	
 	
 }

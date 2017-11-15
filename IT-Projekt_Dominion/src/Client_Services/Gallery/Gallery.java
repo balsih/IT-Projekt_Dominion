@@ -30,7 +30,6 @@ public class Gallery {
 //		return new ImageView(image);
 //	}
 	
-	
 	public static ImageView getImage(Enum cardName){
 		Image image = new Image(Gallery.class.getResourceAsStream(cardName.toString())); // name korrespondiert mit Bildname .jpg
 		return new ImageView(image);
