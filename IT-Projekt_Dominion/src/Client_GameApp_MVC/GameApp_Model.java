@@ -248,6 +248,8 @@ public class GameApp_Model extends Model {
 	}
 	
 	/**
+	 * @author Adrian
+	 * Updates the view after a message has been received.
 	 * 
 	 * @param msgIn
 	 */
@@ -256,7 +258,16 @@ public class GameApp_Model extends Model {
 		if(ugmsg.getLog() != null)
 			//workToDo
 		if(ugmsg.getChat() != null)
-			//workToDo
+			// Adds the updated chat message to the chat area.
+			btnSendChatArea.setOnAction(event -> {
+				String existingMessages = txtaChatArea.getText();
+				String newMessage = txtfChatArea.getText();
+				if(existingMessages.length() == 0)
+					txtaChatArea.setText(newMessage);
+				else 
+					txtaChatArea.setText(existingMessages+"\n"+newMessage);
+				txtfChatArea.setText("");
+			});
 		if(ugmsg.getActions() != null)
 			//workToDo
 		if(ugmsg.getBuys() != null)

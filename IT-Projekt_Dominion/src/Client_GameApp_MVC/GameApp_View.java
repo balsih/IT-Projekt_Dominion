@@ -17,8 +17,7 @@ import javafx.stage.Stage;
 
 /**
  * @author Adrian
- * @version 1.0
- * @created 31-Okt-2017 17:04:43
+ * Defines the controls and elements of the GUI, aligns and styles them.
  */
 public class GameApp_View extends View<GameApp_Model> {
 
@@ -126,6 +125,7 @@ public class GameApp_View extends View<GameApp_Model> {
 		// Root
 		GridPane root = new GridPane();
 
+		// Add the boxes to the specified location in the root
 		root.add(vboxActionCards, 0, 0, 4, 2);
 		root.add(vboxTreasureCards, 4, 0, 3, 1);
 		root.add(vboxVictoryCards, 4, 1, 3, 1);
@@ -142,7 +142,7 @@ public class GameApp_View extends View<GameApp_Model> {
 		stage.setTitle("Dominion");
 		// stage.show();
 
-		// Styles
+		// Styles the elements of the GUI
 		scene.getStylesheets().add(getClass().getResource("GameApp.css").toExternalForm());
 
 		vboxActionCards.getStyleClass().add("vbox");

@@ -1,6 +1,7 @@
 .button{
 	-fx-background-color: #a9a9a9;
 	-fx-text-fill: #000000;
+	-fx-spacing: 10px;
 }
 
 .button:hover{
@@ -9,9 +10,8 @@
 }
 
 Label {
-	-fx-font-weight: bold;
 	-fx-text-fill: white;
-	-fx-background-color: grey;
+	-fx-font-weight: bold;
 }
 
 .vbox{
@@ -21,6 +21,10 @@ Label {
 	-fx-border-width: 2;
 	-fx-border-radius: 5;
 	-fx-border-color: white;
+}
+
+.vboxCurrentPlayer{
+	-fx-background-color: transparent;
 }
 
 .hbox{

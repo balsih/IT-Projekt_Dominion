@@ -9,6 +9,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -16,6 +18,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 
+/**
+ * @author Adrian
+ * Defines the controls and elements of the GUI, aligns and styles them.
+ */
 public class GUI_Test extends Application {
 
 	public static void main(String[] args) {
@@ -41,6 +47,7 @@ public class GUI_Test extends Application {
 		Label lblChatArea = new Label("Chat area");
 		ScrollPane scrlpChatArea = new ScrollPane();
 		TextArea txtaChatArea = new TextArea();
+		txtaChatArea.setDisable(true);
 		TextField txtfChatArea = new TextField();
 		Button btnSendChatArea = new Button("Send");
 
@@ -48,6 +55,7 @@ public class GUI_Test extends Application {
 		Label lblLog = new Label("Log");
 		ScrollPane scrlpLog = new ScrollPane();
 		TextArea txtaLog = new TextArea();
+		txtaLog.setDisable(true);
 
 		// Controls discard area
 		Label lblDiscard = new Label("Discard");
@@ -124,6 +132,7 @@ public class GUI_Test extends Application {
 		// Root
 		GridPane root = new GridPane();
 		
+		// Add the containers to the specified location in the root
 		root.add(vboxActionCards, 0, 0, 4, 2);
 		root.add(vboxTreasureCards, 4, 0, 3, 1);
 		root.add(vboxVictoryCards, 4, 1, 3, 1);
@@ -135,12 +144,34 @@ public class GUI_Test extends Application {
 		root.add(vboxHandCards, 1, 3, 7, 1);
 		root.add(vboxCurrentPlayer, 8, 3, 1, 1);
 
+		// Resizes the containers to the available size
+		root.setHgrow(vboxActionCards, Priority.ALWAYS);
+		root.setVgrow(vboxActionCards, Priority.ALWAYS);
+		root.setHgrow(vboxTreasureCards, Priority.ALWAYS);
+		root.setVgrow(vboxTreasureCards, Priority.ALWAYS);
+		root.setHgrow(vboxVictoryCards, Priority.ALWAYS);
+		root.setVgrow(vboxVictoryCards, Priority.ALWAYS);
+		root.setHgrow(vboxChatArea, Priority.ALWAYS);
+		root.setVgrow(vboxChatArea, Priority.ALWAYS);
+		root.setHgrow(vboxLog, Priority.ALWAYS);
+		root.setVgrow(vboxLog, Priority.ALWAYS);
+		root.setHgrow(vboxDiscard, Priority.ALWAYS);
+		root.setVgrow(vboxDiscard, Priority.ALWAYS);
+		root.setHgrow(vboxDeck, Priority.ALWAYS);
+		root.setVgrow(vboxDeck, Priority.ALWAYS);
+		root.setHgrow(vboxPlayedCards, Priority.ALWAYS);
+		root.setVgrow(vboxPlayedCards, Priority.ALWAYS);
+		root.setHgrow(vboxHandCards, Priority.ALWAYS);
+		root.setVgrow(vboxHandCards, Priority.ALWAYS);
+		root.setHgrow(vboxCurrentPlayer, Priority.ALWAYS);
+		root.setVgrow(vboxCurrentPlayer, Priority.ALWAYS);
+
 		Scene scene = new Scene(root, 1000, 600);
 		stage.setScene(scene);
 		stage.setTitle("Dominion");
 		stage.show();
 		
-		// Styles
+		// Styles the elements of the GUI
 		scene.getStylesheets().add(getClass().getResource("GUI_Test.css").toExternalForm());
 		
 		vboxActionCards.getStyleClass().add("vbox");
@@ -168,32 +199,22 @@ public class GUI_Test extends Application {
 		vboxHandCards.getStyleClass().add("vbox");
 		hboxHandCards.getStyleClass().add("hbox");
 		
-		vboxCurrentPlayer.getStyleClass().add("vbox");
+		vboxCurrentPlayer.getStyleClass().add("vboxCurrentPlayer");
 		gridpCurrentPlayer.setHgap(20);
 		
 		root.getStyleClass().add("root_format");
-	
-		// Resize vBoxes to available size
-		root.setHgrow(vboxActionCards, Priority.ALWAYS);
-		root.setVgrow(vboxActionCards, Priority.ALWAYS);
-		root.setHgrow(vboxTreasureCards, Priority.ALWAYS);
-		root.setVgrow(vboxTreasureCards, Priority.ALWAYS);
-		root.setHgrow(vboxVictoryCards, Priority.ALWAYS);
-		root.setVgrow(vboxVictoryCards, Priority.ALWAYS);
-		root.setHgrow(vboxChatArea, Priority.ALWAYS);
-		root.setVgrow(vboxChatArea, Priority.ALWAYS);
-		root.setHgrow(vboxLog, Priority.ALWAYS);
-		root.setVgrow(vboxLog, Priority.ALWAYS);
-		root.setHgrow(vboxDiscard, Priority.ALWAYS);
-		root.setVgrow(vboxDiscard, Priority.ALWAYS);
-		root.setHgrow(vboxDeck, Priority.ALWAYS);
-		root.setVgrow(vboxDeck, Priority.ALWAYS);
-		root.setHgrow(vboxPlayedCards, Priority.ALWAYS);
-		root.setVgrow(vboxPlayedCards, Priority.ALWAYS);
-		root.setHgrow(vboxHandCards, Priority.ALWAYS);
-		root.setVgrow(vboxHandCards, Priority.ALWAYS);
-		root.setHgrow(vboxCurrentPlayer, Priority.ALWAYS);
-		root.setVgrow(vboxCurrentPlayer, Priority.ALWAYS);
+		
+		// Controller of the original program!
+		// Commits user input to the server
+		btnCommit.setOnAction(event -> {
+			// do the work here
+		});
+		
+		// Test add of images to the boxes
+		ImageView img1 = new ImageView(new Image(getClass().getResourceAsStream("Images/Geld_01.jpg")));
+		img1.setFitWidth(50);
+		img1.setFitHeight(100);
+		hboxTreasureCards.getChildren().add(img1);
 		
 	}
 }
