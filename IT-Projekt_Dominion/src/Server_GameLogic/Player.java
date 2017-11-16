@@ -2,6 +2,7 @@ package Server_GameLogic;
 
 import java.net.Socket;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.Stack;
@@ -23,6 +24,7 @@ public class Player {
 	protected int actions;
 	protected int buys;
 	protected int coins;
+	protected int moves;
 	protected Stack<Card> deckPile;
 	protected Stack<Card> discardPile;
 	protected Game game;
@@ -30,6 +32,7 @@ public class Player {
 	protected LinkedList<Card> playedCards;
 	protected String playerName;
 	protected int victoryPoints;
+	protected boolean winner;
 
 	protected final int NUM_OF_HANDCARDS = 5;
 
@@ -43,9 +46,6 @@ public class Player {
 
 	private ServerThreadForClient serverThreadForClient;
 
-	private UpdateGame_Message ugmsg;
-	private Failure_Message fmsg;
-
 	/**
 	 * 
 	 * @param name
@@ -55,10 +55,9 @@ public class Player {
 		this.discardPile = new Stack<Card>();
 		this.handCards = new LinkedList<Card>();
 		this.playedCards = new LinkedList<Card>();
-
-		this.coins = 0;
-		this.actions = 1;
-		this.buys = 0;
+		
+		this.playerName = name;
+		
 		counter = 0;
 
 		this.isFinished = false;
@@ -79,8 +78,6 @@ public class Player {
 
 		this.isFinished = false;
 
-		this.ugmsg = new UpdateGame_Message();
-		this.fmsg = new Failure_Message();
 	}
 
 	/**
@@ -97,8 +94,8 @@ public class Player {
 	public Message buy(CardName cardName) {
 		Card buyedCard = null;
 		this.actualPhase = Phase.Buy;
-		ugmsg = new UpdateGame_Message();
-		fmsg = new Failure_Message();
+		UpdateGame_Message ugmsg = new UpdateGame_Message();
+		Failure_Message fmsg = new Failure_Message();
 
 		switch (cardName) {
 		case Copper:
@@ -165,30 +162,26 @@ public class Player {
 		 */
 		if (buyedCard.getCost() <= this.getCoins() && this.getBuys() > 0 && this.actualPhase == Phase.Buy
 				&& this.equals(game.getCurrentPlayer())) {
-			ugmsg.setLog("");
-			ugmsg.setCurrentPlayer(this.getPlayerName());
-			ugmsg.setCoins(this.getCoins());
-			ugmsg.setActions(this.getActions());
-			ugmsg.setBuys(this.getBuys());
+			ugmsg.setLog(this.playerName + " bought a " + buyedCard.getCardName());
+			ugmsg.setCurrentPlayer(this.playerName);
+			ugmsg.setCoins(this.coins);
+			ugmsg.setActions(this.actions);
+			ugmsg.setBuys(this.buys);
 			ugmsg.setCurrentPhase(actualPhase);
 			ugmsg.setDiscardPileTopCard(this.discardPile.firstElement());
 			ugmsg.setDiscardPileCardNumber(this.discardPile.size());
-			ugmsg.setDeckPileCardNumber(this.deckPile.size());
 			ugmsg.setBuyedCard(buyedCard);
-			ugmsg.setNewHandCards(this.handCards);
 
-			return this.ugmsg;
+			return ugmsg;
 		}
-		return this.fmsg;
+		return fmsg;
 
 	}
 
-	// Cleans up
+	/**
+	 * cleans Up
+	 */
 	public void cleanUp() {
-		
-		ugmsg = new UpdateGame_Message();
-		fmsg = new Failure_Message();
-
 		while (!playedCards.isEmpty()) {
 			this.discardPile.push(playedCards.remove());
 		}
@@ -205,6 +198,8 @@ public class Player {
 
 		this.actualPhase = Phase.Action;
 
+		this.moves++;
+		
 		if (this.equals(game.getPlayer1())) {
 			game.setCurrentPlayer(game.getPlayer2());
 		} else {
@@ -228,7 +223,7 @@ public class Player {
 	 */
 	public UpdateGame_Message draw(int numOfCards) {
 		
-		ugmsg = new UpdateGame_Message();
+		UpdateGame_Message ugmsg = new UpdateGame_Message();
 
 		for (int i = 0; i < numOfCards; i++) {
 			if (deckPile.isEmpty()) {
@@ -250,6 +245,10 @@ public class Player {
 					handCards.add(deckPile.pop());
 			}
 		}
+		
+		ugmsg.setDeckPileCardNumber(this.deckPile.size());
+		ugmsg.setDiscardPileCardNumber(this.discardPile.size());
+		ugmsg.setNewHandCards(handCards);
 		
 		return ugmsg;
 
@@ -277,26 +276,25 @@ public class Player {
 	 */
 	public Message play(CardName cardName, int index) {
 		Card playedCard = null;
+		UpdateGame_Message ugmsg = new UpdateGame_Message();
+		Failure_Message fmsg = new Failure_Message();
 
 		playedCard = this.handCards.remove(index);
 		playedCard.executeCard(this);
 		playedCards.add(playedCard);
-
-		ugmsg = new UpdateGame_Message();
-		fmsg = new Failure_Message();
 		
 		if (this.getActions() > 0 && this.actualPhase == Phase.Action && this.equals(game.getCurrentPlayer())) {
-			this.ugmsg.setLog("");
-			this.ugmsg.setCurrentPlayer(this.getPlayerName());
-			this.ugmsg.setCoins(this.getCoins());
-			this.ugmsg.setActions(this.getActions());
-			this.ugmsg.setBuys(this.getBuys());
-			this.ugmsg.setCurrentPhase(this.actualPhase);
-			this.ugmsg.setDiscardPileTopCard(this.discardPile.firstElement());
-			this.ugmsg.setDiscardPileCardNumber(this.discardPile.size());
-			this.ugmsg.setDeckPileCardNumber(this.deckPile.size());
-			this.ugmsg.setNewHandCards(handCards);
-			this.ugmsg.setPlayedCards(playedCard);
+			ugmsg.setLog(this.playerName + " played " + playedCard.getCardName());
+			ugmsg.setCurrentPlayer(this.playerName);
+			ugmsg.setCoins(this.coins);
+			ugmsg.setActions(this.actions);
+			ugmsg.setBuys(this.buys);
+			ugmsg.setCurrentPhase(this.actualPhase);
+			ugmsg.setDiscardPileTopCard(this.discardPile.firstElement());
+			ugmsg.setDiscardPileCardNumber(this.discardPile.size());
+			ugmsg.setDeckPileCardNumber(this.deckPile.size());
+			ugmsg.setNewHandCards(handCards);
+			ugmsg.setPlayedCards(playedCard);
 
 			return ugmsg;
 		}
@@ -309,8 +307,8 @@ public class Player {
 	 */
 	public Message skipPhase() {
 		
-		ugmsg = new UpdateGame_Message();
-		fmsg = new Failure_Message();
+		UpdateGame_Message ugmsg = new UpdateGame_Message();
+		Failure_Message fmsg = new Failure_Message();
 		
 		
 		if (this.equals(game.getCurrentPlayer())) {
@@ -318,18 +316,20 @@ public class Player {
 			case Action:
 				this.actualPhase = Phase.Buy;
 				
+				
 			case Buy:
 				this.actualPhase = Phase.CleanUp;
 				this.cleanUp();
+				
 				
 			default:
 				break;
 			}
 			
-			return this.ugmsg;
+			return ugmsg;
 		}
 
-		return this.fmsg;
+		return fmsg;
 	}
 
 	public int getActions() {
@@ -434,5 +434,17 @@ public class Player {
 
 	public void setServerThreadForClient(ServerThreadForClient serverThreadForClient) {
 		this.serverThreadForClient = serverThreadForClient;
+	}
+	
+	public void isWinner(boolean winner){
+		this.winner = winner;
+	}
+	
+	public void setMoves(int moves){
+		this.moves = moves;
+	}
+	
+	public int getMoves(){
+		return this.moves;
 	}
 }// end Player
