@@ -27,6 +27,7 @@ public class Server_View extends View<Server_Model>{
 	protected Label lblPort;
 	protected TextField txtPort;
 	protected Button btnStart;
+	protected Button btnStop;
 	protected Pane spacer;
 	protected Stage stage;
 	
@@ -49,6 +50,11 @@ public class Server_View extends View<Server_Model>{
 		this.btnStart.getStyleClass().add("button");
 		this.btnStart.setMinSize(Button.USE_PREF_SIZE, Button.USE_PREF_SIZE);
 		
+		this.btnStop = new Button("Stop");
+		this.btnStop.getStyleClass().add("button");
+		this.btnStop.setMinSize(Button.USE_PREF_SIZE, Button.USE_PREF_SIZE);
+		this.btnStop.setDisable(true);
+		
 		
 		BorderPane root = new BorderPane();
 		root.getStyleClass().add("borderpane");
@@ -56,7 +62,7 @@ public class Server_View extends View<Server_Model>{
 		this.spacer = new Pane();
 		spacer.setMinSize(10, 1);
 		
-		HBox boxTop = new HBox(lblPort, txtPort, spacer, btnStart);
+		HBox boxTop = new HBox(lblPort, txtPort, spacer, btnStart, btnStop);
 		boxTop.getStyleClass().add("hbox");
 		HBox.setHgrow(spacer, Priority.ALWAYS);
 		

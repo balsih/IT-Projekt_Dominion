@@ -31,11 +31,18 @@ public class Server_Controller extends Controller<Server_Model, Server_View> {
 		view.btnStart.setOnAction((event) -> {
 			try {
 				view.btnStart.setDisable(true);
+				view.btnStop.setDisable(false);
 				model.startServerSocket(Integer.parseInt(view.txtPort.getText()));
 			} catch (NumberFormatException | IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		});
+		
+		view.btnStop.setOnAction((event) -> {
+			view.btnStart.setDisable(false);
+			view.btnStop.setDisable(true);
+			model.stopServer();
 		});
 		
 		view.stage.setOnCloseRequest(event -> model.stopServer());
