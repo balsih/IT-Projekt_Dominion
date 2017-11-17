@@ -35,5 +35,10 @@ public class Province_Card extends Victory_Card {
 		
 		return ugmsg;
 	}
+
+	@Override
+	int getVictoryPoints() {
+		return this.victoryPoints;
+	}
 	
 }//end Province_Card

@@ -36,4 +36,8 @@ public class Estate_Card extends Victory_Card {
 		return ugmsg;
 	}
 	
+	int getVictoryPoints() {
+		return this.victoryPoints;
+	}
+	
 }//end Estate_Card

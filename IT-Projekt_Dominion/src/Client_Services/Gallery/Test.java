@@ -25,13 +25,13 @@ public class Test extends Application{
 		
 		Enum card = CardName.Gold;
 		
-		String s = cardName.toString();
+//		String s = cardName.toString();
 		
-		Image image = new Image(Gallery.class.getResourceAsStream("cardName.toString()"));
+//		Image image = new Image(Gallery.class.getResourceAsStream("cardName.toString()"));
 
 		//Image image = new Image("/CardName.Gold_Card.jpg");
 	    ImageView iv = new ImageView();
-	    iv.setImage(image);
+//	    iv.setImage(image);
 	    
 	    root.setCenter(iv);
 	    

@@ -18,7 +18,7 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 /**
- * @author Renate
+ * @author Rene
  * @version 1.0
  * @created 31-Okt-2017 17:28:23
  */
@@ -36,7 +36,6 @@ public class Dominion_Main extends Application {
 	 */
 	public static void main(String[] args){
 		launch(args);
-		
 	}
 
 	@Override

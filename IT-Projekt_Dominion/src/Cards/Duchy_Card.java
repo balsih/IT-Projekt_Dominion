@@ -36,4 +36,8 @@ public class Duchy_Card extends Victory_Card {
 		return ugmsg;
 	}
 	
+	int getVictoryPoints() {
+		return this.victoryPoints;
+	}
+	
 }//end Duchy_Card

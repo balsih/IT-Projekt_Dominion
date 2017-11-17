@@ -23,7 +23,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 
 /**
- * @author Lukas
+ * @author Rene
  * @version 1.0
  * @created 31-Okt-2017 17:04:53
  */
@@ -45,7 +45,7 @@ public class Login_View extends View<GameApp_Model> {
 	@Override
 	protected Scene create_GUI(){
 		
-		ServiceLocator sl = ServiceLocator.getServiceLocator();
+		//ServiceLocator sl = ServiceLocator.getServiceLocator(); -> bereits oben instanziert (auch im Create NP anpassen)
 		//sl.setTranslator(new Translator("en"));
 		Translator t = sl.getTranslator();
 		
@@ -106,13 +106,13 @@ public class Login_View extends View<GameApp_Model> {
 		
 		// https://panjutorials.de/tutorials/javafx-8-gui/lektionen/audio-player-in-javafx-2/?cache-flush=1510439948.4916 
 		// hier legen wir die Resource an, welche unbedingt im entsprechenden Ordner sein muss
-		final URL resource = getClass().getResource("sound.mp3");
+		//final URL resource = getClass().getResource("sound.mp3");
 		// wir legen das Mediaobjekt and und weisen unsere Resource zu
-		final Media media = new Media(resource.toString());
+		//final Media media = new Media(resource.toString());
 		// wir legen den Mediaplayer an und weisen ihm das Media Objekt zu
-		final MediaPlayer mediaPlayer = new MediaPlayer(media);
+		//final MediaPlayer mediaPlayer = new MediaPlayer(media);
 		
-		mediaPlayer.play();
+		//mediaPlayer.play();
 		//mediaPlayer.stop();
 		
 		
@@ -126,7 +126,6 @@ public class Login_View extends View<GameApp_Model> {
 		return scene;
 	}
 	
-	public void start() {
-		this.stage.show();
-	}
+	//public void start() {
+	
 }//end Login_View

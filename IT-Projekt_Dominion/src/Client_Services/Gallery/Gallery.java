@@ -1,4 +1,4 @@
-package Client_Services;
+package Client_Services.Gallery;
 
 import java.util.ResourceBundle;
 
@@ -14,7 +14,7 @@ import javafx.scene.image.ImageView;
 public class Gallery {
 
 	private ResourceBundle imagesBundle;
-	private ServiceLocator sl = ServiceLocator.getServiceLocator();
+	//private ServiceLocator sl = ServiceLocator.getServiceLocator();
 
 
 	public Gallery(String language){
@@ -30,10 +30,7 @@ public class Gallery {
 //		return new ImageView(image);
 //	}
 	
-	public static ImageView getImage(Enum cardName){
-		Image image = new Image(Gallery.class.getResourceAsStream(cardName.toString())); // name korrespondiert mit Bildname .jpg
-		return new ImageView(image);
-	}
+
 	
 	
 }//end Gallery

@@ -2,10 +2,11 @@ package Client_Services;
 
 import java.util.Locale;
 
+import Client_Services.Gallery.Gallery;
 import MainClasses.Dominion_Main;
 
 /**
- * @author René
+ * @author Rene
  * @version 1.0
  * @created 31-Okt-2017 17:05:16
  */
