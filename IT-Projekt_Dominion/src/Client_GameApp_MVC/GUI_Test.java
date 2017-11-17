@@ -131,7 +131,7 @@ public class GUI_Test extends Application {
 
 		// Root
 		GridPane root = new GridPane();
-		
+
 		// Add the containers to the specified location in the root
 		root.add(vboxActionCards, 0, 0, 4, 2);
 		root.add(vboxTreasureCards, 4, 0, 3, 1);
@@ -170,51 +170,65 @@ public class GUI_Test extends Application {
 		stage.setScene(scene);
 		stage.setTitle("Dominion");
 		stage.show();
-		
+
 		// Styles the elements of the GUI
 		scene.getStylesheets().add(getClass().getResource("GUI_Test.css").toExternalForm());
-		
+
 		vboxActionCards.getStyleClass().add("vbox");
 		tilepActionCards.getStyleClass().add("gaps");
 		lblActionCards.getStyleClass().add("Label");
-		
+
 		vboxTreasureCards.getStyleClass().add("vbox");
 		hboxTreasureCards.getStyleClass().add("hbox");
-		
+
 		vboxVictoryCards.getStyleClass().add("vbox");
 		hboxVictoryCards.getStyleClass().add("hbox");
-		
+
 		vboxChatArea.getStyleClass().add("vbox");
 		hboxChatArea.getStyleClass().add("hbox");
-		
+
 		vboxLog.getStyleClass().add("vbox");
-		
+
 		vboxDiscard.getStyleClass().add("vbox");
-		
+
 		vboxDeck.getStyleClass().add("vbox");
-		
+
 		vboxPlayedCards.getStyleClass().add("vbox");
 		hboxPlayedCards.getStyleClass().add("hbox");
-		
+
 		vboxHandCards.getStyleClass().add("vbox");
 		hboxHandCards.getStyleClass().add("hbox");
-		
+
 		vboxCurrentPlayer.getStyleClass().add("vboxCurrentPlayer");
 		gridpCurrentPlayer.setHgap(20);
-		
+
 		root.getStyleClass().add("root_format");
-		
-		// Controller of the original program!
+
+		// Im Controller:
 		// Commits user input to the server
 		btnCommit.setOnAction(event -> {
 			// do the work here
 		});
-		
-		// Test add of images to the boxes
+
+		// Test: add of images to the boxes
 		ImageView img1 = new ImageView(new Image(getClass().getResourceAsStream("Images/Geld_01.jpg")));
 		img1.setFitWidth(50);
 		img1.setFitHeight(100);
 		hboxTreasureCards.getChildren().add(img1);
-		
+
+		// Adrian
+		// Already implemented: Sends a chat message to the server 
+		btnSendChatArea.setOnAction(event -> {
+			String existingMessages = txtaChatArea.getText();
+			String newMessage = txtfChatArea.getText();
+			if (newMessage.length() > 0) {
+				if (existingMessages.length() == 0)
+					txtaChatArea.setText(newMessage);
+				else
+					txtaChatArea.setText(existingMessages + "\n" + newMessage);
+				txtfChatArea.setText("");
+			}
+		});
+
 	}
 }

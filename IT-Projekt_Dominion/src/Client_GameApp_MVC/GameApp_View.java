@@ -10,6 +10,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
@@ -24,60 +25,65 @@ public class GameApp_View extends View<GameApp_Model> {
 	private ServiceLocator sl = ServiceLocator.getServiceLocator();
 
 	// Controls Action cards area
-	Label lblActionCards = new Label("Action cards");
-	TilePane tilepActionCards = new TilePane();
+	protected Label lblActionCards = new Label("Action cards");
+	protected TilePane tilepActionCards = new TilePane();
 
 	// Controls Treasure cards area
-	Label lblTreasureCards = new Label("Treasure cards");
-	HBox hboxTreasureCards = new HBox(3);	
+	protected Label lblTreasureCards = new Label("Treasure cards");
+	protected HBox hboxTreasureCards = new HBox(3);	
 
 	// Controls Victory cards area
-	Label lblVictoryCards = new Label("Victory cards");
-	HBox hboxVictoryCards = new HBox(3);
+	protected Label lblVictoryCards = new Label("Victory cards");
+	protected HBox hboxVictoryCards = new HBox(3);
 
 	// Controls chat area
-	Label lblChatArea = new Label("Chat area");
-	ScrollPane scrlpChatArea = new ScrollPane();
-	TextArea txtaChatArea = new TextArea();
-	TextField txtfChatArea = new TextField();
-	Button btnSendChatArea = new Button("Send");
+	protected Label lblChatArea = new Label("Chat area");
+	protected ScrollPane scrlpChatArea = new ScrollPane();
+	protected TextArea txtaChatArea = new TextArea();
+	protected TextField txtfChatArea = new TextField();
+	protected Button btnSendChatArea = new Button("Send");
 
 	// Controls log area
-	Label lblLog = new Label("Log");
-	ScrollPane scrlpLog = new ScrollPane();
-	TextArea txtaLog = new TextArea();
+	protected Label lblLog = new Label("Log");
+	protected ScrollPane scrlpLog = new ScrollPane();
+	protected TextArea txtaLog = new TextArea();
 
 	// Controls discard area
-	Label lblDiscard = new Label("Discard");
-	StackPane stackpDiscard = new StackPane();
+	protected Label lblDiscard = new Label("Discard");
+	protected StackPane stackpDiscard = new StackPane();
 
 	// Controls deck area
-	Label lblDeck = new Label("Deck");
-	StackPane stackpDeck = new StackPane();
+	protected Label lblDeck = new Label("Deck");
+	protected StackPane stackpDeck = new StackPane();
 
 	// Controls played cards area
-	Label lblPlayedCards = new Label("Played cards");
-	HBox hboxPlayedCards = new HBox(4);
+	protected Label lblPlayedCards = new Label("Played cards");
+	protected HBox hboxPlayedCards = new HBox(4);
 
 	// Controls hand cards area
-	Label lblHandCards = new Label("Hand cards");
-	HBox hboxHandCards = new HBox(7);
+	protected Label lblHandCards = new Label("Hand cards");
+	protected HBox hboxHandCards = new HBox(7);
 
 	// Controls current player area
-	Label lblCurrentPlayer = new Label("Current player");
-	Label lblCrntHandCards = new Label("Hand cards");
-	Label lblNmbrOfCrntHandCards = new Label("0");
-	Label lblCrntActions = new Label("Actions");
-	Label lblNmbrOfCrntActions = new Label("0");
-	Label lblCrntBuys = new Label("Buys");
-	Label lblNmbrOfCrntBuys = new Label("0");
-	Label lblCrntCoins = new Label("Coins");
-	Label lblNmbrOfCrntCoins = new Label("0");
+	protected Label lblCurrentPlayer = new Label("Current player");
+	protected Label lblCrntHandCards = new Label("Hand cards");
+	protected Label lblNmbrOfCrntHandCards = new Label("0");
+	protected Label lblCrntActions = new Label("Actions");
+	protected Label lblNmbrOfCrntActions = new Label("0");
+	protected Label lblCrntBuys = new Label("Buys");
+	protected Label lblNmbrOfCrntBuys = new Label("0");
+	protected Label lblCrntCoins = new Label("Coins");
+	protected Label lblNmbrOfCrntCoins = new Label("0");
 
-	Button btnCommit = new Button("Commit");
+	protected Button btnCommit = new Button("Commit");
 
 	public GameApp_View(Stage stage, GameApp_Model model){
 		super(stage, model);
+		// do something in the meantime (until GUI gets created)
+	}
+
+	@Override
+	protected Scene create_GUI(){
 
 		// Action cards area
 		VBox vboxActionCards = new VBox(lblActionCards, tilepActionCards);
@@ -89,11 +95,13 @@ public class GameApp_View extends View<GameApp_Model> {
 		VBox vboxVictoryCards = new VBox(lblVictoryCards, hboxVictoryCards);
 
 		// Chat area
+		txtaChatArea.setDisable(true);
 		scrlpChatArea.setContent(txtaChatArea);
 		HBox hboxChatArea = new HBox(txtfChatArea, btnSendChatArea);
 		VBox vboxChatArea = new VBox(lblChatArea, scrlpChatArea, hboxChatArea);
 
 		// Log area
+		txtaLog.setDisable(true);
 		scrlpLog.setContent(txtaLog);
 		VBox vboxLog = new VBox(lblLog, scrlpLog);
 
@@ -137,17 +145,34 @@ public class GameApp_View extends View<GameApp_Model> {
 		root.add(vboxHandCards, 1, 3, 7, 1);
 		root.add(vboxCurrentPlayer, 8, 3, 1, 1);
 
-		Scene scene = new Scene(root, 1000, 1000);
-		stage.setScene(scene);
-		stage.setTitle("Dominion");
-		// stage.show();
+		// Resizes the containers to the available size
+		root.setHgrow(vboxActionCards, Priority.ALWAYS);
+		root.setVgrow(vboxActionCards, Priority.ALWAYS);
+		root.setHgrow(vboxTreasureCards, Priority.ALWAYS);
+		root.setVgrow(vboxTreasureCards, Priority.ALWAYS);
+		root.setHgrow(vboxVictoryCards, Priority.ALWAYS);
+		root.setVgrow(vboxVictoryCards, Priority.ALWAYS);
+		root.setHgrow(vboxChatArea, Priority.ALWAYS);
+		root.setVgrow(vboxChatArea, Priority.ALWAYS);
+		root.setHgrow(vboxLog, Priority.ALWAYS);
+		root.setVgrow(vboxLog, Priority.ALWAYS);
+		root.setHgrow(vboxDiscard, Priority.ALWAYS);
+		root.setVgrow(vboxDiscard, Priority.ALWAYS);
+		root.setHgrow(vboxDeck, Priority.ALWAYS);
+		root.setVgrow(vboxDeck, Priority.ALWAYS);
+		root.setHgrow(vboxPlayedCards, Priority.ALWAYS);
+		root.setVgrow(vboxPlayedCards, Priority.ALWAYS);
+		root.setHgrow(vboxHandCards, Priority.ALWAYS);
+		root.setVgrow(vboxHandCards, Priority.ALWAYS);
+		root.setHgrow(vboxCurrentPlayer, Priority.ALWAYS);
+		root.setVgrow(vboxCurrentPlayer, Priority.ALWAYS);
 
 		// Styles the elements of the GUI
 		scene.getStylesheets().add(getClass().getResource("GameApp.css").toExternalForm());
 
 		vboxActionCards.getStyleClass().add("vbox");
 		tilepActionCards.getStyleClass().add("gaps");
-		lblActionCards.getStyleClass().add("labelTitle");
+		lblActionCards.getStyleClass().add("Label");
 
 		vboxTreasureCards.getStyleClass().add("vbox");
 		hboxTreasureCards.getStyleClass().add("hbox");
@@ -170,14 +195,15 @@ public class GameApp_View extends View<GameApp_Model> {
 		vboxHandCards.getStyleClass().add("vbox");
 		hboxHandCards.getStyleClass().add("hbox");
 
-		vboxCurrentPlayer.getStyleClass().add("vbox");
+		vboxCurrentPlayer.getStyleClass().add("vboxCurrentPlayer");
 		gridpCurrentPlayer.setHgap(20);
 
-		root.getStyleClass().add("gaps");
-	}
+		root.getStyleClass().add("root_format");
 
-	@Override
-	protected Scene create_GUI(){
-		return null;
+		Scene scene = new Scene(root, 1000, 600);
+		// stage.setScene(scene);
+		// stage.setTitle("Dominion");
+
+		return scene;
 	}
 }//end GameApp_View
