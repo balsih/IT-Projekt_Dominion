@@ -10,6 +10,7 @@ import org.w3c.dom.NodeList;
 
 import Cards.Card;
 import Cards.CardName;
+import Server_GameLogic.Phase;
 
 /**
  * @author Lukas
@@ -27,7 +28,7 @@ public class UpdateGame_Message extends Message {
 	private static final String ELEMENT_CURRENTPLAYER = "currentPlayer";
 	private static final String ELEMENT_LOG = "log";
 	private String chat = null;
-	private String currentPhase = null;
+	private String currentPhase = null; //outSide of the Message: enum "Phase"
 	private String currentPlayer = null;
 	private String log = null;
 	
@@ -210,7 +211,7 @@ public class UpdateGame_Message extends Message {
 	}
 	
 	/**
-	 * @author Bodo Grütter
+	 * @author Bodo Grï¿½tter
 	 * merges two UpdateGame_Messages together
 	 * 
 	 * @param a first message which gets merged with a second message
@@ -252,8 +253,8 @@ public class UpdateGame_Message extends Message {
 		return this.stringElements.get(ELEMENT_CURRENTPLAYER);
 	}
 
-	public String getCurrentPhase(){
-		return this.stringElements.get(ELEMENT_CURRENTPHASE);
+	public Phase getCurrentPhase(){
+		return Phase.parsePhase(this.stringElements.get(ELEMENT_CURRENTPHASE));
 	}
 	
 	public String getChat(){
@@ -306,8 +307,8 @@ public class UpdateGame_Message extends Message {
 		this.currentPlayer = currentPlayer;
 	}
 
-	public void setCurrentPhase(String currentPhase){
-		this.currentPhase = currentPhase;
+	public void setCurrentPhase(Phase currentPhase){
+		this.currentPhase = currentPhase.toString();
 	}
 
 	public void setChat(String chat){
@@ -352,7 +353,6 @@ public class UpdateGame_Message extends Message {
 
 	//fill the handCardElementNames to use addContentElements
 	public void setNewHandCards(LinkedList<Card> newHandCards){
-		for(int i = 0; i < newHandCards.size(); i++)
-			this.handCardElements.put(ELEMENT_NEWHANDCARD, newHandCards);	
+		this.handCardElements.put(ELEMENT_NEWHANDCARD, newHandCards);	
 	}
 }//end UpdateGame_Message

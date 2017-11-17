@@ -1,8 +1,6 @@
 package Server_GameLogic;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.HashMap;
@@ -26,7 +24,6 @@ import Messages.Content;
 import Messages.MessageType;
 import Messages.PlayCard_Message;
 import Messages.PlayerSuccess_Message;
-import Messages.SkipPhase_Message;
 import Messages.UpdateGame_Message;
 import Server_Services.DB_Connector;
 
@@ -151,6 +148,7 @@ public class ServerThreadForClient implements Runnable {
      * @return Commit_Message
      */
 	private Message processSkipPhase(Message msgIn) {
+		
 		return this.player.skipPhase();
 	}
 
@@ -171,7 +169,6 @@ public class ServerThreadForClient implements Runnable {
 		}else{//the cards on the client and server are not the same(should not be possible)
 			this.logger.severe(pcmsg.getClient()+"'s handcards aren't equals to the cards in the game");
 			Failure_Message fmsg = new Failure_Message();
-			fmsg.setMove(Content.PlayCard);
 			return fmsg;
 		}
 	}
@@ -192,12 +189,10 @@ public class ServerThreadForClient implements Runnable {
 		if(success){
 			this.logger.severe(clientName+" "+Content.Login.toString()+" succeeded");
 			Commit_Message cmsg = new Commit_Message();
-			cmsg.setMove(Content.Login);
 			return cmsg;
 		}else{
 			this.logger.severe(clientName+" "+Content.Login.toString()+" failed");
 			Failure_Message fmsg = new Failure_Message();
-			fmsg.setMove(Content.Login);
 			fmsg.setNotification(Content.Login.toString()+" failed");
 			return fmsg;
 		}
@@ -227,35 +222,26 @@ public class ServerThreadForClient implements Runnable {
 	 */
 	private Message processGameMode(Message msgIn) {
 		GameMode_Message gmmsg = (GameMode_Message) msgIn;
-		Content mode = gmmsg.getMode();
-		Content move = Content.GameMode;
-		//get a new Game and add player and Bot (if singlePlayer) to the game, 
-		//Game will start immediately if singlePlayer or your secondPlayer
-		if(mode == Content.SinglePlayer || mode == Content.MultiPlayer){
-			this.player = new Player(gmmsg.getClient());
-			this.game = Game.getGame(mode, this.player);
-			this.player.addGame(this.game);
-			if(this.game.isReadyToStart()){
-				CreateGame_Message cgmsg = new CreateGame_Message();
-				cgmsg.setBuyCards(this.game.getBuyCards());
-				cgmsg.setHandCards(this.player.getHandCards());
-				cgmsg.setDeckPile(this.player.getDeckPile());
-				cgmsg.setOpponent(this.game.getOpponent().getPlayerName());
-				this.logger.severe(gmmsg.getClient()+" starts a"+mode.toString()+" game");
-				return cgmsg;
-			}
-			this.logger.severe(gmmsg.getClient()+"waits for opponent");
-			Commit_Message cmsg = new Commit_Message();
-			cmsg.setMove(move);
-			cmsg.setNotification("Waiting for opponent");
-			return cmsg;
-		}else{
-			//if content is somehow invalid (should not be possible)
-			this.logger.severe("invalid "+Content.GameMode.toString()+" from "+gmmsg.getClient());
-			Failure_Message fmsg = new Failure_Message();
-			fmsg.setMove(move);
-			return fmsg;
-		}
+		GameMode mode = gmmsg.getMode();
+		this.player = new Player(gmmsg.getClient());
+		this.game = Game.getGame(mode, this.player);
+		this.player.addGame(this.game);
+		this.logger.severe(gmmsg.getClient()+"waits for opponent");
+		Commit_Message cmsg = new Commit_Message();
+		return cmsg;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public CreateGame_Message getCG_Message(){
+		CreateGame_Message cgmsg = new CreateGame_Message();
+		cgmsg.setBuyCards(this.game.getBuyCards());
+		cgmsg.setHandCards(this.player.getHandCards());
+		cgmsg.setDeckPile(this.player.getDeckPile());
+		cgmsg.setOpponent(this.game.getOpponent(this.player).getPlayerName());
+		return cgmsg;
 	}
 
     /**
@@ -272,17 +258,14 @@ public class ServerThreadForClient implements Runnable {
 		
 		DB_Connector dbConnector = DB_Connector.getDB_Connector();
 		boolean success = dbConnector.addNewPlayer(clientName, password);
-		Content move = Content.CreateNewPlayer;
 		if(success){
-			this.logger.severe(clientName+"'s storation succeeded");
+			this.logger.severe(clientName+"'s storage succeeded");
 			Commit_Message cmsg = new Commit_Message();
-			cmsg.setMove(move);
 			return cmsg;
 		}else{
-			this.logger.severe(clientName+"'s storation failed");
+			this.logger.severe(clientName+"'s storage failed");
 			Failure_Message fmsg = new Failure_Message();
-			fmsg.setMove(move);
-			fmsg.setNotification(clientName+" is already occupied");
+			fmsg.setNotification(clientName+" is already beeing used");
 			return fmsg;
 		}
 	}
@@ -302,7 +285,7 @@ public class ServerThreadForClient implements Runnable {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		ugmsg.setChat(chat);
 		this.game.sendToOpponent(this.player, ugmsg);
-		this.logger.severe(cmsg.getClient()+" has sent chat to"+this.game.getOpponent().getPlayerName()+": "+cmsg.getChat());
+		this.logger.severe(cmsg.getClient()+" has sent chat to"+this.game.getOpponent(this.player).getPlayerName()+": "+cmsg.getChat());
 		return ugmsg;
 	}
 
@@ -346,7 +329,7 @@ public class ServerThreadForClient implements Runnable {
     	this.game.sendToOpponent(this.player, psmsgOpponent);
     	PlayerSuccess_Message psmsgSelf = new PlayerSuccess_Message();
     	psmsgSelf.setSuccess(Content.Lost);
-    	this.logger.severe(this.game.getOpponent().getPlayerName()+" "+Content.Won.toString()+"!");
+    	this.logger.severe(this.game.getOpponent(this.player).getPlayerName()+" "+Content.Won.toString()+"!");
     	return psmsgSelf;
 	}
 

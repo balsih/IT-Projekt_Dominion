@@ -25,6 +25,7 @@ import Messages.PlayCard_Message;
 import Messages.PlayerSuccess_Message;
 import Messages.SkipPhase_Message;
 import Messages.UpdateGame_Message;
+import Server_GameLogic.GameMode;
 
 /**
  * @author Adrian
@@ -132,11 +133,6 @@ public class GameApp_Model extends Model {
 			try{
 				bcmsg.send(socket);
 				Message msgIn = Message.receive(socket);
-				if(msgIn.getType().equals(MessageType.UpdateGame)){
-					this.processUpdateGame(msgIn);
-				}else if(msgIn.getType().equals(MessageType.Failure)){
-					//nothing toDo here
-				}
 			}catch(Exception e){
 				System.out.println(e.toString());
 			}
@@ -157,12 +153,16 @@ public class GameApp_Model extends Model {
 			try{
 				cmsg.send(socket);
 				Message msgIn = Message.receive(socket);
-				this.processUpdateGame(msgIn);
 			}catch(Exception e){
 				System.out.println(e.toString());
 			}
 			try { if (socket != null) socket.close(); } catch (IOException e) {}
 		}
+	}
+	
+	private <T> Message processMessage(T message){
+		return null;
+		
 	}
 
 	/**
@@ -206,7 +206,7 @@ public class GameApp_Model extends Model {
 	 * @param mode, SinglePlayer or MultiPlayer
 	 * @return String, usually only necessary if the client has to wait for an opponent
 	 */
-	public String sendGameMode(Content mode){
+	public String sendGameMode(GameMode mode){
 		String result = NO_CONNECTION;
 		Socket socket = connect();
 		if(socket != null){
@@ -218,11 +218,9 @@ public class GameApp_Model extends Model {
 				gmmsg.send(socket);
 				Message msgIn = Message.receive(socket);
 				this.listenToServer = true;
-				if(msgIn.getType().equals(MessageType.CreateGame)){//------> outSource because of Thread has to listen too
-					processCreateGame(msgIn);//setUp a new Game
-				}else if(msgIn.getType().equals(MessageType.Commit)){
+				if(msgIn.getType().equals(MessageType.Commit)){
 					Commit_Message cmsg = (Commit_Message) msgIn;//waiting for other Player (only MultiPlayer)
-					result = cmsg.getNotification();
+					this.main.startGameApp();
 				}else if(msgIn.getType().equals(MessageType.Failure)){
 					result = mode.toString()+" is no valid mode";//wrong mode, should not be possible
 				}
@@ -247,7 +245,7 @@ public class GameApp_Model extends Model {
 			this.deck.add(card);
 		this.buyCards = cgmsg.getBuyCards();
 		this.opponent = cgmsg.getOpponent();
-		this.main.startGameApp();
+		//this.view.start();
 	}
 	
 	/**

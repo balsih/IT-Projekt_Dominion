@@ -11,9 +11,6 @@ public enum Content {
 	Lost,
 	Login,
 	CreateNewPlayer,
-	GameMode,
-	SinglePlayer,
-	MultiPlayer,
 	PlayCard,
 	AskForChanges;
 	

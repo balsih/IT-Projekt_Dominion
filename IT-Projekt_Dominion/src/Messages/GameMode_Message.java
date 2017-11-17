@@ -4,6 +4,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import Server_GameLogic.GameMode;
+
 /**
  * The clients choses to play singleplayer or multiplayer
  * 
@@ -14,7 +16,7 @@ import org.w3c.dom.NodeList;
 public class GameMode_Message extends Message {
 
 	private static final String ELEMENT_MODE = "mode";
-	private Content mode;
+	private GameMode mode;
 
 
 	public GameMode_Message(){
@@ -46,16 +48,16 @@ public class GameMode_Message extends Message {
 		NodeList tmpElements = root.getElementsByTagName(ELEMENT_MODE);
         if (tmpElements.getLength() > 0) {
             Element mode = (Element) tmpElements.item(0);
-            this.mode = Content.parseContent(mode.getTextContent());
+            this.mode = GameMode.parseGameMode(mode.getTextContent());
         }
 	}
 
 	
-	public Content getMode(){
+	public GameMode getMode(){
 		return this.mode;
 	}
 	
-	public void setMode(Content mode){
+	public void setMode(GameMode mode){
 		this.mode = mode;
 	}
 }//end GameMode_Message
