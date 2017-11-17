@@ -29,7 +29,8 @@ import javafx.stage.Stage;
  */
 public class Login_View extends View<GameApp_Model> {
 
-	private ServiceLocator sl = ServiceLocator.getServiceLocator();
+	//private ServiceLocator sl = ServiceLocator.getServiceLocator();
+	private ServiceLocator sl;
 	
 
 	/**
@@ -45,8 +46,9 @@ public class Login_View extends View<GameApp_Model> {
 	@Override
 	protected Scene create_GUI(){
 		
-		//ServiceLocator sl = ServiceLocator.getServiceLocator(); -> bereits oben instanziert (auch im Create NP anpassen)
+		//ServiceLocator sl = ServiceLocator.getServiceLocator(); //-> bereits oben instanziert (auch im Create NP anpassen?)
 		//sl.setTranslator(new Translator("en"));
+		sl = ServiceLocator.getServiceLocator();
 		Translator t = sl.getTranslator();
 		
 		// layouts
@@ -120,8 +122,6 @@ public class Login_View extends View<GameApp_Model> {
 		scene.getStylesheets().add(getClass().getResource("CreatePlayer.css").toExternalForm());
 		this.stage.setScene(scene);
 		//stage.setFullScreen(true); // set Full Screen
-		
-		
 		
 		return scene;
 	}

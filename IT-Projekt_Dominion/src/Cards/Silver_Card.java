@@ -39,4 +39,5 @@ public class Silver_Card extends Treasure_Card {
 		return ugmsg;
 
 	}
+
 }//end Silver_Card

@@ -15,7 +15,6 @@ public abstract class Treasure_Card extends Card {
 	protected Treasure_Card(){
 
 	}
-
-
+	
 	
 }//end Treasure_Card

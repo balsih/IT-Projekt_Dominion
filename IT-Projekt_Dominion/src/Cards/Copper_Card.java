@@ -38,4 +38,6 @@ public class Copper_Card extends Treasure_Card {
 		
 		return ugmsg;
 	}
+	
+
 }//end Bronce_Card
