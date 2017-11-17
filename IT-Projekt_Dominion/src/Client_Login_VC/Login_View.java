@@ -46,7 +46,6 @@ public class Login_View extends View<GameApp_Model> {
 	@Override
 	protected Scene create_GUI(){
 		
-		//ServiceLocator sl = ServiceLocator.getServiceLocator(); //-> bereits oben instanziert (auch im Create NP anpassen?)
 		//sl.setTranslator(new Translator("en"));
 		sl = ServiceLocator.getServiceLocator();
 		Translator t = sl.getTranslator();
@@ -56,6 +55,8 @@ public class Login_View extends View<GameApp_Model> {
 		root.setId("root");
 		VBox centerBox = new VBox();
 		centerBox.setId("centerBox");
+		VBox ipBox = new VBox();
+		ipBox.setId("ipBox");
 		VBox nameBox = new VBox();
 		nameBox.setId("nameBox");
 		VBox passwordBox = new VBox();
@@ -65,56 +66,60 @@ public class Login_View extends View<GameApp_Model> {
 		languageBox.setId("languageBox");
 		
 		// labels and text fields
-		Label createNewPlayer = new Label(t.getString("login.login"));
-		createNewPlayer.setId("createNewPlayer");
+		Label login = new Label(t.getString("login.login"));
+		login.setId("login");
 		
-		Label name = new Label(t.getString("cnp.name"));
+		Label ipLabel = new Label(t.getString("login.ipLabel"));
+		ipLabel.setId("ipLabel");
+		TextField ipText = new TextField();
+		ipText.setId("ipText");
+		Button connect = new Button(t.getString("login.connect"));
+		connect.setId("connect");	
+		HBox ipAndConnect = new HBox(ipText, connect);
+		ipAndConnect.setId("ipAndConnect");
+		ipBox.getChildren().addAll(ipLabel, ipAndConnect);
+		
+		Label name = new Label(t.getString("login.name"));
 		name.setId("name");
 		TextField nameText = new TextField();
 		nameText.setId("nameText");
 		nameBox.getChildren().addAll(name, nameText);
 		
-		Label password = new Label(t.getString("cnp.password"));
+		Label password = new Label(t.getString("login.password"));
 		password.setId("password");
 		TextField passwordText = new TextField();
 		passwordText.setId("passwordText");
 		passwordBox.getChildren().addAll(password, passwordText);
 		
-		// language selection with ComboBox
-		Label languageSelect = new Label(t.getString("cnp.languageSelect"));
-		languageSelect.setId("languageSelect");
-
-		ObservableList<String> language = FXCollections.observableArrayList(t.getString("program.german"), t.getString("program.english"));
-		final ComboBox comboBox = new ComboBox(language);
-		comboBox.setTooltip(new Tooltip(t.getString("program.languageTip")));
-		comboBox.setPrefSize(280.0, 30.0);
-		languageBox.getChildren().addAll(languageSelect, comboBox);
-		
 		// buttons
-		Button save = new Button(t.getString("cnp.save"));
-		save.setId("save");
-		Button back = new Button(t.getString("cnp.back"));
-		save.setId("back");	
-		HBox buttonBox = new HBox(save, back);
+		Button createNewPlayerBtn = new Button(t.getString("login.createNewPlayerBtn"));
+		createNewPlayerBtn.setId("createNewPlayerBtn");
+		Button quitBtn = new Button(t.getString("login.quitBtn"));
+		quitBtn.setId("quitBtn");
+		Button loginBtn = new Button(t.getString("login.loginBtn"));
+		loginBtn.setId("loginBtn");
+		
+		HBox buttonBox = new HBox(createNewPlayerBtn, quitBtn, loginBtn);
 		buttonBox.setId("buttonBox");
+		
 		
 		// layout and size configurations 
 		root.setPrefSize(1280,720);
 		root.setAlignment(Pos.CENTER);
-		centerBox.getChildren().addAll(createNewPlayer, nameBox, passwordBox, languageBox, buttonBox);
+		centerBox.getChildren().addAll(login, ipBox, nameBox, passwordBox, buttonBox);
 		// centerBox.getChildren().addAll(createNewPlayer, nameBox, passwordBox, buttonBox); // -> ohne Sprachauswahl 
 		root.getChildren().add(centerBox);
 		
 		
 		// https://panjutorials.de/tutorials/javafx-8-gui/lektionen/audio-player-in-javafx-2/?cache-flush=1510439948.4916 
-		// hier legen wir die Resource an, welche unbedingt im entsprechenden Ordner sein muss
-		//final URL resource = getClass().getResource("sound.mp3");
+		//hier legen wir die Resource an, welche unbedingt im entsprechenden Ordner sein muss
+		final URL resource = getClass().getResource("willy.mp3");
 		// wir legen das Mediaobjekt and und weisen unsere Resource zu
-		//final Media media = new Media(resource.toString());
+		final Media media = new Media(resource.toString());
 		// wir legen den Mediaplayer an und weisen ihm das Media Objekt zu
-		//final MediaPlayer mediaPlayer = new MediaPlayer(media);
+		final MediaPlayer mediaPlayer = new MediaPlayer(media);
 		
-		//mediaPlayer.play();
+		mediaPlayer.play();
 		//mediaPlayer.stop();
 		
 		

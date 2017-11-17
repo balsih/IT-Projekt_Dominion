@@ -30,7 +30,7 @@ import javafx.stage.Stage;
  */
 public class CreatePlayer_View extends View<GameApp_Model> {
 
-	//private ServiceLocator sl = ServiceLocator.getServiceLocator(); // muss dieser als Instanzvariable vorhanden sein bzw warum? 
+	private ServiceLocator sl; 
 	
 
 	/**
@@ -45,7 +45,7 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 	@Override
 	protected Scene create_GUI(){
 		
-		ServiceLocator sl = ServiceLocator.getServiceLocator();
+		sl = ServiceLocator.getServiceLocator();
 		//sl.setTranslator(new Translator("en"));
 		Translator t = sl.getTranslator();
 		
