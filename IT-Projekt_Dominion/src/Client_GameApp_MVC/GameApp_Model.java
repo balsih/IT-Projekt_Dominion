@@ -25,6 +25,7 @@ import Messages.PlayCard_Message;
 import Messages.PlayerSuccess_Message;
 import Messages.SkipPhase_Message;
 import Messages.UpdateGame_Message;
+import Server_GameLogic.GameMode;
 
 /**
  * @author Adrian
@@ -53,7 +54,8 @@ public class GameApp_Model extends Model {
 	private String passwordRegex;
 	protected LinkedList<Card> playedCards;
 	private int port;
-	protected boolean won;
+	protected Content success;
+	protected int victoryPoints;
 	private boolean listenToServer;
 	private Dominion_Main main;
 
@@ -98,7 +100,7 @@ public class GameApp_Model extends Model {
 	 * @param ipAdress
 	 * @param port
 	 */
-	public void init(String ipAdress, int port){
+	public void init(String ipAddress, int port){
 	    this.ipAddress = ipAddress;
 	    this.port = port;
 	}
@@ -125,22 +127,15 @@ public class GameApp_Model extends Model {
 	 * @param card
 	 */
 	public void sendBuyCard(Card card){
-		Socket socket = connect();
-		if(socket != null){
-			BuyCard_Message bcmsg = new BuyCard_Message();
-			bcmsg.setCard(card);
-			try{
-				bcmsg.send(socket);
-				Message msgIn = Message.receive(socket);
-				if(msgIn.getType().equals(MessageType.UpdateGame)){
-					this.processUpdateGame(msgIn);
-				}else if(msgIn.getType().equals(MessageType.Failure)){
-					//nothing toDo here
-				}
-			}catch(Exception e){
-				System.out.println(e.toString());
-			}
-			try { if (socket != null) socket.close(); } catch (IOException e) {}
+		BuyCard_Message bcmsg = new BuyCard_Message();
+		bcmsg.setCard(card);
+		Message msgIn = this.processMessage(bcmsg);
+		if(msgIn.getType().equals(MessageType.UpdateGame)){
+			this.processUpdateGame(msgIn);
+		}else if(msgIn.getType().equals(MessageType.PlayerSuccess)){
+			this.processPlayerSuccess(msgIn);
+		}else if(msgIn.getType().equals(MessageType.Failure)){
+			//nothing toDo here
 		}
 	}
 
@@ -150,20 +145,14 @@ public class GameApp_Model extends Model {
 	 * @param chat
 	 */
 	public void sendChat(String chat){
-		Socket socket = connect();
-		if(socket != null){
-			Chat_Message cmsg = new Chat_Message();
-			cmsg.setChat(chat);
-			try{
-				cmsg.send(socket);
-				Message msgIn = Message.receive(socket);
-				this.processUpdateGame(msgIn);
-			}catch(Exception e){
-				System.out.println(e.toString());
-			}
-			try { if (socket != null) socket.close(); } catch (IOException e) {}
+		Chat_Message cmsg = new Chat_Message();
+		cmsg.setChat(chat);
+		Message msgIn = this.processMessage(cmsg);
+		if(msgIn.getType().equals(MessageType.UpdateGame)){
+			this.processUpdateGame(msgIn);
 		}
 	}
+	
 
 	/**
 	 * @author Lukas
@@ -176,24 +165,15 @@ public class GameApp_Model extends Model {
 	public String sendCreateNewPlayer(String clientName, String password){
 		String result = NO_CONNECTION;
 		this.clientName = clientName;
-		Socket socket = connect();
-		if(socket != null){
-			CreateNewPlayer_Message cnpmsg = new CreateNewPlayer_Message();
-			String encryptedPassword = this.encryptPassword(password);
-			cnpmsg.setPassword(encryptedPassword);
-			try{
-				cnpmsg.send(socket);
-				Message msgIn = Message.receive(socket);
-				if(msgIn.getType().equals(MessageType.Commit)){
-					this.main.startMainMenu();
-				}else if(msgIn.getType().equals(MessageType.Failure)){
-					Failure_Message fmsg = (Failure_Message) msgIn;
-					result = fmsg.getNotification();
-				}
-			}catch(Exception e){
-				System.out.println(e.toString());
-			}
-			try { if (socket != null) socket.close(); } catch (IOException e) {}
+		CreateNewPlayer_Message cnpmsg = new CreateNewPlayer_Message();
+		String encryptedPassword = this.encryptPassword(password);
+		cnpmsg.setPassword(encryptedPassword);
+		Message msgIn = this.processMessage(cnpmsg);
+		if(msgIn.getType().equals(MessageType.Commit)){
+			this.main.startMainMenu();
+		}else if(msgIn.getType().equals(MessageType.Failure)){
+			Failure_Message fmsg = (Failure_Message) msgIn;
+			result = fmsg.getNotification();
 		}
 		return result;
 	}
@@ -206,32 +186,79 @@ public class GameApp_Model extends Model {
 	 * @param mode, SinglePlayer or MultiPlayer
 	 * @return String, usually only necessary if the client has to wait for an opponent
 	 */
-	public String sendGameMode(Content mode){
+	public String sendGameMode(GameMode mode){
 		String result = NO_CONNECTION;
-		Socket socket = connect();
-		if(socket != null){
-			GameMode_Message gmmsg = new GameMode_Message();
-			gmmsg.setClient(this.clientName);//set the clientName and mode(SinglePlayer or MultiPlayer) to XML
-			gmmsg.setMode(mode);
-			this.gameMode = mode.toString();
-			try{
-				gmmsg.send(socket);
-				Message msgIn = Message.receive(socket);
-				this.listenToServer = true;
-				if(msgIn.getType().equals(MessageType.CreateGame)){//------> outSource because of Thread has to listen too
-					processCreateGame(msgIn);//setUp a new Game
-				}else if(msgIn.getType().equals(MessageType.Commit)){
-					Commit_Message cmsg = (Commit_Message) msgIn;//waiting for other Player (only MultiPlayer)
-					result = cmsg.getNotification();
-				}else if(msgIn.getType().equals(MessageType.Failure)){
-					result = mode.toString()+" is no valid mode";//wrong mode, should not be possible
-				}
-			}catch(Exception e){
-				System.out.println(e.toString());
-			}
-			try { if (socket != null) socket.close(); } catch (IOException e) {}
+		GameMode_Message gmmsg = new GameMode_Message();
+		gmmsg.setClient(this.clientName);//set the clientName and mode(SinglePlayer or MultiPlayer) to XML
+		gmmsg.setMode(mode);
+		this.gameMode = mode.toString();
+		Message msgIn = this.processMessage(gmmsg);
+		if(msgIn.getType().equals(MessageType.Commit)){
+			this.listenToServer = true;
+			this.main.startGameApp();
 		}
 		return result;
+	}
+	
+	/**
+	 * @author Lukas
+	 * The client sends his encrypted password to server and will get to the MainMenu if the password is appropriate to clientName
+	 * 
+	 * @param password
+	 * @return String, usually only necessary if clientName and password don't work
+	 */
+	public String sendLogin(String clientName, String password){
+        String result = NO_CONNECTION;
+		Login_Message lmsg = new Login_Message();
+		lmsg.setClient(this.clientName);//set the clientName and encrypted password to XML
+		String encryptedPassword = this.encryptPassword(password);
+		lmsg.setPassword(encryptedPassword);
+        this.clientName = clientName;
+        Message msgIn = this.processMessage(lmsg);
+		if(msgIn.getType().equals(MessageType.Commit)){
+			this.main.startMainMenu();//login succeeded
+		}else if(msgIn.getType().equals(MessageType.Failure)){
+			Failure_Message fmsg = (Failure_Message) msgIn;//login failed, no password with clientName available
+			result = fmsg.getNotification();
+		}
+        return result;
+	}
+
+	/**
+	 * @author Lukas
+	 * The client wants to play a chosen Card. The result depends on the validity of the move
+	 * 
+	 * @param card, chosen Card
+	 * @param index, index of the chosen Card
+	 */
+	public void sendPlayCard(Card card){
+		PlayCard_Message pcmsg = new PlayCard_Message();
+		pcmsg.setCard(card);
+		Integer index = null;
+		for(int i = 0; i < this.handCards.size(); i++){
+			if(this.handCards.get(i) == card)
+				index = i;
+		}
+		pcmsg.setIndex(index);
+		Message msgIn = this.processMessage(pcmsg);
+		if(msgIn.getType().equals(MessageType.UpdateGame)){
+			this.processUpdateGame(msgIn);
+		}else if(msgIn.getType().equals(MessageType.Failure)){
+			//nothing toDo here
+		}
+	}
+	
+	/**
+	 * @author Lukas
+	 * The client wants to skip the currentPhase. Success depends on if it is his turn or not
+	 */
+	public void sendSkipPhase(){
+		Message msgIn = this.processMessage(new SkipPhase_Message());
+		if(msgIn.getType().equals(MessageType.UpdateGame)){
+			this.processUpdateGame(msgIn);
+		}else if(msgIn.getType().equals(MessageType.Failure)){
+			//nothing toDo here
+		}
 	}
 
 	/**
@@ -247,8 +274,19 @@ public class GameApp_Model extends Model {
 			this.deck.add(card);
 		this.buyCards = cgmsg.getBuyCards();
 		this.opponent = cgmsg.getOpponent();
-		this.main.startGameApp();
 	}
+	
+	/**
+	 * @author Lukas
+	 * 
+	 * @param msgIn
+	 */
+	private void processPlayerSuccess(Message msgIn) {
+		PlayerSuccess_Message psmsg = (PlayerSuccess_Message) msgIn;
+		this.success = psmsg.getSuccess();
+		this.victoryPoints = psmsg.getVictoryPoints();
+	}
+
 	
 	/**
 	 * @author Adrian
@@ -295,88 +333,25 @@ public class GameApp_Model extends Model {
 			//workToDo
 	}
 
-	/**
-	 * @author Lukas
-	 * The client sends his encrypted password to server and will get to the MainMenu if the password is appropriate to clientName
-	 * 
-	 * @param password
-	 * @return String, usually only necessary if clientName and password don't work
-	 */
-	public String sendLogin(String clientName, String password){
-        String result = NO_CONNECTION;
-        this.clientName = clientName;
-        Socket socket = connect();
-        if (socket != null) {
-    		Login_Message lmsg = new Login_Message();
-    		lmsg.setClient(this.clientName);//set the clientName and encrypted password to XML
-    		String encryptedPassword = this.encryptPassword(password);
-    		lmsg.setPassword(encryptedPassword);
-    		try {
-    			lmsg.send(socket);
-    			Message msgIn = Message.receive(socket);
-    			if(msgIn.getType().equals(MessageType.Commit)){
-    				this.main.startMainMenu();//login succeeded
-    			}else if(msgIn.getType().equals(MessageType.Failure)){
-    				Failure_Message fmsg = (Failure_Message) msgIn;//login failed, no password with clientName available
-    				return fmsg.getNotification();
-    			}
-    		}catch(Exception e) {
-    			System.out.println(e.toString());
-    		}
-            try { if (socket != null) socket.close(); } catch (IOException e) {}
-        }
-        return result;
-	}
-
-	/**
-	 * @author Lukas
-	 * The client wants to play a chosen Card. The result depends on the validity of the move
-	 * 
-	 * @param card, chosen Card
-	 * @param index, index of the chosen Card
-	 */
-	public void sendPlayCard(Card card, Integer index){
-		Socket socket = connect();
-		if(socket != null){
-			PlayCard_Message pcmsg = new PlayCard_Message();
-			pcmsg.setCard(card);
-			pcmsg.setIndex(index);
-			try{
-				pcmsg.send(socket);
-				Message msgIn = Message.receive(socket);
-				if(msgIn.getType().equals(MessageType.UpdateGame)){
-					this.processUpdateGame(msgIn);
-				}else if(msgIn.getType().equals(MessageType.Failure)){
-					//nothing toDo here
-				}
-			}catch(Exception e){
-				System.out.println(e.toString());
-			}
-			try { if (socket != null) socket.close(); } catch (IOException e) {}
-		}
-	}
 	
 	/**
-	 * @author Lukas
-	 * The client wants to skip the currentPhase. Success depends on if it is his turn or not
+	 * 
+	 * @param message
+	 * @return
 	 */
-	public void sendSkipPhase(){
+	private Message processMessage(Message message){
 		Socket socket = connect();
+		Message msgIn = null;
 		if(socket != null){
-			SkipPhase_Message spmsg = new SkipPhase_Message();
 			try{
-				spmsg.send(socket);
-				Message msgIn = Message.receive(socket);
-				if(msgIn.getType().equals(MessageType.UpdateGame)){
-					this.processUpdateGame(msgIn);
-				}else if(msgIn.getType().equals(MessageType.Failure)){
-					//nothing toDo here
-				}
+				message.send(socket);
+				msgIn = Message.receive(socket);
 			}catch(Exception e){
 				System.out.println(e.toString());
 			}
 			try { if (socket != null) socket.close(); } catch (IOException e) {}
 		}
+		return msgIn;
 	}
 	
 	/**

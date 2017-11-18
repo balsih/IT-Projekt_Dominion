@@ -1,6 +1,5 @@
 package Server_GameLogic;
 
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -9,7 +8,6 @@ import java.util.Random;
 import java.util.Stack;
 
 import Cards.Copper_Card;
-import Cards.Card;
 import Cards.CardName;
 import Cards.Cellar_Card;
 import Cards.Duchy_Card;
@@ -37,13 +35,9 @@ public class Game {
 	private Stack<Cellar_Card> cellarPile;
 	private Stack<Duchy_Card> duchyPile;
 	private Stack<Estate_Card> estatePile;
-	private static int gameCounter = 0;
 	private Stack<Gold_Card> goldPile;
 	private Stack<Market_Card> marketPile;
 	private Stack<Mine_Card> minePile;
-	private Player player1;
-	private Player player2;
-	private Player currentPlayer;
 	private Stack<Province_Card> provincePile;
 	private Stack<Remodel_Card> remodelPile;
 	private Stack<Silver_Card> silverPile;
@@ -52,13 +46,19 @@ public class Game {
 	private Stack<Woodcutter_Card> woodcutterPile;
 	private Stack<Workshop_Card> workshopPile;
 	private HashMap<CardName, Integer> buyCards;
-	private boolean gameEnded;
-
-	private static Game existingGame;
 
 	private final int NUM_OF_TREASURECARDS = 30;
 	private final int NUM_OF_VICTORYCARDS = 30;
 	private final int NUM_OF_ACTIONCARDS = 10;
+
+	private static int gameCounter = 0;
+	private boolean gameEnded;
+
+	private Player player1;
+	private Player player2;
+	private Player currentPlayer;
+
+	private static Game existingGame;
 
 	/**
 	 * 
@@ -125,6 +125,74 @@ public class Game {
 		}
 	}
 
+	// Sobald player 2 hinzugefügt = true
+	public boolean isReadyToStart() {
+		if (player2 != null)
+			return true;
+
+		return false;
+	}
+
+	// initialites the players to start a game
+	public void startGame() {
+		for (int i = 0; i < 10; i++) {
+			if (i < 7) {
+				this.player1.deckPile.push(this.copperPile.pop());
+				this.player2.deckPile.push(this.copperPile.pop());
+			}
+			if (i >= 7) {
+				this.player1.deckPile.push(this.estatePile.pop());
+				this.player2.deckPile.push(this.estatePile.pop());
+			}
+		}
+
+		this.player1.draw(player1.NUM_OF_HANDCARDS);
+		this.player2.draw(player2.NUM_OF_HANDCARDS);
+		this.currentPlayer = this.getStarter();
+	}
+
+	// Determines randomly the starter between player1 and player2
+	private Player getStarter() {
+		Random rand = new Random();
+		int starter = rand.nextInt(2);
+		if (starter == 0)
+			return player1;
+
+		return player2;
+	}
+
+	/**
+	 * switches Player
+	 */
+	public void switchPlayer() {
+		if (currentPlayer.equals(this.player1)) {
+			this.currentPlayer = player2;
+		} else {
+			this.currentPlayer = player1;
+		}
+
+	}
+
+	public void checkWinner() {
+		if (this.checkGameEnding()) {
+			player1.countVictoryPoints();
+			player2.countVictoryPoints();
+			
+			if (player1.getVictoryPoints() > player2.getVictoryPoints())
+				player1.isWinner(true);
+			else if (player1.getVictoryPoints() == player2.getVictoryPoints()) {
+				if (player1.getMoves() > player2.getMoves())
+					player1.isWinner(true);
+				else if (player1.getMoves() == player2.getMoves()) {
+					player1.isWinner(true);
+					player2.isWinner(true);
+				} else
+					player2.isWinner(true);
+			} else
+				player2.isWinner(true);
+		}
+	}
+
 	public boolean checkGameEnding() {
 		int counter = 0;
 		LinkedList<Stack> allStacks = new LinkedList<Stack>();
@@ -154,24 +222,33 @@ public class Game {
 		else
 			return false;
 	}
+	
+	public static Game getGame(GameMode gameMode, Player player) {
+		if (gameMode == GameMode.Multiplayer) {
+			if (gameCounter % 2 == 0) {
+				Game game = new Game();
 
-	public int getGameCounter() {
-		return gameCounter;
-	}
+				game.setPlayer1(player);
+				existingGame = game;
 
-	public Player getOpponent(Player source) {
-		if (source.equals(player1))
-			return player2;
+				gameCounter++;
+			} else {
+				existingGame.setPlayer2(player);
+				gameCounter++;
+				existingGame.getPlayer1().getServerThreadForClient().addWaitingMessages(existingGame.getPlayer1().getServerThreadForClient().getCG_Message());
+				existingGame.getPlayer2().getServerThreadForClient().addWaitingMessages(existingGame.getPlayer2().getServerThreadForClient().getCG_Message());
+			}
+			return existingGame;
+		} else {
+			Game game = new Game();
+			Bot bot = new Bot("Bobby");
+			game.setPlayer1(player);
+			game.setPlayer2(bot);
+			bot.addGame(game);
+			game.getPlayer1().getServerThreadForClient().addWaitingMessages(existingGame.getPlayer1().getServerThreadForClient().getCG_Message());
+			return game;
+		}
 
-		return player1;
-	}
-
-	// Sobald player 2 hinzugefügt = true
-	public boolean isReadyToStart() {
-		if (player2 != null)
-			return true;
-
-		return false;
 	}
 
 	// Fills a HashMap with the cardName and size of the actual stack of the
@@ -202,98 +279,22 @@ public class Game {
 
 		return this.buyCards;
 	}
+	
 
-	public static Game getGame(GameMode gameMode, Player player) {
-		if (gameMode == GameMode.Multiplayer) {
-			if (gameCounter % 2 == 0) {
-				Game game = new Game();
-
-				game.setPlayer1(player);
-				existingGame = game;
-
-				gameCounter++;
-			} else {
-				existingGame.setPlayer2(player);
-				gameCounter++;
-			}
-			return existingGame;
-		} else {
-			Game game = new Game();
-			Bot bot = new Bot("Bobby");
-			game.setPlayer1(player);
-			game.setPlayer2(bot);
-			bot.addGame(game);
-			return game;
-		}
-
+	
+	public void sendToOpponent(Player source, Message msg) {
+		source.getServerThreadForClient().addWaitingMessages(msg);
 	}
 
-	// Initialises current player before every move
-	public void startMove() {
-		this.currentPlayer.setActions(1);
-		this.currentPlayer.setBuys(0);
-		this.currentPlayer.setCoins(0);
-		this.currentPlayer.setActualPhase(Phase.Action);
+	public Player getOpponent(Player source) {
+		if (source.equals(player1))
+			return player2;
+
+		return player1;
 	}
 
-	// initialites the players to start a game
-	public void startGame() {
-		if (this.isReadyToStart()) {
-			for (int i = 0; i < 10; i++) {
-				if (i < 7) {
-					this.player1.deckPile.push(this.copperPile.pop());
-					this.player2.deckPile.push(this.copperPile.pop());
-				}
-				if (i >= 7) {
-					this.player1.deckPile.push(this.estatePile.pop());
-					this.player2.deckPile.push(this.estatePile.pop());
-				}
-			}
-			
-			this.player1.draw(player1.NUM_OF_HANDCARDS);
-			this.player2.draw(player2.NUM_OF_HANDCARDS);
-			this.currentPlayer = this.getStarter();
-
-		}
-	}
-
-	// Determines randomly the starter between player1 and player2
-	private Player getStarter() {
-		Random rand = new Random();
-		int starter = rand.nextInt(2);
-		if (starter == 0)
-			return player1;
-
-		return player2;
-	}
-
-	/**
-	 * @author Bodo Gruetter checks the winner of a game.
-	 * 
-	 * @return Either return the winner or the winners if both win the game
-	 */
-	public ArrayList<Player> checkWinner() {
-		ArrayList<Player> winners = new ArrayList<Player>();
-		if (this.checkGameEnding()) {
-			if (player1.getVictoryPoints() > player2.getVictoryPoints())
-				winners.add(player1);
-			else if (player1.getVictoryPoints() == player2.getVictoryPoints()) {
-				if (player1.getMoves() > player2.getMoves())
-					winners.add(player1);
-				else if (player1.getMoves() == player2.getMoves()) {
-					winners.add(player1);
-					winners.add(player2);
-				} else
-					winners.add(player2);
-			} else
-				winners.add(player2);
-		}
-
-		return winners;
-	}
-
-	public void sendToOpponent(Player source, Message ugmsg) {
-		source.getServerThreadForClient().addWaitingMessages(ugmsg);
+	public int getGameCounter() {
+		return gameCounter;
 	}
 
 	public Stack<Copper_Card> getCopperPile() {

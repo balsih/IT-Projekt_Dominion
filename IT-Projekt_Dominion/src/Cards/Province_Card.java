@@ -35,5 +35,6 @@ public class Province_Card extends Victory_Card {
 		
 		return ugmsg;
 	}
+
 	
 }//end Province_Card

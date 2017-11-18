@@ -9,9 +9,13 @@ import java.util.Stack;
 
 import Cards.Card;
 import Cards.CardName;
+import Cards.CardType;
 import Cards.Copper_Card;
+import Cards.Victory_Card;
+import Messages.Content;
 import Messages.Failure_Message;
 import Messages.Message;
+import Messages.PlayerSuccess_Message;
 import Messages.UpdateGame_Message;
 
 /**
@@ -20,31 +24,32 @@ import Messages.UpdateGame_Message;
  * @created 31-Okt-2017 17:08:57
  */
 public class Player {
-
+	
+	protected LinkedList<Card> handCards;
+	protected LinkedList<Card> playedCards;
+	protected Stack<Card> deckPile;
+	protected Stack<Card> discardPile;
+	
+	protected final int NUM_OF_HANDCARDS = 5;
+	
+	protected String playerName;
 	protected int actions;
 	protected int buys;
 	protected int coins;
 	protected int moves;
-	protected Stack<Card> deckPile;
-	protected Stack<Card> discardPile;
-	protected Game game;
-	protected LinkedList<Card> handCards;
-	protected LinkedList<Card> playedCards;
-	protected String playerName;
 	protected int victoryPoints;
 	protected boolean winner;
-
-	protected final int NUM_OF_HANDCARDS = 5;
-
-	protected Socket clientSocket;
-
 	protected boolean isFinished;
 
+	protected Game game;
 	protected Phase actualPhase;
 
 	protected static int counter;
 
+	protected Socket clientSocket;
 	private ServerThreadForClient serverThreadForClient;
+	
+	PlayerSuccess_Message psmsg;
 
 	/**
 	 * 
@@ -57,35 +62,99 @@ public class Player {
 		this.playedCards = new LinkedList<Card>();
 		
 		this.playerName = name;
+		this.winner = false;
 		
-		counter = 0;
-
-		this.isFinished = false;
-
-		this.serverThreadForClient = serverThreadForClient;
-	}
-
-	public Player(String name) {
-		this.deckPile = new Stack<Card>();
-		this.discardPile = new Stack<Card>();
-		this.handCards = new LinkedList<Card>();
-		this.playedCards = new LinkedList<Card>();
-
 		this.coins = 0;
-		this.actions = 1;
+		this.actions = 0;
 		this.buys = 0;
 		counter = 0;
 
 		this.isFinished = false;
 
+		this.serverThreadForClient = serverThreadForClient;
+		
+		this.psmsg = new PlayerSuccess_Message();
 	}
 
 	/**
-	 * 
-	 * @param gameThread
+	 * Constructor for Bot
+	 * @param name
 	 */
-	public void addGame(Game game) {
-		this.game = game;
+	public Player(String name) {
+		this.deckPile = new Stack<Card>();
+		this.discardPile = new Stack<Card>();
+		this.handCards = new LinkedList<Card>();
+		this.playedCards = new LinkedList<Card>();
+		
+		this.playerName = name;
+		this.winner = false;
+
+		this.coins = 0;
+		this.actions = 0;
+		this.buys = 0;
+		counter = 0;
+
+		this.isFinished = false;
+		
+		this.psmsg = new PlayerSuccess_Message();
+
+	}
+	
+	/**
+	 * Initializes the player to start a move.
+	 */
+	public void startMove() {
+		this.actions = 1;
+		this.buys = 0;
+		this.coins = 0;
+		this.actualPhase = Phase.Action;
+		this.isFinished = false;
+	}
+
+	/**
+	 * plays the selected card and execute this card
+	 *
+	 */
+	public Message play(CardName cardName, int index) {
+		Card playedCard = null;
+		UpdateGame_Message ugmsg = new UpdateGame_Message();
+		Failure_Message fmsg = new Failure_Message();
+
+		playedCard = this.handCards.remove(index);
+		playedCard.executeCard(this);
+		playedCards.add(playedCard);
+		
+		if(game.checkGameEnding()){
+			if(this.winner == true && !game.getOpponent(this).winner){
+				this.psmsg.setSuccess(Content.Won);
+				game.getOpponent(this).psmsg.setSuccess(Content.Lost);
+			} else if(this.winner == true && game.getOpponent(this).winner){
+				this.psmsg.setSuccess(Content.Won);
+				game.getOpponent(this).psmsg.setSuccess(Content.Won);
+			} else{
+				this.psmsg.setSuccess(Content.Lost);
+				game.getOpponent(this).psmsg.setSuccess(Content.Won);
+			}
+			return this.psmsg;
+		}
+		
+		if (this.getActions() > 0 && this.actualPhase == Phase.Action && this.equals(game.getCurrentPlayer())) {
+			ugmsg.setLog(this.playerName + " played " + playedCard.getCardName());
+			ugmsg.setCurrentPlayer(this.playerName);
+			ugmsg.setCoins(this.coins);
+			ugmsg.setActions(this.actions);
+			ugmsg.setBuys(this.buys);
+			ugmsg.setCurrentPhase(this.actualPhase);
+			ugmsg.setDiscardPileTopCard(this.discardPile.firstElement());
+			ugmsg.setDiscardPileCardNumber(this.discardPile.size());
+			ugmsg.setDeckPileCardNumber(this.deckPile.size());
+			ugmsg.setNewHandCards(handCards);
+			ugmsg.setPlayedCards(playedCard);
+
+			return ugmsg;
+		}
+
+		return fmsg;
 	}
 
 	/**
@@ -155,7 +224,21 @@ public class Player {
 			this.discardPile.push(buyedCard);
 			break;
 		}
-
+		
+		if(game.checkGameEnding()){
+			if(this.winner == true && !game.getOpponent(this).winner){
+				this.psmsg.setSuccess(Content.Won);
+				game.getOpponent(this).psmsg.setSuccess(Content.Lost);
+			} else if(this.winner == true && game.getOpponent(this).winner){
+				this.psmsg.setSuccess(Content.Won);
+				game.getOpponent(this).psmsg.setSuccess(Content.Won);
+			} else{
+				this.psmsg.setSuccess(Content.Lost);
+				game.getOpponent(this).psmsg.setSuccess(Content.Won);
+			}
+			return this.psmsg;
+		}
+				
 		/**
 		 * checks if the buy of the current player is valid, then actualize the updateGame_Message.
 		 * else the method returns a failure_Message.
@@ -194,17 +277,11 @@ public class Player {
 
 		this.setFinished(true);
 
-		game.checkGameEnding();
-
 		this.actualPhase = Phase.Action;
 
 		this.moves++;
-		
-		if (this.equals(game.getPlayer1())) {
-			game.setCurrentPlayer(game.getPlayer2());
-		} else {
-			game.setCurrentPlayer(game.getPlayer1());
-		}
+
+		game.switchPlayer();
 
 	}
 
@@ -271,38 +348,6 @@ public class Player {
 	}
 
 	/**
-	 * plays the selected card and execute this card
-	 *
-	 */
-	public Message play(CardName cardName, int index) {
-		Card playedCard = null;
-		UpdateGame_Message ugmsg = new UpdateGame_Message();
-		Failure_Message fmsg = new Failure_Message();
-
-		playedCard = this.handCards.remove(index);
-		playedCard.executeCard(this);
-		playedCards.add(playedCard);
-		
-		if (this.getActions() > 0 && this.actualPhase == Phase.Action && this.equals(game.getCurrentPlayer())) {
-			ugmsg.setLog(this.playerName + " played " + playedCard.getCardName());
-			ugmsg.setCurrentPlayer(this.playerName);
-			ugmsg.setCoins(this.coins);
-			ugmsg.setActions(this.actions);
-			ugmsg.setBuys(this.buys);
-			ugmsg.setCurrentPhase(this.actualPhase);
-			ugmsg.setDiscardPileTopCard(this.discardPile.firstElement());
-			ugmsg.setDiscardPileCardNumber(this.discardPile.size());
-			ugmsg.setDeckPileCardNumber(this.deckPile.size());
-			ugmsg.setNewHandCards(handCards);
-			ugmsg.setPlayedCards(playedCard);
-
-			return ugmsg;
-		}
-
-		return fmsg;
-	}
-
-	/**
 	 * skips actual phase and goes to the next phase
 	 */
 	public Message skipPhase() {
@@ -331,6 +376,22 @@ public class Player {
 
 		return fmsg;
 	}
+	
+	public void countVictoryPoints(){
+		while(!this.handCards.isEmpty())
+			this.deckPile.push(handCards.remove());
+		while(!this.playedCards.isEmpty())
+			this.deckPile.push(playedCards.remove());
+		while(!this.discardPile.isEmpty())
+			this.deckPile.push(discardPile.pop());
+		
+		Iterator<Card> iter = deckPile.iterator();
+		while(iter.hasNext())
+			if(iter.next().getType().equals(CardType.Victory)){
+				iter.next().executeCard(this);
+			}
+	}
+
 
 	public int getActions() {
 		return actions;
@@ -376,7 +437,11 @@ public class Player {
 		return game;
 	}
 
-	public void setGame(Game game) {
+	/**
+	 * 
+	 * @param gameThread
+	 */
+	public void addGame(Game game) {
 		this.game = game;
 	}
 

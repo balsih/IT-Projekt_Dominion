@@ -22,7 +22,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 /**
- * @author René
+ * @author Rene
  * @version 1.0
  * @created 31-Okt-2017 17:06:18
  */
@@ -39,7 +39,7 @@ public class Splash_View extends View<Splash_Model> {
 	 */
 	public Splash_View(Stage stage, Splash_Model model){
 		super(stage, model);
-		stage.initStyle(StageStyle.TRANSPARENT); // also undecorated
+		//stage.initStyle(StageStyle.TRANSPARENT); // also undecorated
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class Splash_View extends View<Splash_Model> {
 		
 		lblStatus = new Label(t.getString("splash.label"));
 		lblStatus.setTextAlignment(TextAlignment.CENTER);
-		lblStatus.setId("loading");
+		lblStatus.setId("lblStatus");
 		
         progress = new ProgressBar();
 		progress.setId("progress");
@@ -83,7 +83,7 @@ public class Splash_View extends View<Splash_Model> {
         Scene scene = new Scene(root, 300, 300);
         //Scene scene = new Scene(root, 300, 300, Color.TRANSPARENT);
         //Scene scene = new Scene(root);
-        scene.getStylesheets().addAll(this.getClass().getResource("splash.css").toExternalForm());
+        scene.getStylesheets().addAll(this.getClass().getResource("Splash.css").toExternalForm());
         
 			// TODO Auto-generated catch block
 			//e.printStackTrace();

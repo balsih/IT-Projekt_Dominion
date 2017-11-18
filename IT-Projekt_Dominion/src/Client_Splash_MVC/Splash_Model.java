@@ -51,8 +51,8 @@ public class Splash_Model extends Model {
         	
         	Thread.sleep(1000); // Wartezeit zur Kontrolle
         	
-        	sl.setGallery(new Gallery(language));
-        	this.updateProgress(5, 5); // step 5 of total 5
+//        	sl.setGallery(new Gallery(language));
+//        	this.updateProgress(5, 5); // step 5 of total 5
         	
         	Thread.sleep(1000); // Wartezeit zur Kontrolle
 

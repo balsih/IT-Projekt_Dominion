@@ -35,5 +35,6 @@ public class Duchy_Card extends Victory_Card {
 		
 		return ugmsg;
 	}
+
 	
 }//end Duchy_Card

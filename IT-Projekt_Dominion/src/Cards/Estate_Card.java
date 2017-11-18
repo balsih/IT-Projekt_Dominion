@@ -36,4 +36,5 @@ public class Estate_Card extends Victory_Card {
 		return ugmsg;
 	}
 	
+	
 }//end Estate_Card

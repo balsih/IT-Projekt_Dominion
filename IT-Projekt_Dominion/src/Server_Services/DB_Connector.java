@@ -27,8 +27,8 @@ public class DB_Connector {
 	private ResultSet rs;
 
 	/**
-	 * @author Bodo Gruetter The constructor creates a connection to the database
-	 *         and if creates if not exists the database structure.
+	 * @author Bodo Gruetter The constructor creates a connection to the
+	 *         database and if creates if not exists the database structure.
 	 * 
 	 */
 	protected DB_Connector() {
@@ -114,19 +114,40 @@ public class DB_Connector {
 		}
 
 	}
+	
+	/**
+	 * @author Bodo Gruetter deletes an existing player_Scoring from the database.
+	 * 
+	 * @param username
+	 *            of the player which should been deleted.
+	 * @return true or false depending on the delete statement works.
+	 */
+	public boolean deletePlayer_Scoring(String username){
+		try{
+		String deletePlayer_Scoring = "Delete from Player_Scoring where Username = ?";
+		this.prepStmt = connection.prepareStatement(deletePlayer_Scoring);
+		this.prepStmt.setString(1, username);
+		this.prepStmt.execute();
+		
+		return true;
+		} catch (SQLException e){
+			return false;
+		}
+		
+	}
 
 	/**
 	 * @author Bodo Gruetter selects the 5 highscores in the database
 	 * 
 	 * @return the 5 highscores
 	 */
+	//FUNKTIONIERT NOCH NICHT!!!
 	public String getHighScore() {
-		String selectHighScore = "Select max(Score) from Player_Scoring where (?) in (Select * order by Score desc limit 5)";
+		String selectHighScore = "Select max(Score) from Player_Scoring where Username in (Select * order by Score desc limit 5)";
 		String highScore = "";
 
 		try {
 			this.prepStmt = connection.prepareStatement(selectHighScore);
-			this.prepStmt.setString(1, "Username");
 			this.rs = this.prepStmt.executeQuery();
 
 			while (this.rs.next()) {
@@ -206,8 +227,8 @@ public class DB_Connector {
 	}
 
 	/**
-	 * @author Bodo Gruetter checks if the player inputs the correct user data to
-	 *         login.
+	 * @author Bodo Gruetter checks if the player inputs the correct user data
+	 *         to login.
 	 * 
 	 * @pram username and password of a player
 	 * @return true or false depending on the user input is correct and the
@@ -280,6 +301,14 @@ public class DB_Connector {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+
+	public static void main(String[] args) {
+		DB_Connector connector = new DB_Connector();
+
+		System.out.println(connector.getHighScore());
+
 	}
 
 }

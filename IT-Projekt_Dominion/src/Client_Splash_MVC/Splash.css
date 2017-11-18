@@ -1,0 +1,17 @@
+
+#root {
+	-fx-background-color: black;
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+    -fx-border-color: black;
+}
+
+#lblStatus {
+	-fx-font-size: 20px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+
+
+

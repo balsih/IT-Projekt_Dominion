@@ -24,13 +24,13 @@ import javafx.stage.Stage;
 
 
 /**
- * @author René
+ * @author Rene
  * @version 1.0
  * @created 31-Okt-2017 17:03:48
  */
 public class CreatePlayer_View extends View<GameApp_Model> {
 
-	//private ServiceLocator sl = ServiceLocator.getServiceLocator(); // muss dieser als Instanzvariable vorhanden sein bzw warum? 
+	private ServiceLocator sl; 
 	
 
 	/**
@@ -45,7 +45,7 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 	@Override
 	protected Scene create_GUI(){
 		
-		ServiceLocator sl = ServiceLocator.getServiceLocator();
+		sl = ServiceLocator.getServiceLocator();
 		//sl.setTranslator(new Translator("en"));
 		Translator t = sl.getTranslator();
 		
@@ -119,7 +119,7 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		Scene scene = new Scene(root);	
 		scene.getStylesheets().add(getClass().getResource("CreatePlayer.css").toExternalForm());
 		this.stage.setScene(scene);
-		stage.setFullScreen(true); // set Full Screen
+		//stage.setFullScreen(true); // set Full Screen
 		
 		return scene;
 	}

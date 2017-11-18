@@ -13,7 +13,6 @@ public abstract class Victory_Card extends Card {
 	protected int victoryPoints;
 
 	protected Victory_Card(){
-
 	}
 
 
