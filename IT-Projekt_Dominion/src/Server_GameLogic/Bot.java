@@ -31,7 +31,7 @@ public class Bot extends Player {
 	private boolean buyOneMore;
 	private boolean moreVictoryCards = false;
 	private boolean moreTreasureCards = true;
-	// reduce class variable where possible...
+	// reduce class variable where possible
 
 	public Bot(String name) {
 		super(name);
