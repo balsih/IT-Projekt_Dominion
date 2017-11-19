@@ -41,8 +41,8 @@ public class TestMessages {
 		
 		//@author Lukas, get the correct order for a prioList
 		LinkedList<CardName> currentPrioList = new LinkedList<CardName>();
-		Set<CardName> cards = priorityList.keySet();
-		currentPrioList.addAll(cards);
+		Set<CardName> cardNames = priorityList.keySet();
+		currentPrioList.addAll(cardNames);
 		currentPrioList.sort((c1, c2) -> Integer.compare(priorityList.get(c2), priorityList.get(c1)));
 		
 		for(CardName name: currentPrioList){
