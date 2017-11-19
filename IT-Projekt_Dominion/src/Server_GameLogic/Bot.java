@@ -17,21 +17,25 @@ import Cards.Province_Card;
  * @lastEdited 15-Nov-2017 08:36:00
  */
 
+// every method which is just used once by another method --> extract method
+
 public class Bot extends Player {
-	private HashMap<CardName, Integer> priorityList = new HashMap<CardName, Integer>();
+	private HashMap<CardName, Integer> prioListForBuying = new HashMap<CardName, Integer>();
+	private HashMap<CardName, Integer> prioListForPlaying = new HashMap<CardName, Integer>();
 	private static final ArrayList<String> NAMES = new ArrayList<String>();
 	private static final int MIN_TIME_BEFORE_EXECUTING = 1000, MAX_TIME_BEFORE_EXECUTING = 3000;
 	private static final double SHARE_OF_TREASURE_CARDS = 0.35;
 	private static final int MIN_CARDS_PER_DECKPILE = 3;
 	private double numberOfTreasureCards = 7.0;
 	private double numberOfCards = 10.0;
+	private int numberOfActionCards;
 	private int indexToPlay;
 	private CardName cardToPlay;
 	private CardName cardToBuy;
-	private boolean buyOneMore;
+	private boolean buyOneMore = false;
 	private boolean moreVictoryCards = false;
 	private boolean moreTreasureCards = true;
-	// reduce class variable where possible
+	// reduce class variables where possible
 
 	public Bot(String name) {
 		super(name);
@@ -41,24 +45,36 @@ public class Bot extends Player {
 	 * executes the Bot with all its stages play and buy
 	 */
 	public void execute() {
-
 		// preparation
-		initializePriorityList();
-
-		// play
-		// still under construction
-		while (actions > 0) {
-			calculatePlay();
-			play(cardToPlay, indexToPlay);
-			makeBreak();
-			buyOneMore = true;
+		initializePrioListForBuying();
+		initializePrioListForPlaying();
+		// action phase
+		startMove();
+		calculateNumOfActionCards();
+		while (actions > 0 && numberOfActionCards > 0 && actualPhase == Phase.Action) {
+			playActionCards();
 		}
-		// buy
-		// still under construction
-		while (buys > 0 && buyOneMore == true) {
-			estimateGamePhase();
+		// buy phase --> STILL UNDER CONSTRUCTION (Verschachtelung noch unbekannt)
+		if (buys > 0 && actualPhase == Phase.Buy) {
 			playTreasureCards();
-			calculateBuy();
+			do {
+				// zuerst Kontrollen durchführen --> Änderungen der Prios vornehmen, bevor Karten gekauft werden!
+				// nach einem Einkauf sofort nochmals durchführen
+				estimateGamePhase();
+				estimateShareOfTreasureCards();
+				buy();
+				makeBreak();
+			} while (buys > 0 && buyOneMore == true);
+		}
+	} // end of execute method
+
+	/**
+	 * Calculate how many ActionCards are among all hand cards.
+	 */
+	private void calculateNumOfActionCards() {
+		for (Card card : handCards) {
+			if (card.getType().equals(CardType.Action))
+				numberOfActionCards++;
 		}
 	}
 
@@ -72,50 +88,109 @@ public class Bot extends Player {
 				indexToPlay = handCards.indexOf(card);
 				cardToPlay = handCards.get(indexToPlay).getCardName();
 				play(cardToPlay, indexToPlay);
+				makeBreak();
 			}
 		}
+		indexToPlay = 0;
+		cardToPlay = null;
 	}
 
-	private void calculatePlay() {
+	/**
+	 * Calculates which card is the best to play.
+	 */
+	private void playActionCards() {
 		int tempPriority = 0;
 		for (Card card : handCards) {
 			if (card.getType().equals(CardType.Action)) {
-				if (tempPriority < priorityList.get(card.getCardName())) {
-					tempPriority = priorityList.get(card.getCardName());
-					// add messages --> if play not possible --> try second best prio
+				if (tempPriority < prioListForPlaying.get(card.getCardName())) {
+					tempPriority = prioListForPlaying.get(card.getCardName());
+					indexToPlay = handCards.indexOf(card);
+					cardToPlay = handCards.get(indexToPlay).getCardName();
 				}
 			}
 		}
-
+		if (cardToPlay != null && indexToPlay != 0) {
+			play(cardToPlay, indexToPlay);
+			makeBreak();
+			// do something with card --> check packages Cards
+			calculateNumOfActionCards();
+			indexToPlay = 0;
+			cardToPlay = null;
+		} else {
+			makeBreak();
+			skipPhase();
+		}
 	}
 
-	private void calculateBuy() {
+	// STILL UNDER CONSTRUCTION...
+	/**
+	 * Calculates which card has to be bought and checks if a second buy would make
+	 * sense.
+	 */
+	private void buy() {
 		boolean succeededBuy = false;
-		
+		boolean possibleGoodCard = false;
 		// still under work
-		// cardToBuy = ;
-		buy(cardToBuy);
+		// add messages --> if buy not possible --> try second best prio
 
+		// cardToBuy =
+		buy(cardToBuy);
+		// valid play? --> ugmsg / failed play --> fmsg
+		
+		makeBreak();
+		
+		
+	
+
+		// next buy?
+		if (buys > 0) {
+
+			if (possibleGoodCard == true)
+				buyOneMore = true;
+		} else {
+			buyOneMore = false;
+		}
+		// valid play? --> ugmsg / failed play --> fmsg
+		
+		//else
+		makeBreak();
+		skipPhase();
 	}
 
 	/**
 	 * Sets the start priorities for all used card of the bot.
 	 */
-	private void initializePriorityList() {
-		// priorityList.put(CardName.Cellar, 10); do not use but implement first if enough time
-		priorityList.put(CardName.Copper, 20);
-		priorityList.put(CardName.Duchy, 50);
-		priorityList.put(CardName.Estate, 10);
-		priorityList.put(CardName.Gold, 70);
-		priorityList.put(CardName.Market, 68);
-		// priorityList.put(CardName.Mine, 10); do not use
-		priorityList.put(CardName.Province, 90);
-		priorityList.put(CardName.Remodel, 66);
-		priorityList.put(CardName.Silver, 40);
-		priorityList.put(CardName.Smithy, 67);
-		priorityList.put(CardName.Village, 69);
-		// priorityList.put(CardName.Woodcutter, 10); do not use
-		priorityList.put(CardName.Workshop, 10); // do not use
+	private void initializePrioListForBuying() {
+		// prioListForBuying.put(CardName.Cellar, 10); do not use but implement first if
+		// enough time
+		// prioListForBuying.put(CardName.Copper, 20); do not buy CooperCards
+		prioListForBuying.put(CardName.Duchy, 50);
+		prioListForBuying.put(CardName.Estate, 10);
+		prioListForBuying.put(CardName.Gold, 70);
+		prioListForBuying.put(CardName.Market, 68);
+		// prioListForBuying.put(CardName.Mine, 10); do not use
+		prioListForBuying.put(CardName.Province, 90);
+		prioListForBuying.put(CardName.Remodel, 66);
+		prioListForBuying.put(CardName.Silver, 40);
+		prioListForBuying.put(CardName.Smithy, 67);
+		prioListForBuying.put(CardName.Village, 69);
+		// prioListForBuying.put(CardName.Woodcutter, 10); do not use
+		// priorityList.put(CardName.Workshop, 10); do not use
+	}
+
+	/**
+	 * Sets the start priorities for all used card of the bot.
+	 */
+	private void initializePrioListForPlaying() {
+		// prioListForPlaying.put(CardName.Cellar, 30); do not use but implement first
+		// if enough time
+		prioListForPlaying.put(CardName.Market, 80);
+		// prioListForPlaying.put(CardName.Mine, 40); do not use
+		prioListForPlaying.put(CardName.Remodel, 60);
+		prioListForPlaying.put(CardName.Smithy, 70);
+		prioListForPlaying.put(CardName.Village, 90);
+		// prioListForPlaying.put(CardName.Woodcutter, 20); do not use
+		// prioListForPlaying.put(CardName.Workshop, 50); do not use
 	}
 
 	/**
@@ -159,6 +234,9 @@ public class Bot extends Player {
 		}
 	}
 
+	// alle Methoden unterhalb sind noch zu programmieren, Verschachtelung noch nicht definitiv
+	// wahrscheinlich alle "change-methoden" auflösen und den "estimate-methoden" direkt hinzufügen
+	
 	/**
 	 * Calculates the share of TreasureCards in relation to the total number of
 	 * owned cards and sets a boolean value.
@@ -177,8 +255,8 @@ public class Bot extends Player {
 	 */
 	private void changePriorityVictoryCards() {
 		if (moreVictoryCards == true) {
-			priorityList.replace(CardName.Duchy, 100);
-			priorityList.replace(CardName.Province, 100);
+			prioListForBuying.replace(CardName.Duchy, 100);
+			prioListForBuying.replace(CardName.Province, 100);
 		} // no else because this method will only be executed at the end of a game
 	}
 
@@ -187,11 +265,11 @@ public class Bot extends Player {
 	 */
 	private void changePriorityTreasureCards() {
 		if (moreTreasureCards == true) {
-			priorityList.replace(CardName.Gold, 80);
-			priorityList.replace(CardName.Silver, 70);
+			prioListForBuying.replace(CardName.Gold, 80);
+			prioListForBuying.replace(CardName.Silver, 70);
 		} else {
-			priorityList.replace(CardName.Gold, 70);
-			priorityList.replace(CardName.Silver, 40);
+			prioListForBuying.replace(CardName.Gold, 70);
+			prioListForBuying.replace(CardName.Silver, 40);
 		}
 	}
 }
