@@ -32,6 +32,23 @@ public class Login_View extends View<GameApp_Model> {
 	//private ServiceLocator sl = ServiceLocator.getServiceLocator();
 	private ServiceLocator sl;
 	
+	
+	// controls -> accessed by controller 
+	protected Label loginLbl;
+	protected Label ipLbl;
+	protected TextField ipText;
+	protected Button connectBtn;
+	
+	protected Label nameLbl;
+	protected TextField nameText;
+	
+	protected Label passwordLbl;
+	protected TextField passwordText;
+	protected Button loginBtn;
+	
+	protected Button createNewPlayerBtn;
+	protected Button quitBtn;
+
 
 	/**
 	 * 
@@ -65,47 +82,46 @@ public class Login_View extends View<GameApp_Model> {
 		
 		
 		// labels and text fields
-		Label login = new Label(t.getString("login.login"));
-		login.setId("login");
+		loginLbl = new Label(t.getString("login.loginLbl"));
+		loginLbl.setId("loginLbl");
 		
-		Label ipLabel = new Label(t.getString("login.ipLabel"));
-		ipLabel.setId("ipLabel");
-		TextField ipText = new TextField();
+		ipLbl = new Label(t.getString("login.ipLbl"));
+		ipLbl.setId("ipLbl");
+		ipText = new TextField();
 		ipText.setId("ipText");
 		ipText.setPrefSize(220.0, 30.0);
-		Button connect = new Button(t.getString("login.connect"));
-		connect.setId("connect");	
-		HBox ipAndConnect = new HBox(ipText, connect);
-		ipAndConnect.setId("ipAndConnect");
-		ipBox.getChildren().addAll(ipLabel, ipAndConnect);
+		connectBtn = new Button(t.getString("login.connectBtn"));
+		connectBtn.setId("connectBtn");	
+		HBox ipAndConnectBox = new HBox(ipText, connectBtn);
+		ipAndConnectBox.setId("ipAndConnectBox");
+		ipBox.getChildren().addAll(ipLbl, ipAndConnectBox);
 		
-		Label name = new Label(t.getString("login.name"));
-		name.setId("name");
-		TextField nameText = new TextField();
+		nameLbl = new Label(t.getString("login.nameLbl"));
+		nameLbl.setId("nameLbl");
+		nameText = new TextField();
 		nameText.setId("nameText");
 		//nameText.setPrefSize(220.0, 30.0);
 		nameText.setMaxSize(220.0, 30.0);
-		nameBox.getChildren().addAll(name, nameText);
+		nameBox.getChildren().addAll(nameLbl, nameText);
 		
-		Label password = new Label(t.getString("login.password"));
-		password.setId("password");
-		TextField passwordText = new TextField();
+		passwordLbl = new Label(t.getString("login.passwordLbl"));
+		passwordLbl.setId("passwordLbl");
+		passwordText = new TextField();
 		passwordText.setId("passwordText");
 		passwordText.setPrefSize(220.0, 30.0);
-		Button loginBtn = new Button(t.getString("login.loginBtn"));
+		loginBtn = new Button(t.getString("login.loginBtn"));
 		loginBtn.setId("loginBtn");
 		
 		HBox pwLoginBox = new HBox(passwordText, loginBtn);
 		pwLoginBox.setId("pwLoginBox");
 		
-		passwordBox.getChildren().addAll(password, pwLoginBox);
+		passwordBox.getChildren().addAll(passwordLbl, pwLoginBox);
 		
 		// buttons
-		Button createNewPlayerBtn = new Button(t.getString("login.createNewPlayerBtn"));
+		createNewPlayerBtn = new Button(t.getString("login.createNewPlayerBtn"));
 		createNewPlayerBtn.setId("createNewPlayerBtn");
-		Button quitBtn = new Button(t.getString("login.quitBtn"));
+		quitBtn = new Button(t.getString("login.quitBtn"));
 		quitBtn.setId("quitBtn");
-		
 		
 		HBox buttonBox = new HBox(createNewPlayerBtn, quitBtn);
 		buttonBox.setId("buttonBox");
@@ -120,7 +136,7 @@ public class Login_View extends View<GameApp_Model> {
 		// layout and size configurations 
 		root.setPrefSize(1280,720);
 		root.setAlignment(Pos.CENTER);
-		centerBox.getChildren().addAll(login, ipNamePasswordBox, buttonBox);
+		centerBox.getChildren().addAll(loginLbl, ipNamePasswordBox, buttonBox);
 		// centerBox.getChildren().addAll(createNewPlayer, nameBox, passwordBox, buttonBox); // -> ohne Sprachauswahl 
 		root.getChildren().add(centerBox);
 		

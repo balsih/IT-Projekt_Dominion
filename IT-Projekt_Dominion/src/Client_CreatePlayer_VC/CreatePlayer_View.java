@@ -32,6 +32,21 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 
 	private ServiceLocator sl; 
 	
+	// controls -> accessed by controller 
+	protected Label createNewPlayerLbl;
+		
+	protected Label nameLbl;
+	protected TextField nameText;
+		
+	protected Label passwordLbl;
+	protected TextField passwordText;
+	
+	protected Label languageSelectLbl;
+	protected ComboBox languageSelectComboBox;
+		
+	protected Button saveBtn;
+	protected Button backBtn;
+	
 
 	/**
 	 * 
@@ -62,38 +77,39 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		VBox languageBox = new VBox();
 		languageBox.setId("languageBox");
 		
+		
 		// labels and text fields
-		Label createNewPlayer = new Label(t.getString("cnp.createNewPlayer"));
-		createNewPlayer.setId("createNewPlayer");
+		createNewPlayerLbl = new Label(t.getString("cnp.createNewPlayerLbl"));
+		createNewPlayerLbl.setId("createNewPlayerLbl");
 		
-		Label name = new Label(t.getString("cnp.name"));
-		name.setId("name");
-		TextField nameText = new TextField();
+		nameLbl = new Label(t.getString("cnp.nameLbl"));
+		nameLbl.setId("nameLbl");
+		nameText = new TextField();
 		nameText.setId("nameText");
-		nameBox.getChildren().addAll(name, nameText);
+		nameBox.getChildren().addAll(nameLbl, nameText);
 		
-		Label password = new Label(t.getString("cnp.password"));
-		password.setId("password");
-		TextField passwordText = new TextField();
+		passwordLbl = new Label(t.getString("cnp.passwordLbl"));
+		passwordLbl.setId("passwordLbl");
+		passwordText = new TextField();
 		passwordText.setId("passwordText");
-		passwordBox.getChildren().addAll(password, passwordText);
+		passwordBox.getChildren().addAll(passwordLbl, passwordText);
 		
 		// language selection with ComboBox
-		Label languageSelect = new Label(t.getString("cnp.languageSelect"));
-		languageSelect.setId("languageSelect");
+		languageSelectLbl = new Label(t.getString("cnp.languageSelectLbl"));
+		languageSelectLbl.setId("languageSelectLbl");
 
 		ObservableList<String> language = FXCollections.observableArrayList(t.getString("program.german"), t.getString("program.english"));
-		final ComboBox comboBox = new ComboBox(language);
-		comboBox.setTooltip(new Tooltip(t.getString("program.languageTip")));
-		comboBox.setPrefSize(280.0, 30.0);
-		languageBox.getChildren().addAll(languageSelect, comboBox);
+		languageSelectComboBox = new ComboBox(language);
+		languageSelectComboBox.setTooltip(new Tooltip(t.getString("program.languageTip")));
+		languageSelectComboBox.setPrefSize(280.0, 30.0);
+		languageBox.getChildren().addAll(languageSelectLbl, languageSelectComboBox);
 		
 		// buttons
-		Button save = new Button(t.getString("cnp.save"));
-		save.setId("save");
-		Button back = new Button(t.getString("cnp.back"));
-		save.setId("back");	
-		HBox buttonBox = new HBox(save, back);
+		saveBtn = new Button(t.getString("cnp.saveBtn"));
+		saveBtn.setId("saveBtn");
+		backBtn = new Button(t.getString("cnp.backBtn"));
+		backBtn.setId("backBtn");	
+		HBox buttonBox = new HBox(saveBtn, backBtn);
 		buttonBox.setId("buttonBox");
 		
 		// VBox for layout and spacing 
@@ -104,7 +120,7 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		// layout and size configurations 
 		root.setPrefSize(1280,720);
 		root.setAlignment(Pos.CENTER);
-		centerBox.getChildren().addAll(createNewPlayer, namePasswordLanguageBox, buttonBox);
+		centerBox.getChildren().addAll(createNewPlayerLbl, namePasswordLanguageBox, buttonBox);
 		// centerBox.getChildren().addAll(createNewPlayer, nameBox, passwordBox, buttonBox); // -> ohne Sprachauswahl 
 		root.getChildren().add(centerBox);
 		

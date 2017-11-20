@@ -37,7 +37,7 @@
 	-fx-vgap: 60px;
 }
 
-#createNewPlayer {
+#createNewPlayerLbl {
 	-fx-font-size: 25px;
     -fx-text-fill: white;
     -fx-font-weight: bold;
