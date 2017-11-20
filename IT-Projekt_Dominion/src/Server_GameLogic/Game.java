@@ -122,17 +122,6 @@ public class Game {
 			this.woodcutterPile.push(new Woodcutter_Card());
 			this.workshopPile.push(new Workshop_Card());
 		}
-<<<<<<< HEAD
-=======
-	}
-
-	// Sobald player 2 hinzugef�gt = true
-	public boolean isReadyToStart() {
-		if (player2 != null)
-			return true;
-
-		return false;
->>>>>>> branch 'master' of https://github.com/Eagleman1997/IT-Projekt_Dominion.git
 	}
 
 	// initialites the players to start a game
