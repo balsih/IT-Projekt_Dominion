@@ -23,18 +23,24 @@ import Cards.CardName;
  */
 public class CreateGame_Message extends Message {
 
-	private static final String ATTR_BUYCARDNUMBER = "buyCardNumber";
-	private static final String ELEMENT_BUYCARD = "buyCard";
 	private static final String ELEMENT_BUYCARDS = "buyCards";
 	private static final String ELEMENT_DECKPILE = "deckPile";
-	private static final String ELEMENT_OPPONENT = "opponent";
 	private final static String ELEMENT_HANDCARDS = "handCards";
 	private final static String ELEMENT_DECKCARD = "deckCard";
 	private final static String ELEMENT_HANDCARD = "handCard";
+	private static final String ELEMENT_BUYCARD = "buyCard";
+	private static final String ATTR_BUYCARDNUMBER = "buyCardNumber";
+	private static final String ELEMENT_STARTINGPLAYER = "startingPlayer";
+	private static final String ELEMENT_OPPONENT = "opponent";
+	private static final String ATTR_DECKNUMBER = "deckNumber";
+	private static final String ATTR_HANDNUMBER = "handNumber";
 	private HashMap<CardName, Integer> buyCards;
-	private LinkedList<Card> handCards;
 	private Stack<Card> deckPile;
+	private LinkedList<Card> handCards;
+	private String startingPlayer;
 	private String opponent;
+	private Integer deckNumber;
+	private Integer handNumber;
 
 
 	public CreateGame_Message(){
@@ -81,10 +87,18 @@ public class CreateGame_Message extends Message {
 		}
 		root.appendChild(handCards);
 		
-		//insert opponents name to show on client
+		//insert opponents name, handcards and deckcards to show on client
 		Element opponent = docIn.createElement(ELEMENT_OPPONENT);
 		opponent.setTextContent(this.opponent);
+		opponent.setAttribute(ATTR_HANDNUMBER, Integer.toString(this.handNumber));
+		opponent.setAttribute(ATTR_DECKNUMBER, Integer.toString(this.deckNumber));
 		root.appendChild(opponent);
+		
+		//insert startingPlayer
+		Element startingPlayer = docIn.createElement(ELEMENT_STARTINGPLAYER);
+		startingPlayer.setTextContent(this.startingPlayer);
+		root.appendChild(startingPlayer);
+		
 	
 	}
 	
@@ -96,7 +110,7 @@ public class CreateGame_Message extends Message {
 	protected void init(Document docIn){
 		Element root = docIn.getDocumentElement();
 		
-		//creates the deckPile from XML_Document with new CardObjects in the correct language
+		//creates the deckPile from XML_Document with new CardObjects
 		NodeList tmpElements = root.getElementsByTagName(ELEMENT_DECKPILE);
         if (tmpElements.getLength() > 0) {
             Element deckPile = (Element) tmpElements.item(0);
@@ -107,7 +121,7 @@ public class CreateGame_Message extends Message {
             }
         }
         
-        //creates all buyCards from XML_Document with new CardObjects in the correct language
+        //creates all buyCards from XML_Document with new CardObjects
         tmpElements = root.getElementsByTagName(ELEMENT_BUYCARDS);
         if(tmpElements.getLength() > 0){
         	Element buyCards = (Element) tmpElements.item(0);
@@ -119,14 +133,14 @@ public class CreateGame_Message extends Message {
         	}
         }
         
-        //creates all handCards from XML_Document with new CardObjects in the correct language
+        //creates all handCards from XML_Document with new CardObjects
         tmpElements = root.getElementsByTagName(ELEMENT_HANDCARDS);
         if(tmpElements.getLength() > 0){
         	Element handCards = (Element) tmpElements.item(0);
         	NodeList handElements = handCards.getElementsByTagName(ELEMENT_HANDCARD);
         	for(int i = handElements.getLength() -1; i >= 0; i--){
         		Element handCard = (Element) handElements.item(i);
-//        		this.handCards.add(Card.getCard(handCard.getTextContent()));
+        		this.handCards.add(Card.getCard(CardName.parseName(handCard.getTextContent())));
         	}
         }
         
@@ -135,6 +149,15 @@ public class CreateGame_Message extends Message {
         if(tmpElements.getLength() > 0){
         	Element opponent = (Element) tmpElements.item(0);
         	this.opponent = opponent.getTextContent();
+        	this.handNumber = Integer.parseInt(opponent.getAttribute(ATTR_HANDNUMBER));
+        	this.deckNumber = Integer.parseInt(opponent.getAttribute(ATTR_DECKNUMBER));
+        }
+        
+        //set the startingPlayer
+        tmpElements = root.getElementsByTagName(ELEMENT_STARTINGPLAYER);
+        if(tmpElements.getLength() > 0){
+        	Element startingPlayer = (Element) tmpElements.item(0);
+        	this.startingPlayer = startingPlayer.getTextContent();
         }
 	}
 	
@@ -158,13 +181,25 @@ public class CreateGame_Message extends Message {
 	public LinkedList<Card> getHandCards(){
 		return this.handCards;
 	}
+	
+	public Integer getDeckNumber() {
+		return this.deckNumber;
+	}
+	
+
+	public Integer getHandNumber() {
+		return this.handNumber;
+	}
+	
+	public String getStartingPlayer(){
+		return this.startingPlayer;
+	}
 
 	
 	
 	public void setHandCards(LinkedList<Card> handCards){
 		this.handCards = handCards;
 	}
-	
 	
 
 	public void setBuyCards(HashMap<CardName, Integer> buyCards){
@@ -178,5 +213,18 @@ public class CreateGame_Message extends Message {
 
 	public void setOpponent(String opponent){
 		this.opponent = opponent;
+	}
+
+
+	public void setDeckNumber(Integer deckNumber) {
+		this.deckNumber = deckNumber;
+	}
+
+	public void setHandNumber(Integer handNumber) {
+		this.handNumber = handNumber;
+	}
+	
+	public void setStartingPlayer(String startingPlayer){
+		this.startingPlayer = startingPlayer;
 	}
 }//end CreateGame_Message

@@ -29,7 +29,7 @@ import Server_GameLogic.GameMode;
 import Server_GameLogic.Phase;
 
 /**
- * @author Adrian
+ * @author Adiran & Lukas
  * @version 1.0
  * @created 31-Okt-2017 17:04:41
  */
@@ -41,21 +41,20 @@ public class GameApp_Model extends Model {
 	protected String opponent;
 	protected String currentPlayer;
 	
-	protected int yourActions;
-	protected int opponentActions;
-	protected int yourBuys;
-	protected int opponentBuys;
-	protected int yourCoins;
-	protected int opponentCoins;
+	protected int actions;
+	protected int buys;
+	protected int coins;
 	
+	protected LinkedList<Card> yourNewHandCards;
 	protected LinkedList<Card> yourHandCards;
+	protected int opponentNewHandCards;
 	protected int opponentHandCards;
 	protected LinkedList<Card> yourDeck;
 	protected int opponentDeck;
 	protected LinkedList<Card> yourDiscardPile;
 	protected int opponentDiscardPile;
-	protected LinkedList<Card> yourPlayedCards;
-	protected LinkedList<Card> opponentPlayedCards;
+	protected LinkedList<Card> playedCards;
+	protected Card newPlayedCard;
 	protected Card yourBuyedCard;
 	protected Card opponentBuyedCard;
 	protected Card yourDiscardPileTopCard;
@@ -201,11 +200,12 @@ public class GameApp_Model extends Model {
 			result = fmsg.getNotification();
 		}
 		return result;
+		
 	}
 
 	/**
 	 * @author Lukas
-	 * The client sends his GameMode (SinglePlayer or MultiPlayer) to Server.
+	 * The client sends his GameMode (Singleplayer or Multiplayer) to Server.
 	 * The result depends weather the client can start a game instantly or has to wait for an opponent
 	 * 
 	 * @param mode, SinglePlayer or MultiPlayer
@@ -254,14 +254,13 @@ public class GameApp_Model extends Model {
 	 * The client wants to play a chosen Card. The result depends on the validity of the move
 	 * 
 	 * @param card, chosen Card
-	 * @param index, index of the chosen Card
 	 */
 	public boolean sendPlayCard(Card card){
 		PlayCard_Message pcmsg = new PlayCard_Message();
 		pcmsg.setCard(card);
 		Integer index = null;
-		for(int i = 0; i < this.yourHandCards.size(); i++){
-			if(this.yourHandCards.get(i) == card)
+		for(int i = 0; i < this.yourNewHandCards.size(); i++){
+			if(this.yourNewHandCards.get(i) == card)
 				index = i;
 		}
 		pcmsg.setIndex(index);
@@ -296,21 +295,25 @@ public class GameApp_Model extends Model {
 	 * @author Lukas
 	 * Create a new Game
 	 * 
-	 * @param msgIn
+	 * @param msgIn, CreateGame_Message
 	 */
 	private void processCreateGame(Message msgIn) {
 		CreateGame_Message cgmsg = (CreateGame_Message) msgIn;
-		this.yourHandCards = cgmsg.getHandCards();
+		this.yourNewHandCards = cgmsg.getHandCards();
 		for(Card card: cgmsg.getDeckPile())
 			this.yourDeck.add(card);
 		this.buyCards = cgmsg.getBuyCards();
 		this.opponent = cgmsg.getOpponent();
+		this.opponentDeck = cgmsg.getDeckNumber();
+		this.opponentHandCards = cgmsg.getHandNumber();
+		this.currentPlayer = cgmsg.getStartingPlayer();
 	}
 	
 	/**
 	 * @author Lukas
+	 * Set success and victoryPoints. Result depends weather you won or lost
 	 * 
-	 * @param msgIn
+	 * @param msgIn, PlayerSuccess_Message
 	 */
 	private void processPlayerSuccess(Message msgIn) {
 		PlayerSuccess_Message psmsg = (PlayerSuccess_Message) msgIn;
@@ -320,63 +323,73 @@ public class GameApp_Model extends Model {
 
 	
 	/**
-	 * @author Adrian
-	 * Updates the view after a message has been received.
+	 * @author Lukas
+	 * Interpret all updates and provides structures for further work
 	 * 
-	 * @param msgIn
+	 * @param msgIn, UpdateGame_Message
 	 */
 	
 	private void processUpdateGame(Message msgIn) {	
 		UpdateGame_Message ugmsg = (UpdateGame_Message) msgIn;
-
-		if(ugmsg.getCurrentPlayer() != null)//If currentPlayer is set, the currentPlayer's turn ends
-			this.currentPlayer = ugmsg.getCurrentPlayer();
 		
 		if(ugmsg.getActions() != null && ugmsg.getCurrentPlayer() == null){//Has to be calculated during the player's turn. Always currentPlayer
-			this.yourActions += ugmsg.getActions();
+			this.actions += ugmsg.getActions();//update actions
 		}else{
-			this.yourActions = ugmsg.getActions();
+			this.actions = ugmsg.getActions();//set actions new
 		}
 			
 		if(ugmsg.getBuys() != null && ugmsg.getCurrentPlayer() == null){//Has to be calculated during the player's turn. Always currentPlayer
-			this.yourBuys += ugmsg.getBuys();
+			this.buys += ugmsg.getBuys();//update buys
 		}else{
-			this.yourBuys = ugmsg.getBuys();
+			this.buys = ugmsg.getBuys();//set buys new
 		}
 			
 		if(ugmsg.getCoins() != null && ugmsg.getCurrentPlayer() == null){//Has to be calculated during the player's turn. Always currentPlayer
-			this.yourCoins += ugmsg.getCoins();
+			this.coins += ugmsg.getCoins();//update coins
 		}else{
-			this.yourCoins = ugmsg.getCoins();
+			this.coins = ugmsg.getCoins();//set coins new
 		}
 			
 		if(ugmsg.getCurrentPhase() != null)//If Phase changed. Always currentPlayer
 			this.currentPhase = ugmsg.getCurrentPhase();
 			
-		if(ugmsg.getBuyedCard() != null)//If a buy was successful. Always currentPlayer
+		if(ugmsg.getBuyedCard() != null && this.currentPlayer == this.clientName){//If a buy was successful. Always currentPlayer
 			this.yourBuyedCard = ugmsg.getBuyedCard();
+		}else{
+			this.opponentBuyedCard = ugmsg.getBuyedCard();
+		}
 		
-		if(ugmsg.getDeckPileCardNumber() != null)//Always currentPlayer
-			this.deckPileCardNumber = ugmsg.getDeckPileCardNumber();
+		if(ugmsg.getDeckPileCardNumber() != null && this.currentPlayer == this.opponent)//Just necessary to show opponent's discardPile
+			this.opponentDiscardPile = ugmsg.getDeckPileCardNumber();
 			
-		if(ugmsg.getDiscardPileCardNumber() != null)//Always currentPlayer
-			this.discardPileCardNumber = ugmsg.getDiscardPileCardNumber();
+		if(ugmsg.getDiscardPileCardNumber() != null && this.currentPlayer == this.opponent)//Just necessary to show opponent's deckPile
+			this.opponentDeck = ugmsg.getDiscardPileCardNumber();
 			
-		if(ugmsg.getDiscardPileTopCard() != null)//Always currentPlayer. Only necessary to know opponents TopCard
+		if(ugmsg.getDiscardPileTopCard() != null && this.currentPlayer == this.clientName){//Always currentPlayer
 			this.yourDiscardPileTopCard = ugmsg.getDiscardPileTopCard();
+		}else{
+			this.opponentDiscardPileTopCard = ugmsg.getDiscardPileTopCard();
+		}
+		
+		if(ugmsg.getNewHandCards() != null && this.currentPlayer == this.clientName){//The new handCards just drawn. Always currentPlayer
+			this.yourNewHandCards = ugmsg.getNewHandCards();
+		}else{
+			this.opponentNewHandCards = ugmsg.getNewHandCards().size();
+		}
 			
-		if(ugmsg.getNewHandCards() != null)//The new handCards just drawn. Always currentPlayer
-			System.out.println();
-			
-		if(ugmsg.getPlayedCard() != null)
-			System.out.println();
+		if(ugmsg.getPlayedCard() != null)//If a card was played, it will be provided
+			this.newPlayedCard = ugmsg.getPlayedCard();
+		
+		if(ugmsg.getCurrentPlayer() != null)//If currentPlayer is set, the currentPlayer's turn ends
+			this.currentPlayer = ugmsg.getCurrentPlayer();
 	}
 
 	
 	/**
+	 * SetUp a socket_connection to server with the given message and returns the answer
 	 * 
-	 * @param message
-	 * @return
+	 * @param message, individual Message
+	 * @return message, individual Message
 	 */
 	private Message processMessage(Message message){
 		Socket socket = connect();
@@ -402,10 +415,9 @@ public class GameApp_Model extends Model {
 	}
 	
 	/**
+	 * @author Lukas
 	 * Inner Class to use the methods of the outer Class comfortable.
 	 * Necessary if a client wants to play a second game. The thread has to be started again
-	 * 
-	 * @author Lukas
 	 *
 	 */
 	public class ServerListening implements Runnable{
