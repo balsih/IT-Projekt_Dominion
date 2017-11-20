@@ -21,14 +21,14 @@ import Messages.UpdateGame_Message;
  * @created 31-Okt-2017 17:08:57
  */
 public class Player {
-	
+
 	protected LinkedList<Card> handCards;
 	protected LinkedList<Card> playedCards;
 	protected Stack<Card> deckPile;
 	protected Stack<Card> discardPile;
-	
+
 	protected final int NUM_OF_HANDCARDS = 5;
-	
+
 	protected String playerName;
 	protected int actions;
 	protected int buys;
@@ -55,10 +55,10 @@ public class Player {
 		this.discardPile = new Stack<Card>();
 		this.handCards = new LinkedList<Card>();
 		this.playedCards = new LinkedList<Card>();
-		
+
 		this.playerName = name;
 		this.winner = false;
-		
+
 		this.coins = 0;
 		this.actions = 0;
 		this.buys = 0;
@@ -67,12 +67,12 @@ public class Player {
 		this.isFinished = false;
 
 		this.serverThreadForClient = serverThreadForClient;
-		
 
 	}
 
 	/**
 	 * Constructor for Bot
+	 * 
 	 * @param name
 	 */
 	public Player(String name) {
@@ -80,7 +80,7 @@ public class Player {
 		this.discardPile = new Stack<Card>();
 		this.handCards = new LinkedList<Card>();
 		this.playedCards = new LinkedList<Card>();
-		
+
 		this.playerName = name;
 		this.winner = false;
 
@@ -91,8 +91,10 @@ public class Player {
 
 		this.isFinished = false;
 	}
-	
+
 	/**
+	 * @author Bodo Gruetter
+	 * 
 	 * Initializes the player to start a move.
 	 */
 	public void startMove() {
@@ -104,8 +106,13 @@ public class Player {
 	}
 
 	/**
-	 * plays the selected card and execute this card
+	 * @author Bodo Gruetter
 	 *
+	 * allows the current player to play a card and execute this.
+	 *
+	 * @param the played card and the index of this in the handcards.
+	 * @return playersuccess message if the game is finished or an updategame message if the move is valid.
+	 * if the move is not valid the methods returns a failure message.
 	 */
 	public Message play(CardName cardName, int index) {
 		Card playedCard = null;
@@ -115,35 +122,35 @@ public class Player {
 		playedCard = this.handCards.remove(index);
 		playedCard.executeCard(this);
 		playedCards.add(playedCard);
-		
-		if(game.checkGameEnding()){
+
+		if (game.checkGameEnding()) {
 			game.checkWinner();
-			
-			if(this.winner == true){
-				PlayerSuccess_Message psmsg  = new PlayerSuccess_Message();
+
+			if (this.winner == true) {
+				PlayerSuccess_Message psmsg = new PlayerSuccess_Message();
 				psmsg.setSuccess(Content.Won);
 				psmsg.setVictoryPoints(this.victoryPoints);
-				
+
 				PlayerSuccess_Message psmsgOpp = new PlayerSuccess_Message();
 				psmsgOpp.setSuccess(Content.Lost);
 				psmsgOpp.setVictoryPoints(this.victoryPoints);
 				game.sendToOpponent(this, psmsgOpp);
-				
+
 				return psmsg;
-			} else{
-				PlayerSuccess_Message psmsg  = new PlayerSuccess_Message();
+			} else {
+				PlayerSuccess_Message psmsg = new PlayerSuccess_Message();
 				psmsg.setSuccess(Content.Lost);
 				psmsg.setVictoryPoints(this.victoryPoints);
-				
+
 				PlayerSuccess_Message psmsgOpp = new PlayerSuccess_Message();
 				psmsgOpp.setSuccess(Content.Won);
 				psmsgOpp.setVictoryPoints(this.victoryPoints);
 				game.sendToOpponent(this, psmsgOpp);
-				
+
 				return psmsg;
 			}
 		}
-		
+
 		if (this.getActions() > 0 && this.actualPhase == Phase.Action && this.equals(game.getCurrentPlayer())) {
 			ugmsg.setLog(this.playerName + " played " + playedCard.getCardName());
 			ugmsg.setCurrentPlayer(this.playerName);
@@ -164,7 +171,13 @@ public class Player {
 	}
 
 	/**
-	 * buys a card and lays the buyed card into the discard pile
+	 * @author Bodo Gruetter
+	 * 
+	 * allows the current player to buy a card and stores it in the discard pile.
+	 * 
+	 * @param the buyed card
+	 * @return playersuccess message if the game is finished or an updategame message if the move is valid.
+	 * if the move is not valid the methods returns a failure message.
 	 */
 	public Message buy(CardName cardName) {
 		Card buyedCard = null;
@@ -230,38 +243,38 @@ public class Player {
 			this.discardPile.push(buyedCard);
 			break;
 		}
-		
-		if(game.checkGameEnding()){
+
+		if (game.checkGameEnding()) {
 			game.checkWinner();
-			
-			if(this.winner == true){
-				PlayerSuccess_Message psmsg  = new PlayerSuccess_Message();
+
+			if (this.winner == true) {
+				PlayerSuccess_Message psmsg = new PlayerSuccess_Message();
 				psmsg.setSuccess(Content.Won);
 				psmsg.setVictoryPoints(this.victoryPoints);
-				
+
 				PlayerSuccess_Message psmsgOpp = new PlayerSuccess_Message();
 				psmsgOpp.setSuccess(Content.Lost);
 				psmsgOpp.setVictoryPoints(this.victoryPoints);
 				game.sendToOpponent(this, psmsgOpp);
-				
+
 				return psmsg;
-			} else{
-				PlayerSuccess_Message psmsg  = new PlayerSuccess_Message();
+			} else {
+				PlayerSuccess_Message psmsg = new PlayerSuccess_Message();
 				psmsg.setSuccess(Content.Lost);
 				psmsg.setVictoryPoints(this.victoryPoints);
-				
+
 				PlayerSuccess_Message psmsgOpp = new PlayerSuccess_Message();
 				psmsgOpp.setSuccess(Content.Won);
 				psmsgOpp.setVictoryPoints(this.victoryPoints);
 				game.sendToOpponent(this, psmsgOpp);
-				
+
 				return psmsg;
 			}
 		}
-				
+
 		/**
-		 * checks if the buy of the current player is valid, then actualize the updateGame_Message.
-		 * else the method returns a failure_Message.
+		 * checks if the buy of the current player is valid, then actualize the
+		 * updateGame_Message. else the method returns a failure_Message.
 		 */
 		if (buyedCard.getCost() <= this.getCoins() && this.getBuys() > 0 && this.actualPhase == Phase.Buy
 				&& this.equals(game.getCurrentPlayer())) {
@@ -282,7 +295,9 @@ public class Player {
 	}
 
 	/**
-	 * cleans Up
+	 * @author Bodo Gruetter
+	 * 
+	 * cleans up automatically if a the current player has finished his move and switches the player.
 	 */
 	public void cleanUp() {
 		while (!playedCards.isEmpty()) {
@@ -306,6 +321,8 @@ public class Player {
 	}
 
 	/**
+	 * @author Bodo Gruetter 
+	 * 
 	 * If Deckpile is empty, the discard pile fills the deckPile. Eventually the
 	 * deckPiles get shuffled and the player draws the number of layed down
 	 * Cards from deckPile to HandPile.
@@ -317,13 +334,20 @@ public class Player {
 	 *
 	 * Else if they are enough cards in the deckPile, the player draws the
 	 * number of layed down cards respectively 5 Cards into the handPile
+	 * 
+	 * @param the number of cards which should be drawed.
+	 * @return an updateGame message
 	 */
 	public UpdateGame_Message draw(int numOfCards) {
 		
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 
 		for (int i = 0; i < numOfCards; i++) {
-			if (deckPile.isEmpty()) {
+			if(!deckPile.isEmpty() && discardPile.isEmpty()){
+				Collections.shuffle(deckPile);
+				for(int y = 0; i < numOfCards; i++)
+					handCards.add(discardPile.pop());
+			} else if (deckPile.isEmpty() && !discardPile.isEmpty()) {
 				while (!discardPile.isEmpty())
 					deckPile.push(discardPile.pop());
 				Collections.shuffle(deckPile);
@@ -352,8 +376,13 @@ public class Player {
 	}
 
 	/**
+	 * @Bodo Gruetter
+	 * 
 	 * Lays the selected card down from Handcards into discardPile and counts
 	 * the number of layed down cards and returns this number
+	 * 
+	 * @param the card which should been layed down
+	 * @return the number of layed down cards
 	 */
 	public int layDown(String cardName) {
 		Card layedDownCard = null;
@@ -368,50 +397,54 @@ public class Player {
 	}
 
 	/**
+	 * @author Bodo Gruetter
 	 * skips actual phase and goes to the next phase
+	 * 
+	 * @return an updategamemessage if the skipping works, else an failure message
 	 */
 	public Message skipPhase() {
-		
+
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		Failure_Message fmsg = new Failure_Message();
-		
-		
+
 		if (this.equals(game.getCurrentPlayer())) {
 			switch (this.actualPhase) {
 			case Action:
 				this.actualPhase = Phase.Buy;
-				
-				
+
 			case Buy:
 				this.actualPhase = Phase.CleanUp;
 				this.cleanUp();
-				
-				
+
 			default:
 				break;
 			}
-			
+
 			return ugmsg;
 		}
 
 		return fmsg;
 	}
-	
-	public void countVictoryPoints(){
-		while(!this.handCards.isEmpty())
+
+	/**
+	 * @author Bodo Gruetter
+	 * 
+	 * allows the current player to count his victory points.
+	 */
+	public void countVictoryPoints() {
+		while (!this.handCards.isEmpty())
 			this.deckPile.push(handCards.remove());
-		while(!this.playedCards.isEmpty())
+		while (!this.playedCards.isEmpty())
 			this.deckPile.push(playedCards.remove());
-		while(!this.discardPile.isEmpty())
+		while (!this.discardPile.isEmpty())
 			this.deckPile.push(discardPile.pop());
-		
+
 		Iterator<Card> iter = deckPile.iterator();
-		while(iter.hasNext())
-			if(iter.next().getType().equals(CardType.Victory)){
+		while (iter.hasNext())
+			if (iter.next().getType().equals(CardType.Victory)) {
 				iter.next().executeCard(this);
 			}
 	}
-
 
 	public int getActions() {
 		return actions;
@@ -520,16 +553,16 @@ public class Player {
 	public void setServerThreadForClient(ServerThreadForClient serverThreadForClient) {
 		this.serverThreadForClient = serverThreadForClient;
 	}
-	
-	public void isWinner(boolean winner){
+
+	public void isWinner(boolean winner) {
 		this.winner = winner;
 	}
-	
-	public void setMoves(int moves){
+
+	public void setMoves(int moves) {
 		this.moves = moves;
 	}
-	
-	public int getMoves(){
+
+	public int getMoves() {
 		return this.moves;
 	}
 }// end Player
