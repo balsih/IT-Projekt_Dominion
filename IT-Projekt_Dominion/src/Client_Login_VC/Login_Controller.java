@@ -17,7 +17,22 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 	 * @param model
 	 * @param view
 	 */
+	
+	private Login_View view;
+	
 	public Login_Controller(Dominion_Main main, GameApp_Model model, Login_View view){
 		super(model, view);
+		
+		this.view = view;
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 	}
 }//end Login_Controller

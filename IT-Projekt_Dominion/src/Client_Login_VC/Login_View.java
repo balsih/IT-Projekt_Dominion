@@ -62,8 +62,7 @@ public class Login_View extends View<GameApp_Model> {
 		VBox passwordBox = new VBox();
 		passwordBox.setId("passwordBox");
 		
-		VBox languageBox = new VBox();
-		languageBox.setId("languageBox");
+		
 		
 		// labels and text fields
 		Label login = new Label(t.getString("login.login"));
@@ -73,6 +72,7 @@ public class Login_View extends View<GameApp_Model> {
 		ipLabel.setId("ipLabel");
 		TextField ipText = new TextField();
 		ipText.setId("ipText");
+		ipText.setPrefSize(220.0, 30.0);
 		Button connect = new Button(t.getString("login.connect"));
 		connect.setId("connect");	
 		HBox ipAndConnect = new HBox(ipText, connect);
@@ -83,37 +83,51 @@ public class Login_View extends View<GameApp_Model> {
 		name.setId("name");
 		TextField nameText = new TextField();
 		nameText.setId("nameText");
+		//nameText.setPrefSize(220.0, 30.0);
+		nameText.setMaxSize(220.0, 30.0);
 		nameBox.getChildren().addAll(name, nameText);
 		
 		Label password = new Label(t.getString("login.password"));
 		password.setId("password");
 		TextField passwordText = new TextField();
 		passwordText.setId("passwordText");
-		passwordBox.getChildren().addAll(password, passwordText);
+		passwordText.setPrefSize(220.0, 30.0);
+		Button loginBtn = new Button(t.getString("login.loginBtn"));
+		loginBtn.setId("loginBtn");
+		
+		HBox pwLoginBox = new HBox(passwordText, loginBtn);
+		pwLoginBox.setId("pwLoginBox");
+		
+		passwordBox.getChildren().addAll(password, pwLoginBox);
 		
 		// buttons
 		Button createNewPlayerBtn = new Button(t.getString("login.createNewPlayerBtn"));
 		createNewPlayerBtn.setId("createNewPlayerBtn");
 		Button quitBtn = new Button(t.getString("login.quitBtn"));
 		quitBtn.setId("quitBtn");
-		Button loginBtn = new Button(t.getString("login.loginBtn"));
-		loginBtn.setId("loginBtn");
 		
-		HBox buttonBox = new HBox(createNewPlayerBtn, quitBtn, loginBtn);
+		
+		HBox buttonBox = new HBox(createNewPlayerBtn, quitBtn);
 		buttonBox.setId("buttonBox");
+		
+		
+		// VBox for layout and spacing 
+		VBox ipNamePasswordBox = new VBox();
+		ipNamePasswordBox.setId("ipNamePasswordBox");
+		ipNamePasswordBox.getChildren().addAll(ipBox, nameBox, passwordBox);
 		
 		
 		// layout and size configurations 
 		root.setPrefSize(1280,720);
 		root.setAlignment(Pos.CENTER);
-		centerBox.getChildren().addAll(login, ipBox, nameBox, passwordBox, buttonBox);
+		centerBox.getChildren().addAll(login, ipNamePasswordBox, buttonBox);
 		// centerBox.getChildren().addAll(createNewPlayer, nameBox, passwordBox, buttonBox); // -> ohne Sprachauswahl 
 		root.getChildren().add(centerBox);
 		
 		
 		// https://panjutorials.de/tutorials/javafx-8-gui/lektionen/audio-player-in-javafx-2/?cache-flush=1510439948.4916 
 		//hier legen wir die Resource an, welche unbedingt im entsprechenden Ordner sein muss
-		final URL resource = getClass().getResource("willy.mp3");
+		final URL resource = getClass().getResource("Medieval_Camelot.mp3");
 		// wir legen das Mediaobjekt and und weisen unsere Resource zu
 		final Media media = new Media(resource.toString());
 		// wir legen den Mediaplayer an und weisen ihm das Media Objekt zu
@@ -124,7 +138,7 @@ public class Login_View extends View<GameApp_Model> {
 		
 		
 		Scene scene = new Scene(root);	
-		scene.getStylesheets().add(getClass().getResource("CreatePlayer.css").toExternalForm());
+		scene.getStylesheets().add(getClass().getResource("Login.css").toExternalForm());
 		this.stage.setScene(scene);
 		//stage.setFullScreen(true); // set Full Screen
 		
