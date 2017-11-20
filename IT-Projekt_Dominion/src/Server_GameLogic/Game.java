@@ -1,6 +1,5 @@
 package Server_GameLogic;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -123,14 +122,6 @@ public class Game {
 			this.woodcutterPile.push(new Woodcutter_Card());
 			this.workshopPile.push(new Workshop_Card());
 		}
-	}
-
-	// Sobald player 2 hinzugefügt = true
-	public boolean isReadyToStart() {
-		if (player2 != null)
-			return true;
-
-		return false;
 	}
 
 	// initialites the players to start a game

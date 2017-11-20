@@ -4,14 +4,11 @@ import java.net.Socket;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Random;
 import java.util.Stack;
 
 import Cards.Card;
 import Cards.CardName;
 import Cards.CardType;
-import Cards.Copper_Card;
-import Cards.Victory_Card;
 import Messages.Content;
 import Messages.Failure_Message;
 import Messages.Message;
@@ -48,8 +45,6 @@ public class Player {
 
 	protected Socket clientSocket;
 	private ServerThreadForClient serverThreadForClient;
-	
-	PlayerSuccess_Message psmsg;
 
 	/**
 	 * 
@@ -73,7 +68,7 @@ public class Player {
 
 		this.serverThreadForClient = serverThreadForClient;
 		
-		this.psmsg = new PlayerSuccess_Message();
+
 	}
 
 	/**
@@ -95,9 +90,6 @@ public class Player {
 		counter = 0;
 
 		this.isFinished = false;
-		
-		this.psmsg = new PlayerSuccess_Message();
-
 	}
 	
 	/**
@@ -125,17 +117,31 @@ public class Player {
 		playedCards.add(playedCard);
 		
 		if(game.checkGameEnding()){
-			if(this.winner == true && !game.getOpponent(this).winner){
-				this.psmsg.setSuccess(Content.Won);
-				game.getOpponent(this).psmsg.setSuccess(Content.Lost);
-			} else if(this.winner == true && game.getOpponent(this).winner){
-				this.psmsg.setSuccess(Content.Won);
-				game.getOpponent(this).psmsg.setSuccess(Content.Won);
+			game.checkWinner();
+			
+			if(this.winner == true){
+				PlayerSuccess_Message psmsg  = new PlayerSuccess_Message();
+				psmsg.setSuccess(Content.Won);
+				psmsg.setVictoryPoints(this.victoryPoints);
+				
+				PlayerSuccess_Message psmsgOpp = new PlayerSuccess_Message();
+				psmsgOpp.setSuccess(Content.Lost);
+				psmsgOpp.setVictoryPoints(this.victoryPoints);
+				game.sendToOpponent(this, psmsgOpp);
+				
+				return psmsg;
 			} else{
-				this.psmsg.setSuccess(Content.Lost);
-				game.getOpponent(this).psmsg.setSuccess(Content.Won);
+				PlayerSuccess_Message psmsg  = new PlayerSuccess_Message();
+				psmsg.setSuccess(Content.Lost);
+				psmsg.setVictoryPoints(this.victoryPoints);
+				
+				PlayerSuccess_Message psmsgOpp = new PlayerSuccess_Message();
+				psmsgOpp.setSuccess(Content.Won);
+				psmsgOpp.setVictoryPoints(this.victoryPoints);
+				game.sendToOpponent(this, psmsgOpp);
+				
+				return psmsg;
 			}
-			return this.psmsg;
 		}
 		
 		if (this.getActions() > 0 && this.actualPhase == Phase.Action && this.equals(game.getCurrentPlayer())) {
@@ -226,17 +232,31 @@ public class Player {
 		}
 		
 		if(game.checkGameEnding()){
-			if(this.winner == true && !game.getOpponent(this).winner){
-				this.psmsg.setSuccess(Content.Won);
-				game.getOpponent(this).psmsg.setSuccess(Content.Lost);
-			} else if(this.winner == true && game.getOpponent(this).winner){
-				this.psmsg.setSuccess(Content.Won);
-				game.getOpponent(this).psmsg.setSuccess(Content.Won);
+			game.checkWinner();
+			
+			if(this.winner == true){
+				PlayerSuccess_Message psmsg  = new PlayerSuccess_Message();
+				psmsg.setSuccess(Content.Won);
+				psmsg.setVictoryPoints(this.victoryPoints);
+				
+				PlayerSuccess_Message psmsgOpp = new PlayerSuccess_Message();
+				psmsgOpp.setSuccess(Content.Lost);
+				psmsgOpp.setVictoryPoints(this.victoryPoints);
+				game.sendToOpponent(this, psmsgOpp);
+				
+				return psmsg;
 			} else{
-				this.psmsg.setSuccess(Content.Lost);
-				game.getOpponent(this).psmsg.setSuccess(Content.Won);
+				PlayerSuccess_Message psmsg  = new PlayerSuccess_Message();
+				psmsg.setSuccess(Content.Lost);
+				psmsg.setVictoryPoints(this.victoryPoints);
+				
+				PlayerSuccess_Message psmsgOpp = new PlayerSuccess_Message();
+				psmsgOpp.setSuccess(Content.Won);
+				psmsgOpp.setVictoryPoints(this.victoryPoints);
+				game.sendToOpponent(this, psmsgOpp);
+				
+				return psmsg;
 			}
-			return this.psmsg;
 		}
 				
 		/**
