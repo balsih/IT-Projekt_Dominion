@@ -4,9 +4,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 import Cards.Card;
 import Cards.CardName;
@@ -23,31 +25,42 @@ public class TestMessages {
 
 	public static void main(String[] args) {
 		
-		HashMap<CardName, Integer> priorityList = new HashMap<CardName, Integer>();
-		// priorityList.put(CardName.Cellar, 10); do not use but implement first if enough time
-		priorityList.put(CardName.Copper, 20);
-		priorityList.put(CardName.Duchy, 50);
-		priorityList.put(CardName.Estate, 10);
-		priorityList.put(CardName.Gold, 70);
-		priorityList.put(CardName.Market, 68);
-		// priorityList.put(CardName.Mine, 10); do not use
-		priorityList.put(CardName.Province, 90);
-		priorityList.put(CardName.Remodel, 66);
-		priorityList.put(CardName.Silver, 40);
-		priorityList.put(CardName.Smithy, 67);
-		priorityList.put(CardName.Village, 69);
-		// priorityList.put(CardName.Woodcutter, 10); do not use
-		priorityList.put(CardName.Workshop, 10); // do not use
+//		HashMap<CardName, Integer> priorityList = new HashMap<CardName, Integer>();
+//		// priorityList.put(CardName.Cellar, 10); do not use but implement first if enough time
+//		priorityList.put(CardName.Copper, 20);
+//		priorityList.put(CardName.Duchy, 50);
+//		priorityList.put(CardName.Estate, 10);
+//		priorityList.put(CardName.Gold, 70);
+//		priorityList.put(CardName.Market, 68);
+//		// priorityList.put(CardName.Mine, 10); do not use
+//		priorityList.put(CardName.Province, 90);
+//		priorityList.put(CardName.Remodel, 66);
+//		priorityList.put(CardName.Silver, 40);
+//		priorityList.put(CardName.Smithy, 67);
+//		priorityList.put(CardName.Village, 69);
+//		// priorityList.put(CardName.Woodcutter, 10); do not use
+//		priorityList.put(CardName.Workshop, 10); // do not use
+//		
+//		//@author Lukas, get the correct order for a prioList
+//		List<CardName> list = priorityList.keySet()
+//		.stream()
+//		.sorted((c1, c2) -> Integer.compare(priorityList.get(c2), priorityList.get(c1)))
+//		.collect(Collectors.toList());
+//		
+//		for(CardName name: list){
+//		System.out.println(name.toString());
+//	}
+//		
+//		//@author Lukas, get the correct order for a prioList
+//		LinkedList<CardName> currentPrioList = new LinkedList<CardName>();
+//		currentPrioList.addAll(priorityList.keySet());
+//		currentPrioList.sort((c1, c2) -> Integer.compare(priorityList.get(c2), priorityList.get(c1)));
+//		
+//		for(CardName name: currentPrioList){
+//			System.out.println(name.toString());
+//		}
 		
-		//@author Lukas, get the correct order for a prioList
-		LinkedList<CardName> currentPrioList = new LinkedList<CardName>();
-		Set<CardName> cardNames = priorityList.keySet();
-		currentPrioList.addAll(cardNames);
-		currentPrioList.sort((c1, c2) -> Integer.compare(priorityList.get(c2), priorityList.get(c1)));
-		
-		for(CardName name: currentPrioList){
-			System.out.println(name.toString());
-		}
+		testCreateGame_Message();
 		
 	}
 
@@ -126,6 +139,8 @@ public class TestMessages {
 		cgmsg.setDeckPile(deckPile);
 		cgmsg.setOpponent(opponent);
 		cgmsg.setHandCards(handCards);
+		cgmsg.setHandNumber(5);
+		cgmsg.setDeckNumber(5);
 		
 		cgmsg.toString();
 		System.out.println(cgmsg);
