@@ -9,8 +9,13 @@
 #centerBox {
 	-fx-border-width: 10 2 3 4;
 	-fx-padding: 25px;
-	-fx-spacing: 20px;
+	-fx-spacing: 40px;
 	-fx-background-color: rgba(0, 0, 0, 0.5);
+}
+
+#namePasswordLanguageBox {
+	-fx-padding: 0px;
+	-fx-spacing: 10px;
 }
 
 #nameBox {

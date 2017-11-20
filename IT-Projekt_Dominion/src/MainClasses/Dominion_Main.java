@@ -47,24 +47,25 @@ public class Dominion_Main extends Application {
 		Splash_Controller splashController = new Splash_Controller(this, splashModel, splashView);
 		splashView.start();
 		splashModel.initialize();
+		//this.startLogin();
 		this.startCreatePlayer(); // zur Kontrolle nicht in Reihenfolge gestartet 
 		// noch anpassen, im Moment startet create new Player zeitgleich mit Splash
 		
-		//this.startLogin();
+		
 		
 	}
 	
 	
-//	public void startLogin(){
-//		this.model = new GameApp_Model(this);
-//		Login_View view = new Login_View(new Stage(), this.model);
-//		Login_Controller controller = new Login_Controller(this, this.model, view);
-//		view.start();
-//	
-//		//Thread.sleep(3000);
-//
-//		//view.stop();
-//	}
+	public void startLogin(){
+		this.model = new GameApp_Model(this);
+		Login_View view = new Login_View(new Stage(), this.model);
+		Login_Controller controller = new Login_Controller(this, this.model, view);
+		view.start();
+	
+		//Thread.sleep(3000);
+
+		//view.stop();
+	}
 	
 	
 	public void startCreatePlayer(){

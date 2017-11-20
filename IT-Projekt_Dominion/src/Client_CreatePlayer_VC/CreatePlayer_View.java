@@ -46,7 +46,7 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 	protected Scene create_GUI(){
 		
 		sl = ServiceLocator.getServiceLocator();
-		sl.setTranslator(new Translator("en"));
+		//sl.setTranslator(new Translator("en"));
 		Translator t = sl.getTranslator();
 		
 		// layouts
@@ -96,10 +96,15 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		HBox buttonBox = new HBox(save, back);
 		buttonBox.setId("buttonBox");
 		
+		// VBox for layout and spacing 
+		VBox namePasswordLanguageBox = new VBox();
+		namePasswordLanguageBox.setId("namePasswordLanguageBox");
+		namePasswordLanguageBox.getChildren().addAll(nameBox, passwordBox, languageBox);
+		
 		// layout and size configurations 
 		root.setPrefSize(1280,720);
 		root.setAlignment(Pos.CENTER);
-		centerBox.getChildren().addAll(createNewPlayer, nameBox, passwordBox, languageBox, buttonBox);
+		centerBox.getChildren().addAll(createNewPlayer, namePasswordLanguageBox, buttonBox);
 		// centerBox.getChildren().addAll(createNewPlayer, nameBox, passwordBox, buttonBox); // -> ohne Sprachauswahl 
 		root.getChildren().add(centerBox);
 		
@@ -119,7 +124,7 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		Scene scene = new Scene(root);	
 		scene.getStylesheets().add(getClass().getResource("CreatePlayer.css").toExternalForm());
 		this.stage.setScene(scene);
-		stage.setFullScreen(true); // set Full Screen
+		//stage.setFullScreen(true); // set Full Screen
 		
 		return scene;
 	}
