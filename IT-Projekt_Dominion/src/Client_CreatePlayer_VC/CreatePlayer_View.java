@@ -46,7 +46,7 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 	protected Scene create_GUI(){
 		
 		sl = ServiceLocator.getServiceLocator();
-		//sl.setTranslator(new Translator("en"));
+		sl.setTranslator(new Translator("en"));
 		Translator t = sl.getTranslator();
 		
 		// layouts
@@ -119,7 +119,7 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		Scene scene = new Scene(root);	
 		scene.getStylesheets().add(getClass().getResource("CreatePlayer.css").toExternalForm());
 		this.stage.setScene(scene);
-		//stage.setFullScreen(true); // set Full Screen
+		stage.setFullScreen(true); // set Full Screen
 		
 		return scene;
 	}
