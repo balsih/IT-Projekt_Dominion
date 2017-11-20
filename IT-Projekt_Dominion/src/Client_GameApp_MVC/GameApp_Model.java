@@ -26,6 +26,7 @@ import Messages.PlayerSuccess_Message;
 import Messages.SkipPhase_Message;
 import Messages.UpdateGame_Message;
 import Server_GameLogic.GameMode;
+import Server_GameLogic.Phase;
 
 /**
  * @author Adrian
@@ -36,27 +37,45 @@ public class GameApp_Model extends Model {
 	
 	private static final String NO_CONNECTION = "No connection to Server";
 
-	protected int actions;
-	protected int buys;
 	protected String clientName;
-	private String clientNameRegex;
-	protected String currentPlayer;
-	private LinkedList<Card> deck;
-	private LinkedList<Card> discardPile;
-	private HashMap<CardName, Integer> buyCards;
-	protected String gameMode;
-	protected LinkedList<Card> handCards;
-	protected String highScore;
-	private String ipAddress;
-	private String ipRegex;
 	protected String opponent;
+	protected String currentPlayer;
+	
+	protected int yourActions;
+	protected int opponentActions;
+	protected int yourBuys;
+	protected int opponentBuys;
+	protected int yourCoins;
+	protected int opponentCoins;
+	
+	protected LinkedList<Card> yourHandCards;
 	protected int opponentHandCards;
-	private String passwordRegex;
-	protected LinkedList<Card> playedCards;
-	private int port;
-	protected boolean won;
+	protected LinkedList<Card> yourDeck;
+	protected int opponentDeck;
+	protected LinkedList<Card> yourDiscardPile;
+	protected int opponentDiscardPile;
+	protected LinkedList<Card> yourPlayedCards;
+	protected LinkedList<Card> opponentPlayedCards;
+	protected Card yourBuyedCard;
+	protected Card opponentBuyedCard;
+	protected Card yourDiscardPileTopCard;
+	protected Card opponentDiscardPileTopCard;
+	
+	protected Content success;
+	protected int victoryPoints;
+	
+	protected String gameMode;
+	protected HashMap<CardName, Integer> buyCards;
+	protected Phase currentPhase;
+	
 	private boolean listenToServer;
 	private Dominion_Main main;
+	private String clientNameRegex;
+	private String highScore;
+	private String ipAddress;
+	private String ipRegex;
+	private String passwordRegex;
+	private int port;
 
 
 	public GameApp_Model(Dominion_Main main){
@@ -99,7 +118,7 @@ public class GameApp_Model extends Model {
 	 * @param ipAdress
 	 * @param port
 	 */
-	public void init(String ipAdress, int port){
+	public void init(String ipAddress, int port){
 	    this.ipAddress = ipAddress;
 	    this.port = port;
 	}
@@ -125,19 +144,21 @@ public class GameApp_Model extends Model {
 	 * 
 	 * @param card
 	 */
-	public void sendBuyCard(Card card){
-		Socket socket = connect();
-		if(socket != null){
-			BuyCard_Message bcmsg = new BuyCard_Message();
-			bcmsg.setCard(card);
-			try{
-				bcmsg.send(socket);
-				Message msgIn = Message.receive(socket);
-			}catch(Exception e){
-				System.out.println(e.toString());
-			}
-			try { if (socket != null) socket.close(); } catch (IOException e) {}
+	public boolean sendBuyCard(Card card){
+		BuyCard_Message bcmsg = new BuyCard_Message();
+		bcmsg.setCard(card);
+		boolean update = false;
+		Message msgIn = this.processMessage(bcmsg);
+		if(msgIn.getType().equals(MessageType.UpdateGame)){
+			this.processUpdateGame(msgIn);
+			update = true;
+		}else if(msgIn.getType().equals(MessageType.PlayerSuccess)){
+			this.processPlayerSuccess(msgIn);
+			update = true;
+		}else if(msgIn.getType().equals(MessageType.Failure)){
+			//nothing toDo here
 		}
+		return update;
 	}
 
 	/**
@@ -145,25 +166,18 @@ public class GameApp_Model extends Model {
 	 * 
 	 * @param chat
 	 */
-	public void sendChat(String chat){
-		Socket socket = connect();
-		if(socket != null){
-			Chat_Message cmsg = new Chat_Message();
-			cmsg.setChat(chat);
-			try{
-				cmsg.send(socket);
-				Message msgIn = Message.receive(socket);
-			}catch(Exception e){
-				System.out.println(e.toString());
-			}
-			try { if (socket != null) socket.close(); } catch (IOException e) {}
+	public boolean sendChat(String chat){
+		Chat_Message cmsg = new Chat_Message();
+		cmsg.setChat(chat);
+		boolean update = false;
+		Message msgIn = this.processMessage(cmsg);
+		if(msgIn.getType().equals(MessageType.UpdateGame)){
+			this.processUpdateGame(msgIn);
+			update = true;
 		}
+		return update;
 	}
 	
-	private <T> Message processMessage(T message){
-		return null;
-		
-	}
 
 	/**
 	 * @author Lukas
@@ -176,24 +190,15 @@ public class GameApp_Model extends Model {
 	public String sendCreateNewPlayer(String clientName, String password){
 		String result = NO_CONNECTION;
 		this.clientName = clientName;
-		Socket socket = connect();
-		if(socket != null){
-			CreateNewPlayer_Message cnpmsg = new CreateNewPlayer_Message();
-			String encryptedPassword = this.encryptPassword(password);
-			cnpmsg.setPassword(encryptedPassword);
-			try{
-				cnpmsg.send(socket);
-				Message msgIn = Message.receive(socket);
-				if(msgIn.getType().equals(MessageType.Commit)){
-					this.main.startMainMenu();
-				}else if(msgIn.getType().equals(MessageType.Failure)){
-					Failure_Message fmsg = (Failure_Message) msgIn;
-					result = fmsg.getNotification();
-				}
-			}catch(Exception e){
-				System.out.println(e.toString());
-			}
-			try { if (socket != null) socket.close(); } catch (IOException e) {}
+		CreateNewPlayer_Message cnpmsg = new CreateNewPlayer_Message();
+		String encryptedPassword = this.encryptPassword(password);
+		cnpmsg.setPassword(encryptedPassword);
+		Message msgIn = this.processMessage(cnpmsg);
+		if(msgIn.getType().equals(MessageType.Commit)){
+			this.main.startMainMenu();
+		}else if(msgIn.getType().equals(MessageType.Failure)){
+			Failure_Message fmsg = (Failure_Message) msgIn;
+			result = fmsg.getNotification();
 		}
 		return result;
 	}
@@ -208,91 +213,18 @@ public class GameApp_Model extends Model {
 	 */
 	public String sendGameMode(GameMode mode){
 		String result = NO_CONNECTION;
-		Socket socket = connect();
-		if(socket != null){
-			GameMode_Message gmmsg = new GameMode_Message();
-			gmmsg.setClient(this.clientName);//set the clientName and mode(SinglePlayer or MultiPlayer) to XML
-			gmmsg.setMode(mode);
-			this.gameMode = mode.toString();
-			try{
-				gmmsg.send(socket);
-				Message msgIn = Message.receive(socket);
-				this.listenToServer = true;
-				if(msgIn.getType().equals(MessageType.Commit)){
-					Commit_Message cmsg = (Commit_Message) msgIn;//waiting for other Player (only MultiPlayer)
-					this.main.startGameApp();
-				}else if(msgIn.getType().equals(MessageType.Failure)){
-					result = mode.toString()+" is no valid mode";//wrong mode, should not be possible
-				}
-			}catch(Exception e){
-				System.out.println(e.toString());
-			}
-			try { if (socket != null) socket.close(); } catch (IOException e) {}
+		GameMode_Message gmmsg = new GameMode_Message();
+		gmmsg.setClient(this.clientName);//set the clientName and mode(SinglePlayer or MultiPlayer) to XML
+		gmmsg.setMode(mode);
+		this.gameMode = mode.toString();
+		Message msgIn = this.processMessage(gmmsg);
+		if(msgIn.getType().equals(MessageType.Commit)){
+			this.listenToServer = true;
+			this.main.startGameApp();
 		}
 		return result;
 	}
-
-	/**
-	 * @author Lukas
-	 * Create a new Game
-	 * 
-	 * @param msgIn
-	 */
-	private void processCreateGame(Message msgIn) {
-		CreateGame_Message cgmsg = (CreateGame_Message) msgIn;
-		this.handCards = cgmsg.getHandCards();
-		for(Card card: cgmsg.getDeckPile())
-			this.deck.add(card);
-		this.buyCards = cgmsg.getBuyCards();
-		this.opponent = cgmsg.getOpponent();
-		//this.view.start();
-	}
 	
-	/**
-	 * @author Adrian
-	 * Updates the view after a message has been received.
-	 * 
-	 * @param msgIn
-	 */
-	private void processUpdateGame(Message msgIn) {
-		UpdateGame_Message ugmsg = (UpdateGame_Message) msgIn;
-		if(ugmsg.getLog() != null)
-			//workToDo
-		if(ugmsg.getChat() != null)
-			// Adds the updated chat message to the chat area.
-			btnSendChatArea.setOnAction(event -> {
-				String existingMessages = txtaChatArea.getText();
-				String newMessage = txtfChatArea.getText();
-				if(existingMessages.length() == 0)
-					txtaChatArea.setText(newMessage);
-				else 
-					txtaChatArea.setText(existingMessages+"\n"+newMessage);
-				txtfChatArea.setText("");
-			});
-		if(ugmsg.getActions() != null)
-			//workToDo
-		if(ugmsg.getBuys() != null)
-			//workToDo
-		if(ugmsg.getCoins() != null)
-			//workToDo
-		if(ugmsg.getCurrentPlayer() != null)
-			//workToDo
-		if(ugmsg.getCurrentPhase() != null)
-			//workToDo
-		if(ugmsg.getBuyedCard() != null)
-			//workToDo
-		if(ugmsg.getDeckPileCardNumber() != null)
-			//workToDo
-		if(ugmsg.getDiscardPileCardNumber() != null)
-			//workToDo
-		if(ugmsg.getDiscardPileTopCard() != null)
-			//workToDo
-		if(ugmsg.getNewHandCards() != null)
-			//workToDo
-		if(ugmsg.getPlayedCard() != null)
-			//workToDo
-	}
-
 	/**
 	 * @author Lukas
 	 * The client sends his encrypted password to server and will get to the MainMenu if the password is appropriate to clientName
@@ -302,27 +234,18 @@ public class GameApp_Model extends Model {
 	 */
 	public String sendLogin(String clientName, String password){
         String result = NO_CONNECTION;
+		Login_Message lmsg = new Login_Message();
+		lmsg.setClient(this.clientName);//set the clientName and encrypted password to XML
+		String encryptedPassword = this.encryptPassword(password);
+		lmsg.setPassword(encryptedPassword);
         this.clientName = clientName;
-        Socket socket = connect();
-        if (socket != null) {
-    		Login_Message lmsg = new Login_Message();
-    		lmsg.setClient(this.clientName);//set the clientName and encrypted password to XML
-    		String encryptedPassword = this.encryptPassword(password);
-    		lmsg.setPassword(encryptedPassword);
-    		try {
-    			lmsg.send(socket);
-    			Message msgIn = Message.receive(socket);
-    			if(msgIn.getType().equals(MessageType.Commit)){
-    				this.main.startMainMenu();//login succeeded
-    			}else if(msgIn.getType().equals(MessageType.Failure)){
-    				Failure_Message fmsg = (Failure_Message) msgIn;//login failed, no password with clientName available
-    				return fmsg.getNotification();
-    			}
-    		}catch(Exception e) {
-    			System.out.println(e.toString());
-    		}
-            try { if (socket != null) socket.close(); } catch (IOException e) {}
-        }
+        Message msgIn = this.processMessage(lmsg);
+		if(msgIn.getType().equals(MessageType.Commit)){
+			this.main.startMainMenu();//login succeeded
+		}else if(msgIn.getType().equals(MessageType.Failure)){
+			Failure_Message fmsg = (Failure_Message) msgIn;//login failed, no password with clientName available
+			result = fmsg.getNotification();
+		}
         return result;
 	}
 
@@ -333,48 +256,141 @@ public class GameApp_Model extends Model {
 	 * @param card, chosen Card
 	 * @param index, index of the chosen Card
 	 */
-	public void sendPlayCard(Card card, Integer index){
-		Socket socket = connect();
-		if(socket != null){
-			PlayCard_Message pcmsg = new PlayCard_Message();
-			pcmsg.setCard(card);
-			pcmsg.setIndex(index);
-			try{
-				pcmsg.send(socket);
-				Message msgIn = Message.receive(socket);
-				if(msgIn.getType().equals(MessageType.UpdateGame)){
-					this.processUpdateGame(msgIn);
-				}else if(msgIn.getType().equals(MessageType.Failure)){
-					//nothing toDo here
-				}
-			}catch(Exception e){
-				System.out.println(e.toString());
-			}
-			try { if (socket != null) socket.close(); } catch (IOException e) {}
+	public boolean sendPlayCard(Card card){
+		PlayCard_Message pcmsg = new PlayCard_Message();
+		pcmsg.setCard(card);
+		Integer index = null;
+		for(int i = 0; i < this.yourHandCards.size(); i++){
+			if(this.yourHandCards.get(i) == card)
+				index = i;
 		}
+		pcmsg.setIndex(index);
+		boolean update = false;
+		Message msgIn = this.processMessage(pcmsg);
+		if(msgIn.getType().equals(MessageType.UpdateGame)){
+			this.processUpdateGame(msgIn);
+			update = true;
+		}else if(msgIn.getType().equals(MessageType.Failure)){
+			//nothing toDo here
+		}
+		return update;
 	}
 	
 	/**
 	 * @author Lukas
 	 * The client wants to skip the currentPhase. Success depends on if it is his turn or not
 	 */
-	public void sendSkipPhase(){
+	public boolean sendSkipPhase(){
+		boolean update = false;
+		Message msgIn = this.processMessage(new SkipPhase_Message());
+		if(msgIn.getType().equals(MessageType.UpdateGame)){
+			this.processUpdateGame(msgIn);
+			update = true;
+		}else if(msgIn.getType().equals(MessageType.Failure)){
+			//nothing toDo here
+		}
+		return update;
+	}
+
+	/**
+	 * @author Lukas
+	 * Create a new Game
+	 * 
+	 * @param msgIn
+	 */
+	private void processCreateGame(Message msgIn) {
+		CreateGame_Message cgmsg = (CreateGame_Message) msgIn;
+		this.yourHandCards = cgmsg.getHandCards();
+		for(Card card: cgmsg.getDeckPile())
+			this.yourDeck.add(card);
+		this.buyCards = cgmsg.getBuyCards();
+		this.opponent = cgmsg.getOpponent();
+	}
+	
+	/**
+	 * @author Lukas
+	 * 
+	 * @param msgIn
+	 */
+	private void processPlayerSuccess(Message msgIn) {
+		PlayerSuccess_Message psmsg = (PlayerSuccess_Message) msgIn;
+		this.success = psmsg.getSuccess();
+		this.victoryPoints = psmsg.getVictoryPoints();
+	}
+
+	
+	/**
+	 * @author Adrian
+	 * Updates the view after a message has been received.
+	 * 
+	 * @param msgIn
+	 */
+	
+	private void processUpdateGame(Message msgIn) {	
+		UpdateGame_Message ugmsg = (UpdateGame_Message) msgIn;
+
+		if(ugmsg.getCurrentPlayer() != null)//If currentPlayer is set, the currentPlayer's turn ends
+			this.currentPlayer = ugmsg.getCurrentPlayer();
+		
+		if(ugmsg.getActions() != null && ugmsg.getCurrentPlayer() == null){//Has to be calculated during the player's turn. Always currentPlayer
+			this.yourActions += ugmsg.getActions();
+		}else{
+			this.yourActions = ugmsg.getActions();
+		}
+			
+		if(ugmsg.getBuys() != null && ugmsg.getCurrentPlayer() == null){//Has to be calculated during the player's turn. Always currentPlayer
+			this.yourBuys += ugmsg.getBuys();
+		}else{
+			this.yourBuys = ugmsg.getBuys();
+		}
+			
+		if(ugmsg.getCoins() != null && ugmsg.getCurrentPlayer() == null){//Has to be calculated during the player's turn. Always currentPlayer
+			this.yourCoins += ugmsg.getCoins();
+		}else{
+			this.yourCoins = ugmsg.getCoins();
+		}
+			
+		if(ugmsg.getCurrentPhase() != null)//If Phase changed. Always currentPlayer
+			this.currentPhase = ugmsg.getCurrentPhase();
+			
+		if(ugmsg.getBuyedCard() != null)//If a buy was successful. Always currentPlayer
+			this.yourBuyedCard = ugmsg.getBuyedCard();
+		
+		if(ugmsg.getDeckPileCardNumber() != null)//Always currentPlayer
+			this.deckPileCardNumber = ugmsg.getDeckPileCardNumber();
+			
+		if(ugmsg.getDiscardPileCardNumber() != null)//Always currentPlayer
+			this.discardPileCardNumber = ugmsg.getDiscardPileCardNumber();
+			
+		if(ugmsg.getDiscardPileTopCard() != null)//Always currentPlayer. Only necessary to know opponents TopCard
+			this.yourDiscardPileTopCard = ugmsg.getDiscardPileTopCard();
+			
+		if(ugmsg.getNewHandCards() != null)//The new handCards just drawn. Always currentPlayer
+			System.out.println();
+			
+		if(ugmsg.getPlayedCard() != null)
+			System.out.println();
+	}
+
+	
+	/**
+	 * 
+	 * @param message
+	 * @return
+	 */
+	private Message processMessage(Message message){
 		Socket socket = connect();
+		Message msgIn = null;
 		if(socket != null){
-			SkipPhase_Message spmsg = new SkipPhase_Message();
 			try{
-				spmsg.send(socket);
-				Message msgIn = Message.receive(socket);
-				if(msgIn.getType().equals(MessageType.UpdateGame)){
-					this.processUpdateGame(msgIn);
-				}else if(msgIn.getType().equals(MessageType.Failure)){
-					//nothing toDo here
-				}
+				message.send(socket);
+				msgIn = Message.receive(socket);
 			}catch(Exception e){
 				System.out.println(e.toString());
 			}
 			try { if (socket != null) socket.close(); } catch (IOException e) {}
 		}
+		return msgIn;
 	}
 	
 	/**

@@ -32,7 +32,7 @@ public class BotOld extends Player {
 	 */
 	public void execute() {
 		try {
-			this.actualPhase = "play";
+//			this.actualPhase = "play";
 			for (int i = 0; i < handCards.size(); i++) {
 				if (handCards.get(i).getType().equals(CardType.Action)) {
 					actioncardlist.add(handCards.get(i).getCardName().toString());

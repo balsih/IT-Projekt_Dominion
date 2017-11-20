@@ -14,8 +14,6 @@ public abstract class Victory_Card extends Card {
 
 	protected Victory_Card(){
 	}
-	
-	abstract int getVictoryPoints();
 
 
 }//end Victory_Card

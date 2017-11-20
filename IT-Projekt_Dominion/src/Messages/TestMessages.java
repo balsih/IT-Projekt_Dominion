@@ -1,7 +1,10 @@
 package Messages;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
 
@@ -14,11 +17,37 @@ import Cards.Smithy_Card;
 import Cards.Village_Card;
 import Cards.Woodcutter_Card;
 import Client_Services.ServiceLocator;
+import Server_GameLogic.Phase;
 
 public class TestMessages {
 
 	public static void main(String[] args) {
-		testUpdateGame_Message();
+		
+		HashMap<CardName, Integer> priorityList = new HashMap<CardName, Integer>();
+		// priorityList.put(CardName.Cellar, 10); do not use but implement first if enough time
+		priorityList.put(CardName.Copper, 20);
+		priorityList.put(CardName.Duchy, 50);
+		priorityList.put(CardName.Estate, 10);
+		priorityList.put(CardName.Gold, 70);
+		priorityList.put(CardName.Market, 68);
+		// priorityList.put(CardName.Mine, 10); do not use
+		priorityList.put(CardName.Province, 90);
+		priorityList.put(CardName.Remodel, 66);
+		priorityList.put(CardName.Silver, 40);
+		priorityList.put(CardName.Smithy, 67);
+		priorityList.put(CardName.Village, 69);
+		// priorityList.put(CardName.Woodcutter, 10); do not use
+		priorityList.put(CardName.Workshop, 10); // do not use
+		
+		//@author Lukas, get the correct order for a prioList
+		LinkedList<CardName> currentPrioList = new LinkedList<CardName>();
+		Set<CardName> cardNames = priorityList.keySet();
+		currentPrioList.addAll(cardNames);
+		currentPrioList.sort((c1, c2) -> Integer.compare(priorityList.get(c2), priorityList.get(c1)));
+		
+		for(CardName name: currentPrioList){
+			System.out.println(name.toString());
+		}
 		
 	}
 
@@ -35,7 +64,7 @@ public class TestMessages {
 		
 		Integer buys = 3;
 		
-		String currentPhase = "actionPhase";
+		Phase currentPhase = Phase.Action;
 		
 		Integer discardPileCardNumber = 13;
 		

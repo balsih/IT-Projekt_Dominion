@@ -25,6 +25,8 @@ import javafx.stage.Stage;
 public class Dominion_Main extends Application {
 	Splash_View splashView;
 	ServiceLocator sl;
+	
+	GameApp_Model model;
 
 	public Dominion_Main(){
 
@@ -45,12 +47,27 @@ public class Dominion_Main extends Application {
 		Splash_Controller splashController = new Splash_Controller(this, splashModel, splashView);
 		splashView.start();
 		splashModel.initialize();
-		this.startCreateNewPlayer(); // zur Kontrolle nicht in Reihenfolge gestartet 
+		//this.startCreatePlayer(); // zur Kontrolle nicht in Reihenfolge gestartet 
 		// noch anpassen, im Moment startet create new Player zeitgleich mit Splash
+		
+		this.startLogin();
+		
 	}
+	
+	
+	public void startLogin(){
+		this.model = new GameApp_Model(this);
+		Login_View view = new Login_View(new Stage(), this.model);
+		Login_Controller controller = new Login_Controller(this, this.model, view);
+		view.start();
+	
+		//Thread.sleep(3000);
 
-	public void startCreateNewPlayer(){
-		GameApp_Model model = new GameApp_Model(null);
+		//view.stop();
+	}
+	
+	
+	public void startCreatePlayer(){
 		CreatePlayer_View view = new CreatePlayer_View(new Stage(), model);
 		CreatePlayer_Controller controller = new CreatePlayer_Controller(this, model, view);
 		view.start();
@@ -59,6 +76,7 @@ public class Dominion_Main extends Application {
 
 		//view.stop();
 	}
+	
 
 	public void startGameApp(){
 		// Create game mvc

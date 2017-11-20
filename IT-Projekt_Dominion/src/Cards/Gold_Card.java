@@ -39,4 +39,5 @@ public class Gold_Card extends Treasure_Card {
 		return ugmsg;
 	}
 	
+	
 }//end Gold_Card

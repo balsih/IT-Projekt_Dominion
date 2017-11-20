@@ -37,7 +37,7 @@ public class Game {
 	private Stack<Gold_Card> goldPile;
 	private Stack<Market_Card> marketPile;
 	private Stack<Mine_Card> minePile;
-	private Stack<Province_Card> provincePile;
+	private static Stack<Province_Card> provincePile;
 	private Stack<Remodel_Card> remodelPile;
 	private Stack<Silver_Card> silverPile;
 	private Stack<Smithy_Card> smithyPile;
@@ -92,12 +92,12 @@ public class Game {
 	private void buildVictoryCardStacks() {
 		this.estatePile = new Stack<Estate_Card>();
 		this.duchyPile = new Stack<Duchy_Card>();
-		this.provincePile = new Stack<Province_Card>();
+		Game.provincePile = new Stack<Province_Card>();
 
 		for (int i = 0; i < NUM_OF_VICTORYCARDS; i++) {
 			this.estatePile.push(new Estate_Card());
 			this.duchyPile.push(new Duchy_Card());
-			this.provincePile.push(new Province_Card());
+			Game.provincePile.push(new Province_Card());
 		}
 	}
 
@@ -122,6 +122,17 @@ public class Game {
 			this.woodcutterPile.push(new Woodcutter_Card());
 			this.workshopPile.push(new Workshop_Card());
 		}
+<<<<<<< HEAD
+=======
+	}
+
+	// Sobald player 2 hinzugef�gt = true
+	public boolean isReadyToStart() {
+		if (player2 != null)
+			return true;
+
+		return false;
+>>>>>>> branch 'master' of https://github.com/Eagleman1997/IT-Projekt_Dominion.git
 	}
 
 	// initialites the players to start a game
@@ -246,7 +257,7 @@ public class Game {
 	// cards, which the player could buy
 	public HashMap<CardName, Integer> getBuyCards() {
 		for (int i = 0; i < NUM_OF_VICTORYCARDS; i++) {
-			this.buyCards.put(this.provincePile.firstElement().getCardName(), this.provincePile.size());
+			this.buyCards.put(Game.provincePile.firstElement().getCardName(), Game.provincePile.size());
 			this.buyCards.put(this.duchyPile.firstElement().getCardName(), this.duchyPile.size());
 			this.buyCards.put(this.estatePile.firstElement().getCardName(), this.estatePile.size());
 		}
@@ -308,7 +319,7 @@ public class Game {
 		return duchyPile;
 	}
 
-	public Stack<Province_Card> getProvincePile() {
+	public static Stack<Province_Card> getProvincePile() {
 		return provincePile;
 	}
 

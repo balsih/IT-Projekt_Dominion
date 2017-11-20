@@ -320,7 +320,6 @@ public class ServerThreadForClient implements Runnable {
 			return this.waitingMessages.poll();
 		}else{
 			Commit_Message cmsg = new Commit_Message();
-			cmsg.setMove(Content.AskForChanges);
 			return cmsg;
 		}
 	}
