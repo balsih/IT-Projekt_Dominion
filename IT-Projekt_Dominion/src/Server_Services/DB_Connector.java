@@ -141,9 +141,8 @@ public class DB_Connector {
 	 * 
 	 * @return the 5 highscores
 	 */
-	//FUNKTIONIERT NOCH NICHT!!!
 	public String getHighScore() {
-		String selectHighScore = "Select max(Score) from Player_Scoring where Username in (Select * order by Score desc limit 5)";
+		String selectHighScore = "Select Score from Player_Scoring order by Score desc limit 0,5";
 		String highScore = "";
 
 		try {
@@ -304,8 +303,11 @@ public class DB_Connector {
 	}
 
 
+	// TEST
 	public static void main(String[] args) {
 		DB_Connector connector = new DB_Connector();
+		
+		connector.selectPlayer_Scoring();
 
 		System.out.println(connector.getHighScore());
 

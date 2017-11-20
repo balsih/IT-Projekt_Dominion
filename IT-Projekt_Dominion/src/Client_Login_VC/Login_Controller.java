@@ -87,6 +87,5 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 			}
 		});
 		
-		
 	}
 }//end Login_Controller

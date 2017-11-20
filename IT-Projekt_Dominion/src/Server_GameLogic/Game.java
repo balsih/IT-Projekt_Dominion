@@ -47,7 +47,7 @@ public class Game {
 	private HashMap<CardName, Integer> buyCards;
 
 	private final int NUM_OF_TREASURECARDS = 30;
-	private final int NUM_OF_VICTORYCARDS = 30;
+	private final int NUM_OF_VICTORYCARDS = 20;
 	private final int NUM_OF_ACTIONCARDS = 10;
 
 	private static int gameCounter = 0;
@@ -75,7 +75,11 @@ public class Game {
 		this.buyCards = new HashMap<CardName, Integer>();
 	}
 
-	// Builds stacks for the treasure cards
+	/**
+	 * @author Bodo Gruetter
+	 * 
+	 * builds the stacks for the treasure cards with 30 cards per stack.
+	 */
 	private void buildTreasureCardStacks() {
 		this.copperPile = new Stack<Copper_Card>();
 		this.silverPile = new Stack<Silver_Card>();
@@ -88,7 +92,11 @@ public class Game {
 		}
 	}
 
-	// Builds stacks for the victory cards
+	/**
+	 * @author Bodo Gruetter
+	 * 
+	 * builds the stacks for the victory cards with 20 cards per stack.
+	 */
 	private void buildVictoryCardStacks() {
 		this.estatePile = new Stack<Estate_Card>();
 		this.duchyPile = new Stack<Duchy_Card>();
@@ -101,7 +109,11 @@ public class Game {
 		}
 	}
 
-	// Builds stacks for the action cards
+	/**
+	 * @author Bodo Gruetter
+	 * 
+	 * builds the stacks for the action cards with 10 cards per stack.
+	 */
 	private void buildActionCardStacks() {
 		this.cellarPile = new Stack<Cellar_Card>();
 		this.marketPile = new Stack<Market_Card>();
@@ -124,7 +136,13 @@ public class Game {
 		}
 	}
 
-	// initialites the players to start a game
+	/**
+	 * @author Bodo Gruetter
+	 * 
+	 * fills the deckpile of the player with 7 copper cards and 3 estate cards.
+	 * Each player draws 5 cards of its stack in the hand.
+	 * finally the the starter of the game will be determined.
+	 */
 	public void startGame() {
 		for (int i = 0; i < 10; i++) {
 			if (i < 7) {
@@ -142,7 +160,13 @@ public class Game {
 		this.currentPlayer = this.getStarter();
 	}
 
-	// Determines randomly the starter between player1 and player2
+	/**
+	 * @author Bodo Gruetter
+	 * 
+	 * determines randomly the player who starts.
+	 * 
+	 * @return the player who starts.
+	 */
 	private Player getStarter() {
 		Random rand = new Random();
 		int starter = rand.nextInt(2);
@@ -153,7 +177,9 @@ public class Game {
 	}
 
 	/**
-	 * switches Player
+	 * @author Bodo Gruetter
+	 * 
+	 * switches the current player.
 	 */
 	public void switchPlayer() {
 		if (currentPlayer.equals(this.player1)) {
@@ -164,6 +190,11 @@ public class Game {
 
 	}
 
+	/**
+	 * @author Bodo Gruetter
+	 * 
+	 * lets the players count their points and checks the winner of a game.
+	 */
 	public void checkWinner() {
 		if (this.checkGameEnding()) {
 			player1.countVictoryPoints();
@@ -184,6 +215,13 @@ public class Game {
 		}
 	}
 
+	/**
+	 * @author Bodo Gruetter
+	 * 
+	 * checks if the game is over.
+	 * 
+	 * @return true or false dependng if the game is finished.
+	 */
 	public boolean checkGameEnding() {
 		int counter = 0;
 		LinkedList<Stack> allStacks = new LinkedList<Stack>();
@@ -214,6 +252,12 @@ public class Game {
 			return false;
 	}
 	
+	/**
+	 * @author Bodo Gruetter
+	 * 
+	 * @param the selected gameMode and the player who starts a game.
+	 * @return an existing or a new game depending on gameMode and if a player is waiting for another.
+	 */
 	public static Game getGame(GameMode gameMode, Player player) {
 		if (gameMode == GameMode.Multiplayer) {
 			if (gameCounter % 2 == 0) {
@@ -242,11 +286,16 @@ public class Game {
 
 	}
 
-	// Fills a HashMap with the cardName and size of the actual stack of the
-	// cards, which the player could buy
+	/**
+	 * @author Bodo Gruetter
+	 * 
+	 * fills a hashmap with all stacks and numbers of cards which a player could buy.
+	 * 
+	 * @return a hashmap with the stackname and the number of cards
+	 */
 	public HashMap<CardName, Integer> getBuyCards() {
 		for (int i = 0; i < NUM_OF_VICTORYCARDS; i++) {
-			this.buyCards.put(Game.provincePile.firstElement().getCardName(), Game.provincePile.size());
+			this.buyCards.put(this.provincePile.firstElement().getCardName(), this.provincePile.size());
 			this.buyCards.put(this.duchyPile.firstElement().getCardName(), this.duchyPile.size());
 			this.buyCards.put(this.estatePile.firstElement().getCardName(), this.estatePile.size());
 		}
@@ -271,13 +320,26 @@ public class Game {
 		return this.buyCards;
 	}
 	
-
-	
+	/**
+	 * @author Bodo Gruetter
+	 * 
+	 * sends an waiting message to the opponent
+	 * 
+	 * @param the sending player and the message which should be send
+	 */
 	public void sendToOpponent(Player source, Message msg) {
 		source.getServerThreadForClient().addWaitingMessages(msg);
 	}
 
-	public Player getOpponent(Player source) {
+	/**
+	 * @author Bodo Gruetter
+	 * 
+	 * checks the opponent of the current player.
+	 * 
+	 * @param the current Player
+	 * @return the opponent of the currentplayer
+	 */
+	public Player getOpponent(Player currentPlayer) {
 		if (source.equals(player1))
 			return player2;
 
