@@ -9,6 +9,8 @@ import Client_CreatePlayer_VC.CreatePlayer_View;
 import Client_GameApp_MVC.GameApp_Model;
 import Client_Login_VC.Login_Controller;
 import Client_Login_VC.Login_View;
+import Client_MainMenu_VC.MainMenu_Controller;
+import Client_MainMenu_VC.MainMenu_View;
 import Client_Services.ServiceLocator;
 import Client_Services.Translator;
 import Client_Splash_MVC.Splash_Controller;
@@ -47,7 +49,8 @@ public class Dominion_Main extends Application {
 		Splash_Controller splashController = new Splash_Controller(this, splashModel, splashView);
 		splashView.start();
 		splashModel.initialize();
-		this.startLogin();
+		//this.startLogin();
+		startMainMenu();
 		//this.startCreatePlayer(); // zur Kontrolle nicht in Reihenfolge gestartet 
 		// noch anpassen, im Moment startet create new Player zeitgleich mit Splash
 			
@@ -107,6 +110,13 @@ public class Dominion_Main extends Application {
 //	}
 
 	public void startMainMenu(){
+		MainMenu_View view = new MainMenu_View(new Stage(), model);
+		MainMenu_Controller controller = new MainMenu_Controller(this, model, view);
+		view.start();
+		
+		//Thread.sleep(3000);
+
+		//view.stop();
 
 	}
 	
