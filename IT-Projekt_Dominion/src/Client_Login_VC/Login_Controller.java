@@ -26,13 +26,5 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 		this.view = view;
 		
 		
-		
-		
-		
-		
-		
-		
-		
-		
 	}
 }//end Login_Controller
