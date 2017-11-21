@@ -148,10 +148,7 @@ public class ServerThreadForClient implements Runnable {
      * @return Commit_Message
      */
 	private Message processSkipPhase(Message msgIn) {
-		Message message = this.player.skipPhase();
-		if((message instanceof UpdateGame_Message) || (message instanceof PlayerSuccess_Message))
-			this.game.sendToOpponent(this.player, message);
-		return message;
+		return this.player.skipPhase();
 	}
 
 	/**
@@ -167,10 +164,7 @@ public class ServerThreadForClient implements Runnable {
 		CardName cardName = pcmsg.getCard().getCardName();
 		Integer index = pcmsg.getIndex();
 		if(cardName == this.player.getHandCards().get(index).getCardName()){
-			Message message = this.player.play(cardName, index);
-			if(message instanceof UpdateGame_Message)
-				this.game.sendToOpponent(this.player, message);
-			return message;
+			return this.player.play(cardName, index);
 		}else{//the cards on the client and server are not the same(should not be possible)
 			this.logger.severe(pcmsg.getClient()+"'s handcards aren't equals to the cards in the game");
 			Failure_Message fmsg = new Failure_Message();
@@ -303,10 +297,7 @@ public class ServerThreadForClient implements Runnable {
 	 */
 	private Message processBuyCard(Message msgIn) {
 		BuyCard_Message bcmsg = new BuyCard_Message();
-		Message message = this.player.buy(bcmsg.getCard().getCardName());
-		if(message instanceof UpdateGame_Message)
-			this.game.sendToOpponent(this.player, message);
-		return message;
+		return this.player.buy(bcmsg.getCard().getCardName());
 	}
 
 	/**

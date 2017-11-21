@@ -95,10 +95,6 @@ public class GameApp_Model extends Model {
 	public String encryptPassword(String password){
 		return "";
 	}
-
-	private void decryptPassword(){
-
-	}
 	
 
 	/**
