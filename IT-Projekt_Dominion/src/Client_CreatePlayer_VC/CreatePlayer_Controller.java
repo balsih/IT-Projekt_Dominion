@@ -62,6 +62,7 @@ public class CreatePlayer_Controller extends Controller<GameApp_Model, CreatePla
 		view.backBtn.setOnAction((event) -> {
 			try {
 				 main.startLogin();;
+				 view.stop();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

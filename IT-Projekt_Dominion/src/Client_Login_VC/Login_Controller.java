@@ -73,6 +73,7 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 			try {
 				// model.doSoSomethingWith createNewPlayerBtn;
 				main.startCreatePlayer();
+				view.stop();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
