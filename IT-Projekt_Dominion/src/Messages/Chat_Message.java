@@ -11,8 +11,8 @@ import org.w3c.dom.NodeList;
  */
 public class Chat_Message extends Message {
 
-	private String chat;
 	private static final String ELEMENT_CHAT = "chat";
+	private String chat;
 
 
 	public Chat_Message(){
