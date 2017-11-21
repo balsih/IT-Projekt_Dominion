@@ -41,7 +41,7 @@ public class Player {
 	protected Game game;
 	protected Phase actualPhase;
 
-	protected static int counter;
+	protected int counter;
 
 	protected Socket clientSocket;
 	private ServerThreadForClient serverThreadForClient;
@@ -62,7 +62,7 @@ public class Player {
 		this.coins = 0;
 		this.actions = 0;
 		this.buys = 0;
-		counter = 0;
+		this.counter = 0;
 
 		this.isFinished = false;
 
@@ -99,8 +99,9 @@ public class Player {
 	 */
 	public void startMove() {
 		this.actions = 1;
-		this.buys = 0;
+		this.buys = 1;
 		this.coins = 0;
+		this.counter = 0;
 		this.actualPhase = Phase.Action;
 		this.isFinished = false;
 	}
@@ -392,7 +393,7 @@ public class Player {
 		layedDownCard = this.handCards.remove(index);
 		this.discardPile.push(layedDownCard);
 
-		counter++;
+		this.counter++;
 		return counter;
 	}
 

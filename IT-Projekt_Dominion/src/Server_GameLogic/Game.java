@@ -37,7 +37,7 @@ public class Game {
 	private Stack<Gold_Card> goldPile;
 	private Stack<Market_Card> marketPile;
 	private Stack<Mine_Card> minePile;
-	private static Stack<Province_Card> provincePile;
+	private Stack<Province_Card> provincePile;
 	private Stack<Remodel_Card> remodelPile;
 	private Stack<Silver_Card> silverPile;
 	private Stack<Smithy_Card> smithyPile;
@@ -100,12 +100,12 @@ public class Game {
 	private void buildVictoryCardStacks() {
 		this.estatePile = new Stack<Estate_Card>();
 		this.duchyPile = new Stack<Duchy_Card>();
-		Game.provincePile = new Stack<Province_Card>();
+		this.provincePile = new Stack<Province_Card>();
 
 		for (int i = 0; i < NUM_OF_VICTORYCARDS; i++) {
 			this.estatePile.push(new Estate_Card());
 			this.duchyPile.push(new Duchy_Card());
-			Game.provincePile.push(new Province_Card());
+			this.provincePile.push(new Province_Card());
 		}
 	}
 
@@ -340,7 +340,7 @@ public class Game {
 	 * @return the opponent of the currentplayer
 	 */
 	public Player getOpponent(Player currentPlayer) {
-		if (source.equals(player1))
+		if (currentPlayer.equals(player1))
 			return player2;
 
 		return player1;
@@ -370,7 +370,7 @@ public class Game {
 		return duchyPile;
 	}
 
-	public static Stack<Province_Card> getProvincePile() {
+	public Stack<Province_Card> getProvincePile() {
 		return provincePile;
 	}
 
