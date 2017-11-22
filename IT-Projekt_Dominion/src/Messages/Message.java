@@ -153,6 +153,7 @@ public abstract class Message {
         else if (type == MessageType.Commit) newMessage = new Commit_Message();
         else if (type == MessageType.Failure) newMessage = new Failure_Message();
         else if (type == MessageType.GiveUp) newMessage = new GiveUp_Message();
+        else if (type == MessageType.Interaction) newMessage = new Interaction_Message();
         else {
         	Error_Message msg = new Error_Message();
         	msg.setInfo("Error parsing received XML");

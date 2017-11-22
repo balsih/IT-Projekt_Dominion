@@ -60,8 +60,49 @@ public class TestMessages {
 //			System.out.println(name.toString());
 //		}
 		
-		testCreateGame_Message();
+		testUpdateGame_Message();
 		
+	}
+	
+	private static void testInteraction_Message(){
+		
+		Interaction_Message imsg = new Interaction_Message();
+		
+//		//EndOfTurn simulation
+//		Interaction interaction = Interaction.EndOfTurn;
+//		CardName EOTCard = CardName.Duchy;
+//		imsg.setInteractionType(interaction);
+//		imsg.setDiscardCard(EOTCard);
+		
+		//Cellar simulation
+		Interaction interaction = Interaction.Cellar;
+		LinkedList<CardName> discardCards = new LinkedList<CardName>();
+		discardCards.add(CardName.Copper);
+		discardCards.add(CardName.Copper);
+		discardCards.add(CardName.Mine);
+		imsg.setInteractionType(Interaction.Cellar);
+		imsg.setCellarDiscardCards(discardCards);
+		
+//		//Workshop simulation
+//		Interaction interaction = Interaction.Workshop;
+//		CardName workshopChoice = CardName.Market;
+//		imsg.setInteractionType(interaction);
+//		imsg.setWorkshopChoice(workshopChoice);
+		
+//		//Remodel1 simulation
+//		Interaction interaction = Interaction.Remodel1;
+//		CardName disposedCard = CardName.Woodcutter;
+//		imsg.setInteractionType(interaction);
+//		imsg.setDisposeCard(disposedCard);
+		
+//		//Remodel2 simulation
+//		Interaction interaction = Interaction.Remodel2;
+//		CardName remodelChoice = CardName.Province;
+//		imsg.setInteractionType(interaction);
+//		imsg.setRemodelChoice(remodelChoice);
+		
+		imsg.toString();
+		System.out.println(imsg);
 	}
 
 	
@@ -91,6 +132,8 @@ public class TestMessages {
 		
 		Card discardPileTopCard = new Gold_Card();
 		
+		Interaction interaction = Interaction.EndOfTurn;
+		
 		LinkedList<Card> handCards = new LinkedList<Card>();
 		handCards.add(new Smithy_Card());
 		handCards.add(new Mine_Card());
@@ -111,6 +154,7 @@ public class TestMessages {
 		ugmsg.setChat(chat);
 		ugmsg.setNewHandCards(handCards);
 		ugmsg.setPlayedCards(playedCard);
+		ugmsg.setInteraction(interaction);
 		
 		ugmsg.toString();
 		System.out.println(ugmsg);

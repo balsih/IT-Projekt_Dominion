@@ -21,7 +21,8 @@ public enum MessageType {
 	Commit,
 	Failure,
 	Error,
-	GiveUp;
+	GiveUp,
+	Interaction;
 
 	/**
 	 * Converts a String into enum MessageType if it exists
@@ -61,6 +62,7 @@ public enum MessageType {
     	else if (msg instanceof Commit_Message) type = MessageType.Commit;
     	else if (msg instanceof Failure_Message) type = MessageType.Failure;
     	else if (msg instanceof GiveUp_Message) type = MessageType.GiveUp;
+       	else if (msg instanceof Interaction_Message) type = MessageType.Interaction;
     	return type;
     }	
 }

@@ -27,10 +27,12 @@ public class UpdateGame_Message extends Message {
 	private static final String ELEMENT_CURRENTPHASE = "currentPhase";
 	private static final String ELEMENT_CURRENTPLAYER = "currentPlayer";
 	private static final String ELEMENT_LOG = "log";
+	private static final String ELEMENT_INTERACTION = "interaction";
 	private String chat = null;
 	private String currentPhase = null; //outSide of the Message: enum "Phase"
 	private String currentPlayer = null;
 	private String log = null;
+	private String interaction = null;
 	
 	private static final String ELEMENT_BUYS = "buys";
 	private static final String ELEMENT_ACTIONS = "actions";
@@ -108,6 +110,7 @@ public class UpdateGame_Message extends Message {
 		this.stringElements.put(ELEMENT_CHAT, this.chat);
 		this.stringElements.put(ELEMENT_LOG, this.log);
 		this.stringElements.put(ELEMENT_DECKPILE, null);
+		this.stringElements.put(ELEMENT_INTERACTION, this.interaction);
 		
 		this.integerElements.put(ELEMENT_ACTIONS, this.actions);
 		this.integerElements.put(ELEMENT_COINS, this.coins);
@@ -238,6 +241,8 @@ public class UpdateGame_Message extends Message {
 			first.setDiscardPileTopCard(second.getDiscardPileTopCard());
 		if(first.getLog() == null)
 			first.setLog(second.getLog());
+		if(first.getInteraction() == null)
+			first.setInteraction(second.getInteraction());
 		if(first.getNewHandCards() == null)
 			first.setNewHandCards(second.getNewHandCards());
 		if(first.getPlayedCard() == null)
@@ -263,6 +268,10 @@ public class UpdateGame_Message extends Message {
 
 	public String getLog(){
 		return this.stringElements.get(ELEMENT_LOG);
+	}
+	
+	public Interaction getInteraction(){
+		return Interaction.parseInteraction(this.interaction);
 	}
 
 	public Card getPlayedCard(){
@@ -317,6 +326,10 @@ public class UpdateGame_Message extends Message {
 	
 	public void setLog(String log){
 		this.log = log;
+	}
+	
+	public void setInteraction(Interaction interaction){
+		this.interaction = interaction.toString();
 	}
 
 	public void setPlayedCards(Card playedCard){
