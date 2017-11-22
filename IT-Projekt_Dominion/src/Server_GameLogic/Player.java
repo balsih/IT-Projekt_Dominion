@@ -300,13 +300,7 @@ public class Player {
 	 * cleans up automatically if a the current player has finished his move and switches the player.
 	 */
 	public void cleanUp() {
-		while (!playedCards.isEmpty()) {
-			this.discardPile.push(playedCards.remove());
-		}
-
-		while (!handCards.isEmpty()) {
-			this.discardPile.push(handCards.remove());
-		}
+		this.discard();
 
 		this.draw(this.NUM_OF_HANDCARDS);
 
@@ -318,6 +312,16 @@ public class Player {
 
 		game.switchPlayer();
 
+	}
+	
+	private void discard(){
+		while (!playedCards.isEmpty()) {
+			this.discardPile.push(playedCards.remove());
+		}
+
+		while (!handCards.isEmpty()) {
+			this.discardPile.push(handCards.remove());
+		}
 	}
 
 	/**

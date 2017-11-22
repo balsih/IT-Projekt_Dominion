@@ -7,6 +7,7 @@ import java.util.Random;
 import java.util.Stack;
 
 import Cards.Copper_Card;
+import Cards.Card;
 import Cards.CardName;
 import Cards.Cellar_Card;
 import Cards.Duchy_Card;
@@ -45,6 +46,11 @@ public class Game {
 	private Stack<Woodcutter_Card> woodcutterPile;
 	private Stack<Workshop_Card> workshopPile;
 	private HashMap<CardName, Integer> buyCards;
+	
+	//List of all Stacks
+	LinkedList<Stack> allStacks;
+	//List with all one card of every type
+	LinkedList<Card> allCards;
 
 	private final int NUM_OF_TREASURECARDS = 30;
 	private final int NUM_OF_VICTORYCARDS = 20;
@@ -70,6 +76,10 @@ public class Game {
 		this.buildTreasureCardStacks();
 		this.buildVictoryCardStacks();
 		this.buildActionCardStacks();
+		
+		this.fillAllStacks();
+		this.fillAllCards();
+		
 
 		this.gameEnded = false;
 		this.buyCards = new HashMap<CardName, Integer>();
@@ -223,21 +233,7 @@ public class Game {
 	 * @return true or false dependng if the game is finished.
 	 */
 	public boolean checkGameEnding() {
-		int counter = 0;
-		LinkedList<Stack> allStacks = new LinkedList<Stack>();
-		allStacks.add(this.cellarPile);
-		allStacks.add(this.copperPile);
-		allStacks.add(this.duchyPile);
-		allStacks.add(this.estatePile);
-		allStacks.add(this.goldPile);
-		allStacks.add(this.marketPile);
-		allStacks.add(this.minePile);
-		allStacks.add(this.remodelPile);
-		allStacks.add(this.silverPile);
-		allStacks.add(this.smithyPile);
-		allStacks.add(this.villagePile);
-		allStacks.add(this.woodcutterPile);
-		allStacks.add(this.workshopPile);
+		int counter = 0;		
 
 		Iterator<Stack> iter = allStacks.iterator();
 
@@ -250,6 +246,32 @@ public class Game {
 			return true;
 		else
 			return false;
+	}
+	
+	private void fillAllStacks(){
+		this.allStacks = new LinkedList<Stack>();
+				
+		this.allStacks.add(this.cellarPile);
+		this.allStacks.add(this.copperPile);
+		this.allStacks.add(this.duchyPile);
+		this.allStacks.add(this.estatePile);
+		this.allStacks.add(this.goldPile);
+		this.allStacks.add(this.marketPile);
+		this.allStacks.add(this.minePile);
+		this.allStacks.add(this.remodelPile);
+		this.allStacks.add(this.silverPile);
+		this.allStacks.add(this.smithyPile);
+		this.allStacks.add(this.villagePile);
+		this.allStacks.add(this.woodcutterPile);
+		this.allStacks.add(this.workshopPile);
+	}
+	
+	private void fillAllCards(){
+		this.allCards = new LinkedList<Card>();
+		
+		Iterator<Stack> iter = this.allStacks.iterator();
+		while(iter.hasNext())
+			this.allCards.add((Card) iter.next().firstElement());
 	}
 	
 	/**
@@ -318,6 +340,33 @@ public class Game {
 		}
 
 		return this.buyCards;
+	}
+	
+	/**
+	 * @author Bodo Gruetter
+	 * 
+	 * @param the from the player discarded Card
+	 * @return a linkedlist with all available cards
+	 */
+	public LinkedList<Card> getAvailableCards(Card discardedCard){
+		LinkedList<Card> allCards = new LinkedList<Card>();
+		
+		LinkedList<Card> availableCards = new LinkedList<Card>();
+		Iterator<Card> iter = this.allCards.iterator();
+		
+		if(discardedCard.getCardName() == CardName.Remodel){
+			while(iter.hasNext()){
+				if(iter.next().getCost() <= discardedCard.getCost()+2)
+					availableCards.add(iter.next());
+			}
+		} else if (discardedCard.getCardName() == CardName.Workshop){
+			while(iter.hasNext()){
+				if(iter.next().getCost() <= 4)
+					availableCards.add(iter.next());
+			}
+		}
+		
+		return availableCards;
 	}
 	
 	/**
