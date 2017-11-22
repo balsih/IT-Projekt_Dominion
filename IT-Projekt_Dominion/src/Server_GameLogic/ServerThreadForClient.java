@@ -162,14 +162,7 @@ public class ServerThreadForClient implements Runnable {
 	private Message processPlayCard(Message msgIn) {
 		PlayCard_Message pcmsg = (PlayCard_Message) msgIn;
 		CardName cardName = pcmsg.getCard().getCardName();
-		Integer index = pcmsg.getIndex();
-		if(cardName == this.player.getHandCards().get(index).getCardName()){
-			return this.player.play(cardName, index);
-		}else{//the cards on the client and server are not the same(should not be possible)
-			this.logger.severe(pcmsg.getClient()+"'s handcards aren't equals to the cards in the game");
-			Failure_Message fmsg = new Failure_Message();
-			return fmsg;
-		}
+		return this.player.play(cardName);
 	}
 
 	/**

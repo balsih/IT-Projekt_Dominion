@@ -15,9 +15,7 @@ import Cards.CardName;
 public class PlayCard_Message extends Message {
 
 	private static final String ELEMENT_CARD = "card";
-	private static final String ATTR_INDEX = "index";
 	private Card card;
-	private Integer index;
 
 
 	public PlayCard_Message(){
@@ -34,7 +32,6 @@ public class PlayCard_Message extends Message {
 		
 		Element card = docIn.createElement(ELEMENT_CARD);
 		card.setTextContent(this.card.toString());
-		card.setAttribute(ATTR_INDEX, this.index.toString());
 		root.appendChild(card);
 	}
 
@@ -50,22 +47,14 @@ public class PlayCard_Message extends Message {
         if (tmpElements.getLength() > 0) {
             Element card = (Element) tmpElements.item(0);
             this.card = Card.getCard(CardName.parseName(card.getTextContent()));
-            this.index = Integer.parseInt(card.getAttribute(ATTR_INDEX));
         }
 	}
 	
-	
-	public Integer getIndex(){
-		return this.index;
-	}
 
 	public Card getCard(){
 		return this.card;
 	}
 	
-	public void setIndex(Integer index){
-		this.index = index;
-	}
 	public void setCard(Card card){
 		this.card = card;
 	}

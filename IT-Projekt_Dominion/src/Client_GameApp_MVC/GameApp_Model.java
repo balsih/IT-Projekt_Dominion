@@ -262,12 +262,6 @@ public class GameApp_Model extends Model {
 	public boolean sendPlayCard(Card card){
 		PlayCard_Message pcmsg = new PlayCard_Message();
 		pcmsg.setCard(card);
-		Integer index = null;
-		for(int i = 0; i < this.yourNewHandCards.size(); i++){
-			if(this.yourNewHandCards.get(i) == card)
-				index = i;
-		}
-		pcmsg.setIndex(index);
 		boolean update = false;
 		Message msgIn = this.processMessage(pcmsg);
 		if(msgIn.getType().equals(MessageType.UpdateGame)){
