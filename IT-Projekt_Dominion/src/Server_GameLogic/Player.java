@@ -114,11 +114,13 @@ public class Player {
 	 * @return playersuccess message if the game is finished or an updategame message if the move is valid.
 	 * if the move is not valid the methods returns a failure message.
 	 */
-	public Message play(CardName cardName, int index) {
+	public Message play(CardName cardName) {
+		int index;
 		Card playedCard = null;
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		Failure_Message fmsg = new Failure_Message();
-
+		
+		index = this.handCards.indexOf(cardName);
 		playedCard = this.handCards.remove(index);
 		playedCard.executeCard(this);
 		playedCards.add(playedCard);
