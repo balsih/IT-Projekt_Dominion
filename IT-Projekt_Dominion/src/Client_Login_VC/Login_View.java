@@ -111,6 +111,7 @@ public class Login_View extends View<GameApp_Model> {
 		passwordText.setPrefSize(220.0, 30.0);
 		loginBtn = new Button(t.getString("login.loginBtn"));
 		loginBtn.setId("loginBtn");
+		loginBtn.setDisable(true);
 		
 		HBox pwLoginBox = new HBox(passwordText, loginBtn);
 		pwLoginBox.setId("pwLoginBox");
@@ -160,7 +161,7 @@ public class Login_View extends View<GameApp_Model> {
 		
 		return scene;
 	}
-	
+
 	//public void start() {
 	
 }//end Login_View

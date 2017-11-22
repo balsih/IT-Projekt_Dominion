@@ -1,4 +1,4 @@
-package Client_Services.Gallery;
+package Client_Services;
 
 import java.util.ResourceBundle;
 
@@ -25,10 +25,12 @@ public class Gallery {
 	 * 
 	 * @param key
 	 */
-//	public static ImageView getImage(String cardName){
-//		Image image = new Image(Gallery.class.getResourceAsStream(cardName)); // name korrespondiert mit Bildname .jpg
-//		return new ImageView(image);
-//	}
+	public ImageView getImage(String cardName){
+		String path = this.getClass().getResource("/Client_Services/ImageGallery/" + cardName + ".jpg").toExternalForm();
+		System.out.println(path);
+		Image image = new Image(path);
+		return new ImageView(image);
+	}
 	
 
 	

@@ -61,61 +61,48 @@ public abstract class Card {
 		switch (cardName) {
 		case Copper:
 			card = new Copper_Card();
-			card.setImage(Gallery.getImage(t.getString(cardName.toString())));
 			break;
 		case Cellar:
 			card = new Cellar_Card();
-			card.setImage(Gallery.getImage(t.getString(cardName.toString())));
 			break;
 		case Duchy:
 			card = new Duchy_Card();
-			card.setImage(Gallery.getImage(t.getString(cardName.toString())));
 			break;
 		case Estate:
 			card = new Estate_Card();
-			card.setImage(Gallery.getImage(t.getString(cardName.toString())));
 			break;
 		case Gold:
 			card = new Gold_Card();
-			card.setImage(Gallery.getImage(t.getString(cardName.toString())));
 			break;
 		case Market:
 			card = new Market_Card();
-			card.setImage(Gallery.getImage(t.getString(cardName.toString())));
 			break;
 		case Mine:
 			card = new Mine_Card();
-			card.setImage(Gallery.getImage(t.getString(cardName.toString())));
 			break;
 		case Province:
 			card = new Province_Card();
-			card.setImage(Gallery.getImage(t.getString(cardName.toString())));
 			break;
 		case Remodel:
 			card = new Remodel_Card();
-			card.setImage(Gallery.getImage(t.getString(cardName.toString())));
 			break;
 		case Silver:
 			card = new Silver_Card();
-			card.setImage(Gallery.getImage(t.getString(cardName.toString())));
 			break;
 		case Smithy:
 			card = new Smithy_Card();
-			card.setImage(Gallery.getImage(t.getString(cardName.toString())));
 			break;
 		case Village:
 			card = new Village_Card();
-			card.setImage(Gallery.getImage(t.getString(cardName.toString())));
 			break;
 		case Woodcutter:
 			card = new Woodcutter_Card();
-			card.setImage(Gallery.getImage(t.getString(cardName.toString())));
 			break;
 		case Workshop:
 			card = new Workshop_Card();
-			card.setImage(Gallery.getImage(t.getString(cardName.toString())));
 			break;
 		}
+		card.setImage(ServiceLocator.getServiceLocator().getGallery().getImage(t.getString(cardName.toString())));
 		return card;
 	}
 

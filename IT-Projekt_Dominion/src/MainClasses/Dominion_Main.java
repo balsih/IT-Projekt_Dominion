@@ -3,7 +3,7 @@ package MainClasses;
 import Abstract_MVC.Controller;
 import Abstract_MVC.Model;
 import Abstract_MVC.View;
-
+import Cards.CardName;
 import Client_CreatePlayer_VC.CreatePlayer_Controller;
 import Client_CreatePlayer_VC.CreatePlayer_View;
 import Client_GameApp_MVC.GameApp_Model;
@@ -17,6 +17,9 @@ import Client_Splash_MVC.Splash_Controller;
 import Client_Splash_MVC.Splash_Model;
 import Client_Splash_MVC.Splash_View;
 import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 /**
@@ -49,7 +52,7 @@ public class Dominion_Main extends Application {
 		Splash_Controller splashController = new Splash_Controller(this, splashModel, splashView);
 		splashView.start();
 		splashModel.initialize();
-		this.startLogin();
+		//this.startLogin();
 		//startMainMenu();
 		//this.startCreatePlayer(); // zur Kontrolle nicht in Reihenfolge gestartet 
 		// noch anpassen, im Moment startet create new Player zeitgleich mit Splash
@@ -58,16 +61,23 @@ public class Dominion_Main extends Application {
 	
 	
 	public void startLogin(){
-		if (this.model == null) {
+		splashView.stop(); // Hides splashscreen
+		sl = ServiceLocator.getServiceLocator();
+		
+		ImageView testView = sl.getGallery().getImage("Gold_Card");
+		Stage testStage = new Stage();
+		Pane p = new Pane();
+		p.getChildren().add(testView);
+		Scene testScene = new Scene(p);
+		testStage.setScene(testScene);
+		testStage.show();
+		
+		/*if (this.model == null) {
 			this.model = new GameApp_Model(this);
 		}
 		Login_View view = new Login_View(new Stage(), this.model);
 		Login_Controller controller = new Login_Controller(this, this.model, view);
-		view.start();
-	
-		//Thread.sleep(3000);
-
-		//view.stop();
+		view.start();*/
 	}
 	
 	
@@ -85,7 +95,7 @@ public class Dominion_Main extends Application {
 	public void startGameApp(){
 		// Create game mvc
 		
-		sl = ServiceLocator.getServiceLocator();
+		//sl = ServiceLocator.getServiceLocator();
 
 		//--- Testcode
 		// Button: Language DE

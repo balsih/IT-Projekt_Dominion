@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import Abstract_MVC.Model;
 import Client_Services.Configuration;
 import Client_Services.Gallery;
+//import Client_Services.Gallery;
 import Client_Services.ServiceLocator;
 import Client_Services.Translator;
 import javafx.concurrent.Task;
@@ -51,10 +52,10 @@ public class Splash_Model extends Model {
         	
         	Thread.sleep(1000); // Wartezeit zur Kontrolle
         	
-//        	sl.setGallery(new Gallery(language));
-//        	this.updateProgress(5, 5); // step 5 of total 5
+        	sl.setGallery(new Gallery(language));
+        	this.updateProgress(5, 5); // step 5 of total 5
         	
-        	Thread.sleep(1000); // Wartezeit zur Kontrolle
+        	//Thread.sleep(1000); // Wartezeit zur Kontrolle
 
 //            // Initialize the resources in the service locator
 //           // sl.setLogger(configureLogging());

@@ -1,8 +1,6 @@
 package Client_Services;
 
 import java.util.Locale;
-
-import Client_Services.Gallery.Gallery;
 import MainClasses.Dominion_Main;
 
 /**

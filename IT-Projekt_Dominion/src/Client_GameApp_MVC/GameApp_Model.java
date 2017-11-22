@@ -110,8 +110,8 @@ public class GameApp_Model extends Model {
 	 * @param userInput
 	 * @param inputType
 	 */
-	private boolean checkUserInput(String userInput, String inputType){
-		return false;
+	public boolean checkUserInput(String userInput, String inputType){
+		return true;
 	}
 	
 	/**
