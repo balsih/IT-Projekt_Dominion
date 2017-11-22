@@ -26,7 +26,7 @@ public class Server_Main extends Application {
 	}
 
 	@Override
-	public void start(Stage primaryStage) throws Exception {
+	public void start(Stage stage) throws Exception {
 		// GUI will contain log output from our own handler
 		TextAreaHandler textAreaHandler = new TextAreaHandler();
 		textAreaHandler.setLevel(Level.INFO);
@@ -35,7 +35,7 @@ public class Server_Main extends Application {
 
 		// Initialize the GUI
 		this.model = new Server_Model();
-		this.view = new Server_View(primaryStage, this.model, textAreaHandler.getTextArea());
+		this.view = new Server_View(stage, this.model, textAreaHandler.getTextArea());
 		this.controller = new Server_Controller(this.model, this.view);
 
 		// Display the GUI

@@ -71,7 +71,7 @@ public class Game {
 		this.buildVictoryCardStacks();
 		this.buildActionCardStacks();
 
-		this.setGameEnded(false);
+		this.gameEnded = false;
 		this.buyCards = new HashMap<CardName, Integer>();
 	}
 

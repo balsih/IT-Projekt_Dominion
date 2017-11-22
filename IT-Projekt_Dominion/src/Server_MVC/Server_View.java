@@ -49,6 +49,7 @@ public class Server_View extends View<Server_Model>{
 		this.btnStart = new Button("Start");
 		this.btnStart.getStyleClass().add("button");
 		this.btnStart.setMinSize(Button.USE_PREF_SIZE, Button.USE_PREF_SIZE);
+		this.btnStart.setDisable(true);
 		
 		this.btnStop = new Button("Stop");
 		this.btnStop.getStyleClass().add("button");

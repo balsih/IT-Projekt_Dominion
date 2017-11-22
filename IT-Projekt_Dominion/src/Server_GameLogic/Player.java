@@ -67,7 +67,6 @@ public class Player {
 		this.isFinished = false;
 
 		this.serverThreadForClient = serverThreadForClient;
-
 	}
 
 	/**
