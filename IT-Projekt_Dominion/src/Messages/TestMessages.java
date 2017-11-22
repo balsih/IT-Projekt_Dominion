@@ -1,5 +1,6 @@
 package Messages;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import com.sun.xml.internal.txw2.Document;
 import Cards.Card;
 import Cards.CardName;
 import Cards.Cellar_Card;
+import Cards.Copper_Card;
 import Cards.Gold_Card;
 import Cards.Market_Card;
 import Cards.Mine_Card;

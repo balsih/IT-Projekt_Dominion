@@ -19,6 +19,7 @@ import Messages.CreateGame_Message;
 import Messages.CreateNewPlayer_Message;
 import Messages.Failure_Message;
 import Messages.GameMode_Message;
+import Messages.Interaction;
 import Messages.Login_Message;
 import Messages.Message;
 import Messages.MessageType;
@@ -62,6 +63,10 @@ public class GameApp_Model extends Model {
 	protected Card opponentBuyedCard;
 	protected Card yourDiscardPileTopCard;
 	protected Card opponentDiscardPileTopCard;
+	protected String newChat;
+	protected String newLog;
+	protected Interaction interaction = Interaction.Skip;
+	protected LinkedList<Card> cardSelection;
 	
 	protected Content success;
 	protected int victoryPoints;
@@ -330,6 +335,12 @@ public class GameApp_Model extends Model {
 	private void processUpdateGame(Message msgIn) {	
 		UpdateGame_Message ugmsg = (UpdateGame_Message) msgIn;
 		
+		if(ugmsg.getLog() != null)//If something necessary happened in the Game, it will be provided to show
+			this.newLog = ugmsg.getLog();
+		
+		if(ugmsg.getChat() != null)//If the client or opponent sent a chat, it will be provided to show
+			this.newChat = ugmsg.getChat();
+		
 		if(ugmsg.getActions() != null && ugmsg.getCurrentPlayer() == null){//Has to be calculated during the player's turn. Always currentPlayer
 			this.actions += ugmsg.getActions();//update actions
 		}else{
@@ -380,6 +391,12 @@ public class GameApp_Model extends Model {
 		
 		if(ugmsg.getCurrentPlayer() != null)//If currentPlayer is set, the currentPlayer's turn ends
 			this.currentPlayer = ugmsg.getCurrentPlayer();
+		
+		if(ugmsg.getInteractionType() != null)//If interaction is set, the Type of Interaction can be checked (i.e. meaning of the commit_Button)
+			this.interaction = ugmsg.getInteractionType();
+		
+		if(ugmsg.getCardSelection() != null)//If cardSelection is set, it consists a selection of the cards to chose
+			this.cardSelection = ugmsg.getCardSelection();
 	}
 
 	

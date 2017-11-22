@@ -13,7 +13,7 @@ public enum Interaction {
 	Workshop,
 	Remodel1,
 	Remodel2,
-	None;
+	Skip;
 	
 	/**
 	 * @author Bradley Richards
