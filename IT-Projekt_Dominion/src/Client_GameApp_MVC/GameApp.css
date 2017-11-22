@@ -1,17 +1,21 @@
 .button{
 	-fx-background-color: #a9a9a9;
-	-fx-text-fill: #000000;
+	-fx-text-fill: white;
 	-fx-spacing: 10px;
 }
 
 .button:hover{
 	-fx-background-color: #d3d3d3;
-	-fx-text-fill: #000000;
+	-fx-text-fill: black;
 }
 
 Label {
 	-fx-text-fill: white;
 	-fx-font-weight: bold;
+}
+
+.lblCurrentPlayer {
+	-fx-text-fill: black;
 }
 
 .vbox{
@@ -24,14 +28,19 @@ Label {
 }
 
 .vboxCurrentPlayer{
-	-fx-background-color: transparent;
+	-fx-spacing: 10px;	
+}
+
+.gridpCurrentPlayer{
+	-fx-hgap: 20px;
+	-fx-background-color: oldlace;
 }
 
 .hbox{
 	-fx-spacing: 10px;
 }
 
-.root_format{
+.rootFormat{
 	-fx-hgap: 10px;
 	-fx-vgap: 10px;
 	-fx-background-image: url("Images/front1.png");
@@ -39,4 +48,19 @@ Label {
     -fx-background-size: cover;
     -fx-background-position: center center;
     -fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0); 
+}
+
+.cardStackWidth{
+	-fx-max-width: 120px;
+	-fx-padding: 10px;
+	-fx-spacing: 10px;
+	-fx-background-color: rgba(0,0,0,0);
+	-fx-border-width: 2;
+	-fx-border-radius: 5;
+	-fx-border-color: white;
+}
+
+.cardStackHeight{
+	-fx-min-height: 100px;
+	-fx-spacing: 10px;
 }

@@ -30,11 +30,11 @@ public class GameApp_View extends View<GameApp_Model> {
 
 	// Controls Treasure cards area
 	protected Label lblTreasureCards = new Label("Treasure cards");
-	protected HBox hboxTreasureCards = new HBox(3);	
+	protected HBox hboxTreasureCards = new HBox();	
 
 	// Controls Victory cards area
 	protected Label lblVictoryCards = new Label("Victory cards");
-	protected HBox hboxVictoryCards = new HBox(3);
+	protected HBox hboxVictoryCards = new HBox();
 
 	// Controls chat area
 	protected Label lblChatArea = new Label("Chat area");
@@ -50,19 +50,23 @@ public class GameApp_View extends View<GameApp_Model> {
 
 	// Controls discard area
 	protected Label lblDiscard = new Label("Discard");
+	protected Label lblNmbrOfDiscards = new Label("nmbr");
 	protected StackPane stackpDiscard = new StackPane();
 
 	// Controls deck area
 	protected Label lblDeck = new Label("Deck");
+	protected Label lblNmbrOfDeckCards = new Label("nmbr");
 	protected StackPane stackpDeck = new StackPane();
 
 	// Controls played cards area
 	protected Label lblPlayedCards = new Label("Played cards");
-	protected HBox hboxPlayedCards = new HBox(4);
+	protected ScrollPane scrlpPlayedCards = new ScrollPane();
+	protected HBox hboxPlayedCards = new HBox();
 
 	// Controls hand cards area
 	protected Label lblHandCards = new Label("Hand cards");
-	protected HBox hboxHandCards = new HBox(7);
+	protected ScrollPane scrlpHandCards = new ScrollPane();
+	protected HBox hboxHandCards = new HBox();
 
 	// Controls current player area
 	protected Label lblCurrentPlayer = new Label("Current player");
@@ -106,16 +110,20 @@ public class GameApp_View extends View<GameApp_Model> {
 		VBox vboxLog = new VBox(lblLog, scrlpLog);
 
 		// Discard area
-		VBox vboxDiscard = new VBox(lblDiscard, stackpDiscard);
+		HBox hboxDiscard = new HBox(lblDiscard, lblNmbrOfDiscards);
+		VBox vboxDiscard = new VBox(hboxDiscard, stackpDiscard);
 
 		// Deck area
-		VBox vboxDeck = new VBox(lblDeck, stackpDeck);
+		HBox hboxDeck = new HBox(lblDeck, lblNmbrOfDeckCards);
+		VBox vboxDeck = new VBox(hboxDeck, stackpDeck);
 
 		// Played cards area
-		VBox vboxPlayedCards = new VBox(lblPlayedCards, hboxPlayedCards);
+		scrlpPlayedCards.setContent(hboxPlayedCards);
+		VBox vboxPlayedCards = new VBox(lblPlayedCards, scrlpPlayedCards);
 
 		// Hand cards area
-		VBox vboxHandCards = new VBox(lblHandCards, hboxHandCards);
+		scrlpHandCards.setContent(hboxHandCards);
+		VBox vboxHandCards = new VBox(lblHandCards, scrlpHandCards);
 
 		// Current player area
 		GridPane gridpCurrentPlayer = new GridPane();
@@ -175,30 +183,56 @@ public class GameApp_View extends View<GameApp_Model> {
 		lblActionCards.getStyleClass().add("Label");
 
 		vboxTreasureCards.getStyleClass().add("vbox");
+		// neu:
+		vboxTreasureCards.setMinWidth(290);
 		hboxTreasureCards.getStyleClass().add("hbox");
 
 		vboxVictoryCards.getStyleClass().add("vbox");
+		// neu:
+		vboxVictoryCards.setMinWidth(290);
 		hboxVictoryCards.getStyleClass().add("hbox");
 
 		vboxChatArea.getStyleClass().add("vbox");
+		// neu:
+		vboxChatArea.setMaxWidth(250);
 		hboxChatArea.getStyleClass().add("hbox");
 
 		vboxLog.getStyleClass().add("vbox");
+		// neu:
+		vboxLog.setMaxWidth(250);
 
+		// neu:
+		hboxDiscard.getStyleClass().add("cardStackHeight");
+		vboxDiscard.getStyleClass().add("cardStackWidth");
 		vboxDiscard.getStyleClass().add("vbox");
-
-		vboxDeck.getStyleClass().add("vbox");
+		
+		// neu:
+		hboxDeck.getStyleClass().add("cardStackHeight");
+		vboxDeck.getStyleClass().add("cardStackWidth");
 
 		vboxPlayedCards.getStyleClass().add("vbox");
+		// neu:
+		vboxPlayedCards.setPrefWidth(Double.MAX_VALUE);
 		hboxPlayedCards.getStyleClass().add("hbox");
 
 		vboxHandCards.getStyleClass().add("vbox");
+		// neu:
+		vboxHandCards.setPrefWidth(Double.MAX_VALUE);
 		hboxHandCards.getStyleClass().add("hbox");
 
 		vboxCurrentPlayer.getStyleClass().add("vboxCurrentPlayer");
-		gridpCurrentPlayer.setHgap(20);
-
-		root.getStyleClass().add("root_format");
+		// neu:
+		gridpCurrentPlayer.getStyleClass().add("gridpCurrentPlayer");
+		lblCrntHandCards.getStyleClass().add("lblCurrentPlayer");
+		lblNmbrOfCrntHandCards.getStyleClass().add("lblCurrentPlayer");
+		lblCrntActions.getStyleClass().add("lblCurrentPlayer");
+		lblNmbrOfCrntActions.getStyleClass().add("lblCurrentPlayer");
+		lblCrntBuys.getStyleClass().add("lblCurrentPlayer");
+		lblNmbrOfCrntBuys.getStyleClass().add("lblCurrentPlayer");
+		lblCrntCoins.getStyleClass().add("lblCurrentPlayer");
+		lblNmbrOfCrntCoins.getStyleClass().add("lblCurrentPlayer");
+		
+		root.getStyleClass().add("rootFormat");
 
 		Scene scene = new Scene(root, 1000, 600);
 		// stage.setScene(scene);

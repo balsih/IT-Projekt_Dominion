@@ -11,6 +11,9 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -37,11 +40,11 @@ public class GUI_Test extends Application {
 
 		// Controls Treasure cards area
 		Label lblTreasureCards = new Label("Treasure cards");
-		HBox hboxTreasureCards = new HBox(3);	
+		HBox hboxTreasureCards = new HBox();	
 
 		// Controls Victory cards area
 		Label lblVictoryCards = new Label("Victory cards");
-		HBox hboxVictoryCards = new HBox(3);
+		HBox hboxVictoryCards = new HBox();
 
 		// Controls chat area
 		Label lblChatArea = new Label("Chat area");
@@ -57,21 +60,25 @@ public class GUI_Test extends Application {
 		TextArea txtaLog = new TextArea();
 		txtaLog.setDisable(true);
 
-		// Controls discard area
+		// neu: Controls discard area
 		Label lblDiscard = new Label("Discard");
+		Label lblNmbrOfDiscards = new Label("nmbr");
 		StackPane stackpDiscard = new StackPane();
 
-		// Controls deck area
+		// neu: Controls deck area
 		Label lblDeck = new Label("Deck");
+		Label lblNmbrOfDeckCards = new Label("nmbr");
 		StackPane stackpDeck = new StackPane();
 
-		// Controls played cards area
+		// neu: Controls played cards area
 		Label lblPlayedCards = new Label("Played cards");
-		HBox hboxPlayedCards = new HBox(4);
+		ScrollPane scrlpPlayedCards = new ScrollPane();
+		HBox hboxPlayedCards = new HBox();
 
-		// Controls hand cards area
+		// neu: Controls hand cards area
 		Label lblHandCards = new Label("Hand cards");
-		HBox hboxHandCards = new HBox(7);
+		ScrollPane scrlpHandCards = new ScrollPane();
+		HBox hboxHandCards = new HBox();
 
 		// Controls current player area
 		Label lblCurrentPlayer = new Label("Current player");
@@ -104,17 +111,21 @@ public class GUI_Test extends Application {
 		scrlpLog.setContent(txtaLog);
 		VBox vboxLog = new VBox(lblLog, scrlpLog);
 
-		// Discard area
-		VBox vboxDiscard = new VBox(lblDiscard, stackpDiscard);
+		// neu: Discard area
+		HBox hboxDiscard = new HBox(lblDiscard, lblNmbrOfDiscards);
+		VBox vboxDiscard = new VBox(hboxDiscard, stackpDiscard);
 
-		// Deck area
-		VBox vboxDeck = new VBox(lblDeck, stackpDeck);
+		// neu: Deck area
+		HBox hboxDeck = new HBox(lblDeck, lblNmbrOfDeckCards);
+		VBox vboxDeck = new VBox(hboxDeck, stackpDeck);
 
-		// Played cards area
-		VBox vboxPlayedCards = new VBox(lblPlayedCards, hboxPlayedCards);
+		// neu: Played cards area
+		scrlpPlayedCards.setContent(hboxPlayedCards);
+		VBox vboxPlayedCards = new VBox(lblPlayedCards, scrlpPlayedCards);
 
-		// Hand cards area
-		VBox vboxHandCards = new VBox(lblHandCards, hboxHandCards);
+		// neu: Hand cards area
+		scrlpHandCards.setContent(hboxHandCards);
+		VBox vboxHandCards = new VBox(lblHandCards, scrlpHandCards);
 
 		// Current player area
 		GridPane gridpCurrentPlayer = new GridPane();
@@ -179,42 +190,62 @@ public class GUI_Test extends Application {
 		lblActionCards.getStyleClass().add("Label");
 
 		vboxTreasureCards.getStyleClass().add("vbox");
+		// neu:
+		vboxTreasureCards.setMinWidth(290);
 		hboxTreasureCards.getStyleClass().add("hbox");
 
 		vboxVictoryCards.getStyleClass().add("vbox");
+		// neu:
+		vboxVictoryCards.setMinWidth(290);
 		hboxVictoryCards.getStyleClass().add("hbox");
 
 		vboxChatArea.getStyleClass().add("vbox");
+		// neu:
+		vboxChatArea.setMaxWidth(250);
 		hboxChatArea.getStyleClass().add("hbox");
 
 		vboxLog.getStyleClass().add("vbox");
+		// neu:
+		vboxLog.setMaxWidth(250);
 
+		// neu:
+		hboxDiscard.getStyleClass().add("cardStackHeight");
+		vboxDiscard.getStyleClass().add("cardStackWidth");
 		vboxDiscard.getStyleClass().add("vbox");
-
-		vboxDeck.getStyleClass().add("vbox");
+		
+		// neu:
+		hboxDeck.getStyleClass().add("cardStackHeight");
+		vboxDeck.getStyleClass().add("cardStackWidth");
 
 		vboxPlayedCards.getStyleClass().add("vbox");
+		// neu:
+		vboxPlayedCards.setPrefWidth(Double.MAX_VALUE);
 		hboxPlayedCards.getStyleClass().add("hbox");
 
 		vboxHandCards.getStyleClass().add("vbox");
+		// neu:
+		vboxHandCards.setPrefWidth(Double.MAX_VALUE);
 		hboxHandCards.getStyleClass().add("hbox");
 
 		vboxCurrentPlayer.getStyleClass().add("vboxCurrentPlayer");
-		gridpCurrentPlayer.setHgap(20);
+		// neu:
+		gridpCurrentPlayer.getStyleClass().add("gridpCurrentPlayer");
+		lblCrntHandCards.getStyleClass().add("lblCurrentPlayer");
+		lblNmbrOfCrntHandCards.getStyleClass().add("lblCurrentPlayer");
+		lblCrntActions.getStyleClass().add("lblCurrentPlayer");
+		lblNmbrOfCrntActions.getStyleClass().add("lblCurrentPlayer");
+		lblCrntBuys.getStyleClass().add("lblCurrentPlayer");
+		lblNmbrOfCrntBuys.getStyleClass().add("lblCurrentPlayer");
+		lblCrntCoins.getStyleClass().add("lblCurrentPlayer");
+		lblNmbrOfCrntCoins.getStyleClass().add("lblCurrentPlayer");
 
-		root.getStyleClass().add("root_format");
+		root.getStyleClass().add("rootFormat");
 
-		// Im Controller:
-		// Commits user input to the server
-		btnCommit.setOnAction(event -> {
-			// do the work here
-		});
-
-		// Test: add of images to the boxes
+		// Test: add images to the boxes
 		ImageView img1 = new ImageView(new Image(getClass().getResourceAsStream("Images/Geld_01.jpg")));
 		img1.setFitWidth(50);
 		img1.setFitHeight(100);
-		hboxTreasureCards.getChildren().add(img1);
+		hboxHandCards.getChildren().add(img1);
 
 		// Adrian
 		// Already implemented: Sends a chat message to the server 
@@ -228,6 +259,27 @@ public class GUI_Test extends Application {
 					txtaChatArea.setText(existingMessages + "\n" + newMessage);
 				txtfChatArea.setText("");
 			}
+		});
+		
+		// Test set image on action
+		img1.setOnMouseClicked(event -> {
+			txtaChatArea.setText("You've clicked the image");
+		});
+		
+		// Test Drag and drop of images
+		img1.setOnDragDetected(event -> {
+			Dragboard db = img1.startDragAndDrop(TransferMode.ANY);
+
+			ClipboardContent content = new ClipboardContent();
+			content.putImage(img1.getImage());
+			db.setContent(content);
+	        
+	        event.consume();
+		});
+		
+		img1.setOnDragDone(event -> {
+			hboxPlayedCards.getChildren().add(img1);
+			hboxTreasureCards.getChildren().remove(0);
 		});
 
 	}
