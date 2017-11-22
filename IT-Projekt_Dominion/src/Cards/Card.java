@@ -8,19 +8,19 @@ import Server_GameLogic.Player;
 import javafx.scene.image.ImageView;
 
 /**
- * @author René
+ * @author Rene
  * @version 1.0
  * @created 31-Okt-2017 16:58:04
  */
 public abstract class Card {
 	
 	ServiceLocator sl = ServiceLocator.getServiceLocator();
-
+	
 	protected CardName cardName;
 	protected int cost;
 	protected ImageView image;
 	protected CardType type; // action, treasure, victory 	
-
+	
 	protected Card(){
 	}
 	
@@ -36,7 +36,7 @@ public abstract class Card {
 	public CardName getCardName(){
 		return this.cardName;
 	}
-
+	
 	public int getCost(){
 		return this.cost;
 	}
@@ -44,7 +44,7 @@ public abstract class Card {
 	public ImageView getImage(){
 		return this.image;
 	}
-
+	
 	public CardType getType(){
 		return this.type;
 	}

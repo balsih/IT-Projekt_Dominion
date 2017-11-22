@@ -64,20 +64,20 @@ public class Dominion_Main extends Application {
 		splashView.stop(); // Hides splashscreen
 		sl = ServiceLocator.getServiceLocator();
 		
-		ImageView testView = sl.getGallery().getImage("Gold_Card");
-		Stage testStage = new Stage();
-		Pane p = new Pane();
-		p.getChildren().add(testView);
-		Scene testScene = new Scene(p);
-		testStage.setScene(testScene);
-		testStage.show();
+//		ImageView testView = sl.getGallery().getImage("Gold_Card");
+//		Stage testStage = new Stage();
+//		Pane p = new Pane();
+//		p.getChildren().add(testView);
+//		Scene testScene = new Scene(p);
+//		testStage.setScene(testScene);
+//		testStage.show();
 		
-		/*if (this.model == null) {
+		if (this.model == null) {
 			this.model = new GameApp_Model(this);
 		}
 		Login_View view = new Login_View(new Stage(), this.model);
 		Login_Controller controller = new Login_Controller(this, this.model, view);
-		view.start();*/
+		view.start();
 	}
 	
 	

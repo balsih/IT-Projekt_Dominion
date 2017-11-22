@@ -7,7 +7,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 /**
- * @author Renate
+ * @author Rene
  * @version 1.0
  * @created 31-Okt-2017 17:04:31
  */
@@ -18,7 +18,7 @@ public class Gallery {
 
 
 	public Gallery(String language){
-
+	
 	}
 	
 	/**
