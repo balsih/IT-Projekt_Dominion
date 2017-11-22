@@ -12,7 +12,8 @@ public enum Interaction {
 	Cellar,
 	Workshop,
 	Remodel1,
-	Remodel2;
+	Remodel2,
+	None;
 	
 	/**
 	 * @author Bradley Richards

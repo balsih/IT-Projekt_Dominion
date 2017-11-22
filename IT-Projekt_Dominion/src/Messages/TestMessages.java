@@ -10,14 +10,18 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
+import com.sun.xml.internal.txw2.Document;
+
 import Cards.Card;
 import Cards.CardName;
+import Cards.Cellar_Card;
 import Cards.Gold_Card;
 import Cards.Market_Card;
 import Cards.Mine_Card;
 import Cards.Smithy_Card;
 import Cards.Village_Card;
 import Cards.Woodcutter_Card;
+import Cards.Workshop_Card;
 import Client_Services.ServiceLocator;
 import Server_GameLogic.Phase;
 
@@ -133,6 +137,11 @@ public class TestMessages {
 		Card discardPileTopCard = new Gold_Card();
 		
 		Interaction interaction = Interaction.EndOfTurn;
+		LinkedList<Card> cardSelection = new LinkedList<Card>();
+		cardSelection.add(new Cellar_Card());
+		cardSelection.add(new Market_Card());
+		cardSelection.add(new Smithy_Card());
+		cardSelection.add(new Workshop_Card());
 		
 		LinkedList<Card> handCards = new LinkedList<Card>();
 		handCards.add(new Smithy_Card());
@@ -154,7 +163,8 @@ public class TestMessages {
 		ugmsg.setChat(chat);
 		ugmsg.setNewHandCards(handCards);
 		ugmsg.setPlayedCards(playedCard);
-		ugmsg.setInteraction(interaction);
+		ugmsg.setInteractionType(Interaction.EndOfTurn);
+		ugmsg.setCardSelection(cardSelection);
 		
 		ugmsg.toString();
 		System.out.println(ugmsg);
