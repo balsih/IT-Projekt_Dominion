@@ -2,6 +2,7 @@ package Client_GameApp_MVC;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -27,6 +28,8 @@ import Messages.SkipPhase_Message;
 import Messages.UpdateGame_Message;
 import Server_GameLogic.GameMode;
 import Server_GameLogic.Phase;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 /**
  * @author Adiran & Lukas
@@ -75,12 +78,17 @@ public class GameApp_Model extends Model {
 	private String ipRegex;
 	private String passwordRegex;
 	private int port;
+	
+	private MediaPlayer mediaPlayer; // sound
 
 
 	public GameApp_Model(Dominion_Main main){
 		super();
 		this.main = main;
 		this.listenToServer = false;
+		
+		// start menusound
+		this.startMediaPlayer("sound.mp3"); // start sound 
 	}
 
 	/**
@@ -293,7 +301,7 @@ public class GameApp_Model extends Model {
 	 * 
 	 * @param msgIn, CreateGame_Message
 	 */
-	private void processCreateGame(Message msgIn) {
+	private void processCreateGame(Message msgIn) {		
 		CreateGame_Message cgmsg = (CreateGame_Message) msgIn;
 		this.yourNewHandCards = cgmsg.getHandCards();
 		for(Card card: cgmsg.getDeckPile())
@@ -451,9 +459,26 @@ public class GameApp_Model extends Model {
 			}
 		}
 	}
-
 	
+		/* Provisorischer Kommentar inkl. Quelle -> Rene
+	   https://panjutorials.de/tutorials/javafx-8-gui/lektionen/audio-player-in-javafx-2/?cache-flush=1510439948.4916
+	   hier legen wir die Resource an, welche unbedingt im entsprechenden Ordner sein muss
 	
+	 * URL resource = getClass().getResource("sound.mp3"); // wir legen das Mediaobjekt and und weisen unsere Resource zu 
+	 * Media media = new Media(resource.toString()); // wir legen den Mediaplayer an und weisen
+	 * ihm das Media Objekt zu mediaPlayer = new MediaPlayer(media);
+	 */
+	
+	public void startMediaPlayer(String soundFileName) {
+		// mediaplayer: new music
+		if (mediaPlayer != null) {
+			mediaPlayer.stop();
+		}
+		URL resource = getClass().getResource(soundFileName);
+		Media media = new Media(resource.toString());
+		mediaPlayer = new MediaPlayer(media);
+		mediaPlayer.play();
+	}
 
 	public String getPassword(){
 		return "";

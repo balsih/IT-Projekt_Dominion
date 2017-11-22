@@ -61,7 +61,8 @@ public class CreatePlayer_Controller extends Controller<GameApp_Model, CreatePla
 		// set on action and handling for loginBtn
 		view.backBtn.setOnAction((event) -> {
 			try {
-				 main.startLogin();;
+				 main.startLogin();
+				 //model.startMediaPlayer("Medieval_Camelot.mp3"); //testcode
 				 view.stop();
 			} catch (Exception e) {
 				e.printStackTrace();
