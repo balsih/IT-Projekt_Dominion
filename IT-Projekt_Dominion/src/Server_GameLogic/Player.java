@@ -451,6 +451,13 @@ public class Player {
 				iter.next().executeCard(this);
 			}
 	}
+	
+	/*
+	 * Interaction methoden
+	 * 
+	 * EndOfTurn: Phase auf CleanUp, dem Gegner mitteilen, welche die TopCard auf dem DiscardPile ist. Nur wenn mehr als eine Karte in der Hand ist (Abfrage in Buy)
+	 * InteractionType ueber UpdateGameMessage.
+	 */
 
 	public int getActions() {
 		return actions;
