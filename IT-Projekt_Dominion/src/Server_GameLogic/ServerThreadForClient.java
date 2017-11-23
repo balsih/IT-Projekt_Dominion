@@ -18,6 +18,7 @@ import Messages.Error_Message;
 import Messages.Failure_Message;
 import Messages.GameMode_Message;
 import Messages.HighScore_Message;
+import Messages.Interaction_Message;
 import Messages.Login_Message;
 import Messages.Message;
 import Messages.Content;
@@ -128,11 +129,11 @@ public class ServerThreadForClient implements Runnable {
 		case PlayCard:
 			msgOut = this.processPlayCard(msgIn);
 			break;
-		case SkipPhase:
-			msgOut = this.processSkipPhase(msgIn);
-			break;
 		case GiveUp:
 			msgOut = this.processGiveUp(msgIn);
+			break;
+		case Interaction:
+			msgOut = this.processInteraction(msgIn);
 			break;
 		default:
 			msgOut = new Error_Message();
@@ -141,15 +142,6 @@ public class ServerThreadForClient implements Runnable {
     	return msgOut;
     }
 
-	/**
-     * Tells the Game to skip the current Phase of this Player
-     * 
-     * @param msgIn, SkipPhase_Message
-     * @return Commit_Message
-     */
-	private Message processSkipPhase(Message msgIn) {
-		return this.player.skipPhase();
-	}
 
 	/**
 	 * Checks if the hands of client and server are equal
@@ -290,7 +282,31 @@ public class ServerThreadForClient implements Runnable {
 	 */
 	private Message processBuyCard(Message msgIn) {
 		BuyCard_Message bcmsg = new BuyCard_Message();
-		return this.player.buy(bcmsg.getCard().getCardName());
+		return this.player.buy(bcmsg.getCard());
+	}
+	
+	/**
+	 * 
+	 * @param msgIn
+	 * @return
+	 */
+	private Message processInteraction(Message msgIn) {
+		Interaction_Message imsg = (Interaction_Message) msgIn;
+		switch(imsg.getInteractionType()){
+		case Skip:
+			return this.player.skipPhase();
+		case EndOfTurn:
+			break;
+		case Cellar:
+			break;
+		case Workshop:
+			break;
+		case Remodel1:
+			break;
+		case Remodel2:
+			break;
+		}
+		return null;
 	}
 
 	/**

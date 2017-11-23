@@ -25,49 +25,81 @@ import Cards.Village_Card;
 import Cards.Woodcutter_Card;
 import Cards.Workshop_Card;
 import Client_Services.ServiceLocator;
+import Server_GameLogic.Game;
+import Server_GameLogic.GameMode;
 import Server_GameLogic.Phase;
+import Server_GameLogic.Player;
 
 public class TestMessages {
 
 	public static void main(String[] args) {
+		testInteraction_Message();
 		
-//		HashMap<CardName, Integer> priorityList = new HashMap<CardName, Integer>();
-//		// priorityList.put(CardName.Cellar, 10); do not use but implement first if enough time
-//		priorityList.put(CardName.Copper, 20);
-//		priorityList.put(CardName.Duchy, 50);
-//		priorityList.put(CardName.Estate, 10);
-//		priorityList.put(CardName.Gold, 70);
-//		priorityList.put(CardName.Market, 68);
-//		// priorityList.put(CardName.Mine, 10); do not use
-//		priorityList.put(CardName.Province, 90);
-//		priorityList.put(CardName.Remodel, 66);
-//		priorityList.put(CardName.Silver, 40);
-//		priorityList.put(CardName.Smithy, 67);
-//		priorityList.put(CardName.Village, 69);
-//		// priorityList.put(CardName.Woodcutter, 10); do not use
-//		priorityList.put(CardName.Workshop, 10); // do not use
-//		
-//		//@author Lukas, get the correct order for a prioList
-//		List<CardName> list = priorityList.keySet()
-//		.stream()
-//		.sorted((c1, c2) -> Integer.compare(priorityList.get(c2), priorityList.get(c1)))
-//		.collect(Collectors.toList());
-//		
-//		for(CardName name: list){
-//		System.out.println(name.toString());
-//	}
-//		
-//		//@author Lukas, get the correct order for a prioList
-//		LinkedList<CardName> currentPrioList = new LinkedList<CardName>();
-//		currentPrioList.addAll(priorityList.keySet());
-//		currentPrioList.sort((c1, c2) -> Integer.compare(priorityList.get(c2), priorityList.get(c1)));
-//		
-//		for(CardName name: currentPrioList){
-//			System.out.println(name.toString());
-//		}
+	}
+	
+	private static void testMapFilter(){
 		
-		testUpdateGame_Message();
+		HashMap<CardName, Integer> buyCards = new HashMap<CardName, Integer>();
+		buyCards.put(CardName.Cellar, 12);
+		buyCards.put(CardName.Copper, 25);
+		buyCards.put(CardName.Duchy, 2);
+		buyCards.put(CardName.Estate, 6);
+		buyCards.put(CardName.Gold, 24);
+		buyCards.put(CardName.Market, 6);
+		buyCards.put(CardName.Mine, 1);
+		buyCards.put(CardName.Province, 3);
+		buyCards.put(CardName.Remodel, 5);
+		buyCards.put(CardName.Silver, 15);
+		buyCards.put(CardName.Smithy, 7);
+		buyCards.put(CardName.Village, 0);
+		buyCards.put(CardName.Woodcutter, 1);
+		buyCards.put(CardName.Workshop, 2);
 		
+		List<CardName> list0 = buyCards.keySet()
+				.stream()
+				.filter(c -> buyCards.get(c) <= 3)
+				.collect(Collectors.toList());
+		for(CardName cardName: list0){
+			System.out.println(cardName.toString());
+		}
+		
+	}
+	
+	private static void testMapSort(){
+		HashMap<CardName, Integer> priorityList = new HashMap<CardName, Integer>();
+		// priorityList.put(CardName.Cellar, 10); do not use but implement first if enough time
+		priorityList.put(CardName.Copper, 20);
+		priorityList.put(CardName.Duchy, 50);
+		priorityList.put(CardName.Estate, 10);
+		priorityList.put(CardName.Gold, 70);
+		priorityList.put(CardName.Market, 68);
+		// priorityList.put(CardName.Mine, 10); do not use
+		priorityList.put(CardName.Province, 90);
+		priorityList.put(CardName.Remodel, 66);
+		priorityList.put(CardName.Silver, 40);
+		priorityList.put(CardName.Smithy, 67);
+		priorityList.put(CardName.Village, 69);
+		// priorityList.put(CardName.Woodcutter, 10); do not use
+		priorityList.put(CardName.Workshop, 10); // do not use
+		
+		//@author Lukas, get the correct order for a prioList
+		List<CardName> list = priorityList.keySet()
+		.stream()
+		.sorted((c1, c2) -> Integer.compare(priorityList.get(c2), priorityList.get(c1)))
+		.collect(Collectors.toList());
+		
+		for(CardName name: list){
+		System.out.println(name.toString());
+		}
+		
+		//@author Lukas, get the correct order for a prioList
+		LinkedList<CardName> currentPrioList = new LinkedList<CardName>();
+		currentPrioList.addAll(priorityList.keySet());
+		currentPrioList.sort((c1, c2) -> Integer.compare(priorityList.get(c2), priorityList.get(c1)));
+		
+		for(CardName name: currentPrioList){
+			System.out.println(name.toString());
+		}
 	}
 	
 	private static void testInteraction_Message(){
@@ -76,18 +108,18 @@ public class TestMessages {
 		
 //		//EndOfTurn simulation
 //		Interaction interaction = Interaction.EndOfTurn;
-//		CardName EOTCard = CardName.Duchy;
+//		Card EOTCard = new Workshop_Card();
 //		imsg.setInteractionType(interaction);
 //		imsg.setDiscardCard(EOTCard);
 		
-		//Cellar simulation
-		Interaction interaction = Interaction.Cellar;
-		LinkedList<CardName> discardCards = new LinkedList<CardName>();
-		discardCards.add(CardName.Copper);
-		discardCards.add(CardName.Copper);
-		discardCards.add(CardName.Mine);
-		imsg.setInteractionType(Interaction.Cellar);
-		imsg.setCellarDiscardCards(discardCards);
+//		//Cellar simulation
+//		Interaction interaction = Interaction.Cellar;
+//		LinkedList<Card> discardCards = new LinkedList<Card>();
+//		discardCards.add(new Copper_Card());
+//		discardCards.add(new Copper_Card());
+//		discardCards.add(new Mine_Card());
+//		imsg.setInteractionType(Interaction.Cellar);
+//		imsg.setCellarDiscardCards(discardCards);
 		
 //		//Workshop simulation
 //		Interaction interaction = Interaction.Workshop;
@@ -97,15 +129,15 @@ public class TestMessages {
 		
 //		//Remodel1 simulation
 //		Interaction interaction = Interaction.Remodel1;
-//		CardName disposedCard = CardName.Woodcutter;
+//		Card disposedCard = new Woodcutter_Card();
 //		imsg.setInteractionType(interaction);
 //		imsg.setDisposeCard(disposedCard);
 		
-//		//Remodel2 simulation
-//		Interaction interaction = Interaction.Remodel2;
-//		CardName remodelChoice = CardName.Province;
-//		imsg.setInteractionType(interaction);
-//		imsg.setRemodelChoice(remodelChoice);
+		//Remodel2 simulation
+		Interaction interaction = Interaction.Remodel2;
+		CardName remodelChoice = CardName.Province;
+		imsg.setInteractionType(interaction);
+		imsg.setRemodelChoice(remodelChoice);
 		
 		imsg.toString();
 		System.out.println(imsg);

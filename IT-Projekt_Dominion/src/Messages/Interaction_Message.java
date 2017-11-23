@@ -6,6 +6,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import Cards.Card;
 import Cards.CardName;
 
 /**
@@ -21,17 +22,17 @@ public class Interaction_Message extends Message {
 	
 	//EOT = End Of Turn
 	private static final String ELEMENT_EOTDISCARDCARD = "EOTdiscardCard";
-	private CardName EOTdiscardCard = null;
+	private Card EOTdiscardCard = null;
 	
 	private static final String ELEMENT_CELLARDISCARDCARD = "cellarDiscardCard";
-	private LinkedList<CardName> cellarDiscardCards = null;
+	private LinkedList<Card> cellarDiscardCards = null;
 	
 	private static final String ELEMENT_WORKSHOPCHOICE = "workshopChoice";
 	private CardName workshopChoice = null;
 	
 	private static final String ELEMENT_DISPOSEDCARD = "disposedCard";
 	private static final String ELEMENT_REMODELCHOICE = "remodelChoice";
-	private CardName disposedCard = null;
+	private Card disposedCard = null;
 	private CardName remodelChoice = null;
 	
 	
@@ -55,15 +56,17 @@ public class Interaction_Message extends Message {
 		
 		//content of Interaction_Message depends on which interaction you're acting
 		switch(this.interactionType){
+		case Skip://nothing toDo here (no content)
+			break;
 		case EndOfTurn://consist the topCard of the discardPile to show to opponent
 			Element eotDiscardCard = docIn.createElement(ELEMENT_EOTDISCARDCARD);
 			eotDiscardCard.setTextContent(this.EOTdiscardCard.toString());
 			interaction.appendChild(eotDiscardCard);
 			break;
 		case Cellar://consists all cards that the client discarded with Cellar (theoretically "unlimited" number)
-			for(CardName cardName: this.cellarDiscardCards){
+			for(Card card: this.cellarDiscardCards){
 				Element cellarDiscardCard = docIn.createElement(ELEMENT_CELLARDISCARDCARD);
-				cellarDiscardCard.setTextContent(cardName.toString());
+				cellarDiscardCard.setTextContent(card.toString());
 				interaction.appendChild(cellarDiscardCard);
 			}
 			break;
@@ -102,19 +105,21 @@ public class Interaction_Message extends Message {
         
         //generate content of the specified Interaction
         switch(this.interactionType){
+        case Skip://nothing toDo here (no content)
+        	break;
         case EndOfTurn://get the CardName in the End Of Turn to show the opponent
         	tmpElements = interaction.getElementsByTagName(ELEMENT_EOTDISCARDCARD);
         	if(tmpElements.getLength() > 0){
         		Element EOTDiscardCard = (Element) tmpElements.item(0);
-        		this.EOTdiscardCard = CardName.parseName(EOTDiscardCard.getTextContent());
+        		this.EOTdiscardCard = Card.getCard((CardName.parseName(EOTDiscardCard.getTextContent())));
         	}
         	break;
         case Cellar://get the CardNames of the discarded cards with Cellar
         	tmpElements = interaction.getElementsByTagName(ELEMENT_CELLARDISCARDCARD);
-        	this.cellarDiscardCards = new LinkedList<CardName>();
+        	this.cellarDiscardCards = new LinkedList<Card>();
         	for(int i = 0; i < tmpElements.getLength(); i++){
         		Element cellarDiscardCard = (Element) tmpElements.item(i);
-        		this.cellarDiscardCards.add(CardName.parseName(cellarDiscardCard.getTextContent()));
+        		this.cellarDiscardCards.add(Card.getCard(CardName.parseName(cellarDiscardCard.getTextContent())));
         	}
         	break;
         case Workshop://get the CardName of the chosen card (max. cost 4)
@@ -128,7 +133,7 @@ public class Interaction_Message extends Message {
         	tmpElements = interaction.getElementsByTagName(ELEMENT_DISPOSEDCARD);
         	if(tmpElements.getLength() > 0){
         		Element disposedCard = (Element) tmpElements.item(0);
-        		this.disposedCard = CardName.parseName(disposedCard.getTextContent());
+        		this.disposedCard = Card.getCard(CardName.parseName(disposedCard.getTextContent()));
         	}
         	break;
         case Remodel2://get the chosen card which the client would like to take (max 2+ of the disposed card)
@@ -150,19 +155,19 @@ public class Interaction_Message extends Message {
 		this.interactionType = interactionType;
 	}
 
-	public CardName getDiscardCard() {
+	public Card getDiscardCard() {
 		return this.EOTdiscardCard;
 	}
 
-	public void setDiscardCard(CardName EOTdiscardCard) {
+	public void setDiscardCard(Card EOTdiscardCard) {
 		this.EOTdiscardCard = EOTdiscardCard;
 	}
 
-	public LinkedList<CardName> getCellarDiscardCards() {
+	public LinkedList<Card> getCellarDiscardCards() {
 		return this.cellarDiscardCards;
 	}
 
-	public void setCellarDiscardCards(LinkedList<CardName> cellarDiscardCards) {
+	public void setCellarDiscardCards(LinkedList<Card> cellarDiscardCards) {
 		this.cellarDiscardCards = cellarDiscardCards;
 	}
 
@@ -182,11 +187,11 @@ public class Interaction_Message extends Message {
 		this.workshopChoice = workshopChoice;
 	}
 
-	public CardName getDisposeCard() {
+	public Card getDisposeCard() {
 		return this.disposedCard;
 	}
 
-	public void setDisposeCard(CardName disposedCard) {
+	public void setDisposeCard(Card disposedCard) {
 		this.disposedCard = disposedCard;
 	}
 

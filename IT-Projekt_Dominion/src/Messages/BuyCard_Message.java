@@ -4,7 +4,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import Cards.Card;
 import Cards.CardName;
 
 /**
@@ -16,7 +15,7 @@ import Cards.CardName;
 public class BuyCard_Message extends Message {
 
 	private static final String ELEMENT_CARD = "card";
-	private Card card;
+	private CardName cardName;
 
 
 	public BuyCard_Message(){
@@ -32,7 +31,7 @@ public class BuyCard_Message extends Message {
         Element root = docIn.getDocumentElement();
 		
 		Element card = docIn.createElement(ELEMENT_CARD);
-		card.setTextContent(this.card.toString());
+		card.setTextContent(this.cardName.toString());
 		root.appendChild(card);
 	}
 
@@ -48,15 +47,15 @@ public class BuyCard_Message extends Message {
 		NodeList tmpElements = root.getElementsByTagName(ELEMENT_CARD);
         if (tmpElements.getLength() > 0) {
             Element card = (Element) tmpElements.item(0);
-            this.card = Card.getCard(CardName.parseName(card.getTextContent()));
+            this.cardName = CardName.parseName(card.getTextContent());
             }
 	}
 
-	public Card getCard(){
-		return this.card;
+	public CardName getCard(){
+		return this.cardName;
 	}
 	
-	public void setCard(Card card){
-		this.card = card;
+	public void setCard(CardName cardName){
+		this.cardName = cardName;
 	}
 }//end BuyCard_Message

@@ -148,7 +148,6 @@ public abstract class Message {
         else if (type == MessageType.Login) newMessage = new Login_Message();
         else if (type == MessageType.PlayCard) newMessage = new PlayCard_Message();
         else if (type == MessageType.PlayerSuccess) newMessage = new PlayerSuccess_Message();
-        else if (type == MessageType.SkipPhase) newMessage = new SkipPhase_Message();
         else if (type == MessageType.UpdateGame) newMessage = new UpdateGame_Message();
         else if (type == MessageType.Commit) newMessage = new Commit_Message();
         else if (type == MessageType.Failure) newMessage = new Failure_Message();

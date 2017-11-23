@@ -13,19 +13,18 @@ import MainClasses.Dominion_Main;
 import Messages.AskForChanges_Message;
 import Messages.BuyCard_Message;
 import Messages.Chat_Message;
-import Messages.Commit_Message;
 import Messages.Content;
 import Messages.CreateGame_Message;
 import Messages.CreateNewPlayer_Message;
 import Messages.Failure_Message;
 import Messages.GameMode_Message;
 import Messages.Interaction;
+import Messages.Interaction_Message;
 import Messages.Login_Message;
 import Messages.Message;
 import Messages.MessageType;
 import Messages.PlayCard_Message;
 import Messages.PlayerSuccess_Message;
-import Messages.SkipPhase_Message;
 import Messages.UpdateGame_Message;
 import Server_GameLogic.GameMode;
 import Server_GameLogic.Phase;
@@ -73,6 +72,7 @@ public class GameApp_Model extends Model {
 	
 	protected String gameMode;
 	protected HashMap<CardName, Integer> buyCards;
+	protected CardName buyChoice;
 	protected Phase currentPhase;
 	
 	private boolean listenToServer;
@@ -150,11 +150,11 @@ public class GameApp_Model extends Model {
 	/**
 	 * The client wants to buy a card. The result depends on the players validity to buy.
 	 * 
-	 * @param card
+	 * @param cardName
 	 */
-	public boolean sendBuyCard(Card card){
+	public boolean sendBuyCard(CardName cardName){
 		BuyCard_Message bcmsg = new BuyCard_Message();
-		bcmsg.setCard(card);
+		bcmsg.setCard(cardName);
 		boolean update = false;
 		Message msgIn = this.processMessage(bcmsg);
 		if(msgIn.getType().equals(MessageType.UpdateGame)){
@@ -182,6 +182,42 @@ public class GameApp_Model extends Model {
 		if(msgIn.getType().equals(MessageType.UpdateGame)){
 			this.processUpdateGame(msgIn);
 			update = true;
+		}
+		return update;
+	}
+	
+	/**
+	 * 
+	 * @param interaction
+	 * @return
+	 */
+	public boolean sendInteraction(){
+		Interaction_Message imsg = new Interaction_Message();
+		boolean update = false;
+		imsg.setInteractionType(this.interaction);
+		switch(this.interaction){
+		case Skip:
+			break;
+		case EndOfTurn:
+			imsg.setDiscardCard(this.cardSelection.get(0));
+			break;
+		case Cellar:
+			imsg.setCellarDiscardCards(this.cardSelection);
+			break;
+		case Workshop:
+			imsg.setWorkshopChoice(this.buyChoice);
+			break;
+		case Remodel1:
+			imsg.setDisposeCard(this.cardSelection.get(0));
+			break;
+		case Remodel2:
+			imsg.setRemodelChoice(this.buyChoice);
+			break;
+		}
+		Message msgIn = this.processMessage(imsg);
+		if(msgIn instanceof UpdateGame_Message){
+			update = true;
+			this.interaction = Interaction.Skip;//defaultSetting
 		}
 		return update;
 	}
@@ -278,21 +314,6 @@ public class GameApp_Model extends Model {
 		return update;
 	}
 	
-	/**
-	 * @author Lukas
-	 * The client wants to skip the currentPhase. Success depends on if it is his turn or not
-	 */
-	public boolean sendSkipPhase(){
-		boolean update = false;
-		Message msgIn = this.processMessage(new SkipPhase_Message());
-		if(msgIn.getType().equals(MessageType.UpdateGame)){
-			this.processUpdateGame(msgIn);
-			update = true;
-		}else if(msgIn.getType().equals(MessageType.Failure)){
-			//nothing toDo here
-		}
-		return update;
-	}
 
 	/**
 	 * @author Lukas

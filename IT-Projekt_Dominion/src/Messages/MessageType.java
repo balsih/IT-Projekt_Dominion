@@ -16,7 +16,6 @@ public enum MessageType {
 	Login,
 	PlayCard,
 	PlayerSuccess,
-	SkipPhase,
 	UpdateGame,
 	Commit,
 	Failure,
@@ -57,7 +56,6 @@ public enum MessageType {
     	else if (msg instanceof Login_Message) type = MessageType.Login;
     	else if (msg instanceof PlayCard_Message) type = MessageType.PlayCard;
     	else if (msg instanceof PlayerSuccess_Message) type = MessageType.PlayerSuccess;
-    	else if (msg instanceof SkipPhase_Message) type = MessageType.SkipPhase;
     	else if (msg instanceof UpdateGame_Message) type = MessageType.UpdateGame;
     	else if (msg instanceof Commit_Message) type = MessageType.Commit;
     	else if (msg instanceof Failure_Message) type = MessageType.Failure;
