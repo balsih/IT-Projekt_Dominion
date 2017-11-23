@@ -18,7 +18,5 @@ public class BotTester {
 		if (z1 < 0.35) {
 			System.out.println("true");
 		}
-
 	}
-
 }

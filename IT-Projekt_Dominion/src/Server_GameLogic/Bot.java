@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import Cards.Card;
 import Cards.CardName;
 import Cards.CardType;
+import Messages.Message;
+import Messages.UpdateGame_Message;
 
 /**
  * @author Simon
@@ -79,10 +81,9 @@ public class Bot extends Player {
 				estimatePriorityOfTreasureCards();
 				estimatePriorityOfActionCards();
 				buy();
-				makeBreak();
-			} while (buys > 0 && buyOneMore == true);
+			} while (buys > 0 && buyOneMore == true && actualPhase == Phase.Buy);
 		}
-	} // finished message?
+	}
 
 	/**
 	 * Plays all the available TreasureCards which are in the hands of the bot,
@@ -118,18 +119,8 @@ public class Bot extends Player {
 		switch (cardToPlay) {
 		// case Cellar: do not use
 		// break;
-		case Market:
-			break;
-		// case Mine: do not use
-		// break;
 		case Remodel:
 			break;
-		case Smithy:
-			break;
-		case Village:
-			break;
-		// case Woodcutter: do not use
-		// break;
 		// case Workshop: do not use
 		// break;
 		default:
@@ -149,7 +140,7 @@ public class Bot extends Player {
 
 		// PROBLEM: Wie soll die beste Karte gefunden werden?
 		List<CardName> list = prioListForBuying.keySet().stream()
-				.sorted((c1, c2) -> Integer.compare(prioListForBuying.get(c2), prioListForBuying.get(c1)))
+				.sorted((s1, s2) -> Integer.compare(prioListForBuying.get(s2), prioListForBuying.get(s1)))
 				.collect(Collectors.toList());
 //		list.
 //		buy(cardToBuy);
@@ -162,7 +153,12 @@ public class Bot extends Player {
 		// valid play? --> ugmsg / failed play --> fmsg
 
 		makeBreak();
-
+	
+		Message m = buy(cardToBuy);
+		if(m instanceof UpdateGame_Message) {
+			UpdateGame_Message ugmsg = (UpdateGame_Message) m;
+	//		ugmsg.
+		}
 		// next buy?
 		if (buys > 0) {
 
@@ -181,11 +177,12 @@ public class Bot extends Player {
 	/**
 	 * Fills a name-list with entries, chooses one and gives it back. public static
 	 */
-	String getNameOfBot() {
-		NAMES.add("Philipp");
+	public String getNameOfBot() {
+		NAMES.add("Bodo");
+		NAMES.add("Lukas");
 		NAMES.add("Simon");
-		NAMES.add("Alexa");
-		NAMES.add("Google");
+		NAMES.add("Adrian");
+		NAMES.add("René");
 		Random rand = new Random();
 		String nameOfBot = NAMES.get(rand.nextInt(4));
 		return nameOfBot;
@@ -217,13 +214,16 @@ public class Bot extends Player {
 			gameStage = 80;
 		if (game.getDuchyPile().size() <= MIN_CARDS_PER_DECKPILE)
 			gameStage = 60;
-		if (game.getDuchyPile().size() <= (MIN_CARDS_PER_DECKPILE * 2))
+		if (game.getDuchyPile().size() <= (MIN_CARDS_PER_DECKPILE + 2))
 			gameStage = 40;
 
 		// PROBLEM HERE!
-		// game.getBuyCards().keySet().stream().filter(game.buyCards.containsValue(MIN_CARDS_PER_DECKPILE));
+//		game.getBuyCards().keySet().stream().filter(game.buyCards.containsValue(MIN_CARDS_PER_DECKPILE));
 		// numOfStacksWithLessThanFourCards = streamResultat
 
+		// mit plus rechnen
+		// gameStage jedes mal neuberechnen
+		
 		if (gameStage >= 40)
 			prioListForBuying.replace(CardName.Duchy, 65);
 		prioListForBuying.replace(CardName.Province, 100);
