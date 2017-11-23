@@ -317,26 +317,26 @@ public class Game {
 	 */
 	public HashMap<CardName, Integer> getBuyCards() {
 		for (int i = 0; i < NUM_OF_VICTORYCARDS; i++) {
-			this.buyCards.put(this.provincePile.firstElement().getCardName(), this.provincePile.size());
-			this.buyCards.put(this.duchyPile.firstElement().getCardName(), this.duchyPile.size());
-			this.buyCards.put(this.estatePile.firstElement().getCardName(), this.estatePile.size());
+			this.buyCards.put(CardName.Province, this.provincePile.size());
+			this.buyCards.put(CardName.Duchy, this.duchyPile.size());
+			this.buyCards.put(CardName.Estate, this.estatePile.size());
 		}
 
 		for (int i = 0; i < NUM_OF_TREASURECARDS; i++) {
-			this.buyCards.put(this.copperPile.firstElement().getCardName(), this.copperPile.size());
-			this.buyCards.put(this.goldPile.firstElement().getCardName(), this.goldPile.size());
-			this.buyCards.put(this.silverPile.firstElement().getCardName(), this.silverPile.size());
+			this.buyCards.put(CardName.Copper, this.copperPile.size());
+			this.buyCards.put(CardName.Gold, this.goldPile.size());
+			this.buyCards.put(CardName.Silver, this.silverPile.size());
 		}
 
 		for (int i = 0; i < NUM_OF_ACTIONCARDS; i++) {
-			this.buyCards.put(this.workshopPile.firstElement().getCardName(), this.workshopPile.size());
-			this.buyCards.put(this.woodcutterPile.firstElement().getCardName(), this.woodcutterPile.size());
-			this.buyCards.put(this.villagePile.firstElement().getCardName(), this.villagePile.size());
-			this.buyCards.put(this.smithyPile.firstElement().getCardName(), this.smithyPile.size());
-			this.buyCards.put(this.remodelPile.firstElement().getCardName(), this.remodelPile.size());
-			this.buyCards.put(this.minePile.firstElement().getCardName(), this.minePile.size());
-			this.buyCards.put(this.marketPile.firstElement().getCardName(), this.marketPile.size());
-			this.buyCards.put(this.cellarPile.firstElement().getCardName(), this.cellarPile.size());
+			this.buyCards.put(CardName.Workshop, this.workshopPile.size());
+			this.buyCards.put(CardName.Woodcutter, this.woodcutterPile.size());
+			this.buyCards.put(CardName.Village, this.villagePile.size());
+			this.buyCards.put(CardName.Smithy, this.smithyPile.size());
+			this.buyCards.put(CardName.Remodel, this.remodelPile.size());
+			this.buyCards.put(CardName.Mine, this.minePile.size());
+			this.buyCards.put(CardName.Market, this.marketPile.size());
+			this.buyCards.put(CardName.Cellar, this.cellarPile.size());
 		}
 
 		return this.buyCards;
