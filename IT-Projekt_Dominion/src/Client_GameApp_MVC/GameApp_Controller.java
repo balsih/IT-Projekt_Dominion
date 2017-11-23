@@ -21,16 +21,19 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			String newMessage = this.view.txtfChatArea.getText();
 			if (newMessage.length() > 0) {
 				if (existingMessages.length() == 0)
-					this.view.txtaChatArea.setText(this.model.sendChat(newMessage));
+					// to delete: this.view.txtaChatArea.setText(this.model.sendChat(newMessage));
+					this.model.sendChat(newMessage);
 				else
 					// the chat history also needs to be displayed
-					this.view.txtaChatArea.setText(this.model.sendChat(existingMessages + "\n" + newMessage));
-				this.view.txtfChatArea.setText(this.model.sendChat(""));
+					// to delete: this.view.txtaChatArea.setText(this.model.sendChat(existingMessages + "\n" + newMessage));
+					this.model.sendChat(existingMessages + "\n" + newMessage);
+				// Wo den Text setzen? So?
+				this.view.txtfChatArea.setText("");
 			}
 		});
 		
 		this.view.btnCommit.setOnAction(event -> {
-			// do work here
+			// Phase abfragen, um zu wissen, was der Commit auslösen soll
 		});
 
 	}

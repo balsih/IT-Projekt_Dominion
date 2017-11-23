@@ -183,45 +183,36 @@ public class GameApp_View extends View<GameApp_Model> {
 		lblActionCards.getStyleClass().add("Label");
 
 		vboxTreasureCards.getStyleClass().add("vbox");
-		// neu:
 		vboxTreasureCards.setMinWidth(290);
 		hboxTreasureCards.getStyleClass().add("hbox");
 
 		vboxVictoryCards.getStyleClass().add("vbox");
-		// neu:
 		vboxVictoryCards.setMinWidth(290);
 		hboxVictoryCards.getStyleClass().add("hbox");
 
 		vboxChatArea.getStyleClass().add("vbox");
-		// neu:
 		vboxChatArea.setMaxWidth(250);
 		hboxChatArea.getStyleClass().add("hbox");
 
 		vboxLog.getStyleClass().add("vbox");
-		// neu:
 		vboxLog.setMaxWidth(250);
 
-		// neu:
 		hboxDiscard.getStyleClass().add("cardStackHeight");
 		vboxDiscard.getStyleClass().add("cardStackWidth");
 		vboxDiscard.getStyleClass().add("vbox");
 		
-		// neu:
 		hboxDeck.getStyleClass().add("cardStackHeight");
 		vboxDeck.getStyleClass().add("cardStackWidth");
 
 		vboxPlayedCards.getStyleClass().add("vbox");
-		// neu:
 		vboxPlayedCards.setPrefWidth(Double.MAX_VALUE);
 		hboxPlayedCards.getStyleClass().add("hbox");
 
 		vboxHandCards.getStyleClass().add("vbox");
-		// neu:
 		vboxHandCards.setPrefWidth(Double.MAX_VALUE);
 		hboxHandCards.getStyleClass().add("hbox");
 
 		vboxCurrentPlayer.getStyleClass().add("vboxCurrentPlayer");
-		// neu:
 		gridpCurrentPlayer.getStyleClass().add("gridpCurrentPlayer");
 		lblCrntHandCards.getStyleClass().add("lblCurrentPlayer");
 		lblNmbrOfCrntHandCards.getStyleClass().add("lblCurrentPlayer");
@@ -235,6 +226,9 @@ public class GameApp_View extends View<GameApp_Model> {
 		root.getStyleClass().add("rootFormat");
 
 		Scene scene = new Scene(root, 1000, 600);
+		// Prevent resizing below initial size
+		stage.setMinWidth(stage.getWidth());
+		stage.setMinHeight(stage.getHeight());
 		// stage.setScene(scene);
 		// stage.setTitle("Dominion");
 

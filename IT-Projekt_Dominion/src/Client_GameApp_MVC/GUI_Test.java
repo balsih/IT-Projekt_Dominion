@@ -60,22 +60,22 @@ public class GUI_Test extends Application {
 		TextArea txtaLog = new TextArea();
 		txtaLog.setDisable(true);
 
-		// neu: Controls discard area
+		// Controls discard area
 		Label lblDiscard = new Label("Discard");
 		Label lblNmbrOfDiscards = new Label("nmbr");
 		StackPane stackpDiscard = new StackPane();
 
-		// neu: Controls deck area
+		// Controls deck area
 		Label lblDeck = new Label("Deck");
 		Label lblNmbrOfDeckCards = new Label("nmbr");
 		StackPane stackpDeck = new StackPane();
 
-		// neu: Controls played cards area
+		// Controls played cards area
 		Label lblPlayedCards = new Label("Played cards");
 		ScrollPane scrlpPlayedCards = new ScrollPane();
 		HBox hboxPlayedCards = new HBox();
 
-		// neu: Controls hand cards area
+		// Controls hand cards area
 		Label lblHandCards = new Label("Hand cards");
 		ScrollPane scrlpHandCards = new ScrollPane();
 		HBox hboxHandCards = new HBox();
@@ -111,19 +111,19 @@ public class GUI_Test extends Application {
 		scrlpLog.setContent(txtaLog);
 		VBox vboxLog = new VBox(lblLog, scrlpLog);
 
-		// neu: Discard area
+		// Discard area
 		HBox hboxDiscard = new HBox(lblDiscard, lblNmbrOfDiscards);
 		VBox vboxDiscard = new VBox(hboxDiscard, stackpDiscard);
 
-		// neu: Deck area
+		// Deck area
 		HBox hboxDeck = new HBox(lblDeck, lblNmbrOfDeckCards);
 		VBox vboxDeck = new VBox(hboxDeck, stackpDeck);
 
-		// neu: Played cards area
+		// Played cards area
 		scrlpPlayedCards.setContent(hboxPlayedCards);
 		VBox vboxPlayedCards = new VBox(lblPlayedCards, scrlpPlayedCards);
 
-		// neu: Hand cards area
+		// Hand cards area
 		scrlpHandCards.setContent(hboxHandCards);
 		VBox vboxHandCards = new VBox(lblHandCards, scrlpHandCards);
 
@@ -181,6 +181,9 @@ public class GUI_Test extends Application {
 		stage.setScene(scene);
 		stage.setTitle("Dominion");
 		stage.show();
+		// Prevent resizing below initial size
+		stage.setMinWidth(stage.getWidth());
+		stage.setMinHeight(stage.getHeight());
 
 		// Styles the elements of the GUI
 		scene.getStylesheets().add(getClass().getResource("GUI_Test.css").toExternalForm());
@@ -190,45 +193,36 @@ public class GUI_Test extends Application {
 		lblActionCards.getStyleClass().add("Label");
 
 		vboxTreasureCards.getStyleClass().add("vbox");
-		// neu:
 		vboxTreasureCards.setMinWidth(290);
 		hboxTreasureCards.getStyleClass().add("hbox");
 
 		vboxVictoryCards.getStyleClass().add("vbox");
-		// neu:
 		vboxVictoryCards.setMinWidth(290);
 		hboxVictoryCards.getStyleClass().add("hbox");
 
 		vboxChatArea.getStyleClass().add("vbox");
-		// neu:
 		vboxChatArea.setMaxWidth(250);
 		hboxChatArea.getStyleClass().add("hbox");
 
 		vboxLog.getStyleClass().add("vbox");
-		// neu:
 		vboxLog.setMaxWidth(250);
 
-		// neu:
 		hboxDiscard.getStyleClass().add("cardStackHeight");
 		vboxDiscard.getStyleClass().add("cardStackWidth");
 		vboxDiscard.getStyleClass().add("vbox");
 		
-		// neu:
 		hboxDeck.getStyleClass().add("cardStackHeight");
 		vboxDeck.getStyleClass().add("cardStackWidth");
 
 		vboxPlayedCards.getStyleClass().add("vbox");
-		// neu:
 		vboxPlayedCards.setPrefWidth(Double.MAX_VALUE);
 		hboxPlayedCards.getStyleClass().add("hbox");
 
 		vboxHandCards.getStyleClass().add("vbox");
-		// neu:
 		vboxHandCards.setPrefWidth(Double.MAX_VALUE);
 		hboxHandCards.getStyleClass().add("hbox");
 
 		vboxCurrentPlayer.getStyleClass().add("vboxCurrentPlayer");
-		// neu:
 		gridpCurrentPlayer.getStyleClass().add("gridpCurrentPlayer");
 		lblCrntHandCards.getStyleClass().add("lblCurrentPlayer");
 		lblNmbrOfCrntHandCards.getStyleClass().add("lblCurrentPlayer");
