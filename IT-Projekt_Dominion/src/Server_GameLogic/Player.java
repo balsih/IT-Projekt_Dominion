@@ -48,7 +48,7 @@ public class Player {
 
 	protected Socket clientSocket;
 	private ServerThreadForClient serverThreadForClient;
-	
+
 	private final Logger logger = Logger.getLogger("");
 
 	/**
@@ -129,8 +129,9 @@ public class Player {
 			UpdateGame_Message ugmsg = playedCard.executeCard(this);
 			this.actions--;
 			playedCards.add(playedCard);
-			
-			// Checks if the game is finished. If it is, it checks the winner and
+
+			// Checks if the game is finished. If it is, it checks the winner
+			// and
 			// sends it to the opponent.
 			if (game.checkGameEnding()) {
 				game.checkWinner();
@@ -159,9 +160,12 @@ public class Player {
 					return psmsg;
 				}
 			}
-			
-			this.skipPhase();
+
 			this.sendToOpponent(this, ugmsg);
+
+			if (this.actions == 0 && !this.handCards.contains(CardType.Action))
+				this.skipPhase();
+
 			return ugmsg;
 		}
 
@@ -249,7 +253,7 @@ public class Player {
 					this.discardPile.push(buyedCard);
 					break;
 				}
-				
+
 				this.coins -= buyedCard.getCost();
 				this.buys--;
 			} catch (EmptyStackException e) {
@@ -291,19 +295,18 @@ public class Player {
 			 * failure_Message.
 			 */
 			ugmsg.setLog(this.playerName + " bought a " + buyedCard.getCardName() + " Card.");
-			// Coins noch abziehen
 			ugmsg.setCoins(this.coins);
-			// Nur das setzen was sich geaendert hat
 			ugmsg.setActions(this.actions);
-			// Buys noch abziehen
 			ugmsg.setBuys(this.buys);
-			// Nur setzen wenn geaendert
-			ugmsg.setCurrentPhase(actualPhase);
 			ugmsg.setDiscardPileTopCard(this.discardPile.firstElement());
 			ugmsg.setDiscardPileCardNumber(this.discardPile.size());
 			ugmsg.setBuyedCard(buyedCard);
-			ugmsg.setInteractionType(Interaction.EndOfTurn);
+			this.sendToOpponent(this, ugmsg);
 
+			if (this.buys == 0) {
+				this.isFinished = true;
+				UpdateGame_Message.merge((UpdateGame_Message) skipPhase(), ugmsg);
+			}
 			return ugmsg;
 		}
 
@@ -334,7 +337,6 @@ public class Player {
 		this.actualPhase = Phase.Action;
 
 		return ugmsg;
-
 	}
 
 	/*
@@ -344,7 +346,6 @@ public class Player {
 	 * auf dem DiscardPile ist. Nur wenn mehr als eine Karte in der Hand ist
 	 * (Abfrage in Buy) InteractionType ueber UpdateGameMessage.
 	 */
-
 	private void discard() {
 		while (!playedCards.isEmpty()) {
 			this.discardPile.push(playedCards.remove());
@@ -379,30 +380,30 @@ public class Player {
 
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 
-		for (int i = 0; i < numOfCards; i++) {
-			if (!deckPile.isEmpty() && discardPile.isEmpty()) {
-				Collections.shuffle(deckPile);
-				for (int y = 0; i < numOfCards; i++)
-					handCards.add(discardPile.pop());
-			} else if (deckPile.isEmpty() && !discardPile.isEmpty()) {
-				while (!discardPile.isEmpty())
-					deckPile.push(discardPile.pop());
-				Collections.shuffle(deckPile);
-				for (int y = 0; y < numOfCards; y++)
-					handCards.add(deckPile.pop());
-			} else if (deckPile.size() < numOfCards) {
-				while (!deckPile.isEmpty())
-					handCards.add(deckPile.pop());
-				while (!discardPile.isEmpty())
-					deckPile.push(discardPile.pop());
-				Collections.shuffle(deckPile);
-				for (int y = 0; y < numOfCards; y++)
-					handCards.add(deckPile.pop());
-			} else {
-				for (int y = 0; y < numOfCards - handCards.size(); y++)
-					handCards.add(deckPile.pop());
+			for (int i = 0; i < numOfCards; i++) {
+				if (!deckPile.isEmpty() && discardPile.isEmpty()) {
+					Collections.shuffle(deckPile);
+					for (int y = 0; i < numOfCards; i++)
+						handCards.add(discardPile.pop());
+				} else if (deckPile.isEmpty() && !discardPile.isEmpty()) {
+					while (!discardPile.isEmpty())
+						deckPile.push(discardPile.pop());
+					Collections.shuffle(deckPile);
+					for (int y = 0; y < numOfCards; y++)
+						handCards.add(deckPile.pop());
+				} else if (deckPile.size() < numOfCards) {
+					while (!deckPile.isEmpty())
+						handCards.add(deckPile.pop());
+					while (!discardPile.isEmpty())
+						deckPile.push(discardPile.pop());
+					Collections.shuffle(deckPile);
+					for (int y = 0; y < numOfCards; y++)
+						handCards.add(deckPile.pop());
+				} else {
+					for (int y = 0; y < numOfCards - handCards.size(); y++)
+						handCards.add(deckPile.pop());
+				}
 			}
-		}
 
 		ugmsg.setDeckPileCardNumber(this.deckPile.size());
 		ugmsg.setDiscardPileCardNumber(this.discardPile.size());
@@ -452,9 +453,11 @@ public class Player {
 				ugmsg.setCurrentPhase(Phase.Buy);
 
 			case Buy:
-				this.actualPhase = Phase.CleanUp;
-				ugmsg.setCurrentPhase(Phase.CleanUp);
-				this.cleanUp();
+				if (isFinished == true) {
+					this.actualPhase = Phase.CleanUp;
+					ugmsg.setCurrentPhase(Phase.CleanUp);
+					this.cleanUp();
+				}
 
 			case CleanUp:
 

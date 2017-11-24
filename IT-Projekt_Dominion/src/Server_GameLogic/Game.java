@@ -298,7 +298,7 @@ public class Game {
 			return existingGame;
 		} else {
 			Game game = new Game();
-			Bot bot = new Bot("Bobby");
+			Bot bot = new Bot(Bot.getNameOfBot());
 			game.setPlayer1(player);
 			game.setPlayer2(bot);
 			bot.addGame(game);
