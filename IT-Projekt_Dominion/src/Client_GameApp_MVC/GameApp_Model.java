@@ -502,7 +502,7 @@ public class GameApp_Model extends Model {
 	 * @param message, individual Message
 	 * @return message, individual Message
 	 */
-	private Message processMessage(Message message){
+	public Message processMessage(Message message){
 		Socket socket = connect();
 		Message msgIn = null;
 		if(socket != null){

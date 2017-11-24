@@ -271,7 +271,7 @@ public class ServerThreadForClient implements Runnable {
 		chat = this.player.getPlayerName()+": "+chat;
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		ugmsg.setChat(chat);
-		this.game.sendToOpponent(this.player, ugmsg);
+		this.player.sendToOpponent(this.player, ugmsg);
 		this.logger.severe(cmsg.getClient()+" has sent chat to"+this.game.getOpponent(this.player).getPlayerName()+": "+cmsg.getChat());
 		return ugmsg;
 	}
@@ -338,7 +338,7 @@ public class ServerThreadForClient implements Runnable {
     	psmsgOpponent.setSuccess(Content.Won);
     	this.game.getOpponent(this.player).countVictoryPoints();
     	psmsgOpponent.setVictoryPoints(this.game.getOpponent(this.player).getVictoryPoints());
-    	this.game.sendToOpponent(this.player, psmsgOpponent);
+    	this.player.sendToOpponent(this.player, psmsgOpponent);
     	PlayerSuccess_Message psmsgSelf = new PlayerSuccess_Message();
     	psmsgSelf.setSuccess(Content.Lost);
     	this.player.countVictoryPoints();
