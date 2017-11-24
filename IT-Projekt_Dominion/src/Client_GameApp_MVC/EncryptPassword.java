@@ -5,7 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 public class EncryptPassword {
-
+	
 	public static void main(String[] args) throws NoSuchAlgorithmException {
 		String salt = getSalt();
 		

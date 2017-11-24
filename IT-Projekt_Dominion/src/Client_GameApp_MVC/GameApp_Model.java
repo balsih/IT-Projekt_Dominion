@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import Abstract_MVC.Model;
 import Cards.Card;
 import Cards.CardName;
+import Client_GameApp_MVC.Regex.UserInput;
 import MainClasses.Dominion_Main;
 import Messages.AskForChanges_Message;
 import Messages.BuyCard_Message;
@@ -34,22 +35,22 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
 /**
- * @author Adiran & Lukas
+ * @author Adrian & Lukas
  * @version 1.0
  * @created 31-Okt-2017 17:04:41
  */
 public class GameApp_Model extends Model {
-	
+
 	private static final String NO_CONNECTION = "No connection to Server";
 
 	protected String clientName;
 	protected String opponent;
 	protected String currentPlayer;
-	
+
 	protected int actions;
 	protected int buys;
 	protected int coins;
-	
+
 	protected LinkedList<Card> yourNewHandCards;
 	protected LinkedList<Card> yourHandCards;
 	protected int opponentNewHandCards;
@@ -68,24 +69,28 @@ public class GameApp_Model extends Model {
 	protected String newLog;
 	protected Interaction interaction = Interaction.Skip;
 	protected LinkedList<Card> cardSelection;
-	
+
 	protected Content success;
 	protected int victoryPoints;
-	
+
 	protected String gameMode;
 	protected HashMap<CardName, Integer> buyCards;
 	protected CardName buyChoice;
 	protected Phase currentPhase;
-	
+
 	private boolean listenToServer;
 	private Dominion_Main main;
-	private String clientNameRegex;
 	private String highScore;
 	private String ipAddress;
-	private String ipRegex;
-	private String passwordRegex;
 	private int port;
-	
+
+	protected enum UserInput {
+		clientName,
+		ipAddress,
+		port,
+		password
+	}
+
 	private MediaPlayer mediaPlayer; // sound
 
 
@@ -93,7 +98,7 @@ public class GameApp_Model extends Model {
 		super();
 		this.main = main;
 		this.listenToServer = false;
-		
+
 		// start menusound
 		this.startMediaPlayer("sound.mp3"); // start sound 
 	}
@@ -105,22 +110,71 @@ public class GameApp_Model extends Model {
 	public boolean checkMoveValidity(String moveType){
 		return false;
 	}
-	
+
 
 	public String encryptPassword(String password){
 		return "";
 	}
-	
 
 	/**
+	 * @author Adrian
+	 * Checks if the user entered a valid input. This method is applicable for the inputs clientName, ipAddress, port and password.
+	 * Returns true if the input is valid.
 	 * 
 	 * @param userInput
 	 * @param inputType
+	 * @return valid
 	 */
-	public boolean checkUserInput(String userInput, String inputType){
-		return true;
+	public boolean checkUserInput(String userInput, UserInput inputType){
+		boolean valid = false;
+		final int MAX_INPUT_LENGTH = 30;
+		String[] parts = userInput.split("\\.");
+
+		switch(inputType) {
+		// ClientName and password can't be longer than MAX_INPUT_LENGTH
+
+		case clientName:
+		case password:
+			if (userInput.length()<=MAX_INPUT_LENGTH && userInput.length() > 2)
+				valid = true;
+			break;
+			// The ipAddress must consist of 4 parts. Each part is an integer from 0 to 255.
+
+		case ipAddress:
+			if (parts.length == 4){
+				valid = true;
+				for (String part : parts){
+					try {
+						int number = Integer.parseInt(part);
+						if (number < 0 || number > 255) {
+							valid = false;
+						} else {
+							valid = true;
+							this.ipAddress = userInput;
+						}
+					} catch (NumberFormatException e) {
+						// input was not an integer
+						valid = false;
+					}
+				}		
+			}
+			break;
+			// The port must be an integer from 1 to 65535.
+
+		case port:
+			try {
+				int number = Integer.parseInt(userInput);
+				if (number > 0 && number <= 65535) valid = true;
+				this.port = number;
+			} catch (NumberFormatException e) {
+				// input was not an integer
+				valid = false;
+			}
+			break;
+		}
+		return valid;
 	}
-	
+
 	/**
 	 * @author Bradley Richards
 	 * The IP and Port will be set here
@@ -129,8 +183,8 @@ public class GameApp_Model extends Model {
 	 * @param port
 	 */
 	public void init(String ipAddress, int port){
-	    this.ipAddress = ipAddress;
-	    this.port = port;
+		this.ipAddress = ipAddress;
+		this.port = port;
 	}
 
 	/**
@@ -140,13 +194,13 @@ public class GameApp_Model extends Model {
 	 * @return Socket
 	 */
 	private Socket connect(){
-	    Socket socket = null;
-        try {
-            socket = new Socket(ipAddress, port);
-        } catch (Exception e) {
-            System.out.println(e.toString());
-        }
-	    return socket;
+		Socket socket = null;
+		try {
+			socket = new Socket(ipAddress, port);
+		} catch (Exception e) {
+			System.out.println(e.toString());
+		}
+		return socket;
 	}
 
 	/**
@@ -187,7 +241,7 @@ public class GameApp_Model extends Model {
 		}
 		return update;
 	}
-	
+
 	/**
 	 * 
 	 * @param interaction
@@ -223,7 +277,7 @@ public class GameApp_Model extends Model {
 		}
 		return update;
 	}
-	
+
 
 	/**
 	 * @author Lukas
@@ -247,7 +301,7 @@ public class GameApp_Model extends Model {
 			result = fmsg.getNotification();
 		}
 		return result;
-		
+
 	}
 
 	/**
@@ -271,7 +325,7 @@ public class GameApp_Model extends Model {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * @author Lukas
 	 * The client sends his encrypted password to server and will get to the MainMenu if the password is appropriate to clientName
@@ -280,20 +334,20 @@ public class GameApp_Model extends Model {
 	 * @return String, usually only necessary if clientName and password don't work
 	 */
 	public String sendLogin(String clientName, String password){
-        String result = NO_CONNECTION;
+		String result = NO_CONNECTION;
 		Login_Message lmsg = new Login_Message();
 		lmsg.setClient(this.clientName);//set the clientName and encrypted password to XML
 		String encryptedPassword = this.encryptPassword(password);
 		lmsg.setPassword(encryptedPassword);
-        this.clientName = clientName;
-        Message msgIn = this.processMessage(lmsg);
+		this.clientName = clientName;
+		Message msgIn = this.processMessage(lmsg);
 		if(msgIn.getType().equals(MessageType.Commit)){
 			this.main.startMainMenu();//login succeeded
 		}else if(msgIn.getType().equals(MessageType.Failure)){
 			Failure_Message fmsg = (Failure_Message) msgIn;//login failed, no password with clientName available
 			result = fmsg.getNotification();
 		}
-        return result;
+		return result;
 	}
 
 	/**
@@ -315,7 +369,7 @@ public class GameApp_Model extends Model {
 		}
 		return update;
 	}
-	
+
 
 	/**
 	 * @author Lukas
@@ -334,7 +388,7 @@ public class GameApp_Model extends Model {
 		this.opponentHandCards = cgmsg.getHandNumber();
 		this.currentPlayer = cgmsg.getStartingPlayer();
 	}
-	
+
 	/**
 	 * @author Lukas
 	 * Set success and victoryPoints. Result depends weather you won or lost
@@ -347,44 +401,44 @@ public class GameApp_Model extends Model {
 		this.victoryPoints = psmsg.getVictoryPoints();
 	}
 
-	
+
 	/**
 	 * @author Lukas
 	 * Interpret all updates and provides structures for further work
 	 * 
 	 * @param msgIn, UpdateGame_Message
 	 */
-	
+
 	private void processUpdateGame(Message msgIn) {	
 		UpdateGame_Message ugmsg = (UpdateGame_Message) msgIn;
-		
+
 		if(ugmsg.getLog() != null)//If something necessary happened in the Game, it will be provided to show
 			this.newLog = ugmsg.getLog();
-		
+
 		if(ugmsg.getChat() != null)//If the client or opponent sent a chat, it will be provided to show
 			this.newChat = ugmsg.getChat();
-		
+
 		if(ugmsg.getActions() != null && ugmsg.getCurrentPlayer() == null){//Has to be calculated during the player's turn. Always currentPlayer
 			this.actions += ugmsg.getActions();//update actions
 		}else{
 			this.actions = ugmsg.getActions();//set actions new
 		}
-			
+
 		if(ugmsg.getBuys() != null && ugmsg.getCurrentPlayer() == null){//Has to be calculated during the player's turn. Always currentPlayer
 			this.buys += ugmsg.getBuys();//update buys
 		}else{
 			this.buys = ugmsg.getBuys();//set buys new
 		}
-			
+
 		if(ugmsg.getCoins() != null && ugmsg.getCurrentPlayer() == null){//Has to be calculated during the player's turn. Always currentPlayer
 			this.coins += ugmsg.getCoins();//update coins
 		}else{
 			this.coins = ugmsg.getCoins();//set coins new
 		}
-			
+
 		if(ugmsg.getCurrentPhase() != null)//If Phase changed. Always currentPlayer
 			this.currentPhase = ugmsg.getCurrentPhase();
-			
+
 		if(ugmsg.getBuyedCard() != null && this.currentPlayer == this.clientName){//If a buy was successful. Always currentPlayer
 			this.yourBuyedCard = ugmsg.getBuyedCard();
 			this.buyCards.replace(this.yourBuyedCard.getCardName(), this.buyCards.get(this.yourBuyedCard.getCardName()));
@@ -392,25 +446,25 @@ public class GameApp_Model extends Model {
 			this.opponentBuyedCard = ugmsg.getBuyedCard();
 			this.buyCards.replace(this.opponentBuyedCard.getCardName(), this.buyCards.get(this.opponentBuyedCard.getCardName()));
 		}
-		
+
 		if(ugmsg.getDeckPileCardNumber() != null && this.currentPlayer == this.opponent)//Just necessary to show opponent's discardPile
 			this.opponentDiscardPile = ugmsg.getDeckPileCardNumber();
-			
+
 		if(ugmsg.getDiscardPileCardNumber() != null && this.currentPlayer == this.opponent)//Just necessary to show opponent's deckPile
 			this.opponentDeck = ugmsg.getDiscardPileCardNumber();
-			
+
 		if(ugmsg.getDiscardPileTopCard() != null && this.currentPlayer == this.clientName){//Always currentPlayer
 			this.yourDiscardPileTopCard = ugmsg.getDiscardPileTopCard();
 		}else{
 			this.opponentDiscardPileTopCard = ugmsg.getDiscardPileTopCard();
 		}
-		
+
 		if(ugmsg.getNewHandCards() != null && this.currentPlayer == this.clientName){//The new handCards just drawn. Always currentPlayer
 			List<CardName> cardNames = ugmsg.getNewHandCards().stream().map(card -> card.getCardName()).collect(Collectors.toList());
 
 			for(int i = 0; i < this.yourDeck.size(); i++){
 				for(int y = 0; y < cardNames.size(); y++){
-					
+
 				}
 			}
 			for(CardName cardName: cardNames){
@@ -419,25 +473,25 @@ public class GameApp_Model extends Model {
 						.collect(Collectors.toList())
 						.get(0);
 			}
-			
+
 		}else{
 			this.opponentNewHandCards = ugmsg.getNewHandCards().size();
 		}
-			
+
 		if(ugmsg.getPlayedCard() != null)//If a card was played, it will be provided
 			this.newPlayedCard = ugmsg.getPlayedCard();
-		
+
 		if(ugmsg.getCurrentPlayer() != null)//If currentPlayer is set, the currentPlayer's turn ends
 			this.currentPlayer = ugmsg.getCurrentPlayer();
-		
+
 		if(ugmsg.getInteractionType() != null)//If interaction is set, the Type of Interaction can be checked (i.e. meaning of the commit_Button)
 			this.interaction = ugmsg.getInteractionType();
-		
+
 		if(ugmsg.getCardSelection() != null)//If cardSelection is set, it consists a selection of the cards to chose
 			this.cardSelection = ugmsg.getCardSelection();
 	}
 
-	
+
 	/**
 	 * SetUp a socket_connection to server with the given message and returns the answer
 	 * 
@@ -458,7 +512,7 @@ public class GameApp_Model extends Model {
 		}
 		return msgIn;
 	}
-	
+
 	/**
 	 * @author Lukas
 	 * This method starts the ServerListening
@@ -466,7 +520,7 @@ public class GameApp_Model extends Model {
 	public void initializeServerListening(){
 		new Thread(new ServerListening()).start();
 	}
-	
+
 	/**
 	 * @author Lukas
 	 * Inner Class to use the methods of the outer Class comfortable.
@@ -474,7 +528,7 @@ public class GameApp_Model extends Model {
 	 *
 	 */
 	public class ServerListening implements Runnable{
-		
+
 		@Override
 		public void run() {
 			while(listenToServer){
@@ -497,7 +551,7 @@ public class GameApp_Model extends Model {
 							processCreateGame(msgIn);
 						}else if(msgIn.getType().equals(MessageType.PlayerSuccess)){
 							PlayerSuccess_Message psmsg = (PlayerSuccess_Message) msgIn;
-//							main.startSuccess(psmsg.getSuccess());
+							//							main.startSuccess(psmsg.getSuccess());
 							listenToServer = false;
 						}
 					}catch(Exception e){
@@ -508,16 +562,16 @@ public class GameApp_Model extends Model {
 			}
 		}
 	}
-	
-		/* Provisorischer Kommentar inkl. Quelle -> Rene
+
+	/* Provisorischer Kommentar inkl. Quelle -> Rene
 	   https://panjutorials.de/tutorials/javafx-8-gui/lektionen/audio-player-in-javafx-2/?cache-flush=1510439948.4916
 	   hier legen wir die Resource an, welche unbedingt im entsprechenden Ordner sein muss
-	
+
 	 * URL resource = getClass().getResource("sound.mp3"); // wir legen das Mediaobjekt and und weisen unsere Resource zu 
 	 * Media media = new Media(resource.toString()); // wir legen den Mediaplayer an und weisen
 	 * ihm das Media Objekt zu mediaPlayer = new MediaPlayer(media);
 	 */
-	
+
 	public void startMediaPlayer(String soundFileName) {
 		// mediaplayer: new music
 		if (mediaPlayer != null) {

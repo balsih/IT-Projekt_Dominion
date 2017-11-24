@@ -10,8 +10,8 @@ public class Regex {
 	}
 
 	public static void main (String[] args) {
-		String newInput = "65536";
-		boolean isInputCorrect = checkUserInput(newInput, UserInput.port);
+		String newInput = "1.2.34.23";
+		boolean isInputCorrect = checkUserInput(newInput, UserInput.ipAddress);
 		System.out.println(isInputCorrect);
 	}
 	
@@ -45,7 +45,11 @@ public class Regex {
 				for (String part : parts){
 					try {
 						int number = Integer.parseInt(part);
-						if (number < 0 || number > 255) valid = false;
+						if (number < 0 || number > 255) {
+							valid = false;
+						} else {
+							valid = true;
+						}
 					} catch (NumberFormatException e) {
 						// input was not an integer
 						valid = false;
