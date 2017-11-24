@@ -33,7 +33,7 @@ import Server_GameLogic.Player;
 public class TestMessages {
 
 	public static void main(String[] args) {
-		testUpdateGame_Message();
+		testCreateGame_Message();
 		
 	}
 	
