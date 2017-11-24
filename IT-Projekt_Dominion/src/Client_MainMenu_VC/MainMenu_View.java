@@ -6,6 +6,7 @@ import Abstract_MVC.View;
 import Client_GameApp_MVC.GameApp_Model;
 import Client_Services.ServiceLocator;
 import Client_Services.Translator;
+import Server_GameLogic.Player;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -72,7 +73,7 @@ public class MainMenu_View extends View<GameApp_Model> {
 		
 		// shows the name of the actual player
 		//playerLbl = new Label(t.getString("menu.playerLbl"));
-		playerLbl = new Label("Bodo Grütter");
+		playerLbl = new Label(model.getClientName());
 		playerLbl.setId("playerLbl");
 		
 		mainMenuLbl = new Label(t.getString("menu.mainMenuLbl"));
@@ -93,6 +94,8 @@ public class MainMenu_View extends View<GameApp_Model> {
 		dummy = new TextField("1. Chuck Norris");
 		dummy1 = new TextField("2. Bodo Grütter");
 		dummy2 = new TextField("3. dini Mueter");
+		
+		
 		
 		// nameText.setPrefSize(220.0, 30.0);
 		highscoreBox.getChildren().addAll(highscoreLbl, dummy, dummy1, dummy2);
