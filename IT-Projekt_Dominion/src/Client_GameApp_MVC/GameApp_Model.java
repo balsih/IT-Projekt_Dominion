@@ -5,15 +5,11 @@ import java.net.Socket;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import Abstract_MVC.Model;
 import Cards.Card;
 import Cards.CardName;
-import Client_GameApp_MVC.Regex.UserInput;
 import MainClasses.Dominion_Main;
-import Messages.AskForChanges_Message;
 import Messages.BuyCard_Message;
 import Messages.Chat_Message;
 import Messages.Content;
@@ -79,9 +75,7 @@ public class GameApp_Model extends Model {
 	protected CardName buyChoice;
 	protected Phase currentPhase;
 
-	private boolean listenToServer;
 	private Dominion_Main main;
-	private String highScore;
 	private String ipAddress;
 	private int port;
 
@@ -98,7 +92,6 @@ public class GameApp_Model extends Model {
 	public GameApp_Model(Dominion_Main main){
 		super();
 		this.main = main;
-		this.listenToServer = false;
 
 		// start menusound
 		this.startMediaPlayer("sound.mp3"); // start sound 
@@ -321,7 +314,6 @@ public class GameApp_Model extends Model {
 		this.gameMode = mode.toString();
 		Message msgIn = this.processMessage(gmmsg);
 		if(msgIn.getType().equals(MessageType.Commit)){
-			this.listenToServer = true;
 			this.main.startGameApp();
 		}
 		return result;
@@ -393,7 +385,7 @@ public class GameApp_Model extends Model {
 	 * 
 	 * @param msgIn, CreateGame_Message
 	 */
-	private void processCreateGame(Message msgIn) {		
+	protected void processCreateGame(Message msgIn) {		
 		CreateGame_Message cgmsg = (CreateGame_Message) msgIn;
 		this.yourNewHandCards = cgmsg.getHandCards();
 		for(Card card: cgmsg.getDeckPile())
@@ -425,7 +417,7 @@ public class GameApp_Model extends Model {
 	 * @param msgIn, UpdateGame_Message
 	 */
 
-	private void processUpdateGame(Message msgIn) {	
+	protected void processUpdateGame(Message msgIn) {	
 		UpdateGame_Message ugmsg = (UpdateGame_Message) msgIn;
 
 		if(ugmsg.getLog() != null)//If something necessary happened in the Game, it will be provided to show
