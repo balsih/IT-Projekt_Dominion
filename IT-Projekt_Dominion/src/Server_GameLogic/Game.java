@@ -368,17 +368,6 @@ public class Game {
 		
 		return availableCards;
 	}
-	
-	/**
-	 * @author Bodo Gruetter
-	 * 
-	 * sends an waiting message to the opponent
-	 * 
-	 * @param the sending player and the message which should be send
-	 */
-	public void sendToOpponent(Player source, Message msg) {
-		source.getServerThreadForClient().addWaitingMessages(msg);
-	}
 
 	/**
 	 * @author Bodo Gruetter

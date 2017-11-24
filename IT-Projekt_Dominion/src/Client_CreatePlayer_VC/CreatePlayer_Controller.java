@@ -2,6 +2,7 @@ package Client_CreatePlayer_VC;
 
 import Abstract_MVC.Controller;
 import Client_GameApp_MVC.GameApp_Model;
+import Client_GameApp_MVC.GameApp_Model.UserInput;
 import MainClasses.Dominion_Main;
 
 /**
@@ -25,6 +26,15 @@ public class CreatePlayer_Controller extends Controller<GameApp_Model, CreatePla
 		// set on action and handling for ipText
 		view.nameText.setOnAction((event) -> {
 			try {
+				// check if fields are empty
+				if (!view.nameText.getText().isEmpty() && !view.passwordText.getText().isEmpty()) {
+					// regex username/password
+					boolean userName = model.checkUserInput(view.nameText.getText(), UserInput.clientName);
+					boolean password = model.checkUserInput(view.passwordText.getText(), UserInput.password);
+					view.saveBtn.setDisable(!(userName && password));
+				} else {
+					view.saveBtn.setDisable(true);
+				}
 				// model.doSoSomethingWith IP;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -34,7 +44,16 @@ public class CreatePlayer_Controller extends Controller<GameApp_Model, CreatePla
 		// set on action and handling for connectBtn
 		view.passwordText.setOnAction((event) -> {
 			try {
-				// model.connect;
+				// check if fields are empty
+				if (!view.nameText.getText().isEmpty() && !view.passwordText.getText().isEmpty()) {
+					// regex username/password
+					boolean userName = model.checkUserInput(view.nameText.getText(), UserInput.clientName);
+					boolean password = model.checkUserInput(view.passwordText.getText(), UserInput.password);
+					view.saveBtn.setDisable(!(userName && password));
+				} else {
+					view.saveBtn.setDisable(true);
+				}
+				// model.doSoSomethingWith passwordText;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -52,7 +71,7 @@ public class CreatePlayer_Controller extends Controller<GameApp_Model, CreatePla
 		// set on action and handling for passwordText
 		view.saveBtn.setOnAction((event) -> {
 			try {
-				// model.doSoSomethingWith passwordText;
+				model.sendCreateNewPlayer(view.nameText.getText(), view.passwordText.getText());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -62,7 +81,6 @@ public class CreatePlayer_Controller extends Controller<GameApp_Model, CreatePla
 		view.backBtn.setOnAction((event) -> {
 			try {
 				 main.startLogin();
-				 //model.startMediaPlayer("Medieval_Camelot.mp3"); //testcode
 				 view.stop();
 			} catch (Exception e) {
 				e.printStackTrace();
