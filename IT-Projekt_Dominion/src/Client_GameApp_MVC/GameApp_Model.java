@@ -21,6 +21,7 @@ import Messages.CreateGame_Message;
 import Messages.CreateNewPlayer_Message;
 import Messages.Failure_Message;
 import Messages.GameMode_Message;
+import Messages.HighScore_Message;
 import Messages.Interaction;
 import Messages.Interaction_Message;
 import Messages.Login_Message;
@@ -84,7 +85,7 @@ public class GameApp_Model extends Model {
 	private String ipAddress;
 	private int port;
 
-	protected enum UserInput {
+	public enum UserInput {
 		clientName,
 		ipAddress,
 		port,
@@ -349,6 +350,21 @@ public class GameApp_Model extends Model {
 		}
 		return result;
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String sendHighScoreRequest(){
+		String result = NO_CONNECTION;
+		HighScore_Message hsmsg = new HighScore_Message();
+		Message msgIn = this.processMessage(hsmsg);
+		if(msgIn.getType().equals(MessageType.HighScore)){
+			HighScore_Message nhsmsg = (HighScore_Message) msgIn;
+			result = nhsmsg.getHighScore();
+		}
+		return result;
+	}
 
 	/**
 	 * @author Lukas
@@ -418,27 +434,19 @@ public class GameApp_Model extends Model {
 		if(ugmsg.getChat() != null)//If the client or opponent sent a chat, it will be provided to show
 			this.newChat = ugmsg.getChat();
 
-		if(ugmsg.getActions() != null && ugmsg.getCurrentPlayer() == null){//Has to be calculated during the player's turn. Always currentPlayer
-			this.actions += ugmsg.getActions();//update actions
-		}else{
-			this.actions = ugmsg.getActions();//set actions new
-		}
+		if(ugmsg.getActions() != null)//Always currentPlayer
+			this.actions = ugmsg.getActions();
 
-		if(ugmsg.getBuys() != null && ugmsg.getCurrentPlayer() == null){//Has to be calculated during the player's turn. Always currentPlayer
-			this.buys += ugmsg.getBuys();//update buys
-		}else{
-			this.buys = ugmsg.getBuys();//set buys new
-		}
+		if(ugmsg.getBuys() != null)//Always currentPlayer
+			this.buys = ugmsg.getBuys();
 
-		if(ugmsg.getCoins() != null && ugmsg.getCurrentPlayer() == null){//Has to be calculated during the player's turn. Always currentPlayer
-			this.coins += ugmsg.getCoins();//update coins
-		}else{
-			this.coins = ugmsg.getCoins();//set coins new
-		}
+		if(ugmsg.getCoins() != null)//Always currentPlayer
+			this.coins = ugmsg.getCoins();
 
-		if(ugmsg.getCurrentPhase() != null)//If Phase changed. Always currentPlayer
+		if(ugmsg.getCurrentPhase() != null)//Always currentPlayer
 			this.currentPhase = ugmsg.getCurrentPhase();
 
+		//stores the buyedCard of the currentPlayer and reduces the value of the buyCards(Cards which can be bought)
 		if(ugmsg.getBuyedCard() != null && this.currentPlayer == this.clientName){//If a buy was successful. Always currentPlayer
 			this.yourBuyedCard = ugmsg.getBuyedCard();
 			this.buyCards.replace(this.yourBuyedCard.getCardName(), this.buyCards.get(this.yourBuyedCard.getCardName()));
@@ -459,21 +467,17 @@ public class GameApp_Model extends Model {
 			this.opponentDiscardPileTopCard = ugmsg.getDiscardPileTopCard();
 		}
 
+		//Move the drawn cards from the deck into the handcards
 		if(ugmsg.getNewHandCards() != null && this.currentPlayer == this.clientName){//The new handCards just drawn. Always currentPlayer
-			List<CardName> cardNames = ugmsg.getNewHandCards().stream().map(card -> card.getCardName()).collect(Collectors.toList());
-
-			for(int i = 0; i < this.yourDeck.size(); i++){
-				for(int y = 0; y < cardNames.size(); y++){
-
+			LinkedList<Card> newHandCards = ugmsg.getNewHandCards();
+			for(int i = 0; i < newHandCards.size(); i++){
+				for(int y = 0; y < this.yourDeck.size(); y++){
+					if(newHandCards.get(i).getCardName().equals(this.yourDeck.get(y).getCardName())){
+						this.yourNewHandCards.add(this.yourDeck.remove(y));
+						break;
+					}
 				}
 			}
-			for(CardName cardName: cardNames){
-				Card tmpCard = this.yourDeck.stream()
-						.filter(card -> card.getCardName().equals(cardName))
-						.collect(Collectors.toList())
-						.get(0);
-			}
-
 		}else{
 			this.opponentNewHandCards = ugmsg.getNewHandCards().size();
 		}
@@ -513,55 +517,6 @@ public class GameApp_Model extends Model {
 		return msgIn;
 	}
 
-	/**
-	 * @author Lukas
-	 * This method starts the ServerListening
-	 */
-	public void initializeServerListening(){
-		new Thread(new ServerListening()).start();
-	}
-
-	/**
-	 * @author Lukas
-	 * Inner Class to use the methods of the outer Class comfortable.
-	 * Necessary if a client wants to play a second game. The thread has to be started again
-	 *
-	 */
-	public class ServerListening implements Runnable{
-
-		@Override
-		public void run() {
-			while(listenToServer){
-				try {
-					Thread.sleep(100);//10 request per second if something changed in the game
-				} catch (InterruptedException e1) {
-					System.out.println(e1.toString());
-				}
-				Socket socket = connect();
-				if(socket != null){
-					AskForChanges_Message afcmsg = new AskForChanges_Message();	
-					try{
-						afcmsg.send(socket);
-						Message msgIn = Message.receive(socket);
-						if(msgIn.getType().equals(MessageType.Commit)){
-							//nothing toDo here
-						}else if(msgIn.getType().equals(MessageType.UpdateGame)){
-							processUpdateGame(msgIn);
-						}else if(msgIn.getType().equals(MessageType.CreateGame)){
-							processCreateGame(msgIn);
-						}else if(msgIn.getType().equals(MessageType.PlayerSuccess)){
-							PlayerSuccess_Message psmsg = (PlayerSuccess_Message) msgIn;
-							//							main.startSuccess(psmsg.getSuccess());
-							listenToServer = false;
-						}
-					}catch(Exception e){
-						System.out.println(e.toString());
-					}
-					try { if (socket != null) socket.close(); } catch (IOException e) {}
-				}
-			}
-		}
-	}
 
 	/* Provisorischer Kommentar inkl. Quelle -> Rene
 	   https://panjutorials.de/tutorials/javafx-8-gui/lektionen/audio-player-in-javafx-2/?cache-flush=1510439948.4916
@@ -582,16 +537,21 @@ public class GameApp_Model extends Model {
 		mediaPlayer = new MediaPlayer(media);
 		mediaPlayer.play();
 	}
-
-	public String getPassword(){
-		return "";
+	
+	
+	public String getClientName(){
+		return this.clientName;
 	}
 
 	public void setGameMode(String gameMode){
 
 	}
-
-	public void setPassword(String password){
-
+	
+	public void setIP(String ipAddress){
+		this.ipAddress = ipAddress;
+	}
+	
+	public void setClientName(String clientName){
+		this.clientName = clientName;
 	}
 }//end GameApp_Model

@@ -225,6 +225,9 @@ public class ServerThreadForClient implements Runnable {
 		cgmsg.setHandCards(this.player.getHandCards());
 		cgmsg.setDeckPile(this.player.getDeckPile());
 		cgmsg.setOpponent(this.game.getOpponent(this.player).getPlayerName());
+		cgmsg.setDeckNumber(this.game.getOpponent(this.player).getDeckPile().size());
+		cgmsg.setHandNumber(this.game.getOpponent(this.player).getHandCards().size());
+		cgmsg.setStartingPlayer(this.game.getCurrentPlayer().getPlayerName());
 		return cgmsg;
 	}
 
