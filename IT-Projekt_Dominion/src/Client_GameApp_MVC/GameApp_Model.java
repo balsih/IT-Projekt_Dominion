@@ -84,7 +84,7 @@ public class GameApp_Model extends Model {
 	private String ipAddress;
 	private int port;
 
-	protected enum UserInput {
+	public enum UserInput {
 		clientName,
 		ipAddress,
 		port,
