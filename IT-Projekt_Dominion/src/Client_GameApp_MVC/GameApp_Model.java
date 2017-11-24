@@ -5,6 +5,8 @@ import java.net.Socket;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import Abstract_MVC.Model;
 import Cards.Card;
@@ -385,8 +387,10 @@ public class GameApp_Model extends Model {
 			
 		if(ugmsg.getBuyedCard() != null && this.currentPlayer == this.clientName){//If a buy was successful. Always currentPlayer
 			this.yourBuyedCard = ugmsg.getBuyedCard();
+			this.buyCards.replace(this.yourBuyedCard.getCardName(), this.buyCards.get(this.yourBuyedCard.getCardName()));
 		}else{
 			this.opponentBuyedCard = ugmsg.getBuyedCard();
+			this.buyCards.replace(this.opponentBuyedCard.getCardName(), this.buyCards.get(this.opponentBuyedCard.getCardName()));
 		}
 		
 		if(ugmsg.getDeckPileCardNumber() != null && this.currentPlayer == this.opponent)//Just necessary to show opponent's discardPile
@@ -402,7 +406,20 @@ public class GameApp_Model extends Model {
 		}
 		
 		if(ugmsg.getNewHandCards() != null && this.currentPlayer == this.clientName){//The new handCards just drawn. Always currentPlayer
-			this.yourNewHandCards = ugmsg.getNewHandCards();
+			List<CardName> cardNames = ugmsg.getNewHandCards().stream().map(card -> card.getCardName()).collect(Collectors.toList());
+
+			for(int i = 0; i < this.yourDeck.size(); i++){
+				for(int y = 0; y < cardNames.size(); y++){
+					
+				}
+			}
+			for(CardName cardName: cardNames){
+				Card tmpCard = this.yourDeck.stream()
+						.filter(card -> card.getCardName().equals(cardName))
+						.collect(Collectors.toList())
+						.get(0);
+			}
+			
 		}else{
 			this.opponentNewHandCards = ugmsg.getNewHandCards().size();
 		}
