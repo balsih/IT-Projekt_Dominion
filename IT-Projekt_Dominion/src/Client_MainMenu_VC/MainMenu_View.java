@@ -37,9 +37,11 @@ public class MainMenu_View extends View<GameApp_Model> {
 	protected Button multiPlayerBtn;
 
 	protected Label highscoreLbl;
-	protected TextField dummy;
-	protected TextField dummy1;
-	protected TextField dummy2;
+	protected Label number1;
+	protected Label number2;
+	protected Label number3;
+	protected Label number4;
+	protected Label number5;
 
 	protected Button startGameBtn;
 	protected Button quitBtn;
@@ -51,7 +53,7 @@ public class MainMenu_View extends View<GameApp_Model> {
 	public MainMenu_View(Stage stage, GameApp_Model model) {
 		super(stage, model);
 	}
-
+	
 	@Override
 	protected Scene create_GUI() {
 
@@ -73,7 +75,8 @@ public class MainMenu_View extends View<GameApp_Model> {
 		
 		// shows the name of the actual player
 		//playerLbl = new Label(t.getString("menu.playerLbl"));
-		playerLbl = new Label(model.getClientName());
+		//playerLbl = new Label(model.getClientName());
+		playerLbl = new Label("Spieler: Bodo Grütter");
 		playerLbl.setId("playerLbl");
 		
 		mainMenuLbl = new Label(t.getString("menu.mainMenuLbl"));
@@ -91,14 +94,17 @@ public class MainMenu_View extends View<GameApp_Model> {
 		
 		highscoreLbl = new Label(t.getString("menu.highscoreLbl"));
 		highscoreLbl.setId("highscoreLbl");
-		dummy = new TextField("1. Chuck Norris");
-		dummy1 = new TextField("2. Bodo Grütter");
-		dummy2 = new TextField("3. dini Mueter");
+		number1 = new Label("1. Chuck Norris");
+		number2 = new Label("2. Bodo Grütter");
+		number3 = new Label("3. dini Mueter");
+		
+		// model.sendHighScoreRequest() -> gibt 5x String und int zurück = muss verwendet werden um die Labels abzufüllen
+		
 		
 		
 		
 		// nameText.setPrefSize(220.0, 30.0);
-		highscoreBox.getChildren().addAll(highscoreLbl, dummy, dummy1, dummy2);
+		highscoreBox.getChildren().addAll(highscoreLbl, number1, number2, number3);
 		
 		startGameBtn = new Button(t.getString("menu.startGameBtn"));
 		startGameBtn.setId("startGameBtn");

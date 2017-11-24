@@ -51,9 +51,9 @@ public class Dominion_Main extends Application {
 		splashView = new Splash_View(stage, splashModel);
 		Splash_Controller splashController = new Splash_Controller(this, splashModel, splashView);
 		splashView.start();
-		//splashModel.initialize();
+		splashModel.initialize();
 		//this.startLogin();
-		//startMainMenu();
+		startMainMenu();
 		//this.startCreatePlayer(); // zur Kontrolle nicht in Reihenfolge gestartet 
 		// noch anpassen, im Moment startet create new Player zeitgleich mit Splash
 			

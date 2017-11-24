@@ -26,8 +26,7 @@ public class MainMenu_Controller extends Controller<GameApp_Model, MainMenu_View
 		// set on action and handling for singlePlayerBtn
 		view.singlePlayerBtn.setOnAction((event) -> {
 			try {
-				model.sendGameMode(GameMode mode);
-				// model.init(view.ipText.getText());
+				model.sendGameMode(GameMode.Singleplayer);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -36,7 +35,7 @@ public class MainMenu_Controller extends Controller<GameApp_Model, MainMenu_View
 		// set on action and handling for multiPlayerBtn
 		view.multiPlayerBtn.setOnAction((event) -> {
 			try {
-				// model.init(view.ipText.getText());
+				model.sendGameMode(GameMode.Multiplayer);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -45,6 +44,7 @@ public class MainMenu_Controller extends Controller<GameApp_Model, MainMenu_View
 		// set on action and handling for startGameBtn
 		view.startGameBtn.setOnAction((event) -> {
 			try {
+				
 				// model.init(view.ipText.getText());
 			} catch (Exception e) {
 				e.printStackTrace();

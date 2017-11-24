@@ -24,6 +24,8 @@
 
 #highscoreBox {
 	-fx-spacing: 2px;
+	-fx-background-color: rgba(0, 0, 0, 6);
+	-fx-border-color: white;
 }
 #gameModeAndHigscoreBox {
 	-fx-spacing: 35px;
