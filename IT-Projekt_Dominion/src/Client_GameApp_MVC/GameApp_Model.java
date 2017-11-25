@@ -5,10 +5,14 @@ import java.net.Socket;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import Abstract_MVC.Model;
 import Cards.Card;
 import Cards.CardName;
+import Client_Services.ServiceLocator;
+import Client_Services.Translator;
 import MainClasses.Dominion_Main;
 import Messages.BuyCard_Message;
 import Messages.Chat_Message;
@@ -38,7 +42,12 @@ import javafx.scene.media.MediaPlayer;
  */
 public class GameApp_Model extends Model {
 
-	private static final String NO_CONNECTION = "No connection to Server";
+	private final String NO_CONNECTION = "No connection to Server";
+	private final int PORT = 8080;
+	private final String TRANSLATEREGEX = "#[\\w\\s]*#";
+	
+	private ServiceLocator sl = ServiceLocator.getServiceLocator();
+	private Translator t = sl.getTranslator();
 
 	protected String clientName;
 	protected String opponent;
@@ -61,7 +70,6 @@ public class GameApp_Model extends Model {
 	protected Card yourBuyedCard;
 	protected Card opponentBuyedCard;
 	protected Card yourDiscardPileTopCard;
-	protected Card opponentDiscardPileTopCard;
 	protected String newChat;
 	protected String newLog;
 	protected Interaction interaction = Interaction.Skip;
@@ -74,10 +82,10 @@ public class GameApp_Model extends Model {
 	protected HashMap<CardName, Integer> buyCards;
 	protected CardName buyChoice;
 	protected Phase currentPhase;
+	protected boolean turnEnded = false;
 
 	private Dominion_Main main;
 	private String ipAddress;
-	private int port;
 
 	public enum UserInput {
 		clientName,
@@ -153,32 +161,47 @@ public class GameApp_Model extends Model {
 				}		
 			}
 			break;
-			// The port must be an integer from 1 to 65535.
-
-		case port:
-			try {
-				int number = Integer.parseInt(userInput);
-				if (number > 0 && number <= 65535) valid = true;
-				this.port = number;
-			} catch (NumberFormatException e) {
-				// input was not an integer
-				valid = false;
-			}
-			break;
 		}
 		return valid;
 	}
+	
+	/**
+	 * @author Lukas
+	 * Translates any parts of a String between two #
+	 * 
+	 * @param input
+	 * @return translated input
+	 */
+	private String translate(String input){
+		Pattern p = Pattern.compile(this.TRANSLATEREGEX);
+		Matcher m = p.matcher(input);
+		int tmpIndex = 0;
+		String output = "";
+		String[] inputList = input.split(this.TRANSLATEREGEX);
+		String lastPart = inputList[inputList.length-1];
+		while(m.find()){
+			int startIndex = m.start();
+			int endIndex = m.end();
+			output += input.substring(tmpIndex, startIndex);
+			output += t.getString(input.substring(startIndex+1, endIndex-1));//+- to filter #
+			tmpIndex = endIndex;
+		}
+		if(output.length() > 0){
+			output += lastPart;
+			return output;
+		}
+		return input;
+	}
+	
 
 	/**
-	 * @author Bradley Richards
-	 * The IP and Port will be set here
+	 * @author Lukas Gehrig
+	 * The IP will be set here
 	 * 
 	 * @param ipAdress
-	 * @param port
 	 */
-	public void init(String ipAddress, int port){
+	public void init(String ipAddress){
 		this.ipAddress = ipAddress;
-		this.port = port;
 	}
 
 	/**
@@ -190,7 +213,7 @@ public class GameApp_Model extends Model {
 	private Socket connect(){
 		Socket socket = null;
 		try {
-			socket = new Socket(ipAddress, port);
+			socket = new Socket(this.ipAddress, this.PORT);
 		} catch (Exception e) {
 			System.out.println(e.toString());
 		}
@@ -198,31 +221,35 @@ public class GameApp_Model extends Model {
 	}
 
 	/**
+	 * @author Lukas
 	 * The client wants to buy a card. The result depends on the players validity to buy.
 	 * 
 	 * @param cardName
+	 * @return update, tells the controller if the game has to be updated
 	 */
 	public boolean sendBuyCard(CardName cardName){
 		BuyCard_Message bcmsg = new BuyCard_Message();
 		bcmsg.setCard(cardName);
 		boolean update = false;
 		Message msgIn = this.processMessage(bcmsg);
-		if(msgIn.getType().equals(MessageType.UpdateGame)){
+		if(msgIn.getType().equals(MessageType.UpdateGame)){//buy succeeded
 			this.processUpdateGame(msgIn);
 			update = true;
-		}else if(msgIn.getType().equals(MessageType.PlayerSuccess)){
+		}else if(msgIn.getType().equals(MessageType.PlayerSuccess)){//the game ended after this buy
 			this.processPlayerSuccess(msgIn);
 			update = true;
-		}else if(msgIn.getType().equals(MessageType.Failure)){
+		}else if(msgIn.getType().equals(MessageType.Failure)){//it was not allowed to buy this card
 			//nothing toDo here
 		}
 		return update;
 	}
 
 	/**
+	 * @author Lukas
 	 * The clients sends a Chat_Message to the opponent. The chat of the client will also be sent to server and back.
 	 * 
 	 * @param chat
+	 * @return update, tells the controller if the game has to be updated
 	 */
 	public boolean sendChat(String chat){
 		Chat_Message cmsg = new Chat_Message();
@@ -237,9 +264,10 @@ public class GameApp_Model extends Model {
 	}
 
 	/**
+	 * @author Lukas
+	 * To interact once or multiple times with the server, the specified answers of the interactions has to be set
 	 * 
-	 * @param interaction
-	 * @return
+	 * @return update, tells the controller if the game has to be updated
 	 */
 	public boolean sendInteraction(){
 		Interaction_Message imsg = new Interaction_Message();
@@ -265,7 +293,7 @@ public class GameApp_Model extends Model {
 			break;
 		}
 		Message msgIn = this.processMessage(imsg);
-		if(msgIn instanceof UpdateGame_Message){
+		if(msgIn.getType().equals(MessageType.UpdateGame)){
 			update = true;
 			this.interaction = Interaction.Skip;//defaultSetting
 		}
@@ -278,17 +306,18 @@ public class GameApp_Model extends Model {
 	 * The client wants to create his own profile. For this purpose the clientName has to be unique in the database.
 	 * If the storage process succeeded, the client will get into the MainMenu.
 	 * 
+	 * @param clientName
 	 * @param password
-	 * @return String, usually only necessary if clientName is already occupied
+	 * @return result, usually only necessary if clientName is already set
 	 */
 	public String sendCreateNewPlayer(String clientName, String password){
 		String result = NO_CONNECTION;
-		this.clientName = clientName;
 		CreateNewPlayer_Message cnpmsg = new CreateNewPlayer_Message();
-		String encryptedPassword = this.encryptPassword(password);
-		cnpmsg.setPassword(encryptedPassword);
+		cnpmsg.setClient(clientName);//set the clientName and encrypted password to XML
+		cnpmsg.setPassword(this.encryptPassword(password));
 		Message msgIn = this.processMessage(cnpmsg);
 		if(msgIn.getType().equals(MessageType.Commit)){
+			this.clientName = clientName;
 			this.main.startMainMenu();
 		}else if(msgIn.getType().equals(MessageType.Failure)){
 			Failure_Message fmsg = (Failure_Message) msgIn;
@@ -301,10 +330,9 @@ public class GameApp_Model extends Model {
 	/**
 	 * @author Lukas
 	 * The client sends his GameMode (Singleplayer or Multiplayer) to Server.
-	 * The result depends weather the client can start a game instantly or has to wait for an opponent
 	 * 
-	 * @param mode, SinglePlayer or MultiPlayer
-	 * @return String, usually only necessary if the client has to wait for an opponent
+	 * @param mode
+	 * @return result, usually only necessary if the client lost connection to server
 	 */
 	public String sendGameMode(GameMode mode){
 		String result = NO_CONNECTION;
@@ -323,29 +351,31 @@ public class GameApp_Model extends Model {
 	 * @author Lukas
 	 * The client sends his encrypted password to server and will get to the MainMenu if the password is appropriate to clientName
 	 * 
+	 * @param clientName
 	 * @param password
-	 * @return String, usually only necessary if clientName and password don't work
+	 * @return result, usually only necessary if clientName and password don't work or the client lost connection to server
 	 */
 	public String sendLogin(String clientName, String password){
 		String result = NO_CONNECTION;
 		Login_Message lmsg = new Login_Message();
-		lmsg.setClient(this.clientName);//set the clientName and encrypted password to XML
-		String encryptedPassword = this.encryptPassword(password);
-		lmsg.setPassword(encryptedPassword);
-		this.clientName = clientName;
+		lmsg.setClient(clientName);//set the clientName and encrypted password to XML
+		lmsg.setPassword(this.encryptPassword(password));
 		Message msgIn = this.processMessage(lmsg);
 		if(msgIn.getType().equals(MessageType.Commit)){
-			this.main.startMainMenu();//login succeeded
+			this.clientName = clientName;//login succeeded
+			this.main.startMainMenu();
 		}else if(msgIn.getType().equals(MessageType.Failure)){
-			Failure_Message fmsg = (Failure_Message) msgIn;//login failed, no password with clientName available
+			Failure_Message fmsg = (Failure_Message) msgIn;//login failed, clientName and/or password wrong
 			result = fmsg.getNotification();
 		}
 		return result;
 	}
 	
 	/**
+	 * @author Lukas
+	 * The client sends a request to server for the top5 Highscore
 	 * 
-	 * @return
+	 * @return result, the Highscore in one String or the message that client lost connection to server
 	 */
 	public String sendHighScoreRequest(){
 		String result = NO_CONNECTION;
@@ -362,7 +392,8 @@ public class GameApp_Model extends Model {
 	 * @author Lukas
 	 * The client wants to play a chosen Card. The result depends on the validity of the move
 	 * 
-	 * @param card, chosen Card
+	 * @param card
+	 * @return update, tells the controller if the game has to be updated
 	 */
 	public boolean sendPlayCard(Card card){
 		PlayCard_Message pcmsg = new PlayCard_Message();
@@ -381,9 +412,9 @@ public class GameApp_Model extends Model {
 
 	/**
 	 * @author Lukas
-	 * Create a new Game
+	 * Creates a new Game
 	 * 
-	 * @param msgIn, CreateGame_Message
+	 * @param msgIn
 	 */
 	protected void processCreateGame(Message msgIn) {		
 		CreateGame_Message cgmsg = (CreateGame_Message) msgIn;
@@ -414,32 +445,39 @@ public class GameApp_Model extends Model {
 	 * @author Lukas
 	 * Interpret all updates and provides structures for further work
 	 * 
-	 * @param msgIn, UpdateGame_Message
+	 * @param msgIn, UpdateGame_Message. Can consist various contents
 	 */
 
 	protected void processUpdateGame(Message msgIn) {	
 		UpdateGame_Message ugmsg = (UpdateGame_Message) msgIn;
 
-		if(ugmsg.getLog() != null)//If something necessary happened in the Game, it will be provided to show
+		//If something necessary happened in the Game, it will be provided to show
+		if(ugmsg.getLog() != null)
 			this.newLog = ugmsg.getLog();
 
-		if(ugmsg.getChat() != null)//If the client or opponent sent a chat, it will be provided to show
+		//If the client or opponent sent a chat, it will be provided to show
+		if(ugmsg.getChat() != null)
 			this.newChat = ugmsg.getChat();
 
-		if(ugmsg.getActions() != null)//Always currentPlayer
+		//Always currentPlayer
+		if(ugmsg.getActions() != null)
 			this.actions = ugmsg.getActions();
 
-		if(ugmsg.getBuys() != null)//Always currentPlayer
+		//Always currentPlayer
+		if(ugmsg.getBuys() != null)
 			this.buys = ugmsg.getBuys();
 
-		if(ugmsg.getCoins() != null)//Always currentPlayer
+		//Always currentPlayer
+		if(ugmsg.getCoins() != null)
 			this.coins = ugmsg.getCoins();
 
-		if(ugmsg.getCurrentPhase() != null)//Always currentPlayer
+		//Always currentPlayer
+		if(ugmsg.getCurrentPhase() != null)
 			this.currentPhase = ugmsg.getCurrentPhase();
 
+		//If a buy was successful. Always currentPlayer
 		//stores the buyedCard of the currentPlayer and reduces the value of the buyCards(Cards which can be bought)
-		if(ugmsg.getBuyedCard() != null && this.currentPlayer == this.clientName){//If a buy was successful. Always currentPlayer
+		if(ugmsg.getBuyedCard() != null && this.currentPlayer == this.clientName){
 			this.yourBuyedCard = ugmsg.getBuyedCard();
 			this.buyCards.replace(this.yourBuyedCard.getCardName(), this.buyCards.get(this.yourBuyedCard.getCardName()));
 		}else{
@@ -447,54 +485,76 @@ public class GameApp_Model extends Model {
 			this.buyCards.replace(this.opponentBuyedCard.getCardName(), this.buyCards.get(this.opponentBuyedCard.getCardName()));
 		}
 
-		if(ugmsg.getDeckPileCardNumber() != null && this.currentPlayer == this.opponent)//Just necessary to show opponent's discardPile
+		//Just necessary to show opponent's size of discardPile
+		if(ugmsg.getDeckPileCardNumber() != null && this.currentPlayer == this.opponent)
 			this.opponentDiscardPile = ugmsg.getDeckPileCardNumber();
 
-		if(ugmsg.getDiscardPileCardNumber() != null && this.currentPlayer == this.opponent)//Just necessary to show opponent's deckPile
+		//Just necessary to show opponent's size of deckPile
+		if(ugmsg.getDiscardPileCardNumber() != null && this.currentPlayer == this.opponent)
 			this.opponentDeck = ugmsg.getDiscardPileCardNumber();
 
-		if(ugmsg.getDiscardPileTopCard() != null && this.currentPlayer == this.clientName){//Always currentPlayer
+		//Always client's topCard
+		if(ugmsg.getDiscardPileTopCard() != null && this.currentPlayer == this.clientName)
 			this.yourDiscardPileTopCard = ugmsg.getDiscardPileTopCard();
-		}else{
-			this.opponentDiscardPileTopCard = ugmsg.getDiscardPileTopCard();
-		}
-
-		//Move the drawn cards from the deck into the handcards
-		if(ugmsg.getNewHandCards() != null && this.currentPlayer == this.clientName){//The new handCards just drawn. Always currentPlayer
+		
+		//The new handCards just drawn. Always currentPlayer
+		//Move the drawn cards from the deck into yourNewHandCards
+		if(ugmsg.getNewHandCards() != null && this.currentPlayer == this.clientName){
 			LinkedList<Card> newHandCards = ugmsg.getNewHandCards();
 			for(int i = 0; i < newHandCards.size(); i++){
-				for(int y = 0; y < this.yourDeck.size(); y++){
-					if(newHandCards.get(i).getCardName().equals(this.yourDeck.get(y).getCardName())){
-						this.yourNewHandCards.add(this.yourDeck.remove(y));
+				if(this.yourDeck.size() == 0){//Mandatory if the DeckPile is empty, the DiscardPile has to be added to the DeckPile
+					for(int j = 0; j < this.yourDiscardPile.size(); j++){
+						this.yourDeck.add(this.yourDiscardPile.remove());
+					}
+				}
+				for(int k = 0; k < this.yourDeck.size(); k++){
+					if(newHandCards.get(i).getCardName().equals(this.yourDeck.get(k).getCardName())){
+						this.yourNewHandCards.add(this.yourDeck.remove(k));
 						break;
 					}
 				}
 			}
-		}else{
+		}else{//for opponent
 			this.opponentNewHandCards = ugmsg.getNewHandCards().size();
 		}
 
-		if(ugmsg.getPlayedCard() != null)//If a card was played, it will be provided
+		//If a card was played, it will be provided
+		//Move the played Card from the hand into newPlayedCard
+		if(ugmsg.getPlayedCard() != null && this.currentPlayer == this.clientName){
+			for(int i = 0; i < this.yourHandCards.size(); i++){
+				if(this.yourHandCards.get(i).getCardName().equals(ugmsg.getPlayedCard().getCardName())){
+					this.newPlayedCard = this.yourHandCards.remove(i);
+				}
+			}
+		}else if(ugmsg.getPlayedCard() != null){//for opponent
 			this.newPlayedCard = ugmsg.getPlayedCard();
+		}
 
-		if(ugmsg.getCurrentPlayer() != null)//If currentPlayer is set, the currentPlayer's turn ends
-			this.currentPlayer = ugmsg.getCurrentPlayer();
-
-		if(ugmsg.getInteractionType() != null)//If interaction is set, the Type of Interaction can be checked (i.e. meaning of the commit_Button)
+		//If interaction is set, the Type of Interaction can be checked (i.e. meaning of the commit_Button)
+		if(ugmsg.getInteractionType() != null && this.currentPlayer == this.clientName)
 			this.interaction = ugmsg.getInteractionType();
 
-		if(ugmsg.getCardSelection() != null)//If cardSelection is set, it consists a selection of the cards to chose
+		//If cardSelection is set, it consists a selection of the cards to chose
+		if(ugmsg.getCardSelection() != null && this.currentPlayer == this.clientName)
 			this.cardSelection = ugmsg.getCardSelection();
+
+		//If currentPlayer is set, the currentPlayer's turn ends
+		if(ugmsg.getCurrentPlayer() != null){
+			if(ugmsg.getCurrentPlayer() != this.currentPlayer)
+				this.turnEnded = true;
+			this.currentPlayer = ugmsg.getCurrentPlayer();
+		}
 	}
 
 
 	/**
+	 * @author Lukas
 	 * SetUp a socket_connection to server with the given message and returns the answer
 	 * 
-	 * @param message, individual Message
-	 * @return message, individual Message
+	 * @param message
+	 * @return msgIn, individual InputMessage
 	 */
-	public Message processMessage(Message message){
+	protected Message processMessage(Message message){
 		Socket socket = connect();
 		Message msgIn = null;
 		if(socket != null){

@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import com.sun.xml.internal.txw2.Document;
@@ -33,8 +35,35 @@ import Server_GameLogic.Player;
 public class TestMessages {
 
 	public static void main(String[] args) {
-		testCreateGame_Message();
 		
+	}
+	
+	/**
+	 * @author Lukas
+	 * Translates any parts of a String between two #
+	 * 
+	 * @param input
+	 * @return translated input
+	 */
+	private static String translate(String input){
+		Pattern p = Pattern.compile("#[\\w\\s]*#");
+		Matcher m = p.matcher(input);
+		int tmpIndex = 0;
+		String output = "";
+		String[] list = input.split("#[\\w\\s]*#");
+		String lastPart = list[list.length-1];
+		while(m.find()){
+			int startIndex = m.start();
+			int endIndex = m.end();
+			output += input.substring(tmpIndex, startIndex);
+			output += input.substring(startIndex+1, endIndex-1);//+- to filter #
+			tmpIndex = endIndex;
+		}
+		if(output.length() > 0){
+			output += lastPart;
+			return output;
+		}
+		return input;
 	}
 	
 	private static void testMapFilter(){
