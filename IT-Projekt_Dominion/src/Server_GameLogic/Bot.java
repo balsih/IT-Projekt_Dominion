@@ -16,7 +16,7 @@ import Messages.UpdateGame_Message;
  * @author Simon
  * @version 1.0
  * @created 15-Nov-2017 08:36:00
- * @lastEdited 23-Nov-2017 08:36:00
+ * @lastEdited 25-Nov-2017 08:36:00
  */
 
 // every method which is just used once by another method --> extract method
@@ -25,18 +25,16 @@ import Messages.UpdateGame_Message;
 public class Bot extends Player {
 	private HashMap<CardName, Integer> prioListForBuying = new HashMap<CardName, Integer>();
 	private HashMap<CardName, Integer> prioListForPlaying = new HashMap<CardName, Integer>();
+	private HashMap<CardName, Integer> prioListOfHandcards = new HashMap<CardName, Integer>();
 	private static final ArrayList<String> NAMES = new ArrayList<String>();
-	private static final int MIN_TIME_BEFORE_EXECUTING = 1000, MAX_TIME_BEFORE_EXECUTING = 3000,
-			MIN_CARDS_PER_DECKPILE = 3, MAX_TREASURE_CARDS = 8;
+	private static final int MIN_TIME_BEFORE_EXECUTING = 1000, MAX_TIME_BEFORE_EXECUTING = 3000, MAX_TREASURE_CARDS = 8;
 	private static final double SHARE_OF_TREASURE_CARDS = 0.35;
-	// private static final int MAX_Cellar_CARDS , MAX_MINE_CARD ,
-	// MAX_WOOKCUTER_CARDS , MAX_WORKSHOP_CARDS;
-	private static final int MAX_MARKET_CARDS = 3, MAX_SMITHY_CARDS = 2, MAX_VILLAGE_CARDS = 2;
-	private int max_remodel_cards = 2;
+	// private static final int MAX_CELLAR_CARDS, MAX_WOOKCUTER_CARDS ,
+	// MAX_WORKSHOP_CARDS;
+	private static final int MAX_MARKET_CARDS = 2, MAX_SMITHY_CARDS = 1, MAX_VILLAGE_CARDS = 1, MAX_MINE_CARDS = 1;
 	private double numberOfTreasureCards, numberOfCards = 10.0;
 	private CardName cardToPlay, cardToBuy;
 	private boolean buyOneMore = false;
-	private int gameStage, numOfStacksWithLessThanFourCards;
 
 	public Bot(String name) {
 		super(name);
@@ -47,9 +45,9 @@ public class Bot extends Player {
 		prioListForBuying.put(CardName.Estate, 10);
 		prioListForBuying.put(CardName.Gold, 70);
 		prioListForBuying.put(CardName.Market, 66);
-		// prioListForBuying.put(CardName.Mine, 10); do not use
+		prioListForBuying.put(CardName.Mine, 62);
 		prioListForBuying.put(CardName.Province, 90);
-		prioListForBuying.put(CardName.Remodel, 62);
+		// prioListForBuying.put(CardName.Remodel, 60);
 		prioListForBuying.put(CardName.Silver, 40);
 		prioListForBuying.put(CardName.Smithy, 64);
 		prioListForBuying.put(CardName.Village, 68);
@@ -58,13 +56,30 @@ public class Bot extends Player {
 
 		// prioListForPlaying.put(CardName.Cellar, 30); do not use but implement first
 		// if enough time
-		prioListForPlaying.put(CardName.Market, 80);
-		// prioListForPlaying.put(CardName.Mine, 40); do not use
-		prioListForPlaying.put(CardName.Remodel, 60);
+		prioListForPlaying.put(CardName.Market, 90);
+		prioListForPlaying.put(CardName.Mine, 60);
+		prioListForPlaying.put(CardName.Remodel, 50);
 		prioListForPlaying.put(CardName.Smithy, 70);
-		prioListForPlaying.put(CardName.Village, 90);
+		prioListForPlaying.put(CardName.Village, 80);
 		// prioListForPlaying.put(CardName.Woodcutter, 20); do not use
 		// prioListForPlaying.put(CardName.Workshop, 50); do not use
+
+		// prioListOfHandcards.put(CardName.Cellar, 10); do not use but implement first
+		// if
+		// enough time
+		// prioListOfHandcards.put(CardName.Copper, 20); do not buy CooperCards
+		prioListOfHandcards.put(CardName.Duchy, 12);
+		prioListOfHandcards.put(CardName.Estate, 11);
+		prioListOfHandcards.put(CardName.Gold, 62);
+		prioListOfHandcards.put(CardName.Market, 99);
+		prioListOfHandcards.put(CardName.Mine, 92);
+		prioListOfHandcards.put(CardName.Province, 10);
+		prioListOfHandcards.put(CardName.Remodel, 89);
+		prioListOfHandcards.put(CardName.Silver, 61);
+		prioListOfHandcards.put(CardName.Smithy, 94);
+		prioListOfHandcards.put(CardName.Village, 97);
+		// prioListOfHandcards.put(CardName.Woodcutter, 87); do not use
+		// prioListOfHandcards.put(CardName.Workshop, 85); do not use
 	}
 
 	/**
@@ -77,9 +92,9 @@ public class Bot extends Player {
 		if (buys > 0 && actualPhase == Phase.Buy) {
 			playTreasureCards();
 			do {
-				estimatePriorityOfVictoryCards();
-				estimatePriorityOfTreasureCards();
-				estimatePriorityOfActionCards();
+				estimateBuyPriorityOfVictoryCards();
+				estimateBuyPriorityOfTreasureCards();
+				estimateBuyPriorityOfActionCards();
 				buy();
 			} while (buys > 0 && buyOneMore == true && actualPhase == Phase.Buy);
 		}
@@ -136,29 +151,33 @@ public class Bot extends Player {
 	private void buy() {
 		boolean succeededBuy = false;
 		boolean possibleGoodCard = false;
-		// add messages --> if buy not possible --> try second best prio
 
-		// PROBLEM: Wie soll die beste Karte gefunden werden?
 		List<CardName> list = prioListForBuying.keySet().stream()
 				.sorted((s1, s2) -> Integer.compare(prioListForBuying.get(s2), prioListForBuying.get(s1)))
 				.collect(Collectors.toList());
-//		list.
-//		buy(cardToBuy);
+		
+		do {
+		cardToBuy = list.get(0);
+		buy(cardToBuy);
+		Message m = buy(cardToBuy);
+		if (m instanceof UpdateGame_Message) {
+		//UpdateGame_Message ugmsg = (UpdateGame_Message) m;
+			
 		numberOfCards++;
-		// PROBLEM: Wenn eine Gold oder Silber Karte gekauft wird, soll die Anzahl
-		// erhöht werden.
-		// if()
-		numberOfTreasureCards++;
+		if(cardToBuy.equals(CardName.Gold) || cardToBuy.equals(CardName.Silver))
+			numberOfTreasureCards++;
 
 		// valid play? --> ugmsg / failed play --> fmsg
 
 		makeBreak();
-	
-		Message m = buy(cardToBuy);
-		if(m instanceof UpdateGame_Message) {
-			UpdateGame_Message ugmsg = (UpdateGame_Message) m;
-	//		ugmsg.
+
+		
+			// ugmsg.
 		}
+		} while (!succeededBuy);
+		
+		
+		
 		// next buy?
 		if (buys > 0) {
 
@@ -177,14 +196,14 @@ public class Bot extends Player {
 	/**
 	 * Fills a name-list with entries, chooses one and gives it back. public static
 	 */
-	public String getNameOfBot() {
+	public static String getNameOfBot() {
 		NAMES.add("Bodo");
 		NAMES.add("Lukas");
 		NAMES.add("Simon");
 		NAMES.add("Adrian");
 		NAMES.add("René");
 		Random rand = new Random();
-		String nameOfBot = NAMES.get(rand.nextInt(4));
+		String nameOfBot = NAMES.get(rand.nextInt(5));
 		return nameOfBot;
 	}
 
@@ -205,32 +224,69 @@ public class Bot extends Player {
 	}
 
 	/**
-	 * Checks the game status and changes the priority of VictoryCards if game
-	 * ending is close.
+	 * Checks the game status and changes slightly the priority of VictoryCards
+	 * while game ending is arriving.
 	 */
-	private void estimatePriorityOfVictoryCards() {
+	private void estimateBuyPriorityOfVictoryCards() {
+		int gameStage = 0;
 
-		if (game.getProvincePile().size() <= MIN_CARDS_PER_DECKPILE)
-			gameStage = 80;
-		if (game.getDuchyPile().size() <= MIN_CARDS_PER_DECKPILE)
-			gameStage = 60;
-		if (game.getDuchyPile().size() <= (MIN_CARDS_PER_DECKPILE + 2))
-			gameStage = 40;
+		// calculate gameStage number
+		if (game.getProvincePile().size() < 5)
+			gameStage += 5;
+		else if (game.getProvincePile().size() < 3)
+			gameStage += 10;
+		else if (game.getProvincePile().size() < 2)
+			gameStage += 20;
 
-		// PROBLEM HERE!
-//		game.getBuyCards().keySet().stream().filter(game.buyCards.containsValue(MIN_CARDS_PER_DECKPILE));
-		// numOfStacksWithLessThanFourCards = streamResultat
+		if (game.getDuchyPile().size() < 6)
+			gameStage += 5;
+		else if (game.getDuchyPile().size() < 3)
+			gameStage += 10;
+		else if (game.getDuchyPile().size() < 2)
+			gameStage += 20;
 
-		// mit plus rechnen
-		// gameStage jedes mal neuberechnen
-		
-		if (gameStage >= 40)
-			prioListForBuying.replace(CardName.Duchy, 65);
-		prioListForBuying.replace(CardName.Province, 100);
-		if (gameStage >= 60)
-			prioListForBuying.replace(CardName.Duchy, 69);
-		if (gameStage >= 80) {
-			prioListForBuying.replace(CardName.Duchy, 99);
+		List<CardName> list0 = game.getBuyCards().keySet().stream().filter(c -> game.getBuyCards().containsValue(3))
+				// PROBLEM: 3, 2 und 1 zählen... aber ohne obengenannte Stacks
+				.collect(Collectors.toList());
+		int lowStacks = list0.size();
+		if (lowStacks == 3)
+			gameStage += 20;
+		else if (lowStacks >= 4)
+			gameStage += 40;
+
+		// changes of priorities according gameStage number
+		int tempEstate = prioListForBuying.get(CardName.Estate);
+		int tempDuchy = prioListForBuying.get(CardName.Duchy);
+		int tempProvince = prioListForBuying.get(CardName.Province);
+		boolean done0 = true, done1 = true, done2 = true, done3 = true;
+		if (gameStage >= 40 && done0) {
+			tempEstate += 70;
+			tempDuchy += 20;
+			tempProvince += 10;
+			prioListForBuying.replace(CardName.Estate, tempEstate);
+			prioListForBuying.replace(CardName.Duchy, tempDuchy);
+			prioListForBuying.replace(CardName.Province, tempProvince);
+			done0 = false;
+		} else if (gameStage >= 30 && done1) {
+			tempEstate += 10;
+			tempDuchy += 10;
+			tempProvince += 10;
+			prioListForBuying.replace(CardName.Estate, tempEstate);
+			prioListForBuying.replace(CardName.Duchy, tempDuchy);
+			prioListForBuying.replace(CardName.Province, tempProvince);
+			done1 = false;
+		} else if (gameStage >= 20 && done2) {
+			tempDuchy += 10;
+			tempProvince += 10;
+			prioListForBuying.replace(CardName.Duchy, tempDuchy);
+			prioListForBuying.replace(CardName.Province, tempProvince);
+			done2 = false;
+		} else if (gameStage >= 10 && done3) {
+			tempDuchy += 10;
+			tempProvince += 10;
+			prioListForBuying.replace(CardName.Duchy, tempDuchy);
+			prioListForBuying.replace(CardName.Province, tempProvince);
+			done3 = false;
 		}
 	}
 
@@ -239,25 +295,75 @@ public class Bot extends Player {
 	 * owned cards and changes the Priority of GoldCard and SilverCard.
 	 * 
 	 */
-	private void estimatePriorityOfTreasureCards() {
+	private void estimateBuyPriorityOfTreasureCards() {
 		if (numberOfTreasureCards >= MAX_TREASURE_CARDS) {
 			prioListForBuying.remove(CardName.Gold);
 			prioListForBuying.remove(CardName.Silver);
-		}
-		if (numberOfTreasureCards / numberOfCards < SHARE_OF_TREASURE_CARDS
-				&& numberOfTreasureCards <= MAX_TREASURE_CARDS) {
-			prioListForBuying.replace(CardName.Gold, 80);
-			prioListForBuying.replace(CardName.Silver, 70);
 		} else {
-			prioListForBuying.replace(CardName.Gold, 70);
-			prioListForBuying.replace(CardName.Silver, 40);
+			int tempGold = prioListForBuying.get(CardName.Gold);
+			int tempSilver = prioListForBuying.get(CardName.Silver);
+			if (numberOfTreasureCards / numberOfCards < SHARE_OF_TREASURE_CARDS) {
+				tempGold += 10;
+				tempSilver += 10;
+				prioListForBuying.replace(CardName.Gold, tempGold);
+				prioListForBuying.replace(CardName.Silver, tempSilver);
+			} else {
+				tempGold -= 10;
+				tempSilver -= 10;
+				prioListForBuying.replace(CardName.Gold, tempGold);
+				prioListForBuying.replace(CardName.Silver, tempSilver);
+			}
 		}
 	}
 
 	/**
 	 * Calculates the priority of each ActionCards for the buying decision.
 	 */
-	private void estimatePriorityOfActionCards() {
-		// to-do
+	private void estimateBuyPriorityOfActionCards() {
+		// prioListForBuying.remove(CardName.Cellar); do not use but implement first
+		// prioListForBuying.put(CardName.Woodcutter); do not use
+		// prioListForBuying.put(CardName.Workshop); do not use
+		if (getNumberOfOwnedCards(CardName.Market) >= MAX_MARKET_CARDS)
+			prioListForBuying.remove(CardName.Market);
+		if (getNumberOfOwnedCards(CardName.Mine) >= MAX_MINE_CARDS)
+			prioListForBuying.remove(CardName.Mine);
+		if (getNumberOfOwnedCards(CardName.Smithy) >= MAX_SMITHY_CARDS)
+			prioListForBuying.remove(CardName.Smithy);
+		if (getNumberOfOwnedCards(CardName.Village) >= MAX_VILLAGE_CARDS)
+			prioListForBuying.remove(CardName.Village);
+
+		// int max_remodel_cards = 2;
+		// getNumberOfOwnedCards
+		// if (getNumberOfOwnedCards(CardName.Remodel) >= max_remodel_cards)
+		// prioListForBuying.remove(CardName.Remodel);
+
+	}
+
+	/**
+	 * Calculates who many cards are owned by the Bot of a specific card and returns
+	 * the number as an Integer.
+	 * 
+	 * @param cardname
+	 * @return
+	 */
+	private int getNumberOfOwnedCards(CardName cardname) {
+		int numberOfOwnedCards = 0;
+		for (Card card : handCards) {
+			if (card.getCardName().equals(cardname))
+				numberOfOwnedCards++;
+		}
+		for (Card card : playedCards) {
+			if (card.getCardName().equals(cardname))
+				numberOfOwnedCards++;
+		}
+		for (Card card : discardPile) {
+			if (card.getCardName().equals(cardname))
+				numberOfOwnedCards++;
+		}
+		for (Card card : deckPile) {
+			if (card.getCardName().equals(cardname))
+				numberOfOwnedCards++;
+		}
+		return numberOfOwnedCards;
 	}
 }
