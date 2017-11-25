@@ -2,6 +2,7 @@ package Server_GameLogic;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import Cards.CardName;
@@ -33,7 +34,7 @@ public class BotTester {
 		
 		do {
 			System.out.println("nein");
-		} while (!test9);
+		} while (test9);
 		
 		HashMap<CardName, Integer> prioListForBuying = new HashMap<CardName, Integer>();
 		prioListForBuying.put(CardName.Market, 20);
@@ -42,5 +43,15 @@ public class BotTester {
 		System.out.println(prioListForBuying.size());
 		prioListForBuying.remove(CardName.Market);
 		System.out.println(prioListForBuying.size());
+		
+		ArrayList<CardName> test2 = new ArrayList<CardName>();
+		test2.add(CardName.Cellar);
+		test2.add(CardName.Copper);
+		test2.add(CardName.Duchy);
+		System.out.println(test2.toString());
+		for(int i = test2.size(); i > 0; i--) {
+			test2.remove(0);
+		}
+		System.out.println(test2.toString());
 	}
 }
