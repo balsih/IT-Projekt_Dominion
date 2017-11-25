@@ -298,7 +298,7 @@ public class Player {
 			ugmsg.setCoins(this.coins);
 			ugmsg.setActions(this.actions);
 			ugmsg.setBuys(this.buys);
-			ugmsg.setDiscardPileTopCard(this.discardPile.firstElement());
+			ugmsg.setDiscardPileTopCard(this.discardPile.peek());
 			ugmsg.setDiscardPileCardNumber(this.discardPile.size());
 			ugmsg.setBuyedCard(buyedCard);
 			this.sendToOpponent(this, ugmsg);
@@ -322,7 +322,13 @@ public class Player {
 	public Message cleanUp() {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 
-		this.discard();
+		while (!playedCards.isEmpty()) {
+			this.discardPile.push(playedCards.remove());
+		}
+
+		while (!handCards.isEmpty()) {
+			this.discardPile.push(handCards.remove());
+		}
 
 		this.draw(this.NUM_OF_HANDCARDS);
 
@@ -332,29 +338,17 @@ public class Player {
 
 		this.moves++;
 
-		game.switchPlayer();
-		ugmsg.setCurrentPlayer(game.getCurrentPlayer().getPlayerName());
-		this.actualPhase = Phase.Action;
 
+		if(this.handCards.size() > 1){
+			
+		} else
+			this.skipPhase();
+			
+			
 		return ugmsg;
 	}
 
-	/*
-	 * Interaction methoden
-	 * 
-	 * EndOfTurn: Phase auf CleanUp, dem Gegner mitteilen, welche die TopCard
-	 * auf dem DiscardPile ist. Nur wenn mehr als eine Karte in der Hand ist
-	 * (Abfrage in Buy) InteractionType ueber UpdateGameMessage.
-	 */
-	private void discard() {
-		while (!playedCards.isEmpty()) {
-			this.discardPile.push(playedCards.remove());
-		}
 
-		while (!handCards.isEmpty()) {
-			this.discardPile.push(handCards.remove());
-		}
-	}
 
 	/**
 	 * @author Bodo Gruetter
@@ -412,27 +406,71 @@ public class Player {
 		return ugmsg;
 
 	}
-
-	/**
-	 * @Bodo Gruetter
+	
+	/*
+	 * Interaction methoden
 	 * 
-	 *       Lays the selected card down from Handcards into discardPile and
-	 *       counts the number of layed down cards and returns this number
-	 * 
-	 * @param the
-	 *            card which should been layed down
-	 * @return the number of layed down cards
+	 * EndOfTurn: Phase auf CleanUp, dem Gegner mitteilen, welche die TopCard
+	 * auf dem DiscardPile ist. Nur wenn mehr als eine Karte in der Hand ist
+	 * (Abfrage in Buy) InteractionType ueber UpdateGameMessage.
 	 */
-	public int layDown(String cardName) {
-		Card layedDownCard = null;
-		int index = 0;
-
-		index = this.handCards.indexOf(cardName);
-		layedDownCard = this.handCards.remove(index);
-		this.discardPile.push(layedDownCard);
-
-		this.counter++;
-		return counter;
+	
+	/**
+	 * @author Bodo Gruetter
+	 * 
+	 * @param discardedCards, a linkedList with discarded Cards
+	 * @return UpdateGame_Message
+	 */
+	private UpdateGame_Message discard(LinkedList<Card> discardedCards) {
+		UpdateGame_Message ugmsg = new UpdateGame_Message();
+		
+		while(!discardedCards.isEmpty()){
+			discardPile.push(discardedCards.remove());
+		}
+		
+		ugmsg.setDiscardPileCardNumber(this.discardPile.size());
+		ugmsg.setDiscardPileTopCard(this.discardPile.peek());
+		ugmsg.setNewHandCards(this.handCards);
+		return ugmsg;
+	}
+	
+	/**
+	 * @author Bodo Gruetter
+	 * 
+	 * @param discardedCard, the cardName of the discarded Card
+	 * @return UpdateGame_Message
+	 */
+	private UpdateGame_Message discard(CardName discardedCard) {
+		UpdateGame_Message ugmsg = new UpdateGame_Message();
+		
+			discardPile.push(Card.getCard(discardedCard));
+		
+		ugmsg.setDiscardPileCardNumber(this.discardPile.size());
+		ugmsg.setDiscardPileTopCard(this.discardPile.peek());
+		ugmsg.setNewHandCards(this.handCards);
+		return ugmsg;
+	}
+	
+	public UpdateGame_Message executeCellar(LinkedList<Card> discardedCards){
+		UpdateGame_Message ugmsg = this.discard(discardedCards);
+		
+		UpdateGame_Message.merge(this.draw(discardedCards.size()), ugmsg);
+		
+		return ugmsg;
+	}
+	
+	public UpdateGame_Message executeWorkshop(CardName cardName){
+		UpdateGame_Message ugmsg = (UpdateGame_Message) this.buy(cardName);
+		
+		return ugmsg;
+	}
+	
+	public UpdateGame_Message executeRemodel(CardName discardedCard, CardName pickedCard){
+		UpdateGame_Message ugmsg = this.discard(discardedCard);
+		
+		UpdateGame_Message.merge((UpdateGame_Message) this.buy(pickedCard), ugmsg);
+		
+		return ugmsg;
 	}
 
 	/**
@@ -460,7 +498,10 @@ public class Player {
 				}
 
 			case CleanUp:
-
+				game.switchPlayer();
+				ugmsg.setCurrentPlayer(game.getCurrentPlayer().getPlayerName());
+				this.actualPhase = Phase.Action;
+				
 			default:
 				break;
 			}

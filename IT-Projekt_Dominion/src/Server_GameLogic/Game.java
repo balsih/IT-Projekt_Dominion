@@ -348,9 +348,7 @@ public class Game {
 	 * @param the from the player discarded Card
 	 * @return a linkedlist with all available cards
 	 */
-	public LinkedList<Card> getAvailableCards(Card discardedCard){
-		LinkedList<Card> allCards = new LinkedList<Card>();
-		
+	public LinkedList<Card> getAvailableCards(Card discardedCard){		
 		LinkedList<Card> availableCards = new LinkedList<Card>();
 		Iterator<Card> iter = this.allCards.iterator();
 		
