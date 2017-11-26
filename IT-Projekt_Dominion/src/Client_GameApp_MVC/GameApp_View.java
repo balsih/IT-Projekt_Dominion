@@ -2,6 +2,8 @@ package Client_GameApp_MVC;
 
 import Abstract_MVC.View;
 import Client_Services.ServiceLocator;
+import Messages.GameMode_Message;
+import Server_GameLogic.GameMode;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -231,7 +233,12 @@ public class GameApp_View extends View<GameApp_Model> {
 		stage.setMinHeight(stage.getHeight());
 		// stage.setScene(scene);
 		// stage.setTitle("Dominion");
-
+		
+		GameMode_Message gmmsg = new GameMode_Message();
+		if (gmmsg.getMode().equals(GameMode.Singleplayer)){
+			txtfChatArea.setDisable(true);
+		}
+		
 		return scene;
 	}
 }//end GameApp_View

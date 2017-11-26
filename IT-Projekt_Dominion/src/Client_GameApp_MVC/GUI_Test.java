@@ -1,5 +1,7 @@
 package Client_GameApp_MVC;
 
+import java.util.LinkedList;
+
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.stage.Stage;
@@ -237,22 +239,35 @@ public class GUI_Test extends Application {
 
 		// Test: add images to the boxes
 		ImageView img1 = new ImageView(new Image(getClass().getResourceAsStream("Images/Geld_01.jpg")));
+		ImageView img2 = new ImageView(new Image(getClass().getResourceAsStream("Images/Geld_01.jpg")));
+		ImageView img3 = new ImageView(new Image(getClass().getResourceAsStream("Images/Geld_01.jpg")));
+		ImageView img4 = new ImageView(new Image(getClass().getResourceAsStream("Images/Geld_01.jpg")));
+		
+
 		img1.setFitWidth(50);
 		img1.setFitHeight(100);
+		img2.setFitWidth(40);
+		img2.setFitHeight(90);
+		img3.setFitWidth(120);
+		img3.setFitHeight(100);
+		img4.setFitWidth(50);
+		img4.setFitHeight(100);
 		hboxHandCards.getChildren().add(img1);
-
+		
+		stackpDiscard.getChildren().add(img1);
+		stackpDiscard.getChildren().add(img2);
+		stackpDiscard.getChildren().add(img3);
+//		stackpDiscard.getChildren().add(img4);
+		
 		// Adrian
 		// Already implemented: Sends a chat message to the server 
 		btnSendChatArea.setOnAction(event -> {
 			String existingMessages = txtaChatArea.getText();
 			String newMessage = txtfChatArea.getText();
-			if (newMessage.length() > 0) {
-				if (existingMessages.length() == 0)
-					txtaChatArea.setText(newMessage);
-				else
-					txtaChatArea.setText(existingMessages + "\n" + newMessage);
-				txtfChatArea.setText("");
-			}
+			
+			if (newMessage.length() > 0)
+				txtaChatArea.setText(existingMessages.concat(newMessage)+"\n");
+			txtfChatArea.setText("");
 		});
 		
 		// Test set image on action
