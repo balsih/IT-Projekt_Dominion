@@ -21,11 +21,11 @@ public class UpdateGame_Message extends Message {
 
 	
 	private static final String ELEMENT_DECKPILE = "deckPile";
-	private static final String ELEMENT_NEWHANDCARD = "newHandCard";
+	private static final String ELEMENT_NEW_HANDCARD = "newHandCard";
 	
 	private static final String ELEMENT_CHAT = "chat";
-	private static final String ELEMENT_CURRENTPHASE = "currentPhase";
-	private static final String ELEMENT_CURRENTPLAYER = "currentPlayer";
+	private static final String ELEMENT_CURRENT_PHASE = "currentPhase";
+	private static final String ELEMENT_CURRENT_PLAYER = "currentPlayer";
 	private static final String ELEMENT_LOG = "log";
 	private String chat = null;
 	private String currentPhase = null; //outside the Message: enum "Phase"
@@ -35,8 +35,8 @@ public class UpdateGame_Message extends Message {
 	private static final String ELEMENT_BUYS = "buys";
 	private static final String ELEMENT_ACTIONS = "actions";
 	private static final String ELEMENT_COINS = "coins";
-	private static final String ATTR_DECKPILECARDNUMBER = "deckPileCardNumber";
-	private static final String ATTR_DISCARDPILECARDNUMBER = "discardPileCardNumber";
+	private static final String ATTR_DECKPILE_CARD_NUMBER = "deckPileCardNumber";
+	private static final String ATTR_DISCARDPILE_CARD_NUMBER = "discardPileCardNumber";
 	private Integer buys = null;
 	private Integer actions = null;
 	private Integer coins = null;
@@ -45,18 +45,18 @@ public class UpdateGame_Message extends Message {
 	
 	private static final String ELEMENT_BUYEDCARD = "buyedCard";
 	private static final String ELEMENT_PLAYEDCARD = "playedCard";
-	private static final String ELEMENT_DISCARDPILETOPCARD = "discardPileTopCard";
+	private static final String ELEMENT_DISCARDPILE_TOP_CARD = "discardPileTopCard";
 	private Card buyedCard = null;
 	private Card playedCard = null;
 	private Card discardPileTopCard = null;
 	
 	private static final String ELEMENT_INTERACTION = "interaction";
-	private static final String ATTR_INTERACTIONTYPE = "interactionType";
+	private static final String ATTR_INTERACTION_TYPE = "interactionType";
 	private static final String ELEMENT_CARDSELECTION = "cardSelection";
 	private Interaction interactionType = null;
     private HashMap<String, LinkedList<Card>> cardSelectionElements;
     
-	private static final String ELEMENT_NEWHANDCARDS = "newHandCards";
+	private static final String ELEMENT_NEW_HANDCARDS = "newHandCards";
     private HashMap<String, String> stringElements;
     private HashMap<String, Integer> integerElements;
     private HashMap<String, Card> cardElements;
@@ -100,7 +100,7 @@ public class UpdateGame_Message extends Message {
         this.addContentElements(docIn, root, this.cardElements);
         
         //adds the Top-Level Element HANDCARDS to XML and the subElements HANDCARD
-        Element handCardsElement = docIn.createElement(ELEMENT_NEWHANDCARDS);
+        Element handCardsElement = docIn.createElement(ELEMENT_NEW_HANDCARDS);
         this.addContentElements(docIn, handCardsElement, this.handCardListElements);
         root.appendChild(handCardsElement);
         
@@ -116,8 +116,8 @@ public class UpdateGame_Message extends Message {
 	 * If the content is null, the Element just has no content, but probably an attribute. Per default they're in the stringElements
 	 */
 	private void initializeMaps() {
-		this.stringElements.put(ELEMENT_CURRENTPLAYER, this.currentPlayer);
-		this.stringElements.put(ELEMENT_CURRENTPHASE, this.currentPhase);
+		this.stringElements.put(ELEMENT_CURRENT_PLAYER, this.currentPlayer);
+		this.stringElements.put(ELEMENT_CURRENT_PHASE, this.currentPhase);
 		this.stringElements.put(ELEMENT_CHAT, this.chat);
 		this.stringElements.put(ELEMENT_LOG, this.log);
 		this.stringElements.put(ELEMENT_DECKPILE, null);
@@ -128,22 +128,22 @@ public class UpdateGame_Message extends Message {
 		
 		this.cardElements.put(ELEMENT_PLAYEDCARD, this.playedCard);
 		this.cardElements.put(ELEMENT_BUYEDCARD, this.buyedCard);
-		this.cardElements.put(ELEMENT_DISCARDPILETOPCARD, this.discardPileTopCard);
+		this.cardElements.put(ELEMENT_DISCARDPILE_TOP_CARD, this.discardPileTopCard);
 		
 		//The values has to be null if they were not set. Necessary to ask if a content was set (not null)
 		if(this.deckPileCardNumber != null)
-			this.attrValues.put(ATTR_DECKPILECARDNUMBER, this.deckPileCardNumber.toString());
-		else this.attrValues.put(ATTR_DECKPILECARDNUMBER, null);
+			this.attrValues.put(ATTR_DECKPILE_CARD_NUMBER, this.deckPileCardNumber.toString());
+		else this.attrValues.put(ATTR_DECKPILE_CARD_NUMBER, null);
 		if(this.discardPileCardNumber != null)
-			this.attrValues.put(ATTR_DISCARDPILECARDNUMBER, this.discardPileCardNumber.toString());
-		else this.attrValues.put(ATTR_DISCARDPILECARDNUMBER, null);
+			this.attrValues.put(ATTR_DISCARDPILE_CARD_NUMBER, this.discardPileCardNumber.toString());
+		else this.attrValues.put(ATTR_DISCARDPILE_CARD_NUMBER, null);
 		if(this.interactionType != null)
-			this.attrValues.put(ATTR_INTERACTIONTYPE, this.interactionType.toString());
-		else this.attrValues.put(ATTR_INTERACTIONTYPE, null);
+			this.attrValues.put(ATTR_INTERACTION_TYPE, this.interactionType.toString());
+		else this.attrValues.put(ATTR_INTERACTION_TYPE, null);
 		
-		this.attrElements.put(ELEMENT_DECKPILE, ATTR_DECKPILECARDNUMBER);
-		this.attrElements.put(ELEMENT_DISCARDPILETOPCARD, ATTR_DISCARDPILECARDNUMBER);
-		this.attrElements.put(ELEMENT_INTERACTION, ATTR_INTERACTIONTYPE);
+		this.attrElements.put(ELEMENT_DECKPILE, ATTR_DECKPILE_CARD_NUMBER);
+		this.attrElements.put(ELEMENT_DISCARDPILE_TOP_CARD, ATTR_DISCARDPILE_CARD_NUMBER);
+		this.attrElements.put(ELEMENT_INTERACTION, ATTR_INTERACTION_TYPE);
 	}
 
 	/**
@@ -230,7 +230,7 @@ public class UpdateGame_Message extends Message {
 				}catch(Exception e){}
 				try{HashMap<String, LinkedList<Card>> cardMap = (HashMap<String, LinkedList<Card>>) content;
 				NodeList cardList = element.getElementsByTagName(key);
-				if(key == ELEMENT_NEWHANDCARDS){
+				if(key == ELEMENT_NEW_HANDCARDS){
 					LinkedList<Card> newHandCards = this.handCardListElements.get(key);
 					for(int i = 0; i < cardList.getLength(); i++){
 						Element cardElement = (Element) cardList.item(i);
@@ -292,11 +292,11 @@ public class UpdateGame_Message extends Message {
 	
 	
 	public String getCurrentPlayer(){
-		return this.stringElements.get(ELEMENT_CURRENTPLAYER);
+		return this.stringElements.get(ELEMENT_CURRENT_PLAYER);
 	}
 
 	public Phase getCurrentPhase(){
-		return Phase.parsePhase(this.stringElements.get(ELEMENT_CURRENTPHASE));
+		return Phase.parsePhase(this.stringElements.get(ELEMENT_CURRENT_PHASE));
 	}
 	
 	public String getChat(){
@@ -308,7 +308,7 @@ public class UpdateGame_Message extends Message {
 	}
 	
 	public Interaction getInteractionType(){
-		return Interaction.parseInteraction(this.attrValues.get(ATTR_INTERACTIONTYPE));
+		return Interaction.parseInteraction(this.attrValues.get(ATTR_INTERACTION_TYPE));
 	}
 
 	public Card getPlayedCard(){
@@ -320,15 +320,15 @@ public class UpdateGame_Message extends Message {
 	}
 	
 	public Card getDiscardPileTopCard(){
-		return this.cardElements.get(ELEMENT_DISCARDPILETOPCARD);
+		return this.cardElements.get(ELEMENT_DISCARDPILE_TOP_CARD);
 	}
 	
 	public Integer getDiscardPileCardNumber(){
-		return Integer.parseInt(this.attrValues.get(ATTR_DISCARDPILECARDNUMBER));
+		return Integer.parseInt(this.attrValues.get(ATTR_DISCARDPILE_CARD_NUMBER));
 	}
 	
 	public Integer getDeckPileCardNumber(){
-		return Integer.parseInt(this.attrValues.get(ATTR_DECKPILECARDNUMBER));
+		return Integer.parseInt(this.attrValues.get(ATTR_DECKPILE_CARD_NUMBER));
 	}
 
 	public Integer getActions(){
@@ -344,7 +344,7 @@ public class UpdateGame_Message extends Message {
 	}
 
 	public LinkedList<Card> getNewHandCards(){
-		return this.handCardListElements.get(ELEMENT_NEWHANDCARDS);
+		return this.handCardListElements.get(ELEMENT_NEW_HANDCARDS);
 	}
 	
 	
@@ -408,7 +408,7 @@ public class UpdateGame_Message extends Message {
 
 	//fill the cardListElement to use addContentElements
 	public void setNewHandCards(LinkedList<Card> newHandCards){
-		this.handCardListElements.put(ELEMENT_NEWHANDCARD, newHandCards);	
+		this.handCardListElements.put(ELEMENT_NEW_HANDCARD, newHandCards);	
 	}
 	
 	//fill the cardListElement to use addContentElements

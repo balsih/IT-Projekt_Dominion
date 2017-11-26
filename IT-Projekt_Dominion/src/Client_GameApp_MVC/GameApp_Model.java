@@ -44,7 +44,7 @@ public class GameApp_Model extends Model {
 
 	private final String NO_CONNECTION = "No connection to Server";
 	private final int PORT = 8080;
-	private final String TRANSLATEREGEX = "#[\\w\\s]*#";
+	private final String TRANSLATE_REGEX = "#[\\w\\s]*#";
 	
 	private ServiceLocator sl = ServiceLocator.getServiceLocator();
 	private Translator t = sl.getTranslator();
@@ -173,12 +173,12 @@ public class GameApp_Model extends Model {
 	 * @return translated input
 	 */
 	private String translate(String input){
-		Pattern p = Pattern.compile(this.TRANSLATEREGEX);
+		Pattern p = Pattern.compile(this.TRANSLATE_REGEX);
 		Matcher m = p.matcher(input);
 		int tmpIndex = 0;
 		String output = "";
-		String[] inputList = input.split(this.TRANSLATEREGEX);
-		String lastPart = inputList[inputList.length-1];
+		String[] splittedInput = input.split(this.TRANSLATE_REGEX);
+		String lastPart = splittedInput[splittedInput.length-1];
 		while(m.find()){
 			int startIndex = m.start();
 			int endIndex = m.end();
@@ -190,7 +190,7 @@ public class GameApp_Model extends Model {
 			output += lastPart;
 			return output;
 		}
-		return input;
+		return t.getString(input);
 	}
 	
 
@@ -231,13 +231,16 @@ public class GameApp_Model extends Model {
 		BuyCard_Message bcmsg = new BuyCard_Message();
 		bcmsg.setCard(cardName);
 		boolean update = false;
+		
 		Message msgIn = this.processMessage(bcmsg);
 		if(msgIn.getType().equals(MessageType.UpdateGame)){//buy succeeded
 			this.processUpdateGame(msgIn);
 			update = true;
+			
 		}else if(msgIn.getType().equals(MessageType.PlayerSuccess)){//the game ended after this buy
 			this.processPlayerSuccess(msgIn);
 			update = true;
+			
 		}else if(msgIn.getType().equals(MessageType.Failure)){//it was not allowed to buy this card
 			//nothing toDo here
 		}
@@ -255,6 +258,7 @@ public class GameApp_Model extends Model {
 		Chat_Message cmsg = new Chat_Message();
 		cmsg.setChat(chat);
 		boolean update = false;
+		
 		Message msgIn = this.processMessage(cmsg);
 		if(msgIn.getType().equals(MessageType.UpdateGame)){
 			this.processUpdateGame(msgIn);
@@ -273,6 +277,7 @@ public class GameApp_Model extends Model {
 		Interaction_Message imsg = new Interaction_Message();
 		boolean update = false;
 		imsg.setInteractionType(this.interaction);
+		
 		switch(this.interaction){
 		case Skip:
 			break;
@@ -292,6 +297,7 @@ public class GameApp_Model extends Model {
 			imsg.setRemodelChoice(this.buyChoice);
 			break;
 		}
+		
 		Message msgIn = this.processMessage(imsg);
 		if(msgIn.getType().equals(MessageType.UpdateGame)){
 			update = true;
@@ -315,15 +321,17 @@ public class GameApp_Model extends Model {
 		CreateNewPlayer_Message cnpmsg = new CreateNewPlayer_Message();
 		cnpmsg.setClient(clientName);//set the clientName and encrypted password to XML
 		cnpmsg.setPassword(this.encryptPassword(password));
+		
 		Message msgIn = this.processMessage(cnpmsg);
 		if(msgIn.getType().equals(MessageType.Commit)){
 			this.clientName = clientName;
 			this.main.startMainMenu();
+			
 		}else if(msgIn.getType().equals(MessageType.Failure)){
 			Failure_Message fmsg = (Failure_Message) msgIn;
 			result = fmsg.getNotification();
 		}
-		return result;
+		return this.translate(result);
 
 	}
 
@@ -340,11 +348,12 @@ public class GameApp_Model extends Model {
 		gmmsg.setClient(this.clientName);//set the clientName and mode(SinglePlayer or MultiPlayer) to XML
 		gmmsg.setMode(mode);
 		this.gameMode = mode.toString();
+		
 		Message msgIn = this.processMessage(gmmsg);
 		if(msgIn.getType().equals(MessageType.Commit)){
 			this.main.startGameApp();
 		}
-		return result;
+		return this.translate(result);
 	}
 
 	/**
@@ -360,15 +369,17 @@ public class GameApp_Model extends Model {
 		Login_Message lmsg = new Login_Message();
 		lmsg.setClient(clientName);//set the clientName and encrypted password to XML
 		lmsg.setPassword(this.encryptPassword(password));
+		
 		Message msgIn = this.processMessage(lmsg);
 		if(msgIn.getType().equals(MessageType.Commit)){
 			this.clientName = clientName;//login succeeded
 			this.main.startMainMenu();
+			
 		}else if(msgIn.getType().equals(MessageType.Failure)){
 			Failure_Message fmsg = (Failure_Message) msgIn;//login failed, clientName and/or password wrong
 			result = fmsg.getNotification();
 		}
-		return result;
+		return this.translate(result);
 	}
 	
 	/**
@@ -378,8 +389,9 @@ public class GameApp_Model extends Model {
 	 * @return result, the Highscore in one String or the message that client lost connection to server
 	 */
 	public String sendHighScoreRequest(){
-		String result = NO_CONNECTION;
+		String result = this.translate(NO_CONNECTION);
 		HighScore_Message hsmsg = new HighScore_Message();
+		
 		Message msgIn = this.processMessage(hsmsg);
 		if(msgIn.getType().equals(MessageType.HighScore)){
 			HighScore_Message nhsmsg = (HighScore_Message) msgIn;
@@ -399,6 +411,7 @@ public class GameApp_Model extends Model {
 		PlayCard_Message pcmsg = new PlayCard_Message();
 		pcmsg.setCard(card);
 		boolean update = false;
+		
 		Message msgIn = this.processMessage(pcmsg);
 		if(msgIn.getType().equals(MessageType.UpdateGame)){
 			this.processUpdateGame(msgIn);
@@ -419,13 +432,13 @@ public class GameApp_Model extends Model {
 	protected void processCreateGame(Message msgIn) {		
 		CreateGame_Message cgmsg = (CreateGame_Message) msgIn;
 		this.yourNewHandCards = cgmsg.getHandCards();
-		for(Card card: cgmsg.getDeckPile())
-			this.yourDeck.add(card);
 		this.buyCards = cgmsg.getBuyCards();
 		this.opponent = cgmsg.getOpponent();
 		this.opponentDeck = cgmsg.getDeckNumber();
 		this.opponentHandCards = cgmsg.getHandNumber();
 		this.currentPlayer = cgmsg.getStartingPlayer();
+		for(Card card: cgmsg.getDeckPile())
+			this.yourDeck.add(card);
 	}
 
 	/**
@@ -453,7 +466,7 @@ public class GameApp_Model extends Model {
 
 		//If something necessary happened in the Game, it will be provided to show
 		if(ugmsg.getLog() != null)
-			this.newLog = ugmsg.getLog();
+			this.newLog = this.translate(ugmsg.getLog());
 
 		//If the client or opponent sent a chat, it will be provided to show
 		if(ugmsg.getChat() != null)

@@ -17,21 +17,21 @@ import Cards.CardName;
 public class Interaction_Message extends Message {
 	
 	private static final String ELEMENT_INTERACTION = "interaction";
-	private static final String ATTR_INTERACTIONTYPE = "interactionType";
+	private static final String ATTR_INTERACTION_TYPE = "interactionType";
 	private Interaction interactionType = null;
 	
 	//EOT = End Of Turn
-	private static final String ELEMENT_EOTDISCARDCARD = "EOTdiscardCard";
+	private static final String ELEMENT_ENDOFTURN_DISCARDCARD = "EOTdiscardCard";
 	private Card EOTdiscardCard = null;
 	
-	private static final String ELEMENT_CELLARDISCARDCARD = "cellarDiscardCard";
+	private static final String ELEMENT_CELLAR_DISCARDCARD = "cellarDiscardCard";
 	private LinkedList<Card> cellarDiscardCards = null;
 	
-	private static final String ELEMENT_WORKSHOPCHOICE = "workshopChoice";
+	private static final String ELEMENT_WORKSHOP_CHOICE = "workshopChoice";
 	private CardName workshopChoice = null;
 	
 	private static final String ELEMENT_DISPOSEDCARD = "disposedCard";
-	private static final String ELEMENT_REMODELCHOICE = "remodelChoice";
+	private static final String ELEMENT_REMODEL_CHOICE = "remodelChoice";
 	private Card disposedCard = null;
 	private CardName remodelChoice = null;
 	
@@ -51,7 +51,7 @@ public class Interaction_Message extends Message {
         Element root = docIn.getDocumentElement();
 		
 		Element interaction = docIn.createElement(ELEMENT_INTERACTION);
-		interaction.setAttribute(ATTR_INTERACTIONTYPE, this.interactionType.toString());
+		interaction.setAttribute(ATTR_INTERACTION_TYPE, this.interactionType.toString());
 		root.appendChild(interaction);
 		
 		//content of Interaction_Message depends on which interaction you're acting
@@ -59,19 +59,19 @@ public class Interaction_Message extends Message {
 		case Skip://nothing toDo here (no content)
 			break;
 		case EndOfTurn://consist the topCard of the discardPile to show to opponent
-			Element eotDiscardCard = docIn.createElement(ELEMENT_EOTDISCARDCARD);
+			Element eotDiscardCard = docIn.createElement(ELEMENT_ENDOFTURN_DISCARDCARD);
 			eotDiscardCard.setTextContent(this.EOTdiscardCard.toString());
 			interaction.appendChild(eotDiscardCard);
 			break;
 		case Cellar://consists all cards that the client discarded with Cellar (theoretically "unlimited" number)
 			for(Card card: this.cellarDiscardCards){
-				Element cellarDiscardCard = docIn.createElement(ELEMENT_CELLARDISCARDCARD);
+				Element cellarDiscardCard = docIn.createElement(ELEMENT_CELLAR_DISCARDCARD);
 				cellarDiscardCard.setTextContent(card.toString());
 				interaction.appendChild(cellarDiscardCard);
 			}
 			break;
 		case Workshop://consists the chosen CardName which the client would like to take (max. cost 4)
-			Element workshopChoice = docIn.createElement(ELEMENT_WORKSHOPCHOICE);
+			Element workshopChoice = docIn.createElement(ELEMENT_WORKSHOP_CHOICE);
 			workshopChoice.setTextContent(this.workshopChoice.toString());
 			interaction.appendChild(workshopChoice);
 			break;
@@ -81,7 +81,7 @@ public class Interaction_Message extends Message {
 			interaction.appendChild(disposedCard);
 			break;
 		case Remodel2://consist the chosen CardName which the client would like to take (max 2+ of the disposed card)
-			Element remodelChoice = docIn.createElement(ELEMENT_REMODELCHOICE);
+			Element remodelChoice = docIn.createElement(ELEMENT_REMODEL_CHOICE);
 			remodelChoice.setTextContent(this.remodelChoice.toString());
 			interaction.appendChild(remodelChoice);
 			break;
@@ -100,7 +100,7 @@ public class Interaction_Message extends Message {
 		Element interaction = null;
         if (tmpElements.getLength() > 0) {
             interaction = (Element) tmpElements.item(0);
-            this.interactionType = Interaction.parseInteraction(interaction.getAttribute(ATTR_INTERACTIONTYPE));
+            this.interactionType = Interaction.parseInteraction(interaction.getAttribute(ATTR_INTERACTION_TYPE));
         }
         
         //generate content of the specified Interaction
@@ -108,14 +108,14 @@ public class Interaction_Message extends Message {
         case Skip://nothing toDo here (no content)
         	break;
         case EndOfTurn://get the CardName in the End Of Turn to show the opponent
-        	tmpElements = interaction.getElementsByTagName(ELEMENT_EOTDISCARDCARD);
+        	tmpElements = interaction.getElementsByTagName(ELEMENT_ENDOFTURN_DISCARDCARD);
         	if(tmpElements.getLength() > 0){
         		Element EOTDiscardCard = (Element) tmpElements.item(0);
         		this.EOTdiscardCard = Card.getCard((CardName.parseName(EOTDiscardCard.getTextContent())));
         	}
         	break;
         case Cellar://get the CardNames of the discarded cards with Cellar
-        	tmpElements = interaction.getElementsByTagName(ELEMENT_CELLARDISCARDCARD);
+        	tmpElements = interaction.getElementsByTagName(ELEMENT_CELLAR_DISCARDCARD);
         	this.cellarDiscardCards = new LinkedList<Card>();
         	for(int i = 0; i < tmpElements.getLength(); i++){
         		Element cellarDiscardCard = (Element) tmpElements.item(i);
@@ -123,7 +123,7 @@ public class Interaction_Message extends Message {
         	}
         	break;
         case Workshop://get the CardName of the chosen card (max. cost 4)
-        	tmpElements = interaction.getElementsByTagName(ELEMENT_WORKSHOPCHOICE);
+        	tmpElements = interaction.getElementsByTagName(ELEMENT_WORKSHOP_CHOICE);
         	if(tmpElements.getLength() > 0){
         		Element workshopChoice = (Element) tmpElements.item(0);
         		this.workshopChoice = CardName.parseName(workshopChoice.getTextContent());
@@ -137,7 +137,7 @@ public class Interaction_Message extends Message {
         	}
         	break;
         case Remodel2://get the chosen card which the client would like to take (max 2+ of the disposed card)
-        	tmpElements = interaction.getElementsByTagName(ELEMENT_REMODELCHOICE);
+        	tmpElements = interaction.getElementsByTagName(ELEMENT_REMODEL_CHOICE);
         	if(tmpElements.getLength() > 0){
         		Element remodelChoice = (Element) tmpElements.item(0);
         		this.remodelChoice = CardName.parseName(remodelChoice.getTextContent());

@@ -29,11 +29,11 @@ public class CreateGame_Message extends Message {
 	private final static String ELEMENT_DECKCARD = "deckCard";
 	private final static String ELEMENT_HANDCARD = "handCard";
 	private static final String ELEMENT_BUYCARD = "buyCard";
-	private static final String ATTR_BUYCARDNUMBER = "buyCardNumber";
-	private static final String ELEMENT_STARTINGPLAYER = "startingPlayer";
+	private static final String ATTR_BUYCARD_NUMBER = "buyCardNumber";
+	private static final String ELEMENT_STARTING_PLAYER = "startingPlayer";
 	private static final String ELEMENT_OPPONENT = "opponent";
-	private static final String ATTR_DECKNUMBER = "deckNumber";
-	private static final String ATTR_HANDNUMBER = "handNumber";
+	private static final String ATTR_DECK_NUMBER = "deckNumber";
+	private static final String ATTR_HAND_NUMBER = "handNumber";
 	private HashMap<CardName, Integer> buyCards;
 	private Stack<Card> deckPile;
 	private LinkedList<Card> handCards;
@@ -72,7 +72,7 @@ public class CreateGame_Message extends Message {
 		Set<CardName> cardSet = this.buyCards.keySet();
 		for(CardName cardName: cardSet){
 			Element buyCard = docIn.createElement(ELEMENT_BUYCARD);
-			buyCard.setAttribute(ATTR_BUYCARDNUMBER, Integer.toString(this.buyCards.get(cardName)));
+			buyCard.setAttribute(ATTR_BUYCARD_NUMBER, Integer.toString(this.buyCards.get(cardName)));
 			buyCard.setTextContent(cardName.toString());
 			buyCards.appendChild(buyCard);
 		}
@@ -90,12 +90,12 @@ public class CreateGame_Message extends Message {
 		//insert opponents name, handcards and deckcards to show on client
 		Element opponent = docIn.createElement(ELEMENT_OPPONENT);
 		opponent.setTextContent(this.opponent);
-		opponent.setAttribute(ATTR_HANDNUMBER, Integer.toString(this.handNumber));
-		opponent.setAttribute(ATTR_DECKNUMBER, Integer.toString(this.deckNumber));
+		opponent.setAttribute(ATTR_HAND_NUMBER, Integer.toString(this.handNumber));
+		opponent.setAttribute(ATTR_DECK_NUMBER, Integer.toString(this.deckNumber));
 		root.appendChild(opponent);
 		
 		//insert startingPlayer
-		Element startingPlayer = docIn.createElement(ELEMENT_STARTINGPLAYER);
+		Element startingPlayer = docIn.createElement(ELEMENT_STARTING_PLAYER);
 		startingPlayer.setTextContent(this.startingPlayer);
 		root.appendChild(startingPlayer);
 		
@@ -128,7 +128,7 @@ public class CreateGame_Message extends Message {
         	NodeList buyElements = buyCards.getElementsByTagName(ELEMENT_BUYCARD);
         	for(int i = buyElements.getLength() -1; i >= 0; i--){
         		Element buyCard = (Element) buyElements.item(i);
-        		Integer numOfCards = Integer.parseInt(buyCard.getAttribute(ATTR_BUYCARDNUMBER));
+        		Integer numOfCards = Integer.parseInt(buyCard.getAttribute(ATTR_BUYCARD_NUMBER));
         		this.buyCards.put(CardName.parseName(buyCard.getTextContent()), numOfCards);
         	}
         }
@@ -149,12 +149,12 @@ public class CreateGame_Message extends Message {
         if(tmpElements.getLength() > 0){
         	Element opponent = (Element) tmpElements.item(0);
         	this.opponent = opponent.getTextContent();
-        	this.handNumber = Integer.parseInt(opponent.getAttribute(ATTR_HANDNUMBER));
-        	this.deckNumber = Integer.parseInt(opponent.getAttribute(ATTR_DECKNUMBER));
+        	this.handNumber = Integer.parseInt(opponent.getAttribute(ATTR_HAND_NUMBER));
+        	this.deckNumber = Integer.parseInt(opponent.getAttribute(ATTR_DECK_NUMBER));
         }
         
         //set the startingPlayer
-        tmpElements = root.getElementsByTagName(ELEMENT_STARTINGPLAYER);
+        tmpElements = root.getElementsByTagName(ELEMENT_STARTING_PLAYER);
         if(tmpElements.getLength() > 0){
         	Element startingPlayer = (Element) tmpElements.item(0);
         	this.startingPlayer = startingPlayer.getTextContent();

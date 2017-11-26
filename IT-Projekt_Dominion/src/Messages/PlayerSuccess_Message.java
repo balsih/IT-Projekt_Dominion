@@ -12,7 +12,7 @@ import org.w3c.dom.NodeList;
 public class PlayerSuccess_Message extends Message {
 
 	private static final String ELEMENT_SUCCESS = "success";
-	private static final String ELEMENT_VICTORYPOINTS = "victoryPoints";
+	private static final String ELEMENT_VICTORY_POINTS = "victoryPoints";
 	private Content success;
 	private Integer victoryPoints;
 
@@ -33,7 +33,7 @@ public class PlayerSuccess_Message extends Message {
 		success.setTextContent(this.success.toString());
 		root.appendChild(success);
 		
-		Element victoryPoints = docIn.createElement(ELEMENT_VICTORYPOINTS);
+		Element victoryPoints = docIn.createElement(ELEMENT_VICTORY_POINTS);
 		victoryPoints.setTextContent(this.victoryPoints.toString());
 		root.appendChild(victoryPoints);
 	}
@@ -53,7 +53,7 @@ public class PlayerSuccess_Message extends Message {
             this.success = Content.parseContent(success.getTextContent());
         }
         
-        tmpElements = root.getElementsByTagName(ELEMENT_VICTORYPOINTS);
+        tmpElements = root.getElementsByTagName(ELEMENT_VICTORY_POINTS);
         if(tmpElements.getLength() > 0){
         	Element victoryPoints = (Element) tmpElements.item(0);
         	this.victoryPoints = Integer.parseInt(victoryPoints.getTextContent());
