@@ -3,6 +3,8 @@ package Client_GameApp_MVC;
 import java.util.LinkedList;
 
 import javafx.application.Application;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Insets;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
@@ -11,10 +13,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -32,7 +36,7 @@ public class GUI_Test extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
-
+		
 	@Override
 	public void start(Stage stage) {
 
@@ -255,8 +259,8 @@ public class GUI_Test extends Application {
 		hboxHandCards.getChildren().add(img1);
 		
 		stackpDiscard.getChildren().add(img1);
-		stackpDiscard.getChildren().add(img2);
-		stackpDiscard.getChildren().add(img3);
+//		stackpDiscard.getChildren().add(img2);
+//		stackpDiscard.getChildren().add(img3);
 //		stackpDiscard.getChildren().add(img4);
 		
 		// Adrian
@@ -270,9 +274,49 @@ public class GUI_Test extends Application {
 			txtfChatArea.setText("");
 		});
 		
-		// Test set image on action
-		img1.setOnMouseClicked(event -> {
+		// set image on action
+		img1.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			txtaChatArea.setText("You've clicked the image");
+			//event.consume();
+	     });
+		
+			
+		// Zoom image on mouse clicked
+		int imageHeight = (int) img1.getFitHeight();
+		int imageWidth = (int) img1.getFitWidth();
+		
+		// Brightness
+        ColorAdjust initial = new ColorAdjust();
+        initial.setBrightness(+0.5);
+        img1.setEffect(initial);
+		
+		
+		img1.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
+			img1.setFitWidth(imageWidth*2);
+            img1.setFitHeight(imageHeight*2);
+            // Brightness
+            ColorAdjust ca1 = new ColorAdjust();
+            ca1.setBrightness(0);
+            img1.setEffect(ca1);
+		});
+		
+		img1.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
+			img1.setFitWidth(imageWidth);
+            img1.setFitHeight(imageHeight);
+            img1.setEffect(initial);
+		});
+		
+		vboxPlayedCards.setOnDragOver(event -> {
+			vboxPlayedCards.setStyle("-fx-border-color: red;");
+		});
+		
+		vboxPlayedCards.setOnDragExited(event -> {
+			vboxPlayedCards.setStyle("-fx-border-color: white;");
+			event.consume();
+		});
+		
+		vboxPlayedCards.setOnDragDropped(event -> {
+			hboxPlayedCards.getChildren().add(img1);
 		});
 		
 		// Test Drag and drop of images
@@ -287,8 +331,8 @@ public class GUI_Test extends Application {
 		});
 		
 		img1.setOnDragDone(event -> {
-			hboxPlayedCards.getChildren().add(img1);
-			hboxTreasureCards.getChildren().remove(0);
+			// hboxPlayedCards.getChildren().add(img1);
+			hboxTreasureCards.getChildren().remove(img1);
 		});
 
 	}
