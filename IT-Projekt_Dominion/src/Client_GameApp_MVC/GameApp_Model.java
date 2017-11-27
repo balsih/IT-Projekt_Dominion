@@ -286,6 +286,8 @@ public class GameApp_Model extends Model {
 			break;
 		case Cellar:
 			imsg.setCellarDiscardCards(this.cardSelection);
+			for(int i = 0; i < this.cardSelection.size(); i++)
+				this.yourDiscardPile.add(this.cardSelection.remove(i));
 			break;
 		case Workshop:
 			imsg.setWorkshopChoice(this.buyChoice);
@@ -556,8 +558,17 @@ public class GameApp_Model extends Model {
 
 		//If currentPlayer is set, the currentPlayer's turn ends
 		if(ugmsg.getCurrentPlayer() != null){
-			if(ugmsg.getCurrentPlayer() != this.currentPlayer)
+			if(ugmsg.getCurrentPlayer() != this.currentPlayer){
 				this.turnEnded = true;
+				if(ugmsg.getCurrentPlayer() == this.opponent){//if it was your turn that ended
+					for(int i = 0; i < this.playedCards.size(); i++)
+						this.yourDiscardPile.add(this.playedCards.remove(i));
+					for(int j = 0; j < this.yourHandCards.size(); j++)
+						this.yourDiscardPile.add(this.yourHandCards.remove(j));
+				}else{//if it was your opponents turn that ended
+					this.playedCards.clear();
+				}
+			}
 			this.currentPlayer = ugmsg.getCurrentPlayer();
 		}
 	}

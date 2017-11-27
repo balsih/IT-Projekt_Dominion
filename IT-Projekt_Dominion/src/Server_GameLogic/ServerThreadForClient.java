@@ -8,6 +8,7 @@ import java.util.Queue;
 
 import java.util.logging.Logger;
 
+import Cards.Card;
 import Cards.CardName;
 import Messages.BuyCard_Message;
 import Messages.Chat_Message;
@@ -83,7 +84,7 @@ public class ServerThreadForClient implements Runnable {
 	 */
 	@Override
 	public void run(){
-		try{			// Read a message from the client
+		try{				// Read a message from the client
 			Message msgIn = Message.receive(this.clientSocket);
 			Message msgOut = processMessage(msgIn);
 			msgOut.send(clientSocket);		
@@ -156,8 +157,12 @@ public class ServerThreadForClient implements Runnable {
 	 */
 	private Message processPlayCard(Message msgIn) {
 		PlayCard_Message pcmsg = (PlayCard_Message) msgIn;
-		CardName cardName = pcmsg.getCard().getCardName();
-		return this.player.play(cardName);
+		for(Card card: this.player.handCards){
+			if(card.getType().equals(pcmsg.getCard().getType())){
+				return this.player.play(card);
+			}
+		}
+		return new Failure_Message();
 	}
 
 	/**
