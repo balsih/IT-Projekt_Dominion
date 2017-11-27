@@ -1,7 +1,7 @@
 package Server_GameLogic;
 
 public enum Phase {
-	Action, Buy, CleanUp;
+	Action, Buy, CleanUp, Ending;
 
 	/**
 	 * @author Bradley Richards Parses the enum-Name for creating new cards on

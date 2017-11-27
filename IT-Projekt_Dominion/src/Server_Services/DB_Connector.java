@@ -142,7 +142,7 @@ public class DB_Connector {
 	 * @return the 5 highscores
 	 */
 	public String getHighScore() {
-		String selectHighScore = "Select Score from Player_Scoring order by Score desc limit 0,5";
+		String selectHighScore = "Select Username, Score from Player_Scoring order by Score desc limit 0,5";
 		String highScore = "";
 
 		try {
@@ -150,6 +150,7 @@ public class DB_Connector {
 			this.rs = this.prepStmt.executeQuery();
 
 			while (this.rs.next()) {
+				highScore += rs.getString("Username") + ":\t";
 				highScore += rs.getString("Score") + "\n";
 			}
 

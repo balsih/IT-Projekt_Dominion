@@ -22,3 +22,20 @@ Delete * from Player [42001-195]
 org.h2.jdbc.JdbcSQLException: Datenumwandlungsfehler beim Umwandeln von "Rene"
 Data conversion error converting "Rene"; SQL statement:
 Select max(Score) from Player_Scoring where Username in (Select * order by Score desc limit 5) [22018-195]
+2017-11-27 11:27:25 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Feld "PLAYER" nicht gefunden
+Column "PLAYER" not found; SQL statement:
+Select Player, Score from Player_Scoring order by Score desc limit 0,5 [42122-195]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:345)
+	at org.h2.message.DbException.get(DbException.java:179)
+	at org.h2.message.DbException.get(DbException.java:155)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:147)
+	at org.h2.command.dml.Select.prepare(Select.java:839)
+	at org.h2.command.Parser.prepareCommand(Parser.java:262)
+	at org.h2.engine.Session.prepareLocal(Session.java:573)
+	at org.h2.engine.Session.prepareCommand(Session.java:514)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1204)
+	at org.h2.jdbc.JdbcPreparedStatement.<init>(JdbcPreparedStatement.java:73)
+	at org.h2.jdbc.JdbcConnection.prepareStatement(JdbcConnection.java:288)
+	at Server_Services.DB_Connector.getHighScore(DB_Connector.java:149)
+	at Server_Services.DB_Connector.main(DB_Connector.java:313)

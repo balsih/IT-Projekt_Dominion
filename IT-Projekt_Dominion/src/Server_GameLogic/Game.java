@@ -168,6 +168,7 @@ public class Game {
 		this.player1.draw(player1.NUM_OF_HANDCARDS);
 		this.player2.draw(player2.NUM_OF_HANDCARDS);
 		this.currentPlayer = this.getStarter();
+		this.currentPlayer.startMove();
 	}
 
 	/**
@@ -197,7 +198,6 @@ public class Game {
 		} else {
 			this.currentPlayer = player1;
 		}
-
 	}
 
 	/**
