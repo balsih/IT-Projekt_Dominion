@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 import Cards.Card;
 import Cards.CardName;
 import Cards.CardType;
-import Cards.Woodcutter_Card;
 import Messages.Content;
 import Messages.Failure_Message;
 import Messages.Interaction;
@@ -39,8 +38,8 @@ public class Player {
 	protected int coins;
 	protected int moves;
 	protected int victoryPoints;
-	protected boolean winner;
 	protected boolean isFinished;
+	private Content status;
 
 	protected Game game;
 	protected Phase actualPhase;
@@ -51,15 +50,6 @@ public class Player {
 	private ServerThreadForClient serverThreadForClient;
 
 	private final Logger logger = Logger.getLogger("");
-	
-	/**
-	 * 
-	 * @param name
-	 */
-	public Player(String name, ServerThreadForClient serverThreadForClient) {
-		this(name);
-		this.serverThreadForClient = serverThreadForClient;
-	}
 
 	/**
 	 * Constructor for Bot
@@ -73,10 +63,16 @@ public class Player {
 		this.playedCards = new LinkedList<Card>();
 
 		this.playerName = name;
-		this.winner = false;
-
 		startMove();
+	}
 
+	/**
+	 * 
+	 * @param name
+	 */
+	public Player(String name, ServerThreadForClient serverThreadForClient) {
+		this(name);
+		this.serverThreadForClient = serverThreadForClient;
 	}
 
 	/**
@@ -105,51 +101,33 @@ public class Player {
 	 *         methods returns a failure message.
 	 */
 	public Message play(Card selectedCard) {
+		int index = this.handCards.indexOf(selectedCard);
+		Card playedCard = this.handCards.remove(index);
+		playedCards.add(playedCard);
+		UpdateGame_Message ugmsg;
+
 		// Executes the clicked Card, if the player has enough actions
 		if (this.getActions() > 0 && this.actualPhase == Phase.Action && this.equals(game.getCurrentPlayer())) {
-			int index = this.handCards.indexOf(selectedCard);
-			Card playedCard = this.handCards.remove(index);
-			UpdateGame_Message ugmsg = playedCard.executeCard(this);
+
+			ugmsg = playedCard.executeCard(this);
 			this.actions--;
-			playedCards.add(playedCard);
-			System.out.println("Test");
-
-			// Checks if the game is finished. If it is, it checks the winner
-			// and
-			// sends it to the opponent.
-			if (game.checkGameEnding()) {
-				game.checkWinner();
-
-				if (this.winner == true) {
-					PlayerSuccess_Message psmsg = new PlayerSuccess_Message();
-					psmsg.setSuccess(Content.Won);
-					psmsg.setVictoryPoints(this.victoryPoints);
-
-					PlayerSuccess_Message psmsgOpp = new PlayerSuccess_Message();
-					psmsgOpp.setSuccess(Content.Lost);
-					psmsgOpp.setVictoryPoints(this.victoryPoints);
-					this.sendToOpponent(this, psmsgOpp);
-
-					return psmsg;
-				} else {
-					PlayerSuccess_Message psmsg = new PlayerSuccess_Message();
-					psmsg.setSuccess(Content.Lost);
-					psmsg.setVictoryPoints(this.victoryPoints);
-
-					PlayerSuccess_Message psmsgOpp = new PlayerSuccess_Message();
-					psmsgOpp.setSuccess(Content.Won);
-					psmsgOpp.setVictoryPoints(this.victoryPoints);
-					this.sendToOpponent(this, psmsgOpp);
-
-					return psmsg;
-				}
-			}
 
 			this.sendToOpponent(this, ugmsg);
 
-			if (this.actions == 0 && !this.handCards.contains(CardType.Action))
-				this.skipPhase();
+			// If no more interactions are necessary skip to the next phase
+			if (!(playedCard.getCardName().equals(CardName.Cellar) || playedCard.getCardName().equals(CardName.Workshop)
+					|| playedCard.getCardName().equals(CardName.Remodel)
+					|| playedCard.getCardName().equals(CardName.Mine))) {
+				if (this.actions == 0 && !this.handCards.contains(CardType.Action))
+					this.skipPhase();
+			} else {
+				// Do Something...
+			}
 
+			return ugmsg;
+
+		} else if (this.actualPhase == Phase.Buy && this.equals(game.getCurrentPlayer())) {
+			ugmsg = playedCard.executeCard(this);
 			return ugmsg;
 		}
 
@@ -246,35 +224,11 @@ public class Player {
 			}
 
 			if (game.checkGameEnding()) {
+				this.actualPhase = Phase.Ending;
 				game.checkWinner();
 
-				if (this.winner == true) {
-					PlayerSuccess_Message psmsg = new PlayerSuccess_Message();
-					psmsg.setSuccess(Content.Won);
-					psmsg.setVictoryPoints(this.victoryPoints);
-
-					PlayerSuccess_Message psmsgOpp = new PlayerSuccess_Message();
-					psmsgOpp.setSuccess(Content.Lost);
-					psmsgOpp.setVictoryPoints(this.victoryPoints);
-					this.sendToOpponent(this, psmsgOpp);
-					
-					this.actualPhase = Phase.Ending;
-
-					return psmsg;
-				} else {
-					PlayerSuccess_Message psmsg = new PlayerSuccess_Message();
-					psmsg.setSuccess(Content.Lost);
-					psmsg.setVictoryPoints(this.victoryPoints);
-
-					PlayerSuccess_Message psmsgOpp = new PlayerSuccess_Message();
-					psmsgOpp.setSuccess(Content.Won);
-					psmsgOpp.setVictoryPoints(this.victoryPoints);
-					this.sendToOpponent(this, psmsgOpp);
-
-					this.actualPhase = Phase.Ending;
-					
-					return psmsg;
-				}
+				this.sendToOpponent(this, this.getOpponentSuccessMsg());
+				return this.getCurrentPlayerSuccessMsg();
 			}
 
 			/**
@@ -284,7 +238,6 @@ public class Player {
 			 */
 			ugmsg.setLog(this.playerName + " bought a " + buyedCard.getCardName() + " Card.");
 			ugmsg.setCoins(this.coins);
-			ugmsg.setActions(this.actions);
 			ugmsg.setBuys(this.buys);
 			ugmsg.setDiscardPileTopCard(this.discardPile.peek());
 			ugmsg.setDiscardPileCardNumber(this.discardPile.size());
@@ -314,10 +267,10 @@ public class Player {
 		this.setFinished(true);
 
 		this.moves++;
-		
-		if(this.handCards.size() > 1){
+
+		if (this.handCards.size() > 1) {
 			this.discard(selectedTopCard);
-		} else{
+		} else {
 			this.discard();
 			this.skipPhase();
 		}
@@ -326,30 +279,6 @@ public class Player {
 
 		return ugmsg;
 	}
-	
-	public void discard(Card selectedTopCard){
-		while (!playedCards.isEmpty()) {
-			this.discardPile.push(playedCards.remove());
-		}
-
-		while (!handCards.isEmpty()) {
-			if(!handCards.element().equals(selectedTopCard))
-				this.discardPile.push(handCards.remove());
-		}
-		
-		discardPile.push(handCards.remove());
-	}
-	
-	public void discard(){
-		while (!playedCards.isEmpty()) {
-			this.discardPile.push(playedCards.remove());
-		}
-
-		while (!handCards.isEmpty()) {
-			this.discardPile.push(handCards.remove());
-		}
-	}
-
 
 	/**
 	 * @author Bodo Gruetter
@@ -375,30 +304,30 @@ public class Player {
 
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 
-			for (int i = 0; i < numOfCards; i++) {
-				if (!deckPile.isEmpty() && discardPile.isEmpty()) {
-					Collections.shuffle(deckPile);
-					for (int y = 0; i < numOfCards; i++)
-						handCards.add(discardPile.pop());
-				} else if (deckPile.isEmpty() && !discardPile.isEmpty()) {
-					while (!discardPile.isEmpty())
-						deckPile.push(discardPile.pop());
-					Collections.shuffle(deckPile);
-					for (int y = 0; y < numOfCards; y++)
-						handCards.add(deckPile.pop());
-				} else if (deckPile.size() < numOfCards) {
-					while (!deckPile.isEmpty())
-						handCards.add(deckPile.pop());
-					while (!discardPile.isEmpty())
-						deckPile.push(discardPile.pop());
-					Collections.shuffle(deckPile);
-					for (int y = 0; y < numOfCards; y++)
-						handCards.add(deckPile.pop());
-				} else {
-					for (int y = 0; y < numOfCards - handCards.size(); y++)
-						handCards.add(deckPile.pop());
-				}
+		for (int i = 0; i < numOfCards; i++) {
+			if (!deckPile.isEmpty() && discardPile.isEmpty()) {
+				Collections.shuffle(deckPile);
+				for (int y = 0; i < numOfCards; i++)
+					handCards.add(discardPile.pop());
+			} else if (deckPile.isEmpty() && !discardPile.isEmpty()) {
+				while (!discardPile.isEmpty())
+					deckPile.push(discardPile.pop());
+				Collections.shuffle(deckPile);
+				for (int y = 0; y < numOfCards; y++)
+					handCards.add(deckPile.pop());
+			} else if (deckPile.size() < numOfCards) {
+				while (!deckPile.isEmpty())
+					handCards.add(deckPile.pop());
+				while (!discardPile.isEmpty())
+					deckPile.push(discardPile.pop());
+				Collections.shuffle(deckPile);
+				for (int y = 0; y < numOfCards; y++)
+					handCards.add(deckPile.pop());
+			} else {
+				for (int y = 0; y < numOfCards - handCards.size(); y++)
+					handCards.add(deckPile.pop());
 			}
+		}
 
 		ugmsg.setDeckPileCardNumber(this.deckPile.size());
 		ugmsg.setDiscardPileCardNumber(this.discardPile.size());
@@ -407,7 +336,7 @@ public class Player {
 		return ugmsg;
 
 	}
-	
+
 	/*
 	 * Interaction methoden
 	 * 
@@ -415,64 +344,156 @@ public class Player {
 	 * auf dem DiscardPile ist. Nur wenn mehr als eine Karte in der Hand ist
 	 * (Abfrage in Buy) InteractionType ueber UpdateGameMessage.
 	 */
+
+	/**
+	 * @author Bodo Gruetter
+	 *
+	 * @param discardedCards,
+	 *            a linkedList with discarded Cards
+	 * @return UpdateGame_Message
+	 */
+	private UpdateGame_Message discard(LinkedList<Card> discardedCards) {
+		UpdateGame_Message ugmsg = new UpdateGame_Message();
+
+		while (!discardedCards.isEmpty()) {
+			discardPile.push(discardedCards.remove());
+		}
+
+		ugmsg.setDiscardPileCardNumber(this.discardPile.size());
+		ugmsg.setDiscardPileTopCard(this.discardPile.peek());
+		ugmsg.setNewHandCards(this.handCards);
+		return ugmsg;
+	}
+
+	/**
+	 * @author Bodo Gruetter
+	 *
+	 * @param discardedCard,
+	 *            the cardName of the discarded Card
+	 * @return UpdateGame_Message
+	 */
+	private UpdateGame_Message discard(CardName discardedCard) {
+		UpdateGame_Message ugmsg = new UpdateGame_Message();
+
+		discardPile.push(Card.getCard(discardedCard));
+
+		ugmsg.setDiscardPileCardNumber(this.discardPile.size());
+		ugmsg.setDiscardPileTopCard(this.discardPile.peek());
+		ugmsg.setNewHandCards(this.handCards);
+		return ugmsg;
+	}
+
+	public void discard(Card selectedTopCard) {
+		while (!playedCards.isEmpty()) {
+			this.discardPile.push(playedCards.remove());
+		}
+
+		while (!handCards.isEmpty()) {
+			if (!handCards.element().equals(selectedTopCard))
+				this.discardPile.push(handCards.remove());
+		}
+
+		discardPile.push(handCards.remove());
+	}
+
+	public void discard() {
+		while (!playedCards.isEmpty()) {
+			this.discardPile.push(playedCards.remove());
+		}
+
+		while (!handCards.isEmpty()) {
+			this.discardPile.push(handCards.remove());
+		}
+	}
+
+	public UpdateGame_Message executeCellar(LinkedList<Card> discardedCards) {
+		UpdateGame_Message ugmsg = this.discard(discardedCards);
+
+		UpdateGame_Message.merge(this.draw(discardedCards.size()), ugmsg);
+
+		return ugmsg;
+	}
+
+	public UpdateGame_Message executeWorkshop(CardName cardName) {
+		UpdateGame_Message ugmsg = (UpdateGame_Message) this.buy(cardName);
+
+		return ugmsg;
+	}
 	
-//	/**
-//	 * @author Bodo Gruetter
-//	 * 
-//	 * @param discardedCards, a linkedList with discarded Cards
-//	 * @return UpdateGame_Message
-//	 */
-//	private UpdateGame_Message discard(LinkedList<Card> discardedCards) {
-//		UpdateGame_Message ugmsg = new UpdateGame_Message();
-//		
-//		while(!discardedCards.isEmpty()){
-//			discardPile.push(discardedCards.remove());
-//		}
-//		
-//		ugmsg.setDiscardPileCardNumber(this.discardPile.size());
-//		ugmsg.setDiscardPileTopCard(this.discardPile.peek());
-//		ugmsg.setNewHandCards(this.handCards);
-//		return ugmsg;
-//	}
-//	
-//	/**
-//	 * @author Bodo Gruetter
-//	 * 
-//	 * @param discardedCard, the cardName of the discarded Card
-//	 * @return UpdateGame_Message
-//	 */
-//	private UpdateGame_Message discard(CardName discardedCard) {
-//		UpdateGame_Message ugmsg = new UpdateGame_Message();
-//		
-//			discardPile.push(Card.getCard(discardedCard));
-//		
-//		ugmsg.setDiscardPileCardNumber(this.discardPile.size());
-//		ugmsg.setDiscardPileTopCard(this.discardPile.peek());
-//		ugmsg.setNewHandCards(this.handCards);
-//		return ugmsg;
-//	}
-//	
-//	public UpdateGame_Message executeCellar(LinkedList<Card> discardedCards){
-//		UpdateGame_Message ugmsg = this.discard(discardedCards);
-//		
-//		UpdateGame_Message.merge(this.draw(discardedCards.size()), ugmsg);
-//		
-//		return ugmsg;
-//	}
-//	
-//	public UpdateGame_Message executeWorkshop(CardName cardName){
-//		UpdateGame_Message ugmsg = (UpdateGame_Message) this.buy(cardName);
-//		
-//		return ugmsg;
-//	}
-//	
-//	public UpdateGame_Message executeRemodel(CardName discardedCard, CardName pickedCard){
-//		UpdateGame_Message ugmsg = this.discard(discardedCard);
-//		
-//		UpdateGame_Message.merge((UpdateGame_Message) this.buy(pickedCard), ugmsg);
-//		
-//		return ugmsg;
-//	}
+	/**
+	 * @author Bodo Gruetter
+	 * 
+	 * @param the
+	 *            from the player discarded Card
+	 * @return a linkedlist with all available cards
+	 */
+	public LinkedList<Card> getAvailableWorkshopCards(Card discardedCard, Interaction interaction) {
+		LinkedList<Card> availableCards = new LinkedList<Card>();
+		Iterator<CardName> keyIterator = game.getBuyCards().keySet().iterator();
+
+		while (keyIterator.hasNext()) {
+			if (Card.getCard(keyIterator.next()).getCost() <= 4)
+				availableCards.add(Card.getCard(keyIterator.next()));
+		}
+
+		return availableCards;
+	}
+
+	public UpdateGame_Message executeRemodel1(CardName discardedCard) {
+		UpdateGame_Message ugmsg = this.discard(discardedCard);
+
+		return ugmsg;
+	}
+
+	public UpdateGame_Message executeRemodel2(CardName pickedCard) {
+		UpdateGame_Message ugmsg = (UpdateGame_Message) this.buy(pickedCard);
+
+		return ugmsg;
+	}
+	
+	/**
+	 * @author Bodo Gruetter
+	 * 
+	 * @param the
+	 *            from the player discarded Card
+	 * @return a linkedlist with all available cards
+	 */
+	public LinkedList<Card> getAvailableRemodelCards(Card discardedCard, Interaction interaction) {
+		LinkedList<Card> availableCards = new LinkedList<Card>();
+		Iterator<CardName> keyIterator = game.getBuyCards().keySet().iterator();
+
+		while (keyIterator.hasNext()) {
+			if (Card.getCard(keyIterator.next()).getCost() <= discardedCard.getCost() + 2)
+				availableCards.add(Card.getCard(keyIterator.next()));
+		}
+
+		return availableCards;
+	}
+
+	public UpdateGame_Message executeMine(CardName cardName){
+		UpdateGame_Message ugmsg = (UpdateGame_Message) this.buy(cardName);
+		
+		return ugmsg;
+	}
+
+	/**
+	 * @author Bodo Gruetter
+	 * 
+	 * @param the
+	 *            from the player discarded Card
+	 * @return a linkedlist with all available cards
+	 */
+	public LinkedList<Card> getAvailableMineCards(Card discardedCard, Interaction interaction) {
+		LinkedList<Card> availableCards = new LinkedList<Card>();
+		Iterator<CardName> keyIterator = game.getBuyCards().keySet().iterator();
+
+		while (keyIterator.hasNext()) {
+			if (Card.getCard(keyIterator.next()).getCost() <= discardedCard.getCost() + 3)
+				availableCards.add(Card.getCard(keyIterator.next()));
+		}
+
+		return availableCards;
+	}
 
 	/**
 	 * @author Bodo Gruetter skips actual phase and goes to the next phase
@@ -484,8 +505,8 @@ public class Player {
 
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		Failure_Message fmsg = new Failure_Message();
-		//notwendig?
-		//ugmsg.setInteractionType(Interaction.Skip);
+		// notwendig?
+		// ugmsg.setInteractionType(Interaction.Skip);
 
 		if (this.equals(game.getCurrentPlayer())) {
 			switch (this.actualPhase) {
@@ -497,7 +518,7 @@ public class Player {
 				if (isFinished == true) {
 					this.actualPhase = Phase.CleanUp;
 					ugmsg.setCurrentPhase(Phase.CleanUp);
-//					this.cleanUp();
+					// this.cleanUp();
 				}
 
 			case CleanUp:
@@ -505,7 +526,7 @@ public class Player {
 				game.getCurrentPlayer().startMove();
 				ugmsg.setCurrentPlayer(game.getCurrentPlayer().getPlayerName());
 				ugmsg.setCurrentPhase(Phase.Action);
-				
+
 			default:
 				break;
 			}
@@ -546,6 +567,29 @@ public class Player {
 	 */
 	public void sendToOpponent(Player source, Message msg) {
 		source.getServerThreadForClient().addWaitingMessages(msg);
+	}
+
+	/**
+	 * sets the playerSuccess_Message of currentPlayer
+	 * 
+	 * @return a playerSuccess_Message
+	 */
+	private PlayerSuccess_Message getCurrentPlayerSuccessMsg() {
+		PlayerSuccess_Message psmsg = new PlayerSuccess_Message();
+
+		psmsg.setSuccess(this.status);
+		psmsg.setVictoryPoints(this.victoryPoints);
+
+		return psmsg;
+	}
+
+	private PlayerSuccess_Message getOpponentSuccessMsg() {
+		PlayerSuccess_Message psmsg = new PlayerSuccess_Message();
+
+		psmsg.setSuccess(this.status);
+		psmsg.setVictoryPoints(this.victoryPoints);
+
+		return psmsg;
 	}
 
 	public int getActions() {
@@ -656,15 +700,19 @@ public class Player {
 		this.serverThreadForClient = serverThreadForClient;
 	}
 
-	public void isWinner(boolean winner) {
-		this.winner = winner;
-	}
-
 	public void setMoves(int moves) {
 		this.moves = moves;
 	}
 
 	public int getMoves() {
 		return this.moves;
+	}
+
+	public Content getStatus() {
+		return status;
+	}
+
+	public void setStatus(Content status) {
+		this.status = status;
 	}
 }// end Player

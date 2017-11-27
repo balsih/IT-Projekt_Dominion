@@ -22,8 +22,8 @@ import Cards.Smithy_Card;
 import Cards.Village_Card;
 import Cards.Woodcutter_Card;
 import Cards.Workshop_Card;
+import Messages.Content;
 import Messages.Interaction;
-import Messages.Message;
 
 /**
  * @author Bodo
@@ -47,11 +47,6 @@ public class Game {
 	private Stack<Woodcutter_Card> woodcutterPile;
 	private Stack<Workshop_Card> workshopPile;
 	private HashMap<CardName, Integer> buyCards;
-	
-	//List of all Stacks
-	LinkedList<Stack> allStacks;
-	//List with all one card of every type
-	LinkedList<Card> allCards;
 
 	private final int NUM_OF_TREASURECARDS = 30;
 	private final int NUM_OF_VICTORYCARDS = 8;
@@ -76,11 +71,7 @@ public class Game {
 		// Build treasure stacks for a new game
 		this.buildTreasureCardStacks();
 		this.buildVictoryCardStacks();
-		this.buildActionCardStacks();
-		
-		this.fillAllStacks();
-		this.fillAllCards();
-		
+		this.buildActionCardStacks();		
 
 		this.gameEnded = false;
 		this.buyCards = new HashMap<CardName, Integer>();
@@ -204,24 +195,32 @@ public class Game {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 * lets the players count their points and checks the winner of a game.
+	 * lets the players count their points, checks the winner of a game and sets the player status.
 	 */
 	public void checkWinner() {
 			player1.countVictoryPoints();
 			player2.countVictoryPoints();
 			
-			if (player1.getVictoryPoints() > player2.getVictoryPoints())
-				player1.isWinner(true);
+			if (player1.getVictoryPoints() > player2.getVictoryPoints()){
+				player1.setStatus(Content.Won);
+				player2.setStatus(Content.Lost);
+			}
 			else if (player1.getVictoryPoints() == player2.getVictoryPoints()) {
-				if (player1.getMoves() > player2.getMoves())
-					player1.isWinner(true);
+				if (player1.getMoves() > player2.getMoves()){
+					player1.setStatus(Content.Won);
+					player2.setStatus(Content.Lost);
+				}
 				else if (player1.getMoves() == player2.getMoves()) {
-					player1.isWinner(true);
-					player2.isWinner(true);
-				} else
-					player2.isWinner(true);
-			} else
-				player2.isWinner(true);
+					player1.setStatus(Content.Won);
+					player2.setStatus(Content.Won);
+				} else{
+					player2.setStatus(Content.Lost);
+					player2.setStatus(Content.Won);
+				}
+			} else{
+				player1.setStatus(Content.Lost);
+				player2.setStatus(Content.Won);
+			}
 	}
 
 	/**
@@ -234,43 +233,17 @@ public class Game {
 	public boolean checkGameEnding() {
 		int counter = 0;		
 
-		Iterator<Stack> iter = allStacks.iterator();
-
-		while (iter.hasNext()) {
-			if (iter.next().isEmpty())
+		Iterator<Integer> valueIterator = this.getBuyCards().values().iterator();
+		
+		while(valueIterator.hasNext()){
+			if(valueIterator.next() == 0)
 				counter++;
 		}
-
+		
 		if (this.provincePile.isEmpty() || counter == 3)
 			return true;
 		else
 			return false;
-	}
-	
-	private void fillAllStacks(){
-		this.allStacks = new LinkedList<Stack>();
-				
-		this.allStacks.add(this.cellarPile);
-		this.allStacks.add(this.copperPile);
-		this.allStacks.add(this.duchyPile);
-		this.allStacks.add(this.estatePile);
-		this.allStacks.add(this.goldPile);
-		this.allStacks.add(this.marketPile);
-		this.allStacks.add(this.minePile);
-		this.allStacks.add(this.remodelPile);
-		this.allStacks.add(this.silverPile);
-		this.allStacks.add(this.smithyPile);
-		this.allStacks.add(this.villagePile);
-		this.allStacks.add(this.woodcutterPile);
-		this.allStacks.add(this.workshopPile);
-	}
-	
-	private void fillAllCards(){
-		this.allCards = new LinkedList<Card>();
-		
-		Iterator<Stack> iter = this.allStacks.iterator();
-		while(iter.hasNext())
-			this.allCards.add((Card) iter.next().firstElement());
 	}
 	
 	/**
@@ -293,6 +266,7 @@ public class Game {
 				gameCounter++;
 				existingGame.getPlayer1().getServerThreadForClient().addWaitingMessages(existingGame.getPlayer1().getServerThreadForClient().getCG_Message());
 				existingGame.getPlayer2().getServerThreadForClient().addWaitingMessages(existingGame.getPlayer2().getServerThreadForClient().getCG_Message());
+				existingGame.startGame();
 			}
 			return existingGame;
 		} else {
@@ -302,6 +276,7 @@ public class Game {
 			game.setPlayer2(bot);
 			bot.addGame(game);
 			game.getPlayer1().getServerThreadForClient().addWaitingMessages(existingGame.getPlayer1().getServerThreadForClient().getCG_Message());
+			game.startGame();
 			return game;
 		}
 
@@ -339,31 +314,6 @@ public class Game {
 		}
 
 		return this.buyCards;
-	}
-	
-	/**
-	 * @author Bodo Gruetter
-	 * 
-	 * @param the from the player discarded Card
-	 * @return a linkedlist with all available cards
-	 */
-	public LinkedList<Card> getAvailableCards(Card discardedCard, Interaction interaction){		
-		LinkedList<Card> availableCards = new LinkedList<Card>();
-		Iterator<Card> iter = this.allCards.iterator();
-		
-		if(discardedCard.getCardName() == CardName.Remodel){
-			while(iter.hasNext()){
-				if(iter.next().getCost() <= discardedCard.getCost()+2)
-					availableCards.add(iter.next());
-			}
-		} else if (discardedCard.getCardName() == CardName.Workshop){
-			while(iter.hasNext()){
-				if(iter.next().getCost() <= 4)
-					availableCards.add(iter.next());
-			}
-		}
-		
-		return availableCards;
 	}
 
 	/**
