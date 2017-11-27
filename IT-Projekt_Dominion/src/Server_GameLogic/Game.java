@@ -22,6 +22,7 @@ import Cards.Smithy_Card;
 import Cards.Village_Card;
 import Cards.Woodcutter_Card;
 import Cards.Workshop_Card;
+import Messages.Interaction;
 import Messages.Message;
 
 /**
@@ -53,7 +54,7 @@ public class Game {
 	LinkedList<Card> allCards;
 
 	private final int NUM_OF_TREASURECARDS = 30;
-	private final int NUM_OF_VICTORYCARDS = 20;
+	private final int NUM_OF_VICTORYCARDS = 8;
 	private final int NUM_OF_ACTIONCARDS = 10;
 
 	private static int gameCounter = 0;
@@ -206,7 +207,6 @@ public class Game {
 	 * lets the players count their points and checks the winner of a game.
 	 */
 	public void checkWinner() {
-		if (this.checkGameEnding()) {
 			player1.countVictoryPoints();
 			player2.countVictoryPoints();
 			
@@ -222,7 +222,6 @@ public class Game {
 					player2.isWinner(true);
 			} else
 				player2.isWinner(true);
-		}
 	}
 
 	/**
@@ -348,7 +347,7 @@ public class Game {
 	 * @param the from the player discarded Card
 	 * @return a linkedlist with all available cards
 	 */
-	public LinkedList<Card> getAvailableCards(Card discardedCard){		
+	public LinkedList<Card> getAvailableCards(Card discardedCard, Interaction interaction){		
 		LinkedList<Card> availableCards = new LinkedList<Card>();
 		Iterator<Card> iter = this.allCards.iterator();
 		

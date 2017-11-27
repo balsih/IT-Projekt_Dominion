@@ -57,21 +57,7 @@ public class Player {
 	 * @param name
 	 */
 	public Player(String name, ServerThreadForClient serverThreadForClient) {
-		this.deckPile = new Stack<Card>();
-		this.discardPile = new Stack<Card>();
-		this.handCards = new LinkedList<Card>();
-		this.playedCards = new LinkedList<Card>();
-
-		this.playerName = name;
-		this.winner = false;
-
-		this.coins = 0;
-		this.actions = 0;
-		this.buys = 0;
-		this.counter = 0;
-
-		this.isFinished = false;
-
+		this(name);
 		this.serverThreadForClient = serverThreadForClient;
 	}
 
@@ -89,12 +75,8 @@ public class Player {
 		this.playerName = name;
 		this.winner = false;
 
-		this.coins = 0;
-		this.actions = 0;
-		this.buys = 0;
-		counter = 0;
+		startMove();
 
-		this.isFinished = false;
 	}
 
 	/**
@@ -331,8 +313,6 @@ public class Player {
 
 		this.setFinished(true);
 
-		this.actualPhase = Phase.Action;
-
 		this.moves++;
 		
 		if(this.handCards.size() > 1){
@@ -524,7 +504,6 @@ public class Player {
 				game.switchPlayer();
 				game.getCurrentPlayer().startMove();
 				ugmsg.setCurrentPlayer(game.getCurrentPlayer().getPlayerName());
-				this.actualPhase = Phase.Action;
 				ugmsg.setCurrentPhase(Phase.Action);
 				
 			default:
