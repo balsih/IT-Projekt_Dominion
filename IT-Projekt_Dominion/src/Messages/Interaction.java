@@ -13,6 +13,7 @@ public enum Interaction {
 	Workshop,
 	Remodel1,
 	Remodel2,
+	Mine,
 	Skip;
 	
 	/**

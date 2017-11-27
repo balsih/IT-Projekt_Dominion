@@ -282,7 +282,7 @@ public class GameApp_Model extends Model {
 		case Skip:
 			break;
 		case EndOfTurn:
-			imsg.setDiscardCard(this.cardSelection.get(0));
+			imsg.setDiscardCard(this.cardSelection.remove(0));
 			break;
 		case Cellar:
 			imsg.setCellarDiscardCards(this.cardSelection);
@@ -291,10 +291,13 @@ public class GameApp_Model extends Model {
 			imsg.setWorkshopChoice(this.buyChoice);
 			break;
 		case Remodel1:
-			imsg.setDisposeCard(this.cardSelection.get(0));
+			imsg.setDisposeRemodelCard(this.cardSelection.remove(0));
 			break;
 		case Remodel2:
 			imsg.setRemodelChoice(this.buyChoice);
+			break;
+		case Mine:
+			imsg.setDisposedMineCard(this.cardSelection.remove(0));
 			break;
 		}
 		

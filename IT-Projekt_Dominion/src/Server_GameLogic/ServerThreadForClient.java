@@ -323,6 +323,8 @@ public class ServerThreadForClient implements Runnable {
 			break;
 		case Remodel2:
 			break;
+		case Mine:
+			break;
 		}
 		return null;
 	}

@@ -30,10 +30,13 @@ public class Interaction_Message extends Message {
 	private static final String ELEMENT_WORKSHOP_CHOICE = "workshopChoice";
 	private CardName workshopChoice = null;
 	
-	private static final String ELEMENT_DISPOSEDCARD = "disposedCard";
+	private static final String ELEMENT_DISPOSED_REMODEL_CARD = "disposedRemodelCard";
 	private static final String ELEMENT_REMODEL_CHOICE = "remodelChoice";
-	private Card disposedCard = null;
+	private Card disposedRemodelCard = null;
 	private CardName remodelChoice = null;
+	
+	private static final String ELEMENT_DISPOSED_MINE_CARD = "disposedMineCard";
+	private Card disposedMineCard = null;
 	
 	
 	
@@ -76,14 +79,19 @@ public class Interaction_Message extends Message {
 			interaction.appendChild(workshopChoice);
 			break;
 		case Remodel1://consists the disposed card
-			Element disposedCard = docIn.createElement(ELEMENT_DISPOSEDCARD);
-			disposedCard.setTextContent(this.disposedCard.toString());
-			interaction.appendChild(disposedCard);
+			Element disposedRemodelCard = docIn.createElement(ELEMENT_DISPOSED_REMODEL_CARD);
+			disposedRemodelCard.setTextContent(this.disposedRemodelCard.toString());
+			interaction.appendChild(disposedRemodelCard);
 			break;
 		case Remodel2://consist the chosen CardName which the client would like to take (max 2+ of the disposed card)
 			Element remodelChoice = docIn.createElement(ELEMENT_REMODEL_CHOICE);
 			remodelChoice.setTextContent(this.remodelChoice.toString());
 			interaction.appendChild(remodelChoice);
+			break;
+		case Mine://consists the disposed card
+			Element disposedMineCard = docIn.createElement(ELEMENT_DISPOSED_MINE_CARD);
+			disposedMineCard.setTextContent(this.disposedMineCard.toString());
+			interaction.appendChild(disposedMineCard);
 			break;
 		}
 	}
@@ -130,10 +138,10 @@ public class Interaction_Message extends Message {
         	}
         	break;
         case Remodel1://get the disposed card
-        	tmpElements = interaction.getElementsByTagName(ELEMENT_DISPOSEDCARD);
+        	tmpElements = interaction.getElementsByTagName(ELEMENT_DISPOSED_REMODEL_CARD);
         	if(tmpElements.getLength() > 0){
         		Element disposedCard = (Element) tmpElements.item(0);
-        		this.disposedCard = Card.getCard(CardName.parseName(disposedCard.getTextContent()));
+        		this.disposedRemodelCard = Card.getCard(CardName.parseName(disposedCard.getTextContent()));
         	}
         	break;
         case Remodel2://get the chosen card which the client would like to take (max 2+ of the disposed card)
@@ -141,6 +149,13 @@ public class Interaction_Message extends Message {
         	if(tmpElements.getLength() > 0){
         		Element remodelChoice = (Element) tmpElements.item(0);
         		this.remodelChoice = CardName.parseName(remodelChoice.getTextContent());
+        	}
+        	break;
+        case Mine://get the disposed treasure card
+        	tmpElements = interaction.getElementsByTagName(ELEMENT_DISPOSED_MINE_CARD);
+        	if(tmpElements.getLength() > 0){
+        		Element disposedMineCard = (Element) tmpElements.item(0);
+        		this.disposedMineCard = Card.getCard(CardName.parseName(disposedMineCard.getTextContent()));
         	}
         	break;
         }
@@ -187,12 +202,22 @@ public class Interaction_Message extends Message {
 		this.workshopChoice = workshopChoice;
 	}
 
-	public Card getDisposeCard() {
-		return this.disposedCard;
+	public Card getDisposeRemodelCard() {
+		return this.disposedRemodelCard;
 	}
 
-	public void setDisposeCard(Card disposedCard) {
-		this.disposedCard = disposedCard;
+	public void setDisposeRemodelCard(Card disposedRemodelCard) {
+		this.disposedRemodelCard = disposedRemodelCard;
+	}
+
+
+	public Card getDisposedMineCard() {
+		return disposedMineCard;
+	}
+
+
+	public void setDisposedMineCard(Card disposedMineCard) {
+		this.disposedMineCard = disposedMineCard;
 	}
 
 }
