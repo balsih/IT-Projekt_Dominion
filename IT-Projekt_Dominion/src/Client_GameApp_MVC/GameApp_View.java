@@ -72,6 +72,7 @@ public class GameApp_View extends View<GameApp_Model> {
 
 	// Controls current player area
 	protected Label lblCurrentPlayer = new Label("Current player");
+	protected Label lblCurrentPhase = new Label("Current phase");
 	protected Label lblCrntHandCards = new Label("Hand cards");
 	protected Label lblNmbrOfCrntHandCards = new Label("0");
 	protected Label lblCrntActions = new Label("Actions");
@@ -93,6 +94,8 @@ public class GameApp_View extends View<GameApp_Model> {
 
 		// Action cards area
 		VBox vboxActionCards = new VBox(lblActionCards, tilepActionCards);
+		tilepActionCards.setPrefColumns(4);
+		tilepActionCards.setPrefRows(2);
 
 		// Treasure cards area
 		VBox vboxTreasureCards = new VBox(lblTreasureCards, hboxTreasureCards);
@@ -138,7 +141,8 @@ public class GameApp_View extends View<GameApp_Model> {
 		gridpCurrentPlayer.add(lblCrntCoins, 0, 3);
 		gridpCurrentPlayer.add(lblNmbrOfCrntCoins, 1, 3);		
 
-		VBox vboxCurrentPlayer = new VBox(lblCurrentPlayer, gridpCurrentPlayer, btnCommit);
+		HBox hboxCurrentPlayer = new HBox(lblCurrentPlayer, lblCurrentPhase);
+		VBox vboxCurrentPlayer = new VBox(hboxCurrentPlayer, gridpCurrentPlayer, btnCommit);
 
 		// Root
 		GridPane root = new GridPane();
@@ -181,9 +185,9 @@ public class GameApp_View extends View<GameApp_Model> {
 		scene.getStylesheets().add(getClass().getResource("GameApp.css").toExternalForm());
 
 		vboxActionCards.getStyleClass().add("vbox");
-		tilepActionCards.getStyleClass().add("gaps");
+		tilepActionCards.getStyleClass().add("tilepActionCards");
 		lblActionCards.getStyleClass().add("Label");
-
+		
 		vboxTreasureCards.getStyleClass().add("vbox");
 		vboxTreasureCards.setMinWidth(290);
 		hboxTreasureCards.getStyleClass().add("hbox");
@@ -199,11 +203,13 @@ public class GameApp_View extends View<GameApp_Model> {
 		vboxLog.getStyleClass().add("vbox");
 		vboxLog.setMaxWidth(250);
 
-		hboxDiscard.getStyleClass().add("cardStackHeight");
+		hboxDiscard.getStyleClass().add("hbox");
+		vboxDiscard.getStyleClass().add("cardStackHeight");
 		vboxDiscard.getStyleClass().add("cardStackWidth");
 		vboxDiscard.getStyleClass().add("vbox");
 		
-		hboxDeck.getStyleClass().add("cardStackHeight");
+		hboxDeck.getStyleClass().add("hbox");
+		vboxDeck.getStyleClass().add("cardStackHeight");
 		vboxDeck.getStyleClass().add("cardStackWidth");
 
 		vboxPlayedCards.getStyleClass().add("vbox");
@@ -214,6 +220,7 @@ public class GameApp_View extends View<GameApp_Model> {
 		vboxHandCards.setPrefWidth(Double.MAX_VALUE);
 		hboxHandCards.getStyleClass().add("hbox");
 
+		hboxCurrentPlayer.getStyleClass().add("hbox");
 		vboxCurrentPlayer.getStyleClass().add("vboxCurrentPlayer");
 		gridpCurrentPlayer.getStyleClass().add("gridpCurrentPlayer");
 		lblCrntHandCards.getStyleClass().add("lblCurrentPlayer");

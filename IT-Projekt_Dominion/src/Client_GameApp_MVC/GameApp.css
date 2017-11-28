@@ -36,6 +36,11 @@ Label {
 	-fx-background-color: oldlace;
 }
 
+.tilepActionCards{
+	-fx-hgap: 20px;
+	-fx-vgap: 20px;
+}
+
 .hbox{
 	-fx-spacing: 10px;
 }

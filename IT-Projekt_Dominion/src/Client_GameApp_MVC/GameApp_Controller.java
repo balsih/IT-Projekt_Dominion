@@ -59,8 +59,9 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				view.stackpDiscard.getChildren().add(model.yourDiscardPileTopCard.getImage());
 				view.lblNmbrOfDiscards.setText(Integer.toString(model.yourDiscardPile.size()));
 
+
 				//				ist karte gesetzt?, wenn ja auf discard pile setzen
-				//						fragen ob null
+				//				fragen ob null
 				//				played cards und hand cards aus den boxen leeren
 
 				model.sendInteraction();
@@ -124,10 +125,10 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 				Message msgIn = model.processMessage(new AskForChanges_Message());
 
-				if(msgIn.getType().equals(MessageType.Commit)){
+				if (msgIn.getType().equals(MessageType.Commit)) {
 					// nothing toDo here
 
-				}else if(msgIn.getType().equals(MessageType.UpdateGame)){
+				} else if (msgIn.getType().equals(MessageType.UpdateGame)) {
 					model.processUpdateGame(msgIn);
 
 					// Updates the log
@@ -137,146 +138,48 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 						model.newLog = null;
 					}
 
-					// The update of the chat messages already happens after the button click (above)
-
-
-					// Updates the number of current actions
-					if(model.actions != 0){
-						int existingActions = Integer.parseInt(view.lblNmbrOfCrntActions.getText());
-						view.lblNmbrOfCrntActions.setText(Integer.toString(model.actions + existingActions));
-						model.actions = 0;
+					// Updates the chat
+					if(model.newChat != null){
+						String existingMessages = view.txtaChatArea.getText();
+						view.txtaChatArea.setText(existingMessages.concat(model.newChat)+"\n");
+						view.txtfChatArea.setText("");
+						model.newChat = null;
 					}
+
+					// Displays the current phase
+					switch(model.currentPhase){
+					case Action:
+						view.lblCurrentPhase.setText("Phase: Action");
+						break;
+					case Buy:
+						view.lblCurrentPhase.setText("Phase: Buy");
+						break;
+					case CleanUp:
+						view.lblCurrentPhase.setText("Phase: CleanUp");
+						break;
+					}
+
+					// Displays the current player
+					view.lblCurrentPlayer.setText(model.currentPlayer);
+					
+					// Updates the number of current actions
+					view.lblNmbrOfCrntActions.setText(Integer.toString(model.actions));
 
 					// Updates the number of current buys
-					if(model.buys != 0){
-						int existingBuys = Integer.parseInt(view.lblNmbrOfCrntBuys.getText());
-						view.lblNmbrOfCrntBuys.setText(Integer.toString(model.buys + existingBuys));
-						model.buys = 0;
-					}
+					view.lblNmbrOfCrntBuys.setText(Integer.toString(model.buys));
 
 					// Updates the number of current coins
-					if(model.coins != 0){
-						int existingCoins = Integer.parseInt(view.lblNmbrOfCrntCoins.getText());
-						view.lblNmbrOfCrntCoins.setText(Integer.toString(model.coins + existingCoins));
-						model.coins = 0;
-					}
+					view.lblNmbrOfCrntCoins.setText(Integer.toString(model.coins));
+					
+					// Update the number of action cards, treasure cards and victory cards
+					// Count hashmap
+					// Labels für alle
 
-					// Reacts to the current phase of the game
-					switch(model.currentPhase){
-					// The player can play action cards; may be skipped
-					case Action:
-						model.newLog = model.translate("#Aktionsphase#");
-
-						// sets action cards in the players' hand cards on action; after playing an action card, it displays it in played cards
-						for (Card card : model.yourHandCards){
-							if (card.getType().equals(CardType.Action)){
-								ImageView img1 = new ImageView();
-								img1 = card.getImage();
-
-								// Make clickable cards brighter
-								ColorAdjust ca = new ColorAdjust();
-								ca.setBrightness(+0.5);
-								img1.setEffect(ca);
-
-								img1.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-									// model.yourHandCards.remove(card);
-									view.hboxHandCards.getChildren().remove(img1);
-									view.hboxPlayedCards.getChildren().add(img1);
-									event.consume();
-
-									// after clicking on one card, remove the event
-									for (Card card1 : model.yourHandCards)
-										card.getImage().removeEventHandler(MouseEvent.MOUSE_CLICKED, event);
-								});
-							}
-						}
-						break;
-						// The player can buy cards; may be skipped
-					case Buy:
-						model.newLog = model.translate("#Kaufphase#");
-
-						// sets treasure cards, victory cards and action cards on action (they can be bought)
-						if (model.buyCards.size()>0){
-							for (int i=0; i<model.buyCards.size()-1; i++){
-								Card card = card.getCard(model.buyCards.get(i), model.buyCards.get(i));
-								ImageView img1 = new ImageView();
-								img1 = card.getImage();
-
-								// Make clickable cards brighter
-								ColorAdjust ca = new ColorAdjust();
-								ca.setBrightness(+0.5);
-								img1.setEffect(ca);
-
-								// Set hand-treasure cards on action: To buy cards, the player lays trasure-hand-cards form his "hand cards" in the "played cards" area
-
-								img1.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-									// removes the bought card from the specified area
-									if (model.coins >= card.getCost()){
-										if (view.tilepActionCards.getChildren().contains(img1)){
-											view.tilepActionCards.getChildren().remove(img1);
-										} else if (view.hboxTreasureCards.getChildren().contains(img1)){
-											view.hboxTreasureCards.getChildren().remove(img1);
-										} else if (view.hboxVictoryCards.getChildren().contains(img1)){
-											view.hboxVictoryCards.getChildren().remove(img1);
-										}
-										// Put the bought card visibly on the current players' discard pile
-										view.stackpDiscard.getChildren().add(img1);
-										view.lblNmbrOfDiscards.setText(Integer.toString(model.yourDiscardPile.size()));
-										event.consume();
-
-										// after clicking on one card, remove the event
-										for (Card card1 : model.buyCards)
-											card1.getImage().removeEventHandler(MouseEvent.MOUSE_CLICKED, event);
-									}
-								});
-							}
-						}
-
-						break;
-						// The player must discard all of his played and unplayed cards and draw 5 new cards
-					case CleanUp:
-						model.newLog = model.translate("#Aufräumphase#");
-
-						// remove all "played cards" and "hand cards" and put "the last one" visibly on the discard pile
-						if (view.hboxPlayedCards.getChildren().size()>0 || view.hboxHandCards.getChildren().size()>0){
-							view.stackpDiscard.getChildren().add(view.hboxPlayedCards.getChildren().get(0));
-							view.hboxPlayedCards.getChildren().clear();
-							view.hboxHandCards.getChildren().clear();
-							view.lblNmbrOfDiscards.setText(Integer.toString(model.yourDiscardPile.size()));
-						}
-
-						ColorAdjust ca = new ColorAdjust();
-						ca.setBrightness(+0.5);
-						view.stackpDeck.getChildren().get(0).setEffect(ca);
-
-						// set deck on action: draw 5 cards from deck and put them in hand cards
-						view.stackpDeck.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-							for (int i=1; i<=5; i++){
-								for (Card card : model.yourDeck){
-									ImageView img1 = new ImageView();
-									img1 = card.getImage();
-									view.hboxHandCards.getChildren().add(img1);
-								}
-							}
-							// after clicking on one card, remove the event
-							for (Card card1 : model.yourDeck)
-								card1.getImage().removeEventHandler(MouseEvent.MOUSE_CLICKED, event);
-						});
-
-						view.lblNmbrOfDeckCards.setText(Integer.toString(model.yourDeck.size()));
-						view.lblCrntHandCards.setText(Integer.toString(view.hboxHandCards.getChildren().size()));
-						break;
-					}
-
-					if(model.currentPhase == Phase.Action){
-
-					}
-
-
-				}else if(msgIn.getType().equals(MessageType.CreateGame)){
+				} else if (msgIn.getType().equals(MessageType.CreateGame)) {
 					model.processCreateGame(msgIn);
+					
 
-				}else if(msgIn.getType().equals(MessageType.PlayerSuccess)){
+				} else if (msgIn.getType().equals(MessageType.PlayerSuccess)) {
 					PlayerSuccess_Message psmsg = (PlayerSuccess_Message) msgIn;
 					// main.startSuccess(psmsg.getSuccess());
 					// Spieler hat gewonnen: z. B. in Log anzeigen oder Bild anzeigen
@@ -285,8 +188,6 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			}
 		}
 	}
-
-
 
 	// Adrian
 	// Über Main-Methode starten (nicht in Konstruktor, da die Strukturen

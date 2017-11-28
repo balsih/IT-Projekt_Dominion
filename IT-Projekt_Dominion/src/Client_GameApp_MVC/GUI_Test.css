@@ -36,6 +36,11 @@ Label {
 	-fx-background-color: oldlace;
 }
 
+.cardGaps{
+	-fx-hgap: 10px;
+	-fx-vgap: 10px;
+}
+
 .hbox{
 	-fx-spacing: 10px;
 }
@@ -48,19 +53,4 @@ Label {
     -fx-background-size: cover;
     -fx-background-position: center center;
     -fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0); 
-}
-
-.cardStackWidth{
-	-fx-max-width: 120px;
-	-fx-padding: 10px;
-	-fx-spacing: 10px;
-	-fx-background-color: rgba(0,0,0,0);
-	-fx-border-width: 2;
-	-fx-border-radius: 5;
-	-fx-border-color: white;
-}
-
-.cardStackHeight{
-	-fx-min-height: 100px;
-	-fx-spacing: 10px;
 }
