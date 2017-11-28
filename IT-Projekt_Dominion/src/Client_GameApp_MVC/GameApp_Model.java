@@ -338,7 +338,8 @@ public class GameApp_Model extends Model {
 			Failure_Message fmsg = (Failure_Message) msgIn;
 			result = fmsg.getNotification();
 		}
-		return this.translate(result);
+		return result;
+//		return this.translate(result);
 
 	}
 
@@ -360,7 +361,8 @@ public class GameApp_Model extends Model {
 		if(msgIn.getType().equals(MessageType.Commit)){
 			this.main.startGameApp();
 		}
-		return this.translate(result);
+		return result;
+//		return this.translate(result);
 	}
 
 	/**
@@ -386,7 +388,8 @@ public class GameApp_Model extends Model {
 			Failure_Message fmsg = (Failure_Message) msgIn;//login failed, clientName and/or password wrong
 			result = fmsg.getNotification();
 		}
-		return this.translate(result);
+		return result;
+//		return this.translate(result);
 	}
 	
 	/**
@@ -396,7 +399,8 @@ public class GameApp_Model extends Model {
 	 * @return result, the Highscore in one String or the message that client lost connection to server
 	 */
 	public String sendHighScoreRequest(){
-		String result = this.translate(NO_CONNECTION);
+		String result = this.NO_CONNECTION;
+//		String result = this.translate(NO_CONNECTION);
 		HighScore_Message hsmsg = new HighScore_Message();
 		
 		Message msgIn = this.processMessage(hsmsg);
@@ -473,7 +477,8 @@ public class GameApp_Model extends Model {
 
 		//If something necessary happened in the Game, it will be provided to show
 		if(ugmsg.getLog() != null)
-			this.newLog = this.translate(ugmsg.getLog());
+			this.newLog = ugmsg.getLog();
+//			this.newLog = this.translate(ugmsg.getLog());
 
 		//If the client or opponent sent a chat, it will be provided to show
 		if(ugmsg.getChat() != null)
