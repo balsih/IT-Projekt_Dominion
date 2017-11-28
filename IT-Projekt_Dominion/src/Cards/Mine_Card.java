@@ -50,21 +50,17 @@ public class Mine_Card extends Card {
 				
 		return ugmsg;
 	}
-	
-	public UpdateGame_Message executeMine(CardName cardName){
-		UpdateGame_Message ugmsg = (UpdateGame_Message) this.buy(cardName);
-		
-		return ugmsg;
-	}
-
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 * @param the
-	 *            from the player discarded Card
+	 * @param the from the player discarded Card     
 	 * @return a linkedlist with all available cards
 	 */
-	public LinkedList<Card> getAvailableMineCards(Card discardedCard, Interaction interaction) {
+	
+	public UpdateGame_Message executeMine(Player player, Card discardedCard, Interaction interaction){
+		
+		Game game = player.getGame();
+		
 		LinkedList<Card> availableCards = new LinkedList<Card>();
 		Iterator<CardName> keyIterator = game.getBuyCards().keySet().iterator();
 
@@ -72,7 +68,10 @@ public class Mine_Card extends Card {
 			if (Card.getCard(keyIterator.next()).getCost() <= discardedCard.getCost() + 3)
 				availableCards.add(Card.getCard(keyIterator.next()));
 		}
-
-		return availableCards;
+		
+		UpdateGame_Message ugmsg = (UpdateGame_Message) player.buy(cardName);
+		ugmsg.setCardSelection(availableCards);
+		return ugmsg;
 	}
+
 }//end Mine_Card
