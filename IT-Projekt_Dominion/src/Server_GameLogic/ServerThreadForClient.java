@@ -319,8 +319,14 @@ public class ServerThreadForClient implements Runnable {
 		case Skip:
 			return this.player.skipPhase();
 		case EndOfTurn:
+			for(Card card: this.player.handCards){
+				if(imsg.getDiscardCard().getCardName().equals(card.getCardName())){
+					return this.player.cleanUp(card);
+				}
+			}
 			break;
 		case Cellar:
+			
 			break;
 		case Workshop:
 			break;

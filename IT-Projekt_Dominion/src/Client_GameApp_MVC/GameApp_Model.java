@@ -515,9 +515,26 @@ public class GameApp_Model extends Model {
 		if(ugmsg.getDiscardPileTopCard() != null && this.currentPlayer == this.clientName)
 			this.yourDiscardPileTopCard = ugmsg.getDiscardPileTopCard();
 		
+		//If currentPlayer is set, the currentPlayer's turn ends
+		if(ugmsg.getCurrentPlayer() != null){
+			if(ugmsg.getCurrentPlayer() != this.currentPlayer){
+				this.turnEnded = true;
+				if(ugmsg.getCurrentPlayer() == this.opponent){//if it was your turn that ended
+					for(int i = 0; i < this.playedCards.size(); i++)
+						this.yourDiscardPile.add(this.playedCards.remove(i));
+					for(int j = 0; j < this.yourHandCards.size(); j++)
+						this.yourDiscardPile.add(this.yourHandCards.remove(j));
+				}else{//if it was your opponents turn that ended
+					this.playedCards.clear();
+				}
+			}
+			this.currentPlayer = ugmsg.getCurrentPlayer();
+		}
+		
 		//The new handCards just drawn. Always currentPlayer
 		//Move the drawn cards from the deck into yourNewHandCards
-		if(ugmsg.getNewHandCards() != null && this.currentPlayer == this.clientName){
+		if(ugmsg.getNewHandCards() != null && 
+				(this.currentPlayer == this.clientName) || (ugmsg.getCurrentPlayer() == this.opponent)){
 			LinkedList<Card> newHandCards = ugmsg.getNewHandCards();
 			for(int i = 0; i < newHandCards.size(); i++){
 				if(this.yourDeck.size() == 0){//Mandatory if the DeckPile is empty, the DiscardPile has to be added to the DeckPile
@@ -556,21 +573,6 @@ public class GameApp_Model extends Model {
 		if(ugmsg.getCardSelection() != null && this.currentPlayer == this.clientName)
 			this.cardSelection = ugmsg.getCardSelection();
 
-		//If currentPlayer is set, the currentPlayer's turn ends
-		if(ugmsg.getCurrentPlayer() != null){
-			if(ugmsg.getCurrentPlayer() != this.currentPlayer){
-				this.turnEnded = true;
-				if(ugmsg.getCurrentPlayer() == this.opponent){//if it was your turn that ended
-					for(int i = 0; i < this.playedCards.size(); i++)
-						this.yourDiscardPile.add(this.playedCards.remove(i));
-					for(int j = 0; j < this.yourHandCards.size(); j++)
-						this.yourDiscardPile.add(this.yourHandCards.remove(j));
-				}else{//if it was your opponents turn that ended
-					this.playedCards.clear();
-				}
-			}
-			this.currentPlayer = ugmsg.getCurrentPlayer();
-		}
 	}
 
 
