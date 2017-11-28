@@ -58,6 +58,7 @@ public class Game {
 	private Player player1;
 	private Player player2;
 	private Player currentPlayer;
+	private Bot bot;
 
 	private static Game existingGame;
 	private GameMode gameMode;
@@ -186,18 +187,17 @@ public class Game {
 	 *         switches the current player.
 	 */
 	public void switchPlayer() {
-		if (this.gameMode == GameMode.Multiplayer) {
 			if (currentPlayer.equals(this.player1)) {
 				this.currentPlayer = player2;
+
 				if(this.gameMode == GameMode.Singleplayer){
-					
+					new Thread(bot).start();
 				}
 			} else {
 				this.currentPlayer = player1;
 			}
-		} else {
 			
-		}
+			currentPlayer.startMove();
 	}
 
 	/**
@@ -285,13 +285,14 @@ public class Game {
 			return existingGame;
 		} else {
 			Game game = new Game();
-			Bot bot = new Bot(Bot.getNameOfBot());
+			game.bot = new Bot(Bot.getNameOfBot());
 			game.setPlayer1(player);
-			game.setPlayer2(bot);
-			bot.addGame(game);
+			game.setPlayer2(game.bot);
+			game.bot.addGame(game);
 			game.getPlayer1().getServerThreadForClient()
 					.addWaitingMessages(existingGame.getPlayer1().getServerThreadForClient().getCG_Message());
 			game.startGame();
+			
 			game.gameMode = GameMode.Singleplayer;
 			return game;
 		}

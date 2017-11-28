@@ -406,14 +406,6 @@ public class Player {
 		}
 	}
 
-	
-
-	
-
-	
-
-	
-
 	/**
 	 * @author Bodo Gruetter skips actual phase and goes to the next phase
 	 * 
