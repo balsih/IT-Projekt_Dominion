@@ -60,6 +60,7 @@ public class Game {
 	private Player currentPlayer;
 
 	private static Game existingGame;
+	private GameMode gameMode;
 
 	/**
 	 * 
@@ -71,7 +72,7 @@ public class Game {
 		// Build treasure stacks for a new game
 		this.buildTreasureCardStacks();
 		this.buildVictoryCardStacks();
-		this.buildActionCardStacks();		
+		this.buildActionCardStacks();
 
 		this.gameEnded = false;
 		this.buyCards = new HashMap<CardName, Integer>();
@@ -80,7 +81,7 @@ public class Game {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 * builds the stacks for the treasure cards with 30 cards per stack.
+	 *         builds the stacks for the treasure cards with 30 cards per stack.
 	 */
 	private void buildTreasureCardStacks() {
 		this.copperPile = new Stack<Copper_Card>();
@@ -97,7 +98,7 @@ public class Game {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 * builds the stacks for the victory cards with 20 cards per stack.
+	 *         builds the stacks for the victory cards with 20 cards per stack.
 	 */
 	private void buildVictoryCardStacks() {
 		this.estatePile = new Stack<Estate_Card>();
@@ -114,7 +115,7 @@ public class Game {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 * builds the stacks for the action cards with 10 cards per stack.
+	 *         builds the stacks for the action cards with 10 cards per stack.
 	 */
 	private void buildActionCardStacks() {
 		this.cellarPile = new Stack<Cellar_Card>();
@@ -141,9 +142,9 @@ public class Game {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 * fills the deckpile of the player with 7 copper cards and 3 estate cards.
-	 * Each player draws 5 cards of its stack in the hand.
-	 * finally the the starter of the game will be determined.
+	 *         fills the deckpile of the player with 7 copper cards and 3 estate
+	 *         cards. Each player draws 5 cards of its stack in the hand.
+	 *         finally the the starter of the game will be determined.
 	 */
 	public void startGame() {
 		for (int i = 0; i < 10; i++) {
@@ -166,7 +167,7 @@ public class Game {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 * determines randomly the player who starts.
+	 *         determines randomly the player who starts.
 	 * 
 	 * @return the player who starts.
 	 */
@@ -182,78 +183,87 @@ public class Game {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 * switches the current player.
+	 *         switches the current player.
 	 */
 	public void switchPlayer() {
-		if (currentPlayer.equals(this.player1)) {
-			this.currentPlayer = player2;
+		if (this.gameMode == GameMode.Multiplayer) {
+			if (currentPlayer.equals(this.player1)) {
+				this.currentPlayer = player2;
+				if(this.gameMode == GameMode.Singleplayer){
+					
+				}
+			} else {
+				this.currentPlayer = player1;
+			}
 		} else {
-			this.currentPlayer = player1;
+			
 		}
 	}
 
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 * lets the players count their points, checks the winner of a game and sets the player status.
+	 *         lets the players count their points, checks the winner of a game
+	 *         and sets the player status.
 	 */
 	public void checkWinner() {
-			player1.countVictoryPoints();
-			player2.countVictoryPoints();
-			
-			if (player1.getVictoryPoints() > player2.getVictoryPoints()){
+		player1.countVictoryPoints();
+		player2.countVictoryPoints();
+
+		if (player1.getVictoryPoints() > player2.getVictoryPoints()) {
+			player1.setStatus(Content.Won);
+			player2.setStatus(Content.Lost);
+		} else if (player1.getVictoryPoints() == player2.getVictoryPoints()) {
+			if (player1.getMoves() > player2.getMoves()) {
 				player1.setStatus(Content.Won);
 				player2.setStatus(Content.Lost);
-			}
-			else if (player1.getVictoryPoints() == player2.getVictoryPoints()) {
-				if (player1.getMoves() > player2.getMoves()){
-					player1.setStatus(Content.Won);
-					player2.setStatus(Content.Lost);
-				}
-				else if (player1.getMoves() == player2.getMoves()) {
-					player1.setStatus(Content.Won);
-					player2.setStatus(Content.Won);
-				} else{
-					player2.setStatus(Content.Lost);
-					player2.setStatus(Content.Won);
-				}
-			} else{
-				player1.setStatus(Content.Lost);
+			} else if (player1.getMoves() == player2.getMoves()) {
+				player1.setStatus(Content.Won);
+				player2.setStatus(Content.Won);
+			} else {
+				player2.setStatus(Content.Lost);
 				player2.setStatus(Content.Won);
 			}
+		} else {
+			player1.setStatus(Content.Lost);
+			player2.setStatus(Content.Won);
+		}
 	}
 
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 * checks if the game is over.
+	 *         checks if the game is over.
 	 * 
 	 * @return true or false dependng if the game is finished.
 	 */
 	public boolean checkGameEnding() {
-		int counter = 0;		
+		int counter = 0;
 
 		Iterator<Integer> valueIterator = this.getBuyCards().values().iterator();
-		
-		while(valueIterator.hasNext()){
-			if(valueIterator.next() == 0)
+
+		while (valueIterator.hasNext()) {
+			if (valueIterator.next() == 0)
 				counter++;
 		}
-		
+
 		if (this.provincePile.isEmpty() || counter == 3)
 			return true;
 		else
 			return false;
 	}
-	
+
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 * @param the selected gameMode and the player who starts a game.
-	 * @return an existing or a new game depending on gameMode and if a player is waiting for another.
+	 * @param the
+	 *            selected gameMode and the player who starts a game.
+	 * @return an existing or a new game depending on gameMode and if a player
+	 *         is waiting for another.
 	 */
 	public static Game getGame(GameMode gameMode, Player player) {
 		if (gameMode == GameMode.Multiplayer) {
+
 			if (gameCounter % 2 == 0) {
 				Game game = new Game();
 
@@ -264,10 +274,14 @@ public class Game {
 			} else {
 				existingGame.setPlayer2(player);
 				gameCounter++;
-				existingGame.getPlayer1().getServerThreadForClient().addWaitingMessages(existingGame.getPlayer1().getServerThreadForClient().getCG_Message());
-				existingGame.getPlayer2().getServerThreadForClient().addWaitingMessages(existingGame.getPlayer2().getServerThreadForClient().getCG_Message());
+				existingGame.getPlayer1().getServerThreadForClient()
+						.addWaitingMessages(existingGame.getPlayer1().getServerThreadForClient().getCG_Message());
+				existingGame.getPlayer2().getServerThreadForClient()
+						.addWaitingMessages(existingGame.getPlayer2().getServerThreadForClient().getCG_Message());
 				existingGame.startGame();
 			}
+
+			existingGame.gameMode = GameMode.Multiplayer;
 			return existingGame;
 		} else {
 			Game game = new Game();
@@ -275,8 +289,10 @@ public class Game {
 			game.setPlayer1(player);
 			game.setPlayer2(bot);
 			bot.addGame(game);
-			game.getPlayer1().getServerThreadForClient().addWaitingMessages(existingGame.getPlayer1().getServerThreadForClient().getCG_Message());
+			game.getPlayer1().getServerThreadForClient()
+					.addWaitingMessages(existingGame.getPlayer1().getServerThreadForClient().getCG_Message());
 			game.startGame();
+			game.gameMode = GameMode.Singleplayer;
 			return game;
 		}
 
@@ -285,7 +301,8 @@ public class Game {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 * fills a hashmap with all stacks and numbers of cards which a player could buy.
+	 *         fills a hashmap with all stacks and numbers of cards which a
+	 *         player could buy.
 	 * 
 	 * @return a hashmap with the stackname and the number of cards
 	 */
@@ -319,9 +336,10 @@ public class Game {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 * checks the opponent of the current player.
+	 *         checks the opponent of the current player.
 	 * 
-	 * @param the current Player
+	 * @param the
+	 *            current Player
 	 * @return the opponent of the currentplayer
 	 */
 	public Player getOpponent(Player currentPlayer) {
