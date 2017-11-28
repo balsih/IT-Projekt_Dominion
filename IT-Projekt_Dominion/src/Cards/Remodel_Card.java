@@ -1,5 +1,9 @@
 package Cards;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+
+import Messages.Interaction;
 import Messages.Message;
 import Messages.UpdateGame_Message;
 import Server_GameLogic.Game;
@@ -37,7 +41,7 @@ public class Remodel_Card extends Card {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
 		ugmsg.setLog(player.getPlayerName()+": played "+this.cardName.toString()+" card");
-		game.sendToOpponent(player, ugmsg); // info for opponent
+		player.sendToOpponent(player, ugmsg); // info for opponent
 		
 		// update game Messages -> XML 
 		ugmsg.setActions(player.getActions());
@@ -46,4 +50,37 @@ public class Remodel_Card extends Card {
 		
 		return ugmsg;
 	}
+	
+	
+	public UpdateGame_Message executeRemodel1(CardName discardedCard) {
+		UpdateGame_Message ugmsg = this.discard(discardedCard);
+
+		return ugmsg;
+	}
+
+	public UpdateGame_Message executeRemodel2(CardName pickedCard) {
+		UpdateGame_Message ugmsg = (UpdateGame_Message) this.buy(pickedCard);
+
+		return ugmsg;
+	}
+	
+	/**
+	 * @author Bodo Gruetter
+	 * 
+	 * @param the
+	 *            from the player discarded Card
+	 * @return a linkedlist with all available cards
+	 */
+	public LinkedList<Card> getAvailableRemodelCards(Card discardedCard, Interaction interaction) {
+		LinkedList<Card> availableCards = new LinkedList<Card>();
+		Iterator<CardName> keyIterator = game.getBuyCards().keySet().iterator();
+
+		while (keyIterator.hasNext()) {
+			if (Card.getCard(keyIterator.next()).getCost() <= discardedCard.getCost() + 2)
+				availableCards.add(Card.getCard(keyIterator.next()));
+		}
+
+		return availableCards;
+	}
+	
 }//end Remodel_Card

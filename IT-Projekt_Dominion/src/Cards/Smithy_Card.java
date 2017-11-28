@@ -32,7 +32,7 @@ public class Smithy_Card extends Card {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
 		ugmsg.setLog(player.getPlayerName()+": played "+this.cardName.toString()+" card");
-		game.sendToOpponent(player, ugmsg); // info for opponent
+		player.sendToOpponent(player, ugmsg); // info for opponent
 		
 		// update game Messages -> XML 
 		ugmsg.setActions(player.getActions());

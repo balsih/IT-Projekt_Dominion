@@ -352,7 +352,7 @@ public class Player {
 	 *            a linkedList with discarded Cards
 	 * @return UpdateGame_Message
 	 */
-	private UpdateGame_Message discard(LinkedList<Card> discardedCards) {
+	public UpdateGame_Message discard(LinkedList<Card> discardedCards) {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 
 		while (!discardedCards.isEmpty()) {
@@ -372,7 +372,7 @@ public class Player {
 	 *            the cardName of the discarded Card
 	 * @return UpdateGame_Message
 	 */
-	private UpdateGame_Message discard(CardName discardedCard) {
+	public UpdateGame_Message discard(CardName discardedCard) {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 
 		discardPile.push(Card.getCard(discardedCard));
@@ -406,94 +406,13 @@ public class Player {
 		}
 	}
 
-	public UpdateGame_Message executeCellar(LinkedList<Card> discardedCards) {
-		UpdateGame_Message ugmsg = this.discard(discardedCards);
-
-		UpdateGame_Message.merge(this.draw(discardedCards.size()), ugmsg);
-
-		return ugmsg;
-	}
-
-	public UpdateGame_Message executeWorkshop(CardName cardName) {
-		UpdateGame_Message ugmsg = (UpdateGame_Message) this.buy(cardName);
-
-		return ugmsg;
-	}
 	
-	/**
-	 * @author Bodo Gruetter
-	 * 
-	 * @param the
-	 *            from the player discarded Card
-	 * @return a linkedlist with all available cards
-	 */
-	public LinkedList<Card> getAvailableWorkshopCards(Card discardedCard, Interaction interaction) {
-		LinkedList<Card> availableCards = new LinkedList<Card>();
-		Iterator<CardName> keyIterator = game.getBuyCards().keySet().iterator();
 
-		while (keyIterator.hasNext()) {
-			if (Card.getCard(keyIterator.next()).getCost() <= 4)
-				availableCards.add(Card.getCard(keyIterator.next()));
-		}
-
-		return availableCards;
-	}
-
-	public UpdateGame_Message executeRemodel1(CardName discardedCard) {
-		UpdateGame_Message ugmsg = this.discard(discardedCard);
-
-		return ugmsg;
-	}
-
-	public UpdateGame_Message executeRemodel2(CardName pickedCard) {
-		UpdateGame_Message ugmsg = (UpdateGame_Message) this.buy(pickedCard);
-
-		return ugmsg;
-	}
 	
-	/**
-	 * @author Bodo Gruetter
-	 * 
-	 * @param the
-	 *            from the player discarded Card
-	 * @return a linkedlist with all available cards
-	 */
-	public LinkedList<Card> getAvailableRemodelCards(Card discardedCard, Interaction interaction) {
-		LinkedList<Card> availableCards = new LinkedList<Card>();
-		Iterator<CardName> keyIterator = game.getBuyCards().keySet().iterator();
 
-		while (keyIterator.hasNext()) {
-			if (Card.getCard(keyIterator.next()).getCost() <= discardedCard.getCost() + 2)
-				availableCards.add(Card.getCard(keyIterator.next()));
-		}
+	
 
-		return availableCards;
-	}
-
-	public UpdateGame_Message executeMine(CardName cardName){
-		UpdateGame_Message ugmsg = (UpdateGame_Message) this.buy(cardName);
-		
-		return ugmsg;
-	}
-
-	/**
-	 * @author Bodo Gruetter
-	 * 
-	 * @param the
-	 *            from the player discarded Card
-	 * @return a linkedlist with all available cards
-	 */
-	public LinkedList<Card> getAvailableMineCards(Card discardedCard, Interaction interaction) {
-		LinkedList<Card> availableCards = new LinkedList<Card>();
-		Iterator<CardName> keyIterator = game.getBuyCards().keySet().iterator();
-
-		while (keyIterator.hasNext()) {
-			if (Card.getCard(keyIterator.next()).getCost() <= discardedCard.getCost() + 3)
-				availableCards.add(Card.getCard(keyIterator.next()));
-		}
-
-		return availableCards;
-	}
+	
 
 	/**
 	 * @author Bodo Gruetter skips actual phase and goes to the next phase

@@ -1,5 +1,9 @@
 package Cards;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+
+import Messages.Interaction;
 import Messages.UpdateGame_Message;
 import Server_GameLogic.Game;
 import Server_GameLogic.Player;
@@ -35,7 +39,7 @@ public class Workshop_Card extends Card {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 				
 		ugmsg.setLog(player.getPlayerName()+": played "+this.cardName.toString()+" card");
-		game.sendToOpponent(player, ugmsg); // info for opponent
+		player.sendToOpponent(player, ugmsg); // info for opponent
 				
 		// update game Messages -> XML 
 		ugmsg.setActions(player.getActions());
@@ -43,5 +47,31 @@ public class Workshop_Card extends Card {
 		ugmsg.setCoins(player.getCoins());
 				
 		return ugmsg;
+	}
+	
+	
+	public UpdateGame_Message executeWorkshop(CardName cardName) {
+		UpdateGame_Message ugmsg = (UpdateGame_Message) this.buy(cardName);
+
+		return ugmsg;
+	}
+	
+	/**
+	 * @author Bodo Gruetter
+	 * 
+	 * @param the
+	 *            from the player discarded Card
+	 * @return a linkedlist with all available cards
+	 */
+	public LinkedList<Card> getAvailableWorkshopCards(Card discardedCard, Interaction interaction) {
+		LinkedList<Card> availableCards = new LinkedList<Card>();
+		Iterator<CardName> keyIterator = game.getBuyCards().keySet().iterator();
+
+		while (keyIterator.hasNext()) {
+			if (Card.getCard(keyIterator.next()).getCost() <= 4)
+				availableCards.add(Card.getCard(keyIterator.next()));
+		}
+
+		return availableCards;
 	}
 }//end Workshop_Card

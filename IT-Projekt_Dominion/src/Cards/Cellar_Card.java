@@ -1,5 +1,7 @@
 package Cards;
 
+import java.util.LinkedList;
+
 import Messages.UpdateGame_Message;
 import Server_GameLogic.Game;
 import Server_GameLogic.Player;
@@ -24,7 +26,7 @@ public class Cellar_Card extends Card {
 	 */
 	@Override
 	public UpdateGame_Message executeCard(Player player){
-		player.setActions(player.getActions() - 1);
+		player.setActions(player.getActions() + 1);
 		
 		player.draw(player.getHandCards().size()); // beliebige Anzahl aus der Hand ablegen und für jede eine neue aufnehmen
 		
@@ -35,8 +37,8 @@ public class Cellar_Card extends Card {
 		Game game = player.getGame();
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
-		ugmsg.setLog(player.getPlayerName()+": played "+this.cardName.toString()+" card");
-		game.sendToOpponent(player, ugmsg); // info for opponent
+		ugmsg.setLog(player.getPlayerName()+": #played# #"+this.cardName.toString()+"# #card#");
+		player.sendToOpponent(player, ugmsg); // info for opponent
 		
 		// update game Messages -> XML 
 		ugmsg.setActions(player.getActions());
@@ -45,4 +47,12 @@ public class Cellar_Card extends Card {
 		
 		return ugmsg;
 	}
+	
+	public UpdateGame_Message executeCellar(Player player, LinkedList<Card> discardedCards) {
+		UpdateGame_Message ugmsg = player.discard(discardedCards);
+
+		return UpdateGame_Message.merge(player.draw(discardedCards.size()), ugmsg);
+		
+	}
+	
 }//end Cellar_Card
