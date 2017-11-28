@@ -19,6 +19,7 @@ import Cards.Card;
 import Cards.CardName;
 import Cards.Cellar_Card;
 import Cards.Copper_Card;
+import Cards.Duchy_Card;
 import Cards.Gold_Card;
 import Cards.Market_Card;
 import Cards.Mine_Card;
@@ -36,6 +37,31 @@ public class TestMessages {
 
 	public static void main(String[] args) {
 		
+		LinkedList<Card> handList = new LinkedList<Card>();
+		handList.add(new Duchy_Card());
+		handList.add(new Mine_Card());
+		handList.add(new Village_Card());
+		handList.add(new Market_Card());
+		handList.add(new Gold_Card());
+		
+		LinkedList<Card> discardList = new LinkedList<Card>();
+		discardList.add(new Duchy_Card());
+		discardList.add(new Gold_Card());
+		
+		LinkedList<Card> newList = new LinkedList<Card>();
+		
+		for(int i = 0; i < discardList.size(); i++){
+			for(int j = 0; j < handList.size(); j++){
+				if(handList.get(j).getCardName().equals(discardList.get(i).getCardName())){
+					newList.add(handList.remove(j));
+					break;
+				}
+			}
+		}
+		System.out.println(newList.get(0).toString());
+		System.out.println(handList.get(0).toString());
+		if(newList.get(0).equals(handList.get(0)))
+			System.out.println("found");
 	}
 	
 	/**

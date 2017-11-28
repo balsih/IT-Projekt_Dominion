@@ -301,6 +301,8 @@ public class GameApp_Model extends Model {
 		case Mine:
 			imsg.setDisposedMineCard(this.cardSelection.remove(0));
 			break;
+		default:
+			return false;
 		}
 		
 		Message msgIn = this.processMessage(imsg);
@@ -497,10 +499,10 @@ public class GameApp_Model extends Model {
 		//stores the buyedCard of the currentPlayer and reduces the value of the buyCards(Cards which can be bought)
 		if(ugmsg.getBuyedCard() != null && this.currentPlayer == this.clientName){
 			this.yourBuyedCard = ugmsg.getBuyedCard();
-			this.buyCards.replace(this.yourBuyedCard.getCardName(), this.buyCards.get(this.yourBuyedCard.getCardName()));
+			this.buyCards.replace(this.yourBuyedCard.getCardName(), this.buyCards.get(this.yourBuyedCard.getCardName())-1);
 		}else{
 			this.opponentBuyedCard = ugmsg.getBuyedCard();
-			this.buyCards.replace(this.opponentBuyedCard.getCardName(), this.buyCards.get(this.opponentBuyedCard.getCardName()));
+			this.buyCards.replace(this.opponentBuyedCard.getCardName(), this.buyCards.get(this.opponentBuyedCard.getCardName())-1);
 		}
 
 		//Just necessary to show opponent's size of discardPile
@@ -533,8 +535,7 @@ public class GameApp_Model extends Model {
 		
 		//The new handCards just drawn. Always currentPlayer
 		//Move the drawn cards from the deck into yourNewHandCards
-		if(ugmsg.getNewHandCards() != null && 
-				(this.currentPlayer == this.clientName) || (ugmsg.getCurrentPlayer() == this.opponent)){
+		if(ugmsg.getNewHandCards() != null && (this.currentPlayer == this.clientName) || (ugmsg.getCurrentPlayer() == this.opponent)){
 			LinkedList<Card> newHandCards = ugmsg.getNewHandCards();
 			for(int i = 0; i < newHandCards.size(); i++){
 				if(this.yourDeck.size() == 0){//Mandatory if the DeckPile is empty, the DiscardPile has to be added to the DeckPile

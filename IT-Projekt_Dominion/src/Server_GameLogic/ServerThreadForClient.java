@@ -4,12 +4,17 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Queue;
 
 import java.util.logging.Logger;
 
 import Cards.Card;
 import Cards.CardName;
+import Cards.Cellar_Card;
+import Cards.Mine_Card;
+import Cards.Remodel_Card;
+import Cards.Workshop_Card;
 import Messages.BuyCard_Message;
 import Messages.Chat_Message;
 import Messages.Commit_Message;
@@ -325,17 +330,33 @@ public class ServerThreadForClient implements Runnable {
 				}
 			}
 			break;
-		case Cellar:
-			
-			break;
+		case Cellar://muss René übernehmen/anpassen
+//			LinkedList<Card> cellarDiscardCardsXML = imsg.getCellarDiscardCards();
+//			LinkedList<Card> cellarDiscardCards = new LinkedList<Card>();
+//			for(int i = 0; i < cellarDiscardCardsXML.size(); i++){
+//				for(int j = 0; j < this.player.handCards.size(); j++){
+//					if(cellarDiscardCardsXML.get(i).getCardName().equals(this.player.handCards.get(j).getCardName())){
+//						cellarDiscardCards.add(this.player.handCards.remove(j));
+//						break;
+//					}
+//				}
+//			}
+			Cellar_Card cCard = (Cellar_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
+//			return cCard.executeCellar(imsg.getCellarDiscardCards());//muss René anpassen (Spieler nicht nötig)
 		case Workshop:
-			break;
+			Workshop_Card wCard = (Workshop_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
+			return wCard.executeWorkshop(imsg.getWorkshopChoice());
 		case Remodel1:
-			break;
+			Remodel_Card r1Card = (Remodel_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
+//			return r1Card.executeRemodel1(imsg.getDisposeRemodelCard());//muss René anpassen (Card nicht CardName)
 		case Remodel2:
-			break;
+			Remodel_Card r2Card = (Remodel_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
+//			return r2Card.executeRemodel2(imsg.getRemodelChoice());
 		case Mine:
-			break;
+			Mine_Card mCard = (Mine_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
+//			return mCard.executeMine(imsg.getDisposedMineCard());//muss René anpassen (3 Parameter?)
+		default:
+			return null;
 		}
 		return null;
 	}
