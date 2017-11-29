@@ -243,7 +243,7 @@ public class Player {
 			 * the updateGame_Message. else the method returns a
 			 * failure_Message.
 			 */
-			ugmsg.setLog(this.playerName + " bought a " + buyedCard.getCardName() + " Card.");
+			ugmsg.setLog(this.playerName + "#bought# #" + buyedCard.getCardName().toString() + "# #card#");
 			ugmsg.setCoins(this.coins);
 			ugmsg.setBuys(this.buys);
 			ugmsg.setDiscardPileTopCard(this.discardPile.peek());
