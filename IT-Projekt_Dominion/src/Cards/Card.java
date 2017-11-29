@@ -20,6 +20,7 @@ public abstract class Card {
 	protected int cost;
 	protected ImageView image;
 	protected CardType type; // action, treasure, victory 	
+	protected Player player;
 	
 	protected Card(){
 	}
@@ -110,9 +111,6 @@ public abstract class Card {
 	public String toString() {
 		return this.cardName.toString();
 	}
-	
-	
-	
-	
+
 	
 }//end Card

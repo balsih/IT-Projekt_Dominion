@@ -25,7 +25,7 @@ public class Village_Card extends Card {
 	@Override
 	public UpdateGame_Message executeCard(Player player){
 		
-		player.setActions(player.getActions() + 1); // -1 + 2
+		player.setActions(player.getActions() + 2);
 		player.draw(1); // draw 1 card
 		
 		Game game = player.getGame();
