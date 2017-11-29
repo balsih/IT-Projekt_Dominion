@@ -108,8 +108,8 @@ public class ServerThreadForClient implements Runnable {
 	 * @return msgOut, depends on the type of Message, which new Message will return to client
 	 */
     private Message processMessage(Message msgIn) {
-		logger.info("Message received from client: "+ msgIn.getType().toString());	
 		Message msgOut = null;
+		logger.info("Message received from "+msgIn.getClient()+": "+ msgIn.getType().toString());	
 		
 		switch (MessageType.getType(msgIn)) {
 		case AskForChanges:
@@ -261,6 +261,7 @@ public class ServerThreadForClient implements Runnable {
 		CreateNewPlayer_Message cnpmsg = (CreateNewPlayer_Message) msgIn;
 		this.clientName = cnpmsg.getClient();
 		String password = cnpmsg.getPassword();
+		this.logger.info(password);
 		
 		DB_Connector dbConnector = DB_Connector.getDB_Connector();
 		boolean success = dbConnector.addNewPlayer(this.clientName, password);

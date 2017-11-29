@@ -265,7 +265,7 @@ public class DB_Connector {
 	 * @author Bodo Gruetter service method which allows to select the existing
 	 *         player in database and print them out in console.
 	 */
-	private void selectPlayer() {
+	public void selectPlayer() {
 		try {
 			String selectPlayer = "select * from Player";
 

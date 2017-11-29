@@ -361,8 +361,9 @@ public class GameApp_Model extends Model {
 	 */
 	public String sendCreateNewPlayer(String clientName, String password){
 		String result = NO_CONNECTION;
+		this.clientName = clientName;
 		CreateNewPlayer_Message cnpmsg = new CreateNewPlayer_Message();
-		cnpmsg.setClient(clientName);//set the clientName and encrypted password to XML
+		cnpmsg.setClient(this.clientName);//set the clientName and encrypted password to XML
 		String salt;
 		try {
 			salt = getSalt();
@@ -373,7 +374,6 @@ public class GameApp_Model extends Model {
 
 		Message msgIn = this.processMessage(cnpmsg);
 		if(msgIn.getType().equals(MessageType.Commit)){
-			this.clientName = clientName;
 			this.main.startMainMenu();
 
 		}else if(msgIn.getType().equals(MessageType.Failure)){
