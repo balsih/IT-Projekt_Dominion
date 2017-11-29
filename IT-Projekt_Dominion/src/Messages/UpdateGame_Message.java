@@ -286,6 +286,8 @@ public class UpdateGame_Message extends Message {
 			first.setPlayedCards(second.getPlayedCard());
 		if(first.getBuyedCard() == null)
 			first.setBuyedCard(second.getBuyedCard());
+		if(first.getInteractionType() == null)
+			first.setInteractionType(second.getInteractionType());
 		
 		return first;
 	}
