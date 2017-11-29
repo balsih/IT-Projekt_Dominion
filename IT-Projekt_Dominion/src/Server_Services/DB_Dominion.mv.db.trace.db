@@ -39,3 +39,75 @@ Select Player, Score from Player_Scoring order by Score desc limit 0,5 [42122-19
 	at org.h2.jdbc.JdbcConnection.prepareStatement(JdbcConnection.java:288)
 	at Server_Services.DB_Connector.getHighScore(DB_Connector.java:149)
 	at Server_Services.DB_Connector.main(DB_Connector.java:313)
+2017-11-29 12:18:24 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Wert zu gross / lang für Feld "PASSWORD VARCHAR(25)": "'e62aa6bbe68f3ae75849f588bd6ebc14c96aca123838e92d9e660bdb865311b52b9bffa6e9ca3adc38cfb5be971c5a46a720153adbaae43a13c7f69936d197d... (128)"
+Value too long for column "PASSWORD VARCHAR(25)": "'e62aa6bbe68f3ae75849f588bd6ebc14c96aca123838e92d9e660bdb865311b52b9bffa6e9ca3adc38cfb5be971c5a46a720153adbaae43a13c7f69936d197d... (128)"; SQL statement:
+insert into Player (Username, Password) values (?,?) [22001-195]
+2017-11-29 12:22:12 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Wert zu gross / lang für Feld "PASSWORD VARCHAR(25)": "'3a7ecfca88f19dab297711f068c4a8908caceb419d5946c7c76d3f9e1d22dcb70363a8001ed612de5417d9efa696c96a6c65a1813a2c8081ae1b8ab6a06ae3e... (128)"
+Value too long for column "PASSWORD VARCHAR(25)": "'3a7ecfca88f19dab297711f068c4a8908caceb419d5946c7c76d3f9e1d22dcb70363a8001ed612de5417d9efa696c96a6c65a1813a2c8081ae1b8ab6a06ae3e... (128)"; SQL statement:
+insert into Player (Username, Password) values (?,?) [22001-195]
+2017-11-29 12:59:34 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Wert zu gross / lang für Feld "PASSWORD VARCHAR(25)": "'e62aa6bbe68f3ae75849f588bd6ebc14c96aca123838e92d9e660bdb865311b52b9bffa6e9ca3adc38cfb5be971c5a46a720153adbaae43a13c7f69936d197d... (128)"
+Value too long for column "PASSWORD VARCHAR(25)": "'e62aa6bbe68f3ae75849f588bd6ebc14c96aca123838e92d9e660bdb865311b52b9bffa6e9ca3adc38cfb5be971c5a46a720153adbaae43a13c7f69936d197d... (128)"; SQL statement:
+insert into Player (Username, Password) values (?,?) [22001-195]
+2017-11-29 13:00:52 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Wert zu gross / lang für Feld "PASSWORD VARCHAR(25)": "'e62aa6bbe68f3ae75849f588bd6ebc14c96aca123838e92d9e660bdb865311b52b9bffa6e9ca3adc38cfb5be971c5a46a720153adbaae43a13c7f69936d197d... (128)"
+Value too long for column "PASSWORD VARCHAR(25)": "'e62aa6bbe68f3ae75849f588bd6ebc14c96aca123838e92d9e660bdb865311b52b9bffa6e9ca3adc38cfb5be971c5a46a720153adbaae43a13c7f69936d197d... (128)"; SQL statement:
+insert into Player (Username, Password) values (?,?) [22001-195]
+2017-11-29 13:02:52 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Wert zu gross / lang für Feld "PASSWORD VARCHAR(25)": "'e62aa6bbe68f3ae75849f588bd6ebc14c96aca123838e92d9e660bdb865311b52b9bffa6e9ca3adc38cfb5be971c5a46a720153adbaae43a13c7f69936d197d... (128)"
+Value too long for column "PASSWORD VARCHAR(25)": "'e62aa6bbe68f3ae75849f588bd6ebc14c96aca123838e92d9e660bdb865311b52b9bffa6e9ca3adc38cfb5be971c5a46a720153adbaae43a13c7f69936d197d... (128)"; SQL statement:
+insert into Player (Username, Password) values (?,?) [22001-195]
+2017-11-29 13:04:59 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Wert zu gross / lang für Feld "PASSWORD VARCHAR(25)": "'e62aa6bbe68f3ae75849f588bd6ebc14c96aca123838e92d9e660bdb865311b52b9bffa6e9ca3adc38cfb5be971c5a46a720153adbaae43a13c7f69936d197d... (128)"
+Value too long for column "PASSWORD VARCHAR(25)": "'e62aa6bbe68f3ae75849f588bd6ebc14c96aca123838e92d9e660bdb865311b52b9bffa6e9ca3adc38cfb5be971c5a46a720153adbaae43a13c7f69936d197d... (128)"; SQL statement:
+insert into Player (Username, Password) values (?,?) [22001-195]
+2017-11-29 13:05:45 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Wert zu gross / lang für Feld "PASSWORD VARCHAR(25)": "'e62aa6bbe68f3ae75849f588bd6ebc14c96aca123838e92d9e660bdb865311b52b9bffa6e9ca3adc38cfb5be971c5a46a720153adbaae43a13c7f69936d197d... (128)"
+Value too long for column "PASSWORD VARCHAR(25)": "'e62aa6bbe68f3ae75849f588bd6ebc14c96aca123838e92d9e660bdb865311b52b9bffa6e9ca3adc38cfb5be971c5a46a720153adbaae43a13c7f69936d197d... (128)"; SQL statement:
+insert into Player (Username, Password) values (?,?) [22001-195]
+2017-11-29 13:06:55 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Wert zu gross / lang für Feld "PASSWORD VARCHAR(25)": "'e62aa6bbe68f3ae75849f588bd6ebc14c96aca123838e92d9e660bdb865311b52b9bffa6e9ca3adc38cfb5be971c5a46a720153adbaae43a13c7f69936d197d... (128)"
+Value too long for column "PASSWORD VARCHAR(25)": "'e62aa6bbe68f3ae75849f588bd6ebc14c96aca123838e92d9e660bdb865311b52b9bffa6e9ca3adc38cfb5be971c5a46a720153adbaae43a13c7f69936d197d... (128)"; SQL statement:
+insert into Player (Username, Password) values (?,?) [22001-195]
+2017-11-29 13:10:59 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Wert zu gross / lang für Feld "PASSWORD VARCHAR(25)": "'e62aa6bbe68f3ae75849f588bd6ebc14c96aca123838e92d9e660bdb865311b52b9bffa6e9ca3adc38cfb5be971c5a46a720153adbaae43a13c7f69936d197d... (128)"
+Value too long for column "PASSWORD VARCHAR(25)": "'e62aa6bbe68f3ae75849f588bd6ebc14c96aca123838e92d9e660bdb865311b52b9bffa6e9ca3adc38cfb5be971c5a46a720153adbaae43a13c7f69936d197d... (128)"; SQL statement:
+insert into Player (Username, Password) values (?,?) [22001-195]
+2017-11-29 13:14:10 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Wert zu gross / lang für Feld "PASSWORD VARCHAR(25)": "'e62aa6bbe68f3ae75849f588bd6ebc14c96aca123838e92d9e660bdb865311b52b9bffa6e9ca3adc38cfb5be971c5a46a720153adbaae43a13c7f69936d197d... (128)"
+Value too long for column "PASSWORD VARCHAR(25)": "'e62aa6bbe68f3ae75849f588bd6ebc14c96aca123838e92d9e660bdb865311b52b9bffa6e9ca3adc38cfb5be971c5a46a720153adbaae43a13c7f69936d197d... (128)"; SQL statement:
+insert into Player (Username, Password) values (?,?) [22001-195]
+2017-11-29 13:15:07 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Wert zu gross / lang für Feld "PASSWORD VARCHAR(25)": "'e62aa6bbe68f3ae75849f588bd6ebc14c96aca123838e92d9e660bdb865311b52b9bffa6e9ca3adc38cfb5be971c5a46a720153adbaae43a13c7f69936d197d... (128)"
+Value too long for column "PASSWORD VARCHAR(25)": "'e62aa6bbe68f3ae75849f588bd6ebc14c96aca123838e92d9e660bdb865311b52b9bffa6e9ca3adc38cfb5be971c5a46a720153adbaae43a13c7f69936d197d... (128)"; SQL statement:
+insert into Player (Username, Password) values (?,?) [22001-195]
+2017-11-29 13:17:02 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Wert zu gross / lang für Feld "PASSWORD VARCHAR(25)": "'e62aa6bbe68f3ae75849f588bd6ebc14c96aca123838e92d9e660bdb865311b52b9bffa6e9ca3adc38cfb5be971c5a46a720153adbaae43a13c7f69936d197d... (128)"
+Value too long for column "PASSWORD VARCHAR(25)": "'e62aa6bbe68f3ae75849f588bd6ebc14c96aca123838e92d9e660bdb865311b52b9bffa6e9ca3adc38cfb5be971c5a46a720153adbaae43a13c7f69936d197d... (128)"; SQL statement:
+insert into Player (Username, Password) values (?,?) [22001-195]
+2017-11-29 14:09:26 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Wert zu gross / lang für Feld "PASSWORD VARCHAR(25)": "'e62aa6bbe68f3ae75849f588bd6ebc14c96aca123838e92d9e660bdb865311b52b9bffa6e9ca3adc38cfb5be971c5a46a720153adbaae43a13c7f69936d197d... (128)"
+Value too long for column "PASSWORD VARCHAR(25)": "'e62aa6bbe68f3ae75849f588bd6ebc14c96aca123838e92d9e660bdb865311b52b9bffa6e9ca3adc38cfb5be971c5a46a720153adbaae43a13c7f69936d197d... (128)"; SQL statement:
+insert into Player (Username, Password) values (?,?) [22001-195]
+2017-11-29 14:09:47 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Wert zu gross / lang für Feld "PASSWORD VARCHAR(25)": "'e62aa6bbe68f3ae75849f588bd6ebc14c96aca123838e92d9e660bdb865311b52b9bffa6e9ca3adc38cfb5be971c5a46a720153adbaae43a13c7f69936d197d... (128)"
+Value too long for column "PASSWORD VARCHAR(25)": "'e62aa6bbe68f3ae75849f588bd6ebc14c96aca123838e92d9e660bdb865311b52b9bffa6e9ca3adc38cfb5be971c5a46a720153adbaae43a13c7f69936d197d... (128)"; SQL statement:
+insert into Player (Username, Password) values (?,?) [22001-195]
+2017-11-29 14:10:02 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Wert zu gross / lang für Feld "PASSWORD VARCHAR(25)": "'847094de063defbbe97ee845ca1a76b13cc5735c6e1a9ebd272d253784b296d7f0701004c6436a87059d2c838b46a2e254a9b756ae5448bfe17ad3a0a9f8e15... (128)"
+Value too long for column "PASSWORD VARCHAR(25)": "'847094de063defbbe97ee845ca1a76b13cc5735c6e1a9ebd272d253784b296d7f0701004c6436a87059d2c838b46a2e254a9b756ae5448bfe17ad3a0a9f8e15... (128)"; SQL statement:
+insert into Player (Username, Password) values (?,?) [22001-195]
+2017-11-29 14:10:19 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Wert zu gross / lang für Feld "PASSWORD VARCHAR(25)": "'847094de063defbbe97ee845ca1a76b13cc5735c6e1a9ebd272d253784b296d7f0701004c6436a87059d2c838b46a2e254a9b756ae5448bfe17ad3a0a9f8e15... (128)"
+Value too long for column "PASSWORD VARCHAR(25)": "'847094de063defbbe97ee845ca1a76b13cc5735c6e1a9ebd272d253784b296d7f0701004c6436a87059d2c838b46a2e254a9b756ae5448bfe17ad3a0a9f8e15... (128)"; SQL statement:
+insert into Player (Username, Password) values (?,?) [22001-195]
+2017-11-29 14:11:41 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Wert zu gross / lang für Feld "PASSWORD VARCHAR(25)": "'847094de063defbbe97ee845ca1a76b13cc5735c6e1a9ebd272d253784b296d7f0701004c6436a87059d2c838b46a2e254a9b756ae5448bfe17ad3a0a9f8e15... (128)"
+Value too long for column "PASSWORD VARCHAR(25)": "'847094de063defbbe97ee845ca1a76b13cc5735c6e1a9ebd272d253784b296d7f0701004c6436a87059d2c838b46a2e254a9b756ae5448bfe17ad3a0a9f8e15... (128)"; SQL statement:
+insert into Player (Username, Password) values (?,?) [22001-195]
+2017-11-29 14:12:36 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Wert zu gross / lang für Feld "PASSWORD VARCHAR(25)": "'847094de063defbbe97ee845ca1a76b13cc5735c6e1a9ebd272d253784b296d7f0701004c6436a87059d2c838b46a2e254a9b756ae5448bfe17ad3a0a9f8e15... (128)"
+Value too long for column "PASSWORD VARCHAR(25)": "'847094de063defbbe97ee845ca1a76b13cc5735c6e1a9ebd272d253784b296d7f0701004c6436a87059d2c838b46a2e254a9b756ae5448bfe17ad3a0a9f8e15... (128)"; SQL statement:
+insert into Player (Username, Password) values (?,?) [22001-195]

@@ -1,5 +1,7 @@
 package Messages;
 
+import java.util.logging.Logger;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -12,9 +14,7 @@ import org.w3c.dom.NodeList;
 public class Failure_Message extends Message {
 	
 	private static final String ELEMENT_NOTIFICATION = "notification";
-	private static final String ATTR_MOVE = "move";
-	private String notification;
-	private Content move;
+	private String notification = null;
 
 
 	public Failure_Message(){
@@ -27,12 +27,13 @@ public class Failure_Message extends Message {
 	 */
 	@Override
 	protected void addNodes(Document docIn){
+		Logger logger = Logger.getLogger("");
         Element root = docIn.getDocumentElement();
-		
-		Element notification = docIn.createElement(ELEMENT_NOTIFICATION);
-		notification.setTextContent(this.notification);
-		notification.setAttribute(ATTR_MOVE, this.move.toString());
-		root.appendChild(notification);
+        if(this.notification != null){
+    		Element notification = docIn.createElement(ELEMENT_NOTIFICATION);
+    		notification.setTextContent(this.notification);
+    		root.appendChild(notification);
+        }
 	}
 
 	/**
@@ -46,7 +47,6 @@ public class Failure_Message extends Message {
         if (tmpElements.getLength() > 0) {
             Element notification = (Element) tmpElements.item(0);
             this.notification = notification.getTextContent();
-            this.move = Content.parseContent(notification.getAttribute(ATTR_MOVE));
         }
 	}
 	
@@ -56,18 +56,8 @@ public class Failure_Message extends Message {
 	}
 	
 
-	public Content getMove() {
-		return move;
-	}
-	
-
 	public void setNotification(String notification) {
 		this.notification = notification;
-	}
-
-
-	public void setMove(Content move) {
-		this.move = move;
 	}
 	
 }//end Failure_Message

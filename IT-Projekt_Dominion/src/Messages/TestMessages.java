@@ -41,10 +41,10 @@ public class TestMessages {
 	public static void main(String[] args) {
 		GameApp_Model model = new GameApp_Model(new Dominion_Main());
 		model.init("127.0.0.1");
-		String login = model.sendLogin("Lukas", "password");
-		if(login == null)
-			System.out.println("test failed");
-		else System.out.println("test succeeded");
+		String success = model.sendCreateNewPlayer("Bruni", "abcd");
+		if(success != null)
+			System.out.println(success);
+		else System.out.println("failed");
 	}
 	
 	/**

@@ -105,6 +105,7 @@ public abstract class Message {
             out.flush();
             s.shutdownOutput(); // ends output without closing socket
         } catch (Exception e) {
+        	System.out.println(e);
         }
     }    
 
@@ -183,7 +184,6 @@ public abstract class Message {
         buildMessage(); // Create XML document from "this"
 
         try { // Ignore all sorts of possible exceptions...
-
             // Set up a transformer that will convert from DOM to XML-text
             TransformerFactory factory = TransformerFactory.newInstance();
             Transformer transformer = factory.newTransformer();
@@ -195,12 +195,12 @@ public abstract class Message {
             // XML transformer requires special input/output classes
             DOMSource source = new DOMSource(xmlDocument);
             StreamResult result = new StreamResult(out);
-
+            
             // Finally: send the XML to the output stream
             transformer.transform(source, result);
             xmlString = out.toString();
         } catch (Exception e) {
-
+        	System.out.println(e);
         }
         return xmlString;
     }

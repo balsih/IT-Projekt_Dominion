@@ -359,12 +359,17 @@ public class GameApp_Model extends Model {
 	 * @param password
 	 * @return result, usually only necessary if clientName is already set
 	 */
-	public String sendCreateNewPlayer(String clientName, String password) throws NoSuchAlgorithmException{
+	public String sendCreateNewPlayer(String clientName, String password){
 		String result = NO_CONNECTION;
-		String salt = getSalt();
 		CreateNewPlayer_Message cnpmsg = new CreateNewPlayer_Message();
 		cnpmsg.setClient(clientName);//set the clientName and encrypted password to XML
-		cnpmsg.setPassword(this.encryptPassword(password, salt));
+		String salt;
+		try {
+			salt = getSalt();
+			cnpmsg.setPassword(this.encryptPassword(password, salt));
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
 
 		Message msgIn = this.processMessage(cnpmsg);
 		if(msgIn.getType().equals(MessageType.Commit)){
