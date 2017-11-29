@@ -149,7 +149,7 @@ public class GameApp_Model extends Model {
 	 * @return salt
 	 * @throws NoSuchAlgorithmException
 	 */
-	private static String getSalt() throws NoSuchAlgorithmException {
+	private String getSalt() throws NoSuchAlgorithmException {
 		SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
 		byte[] salt = new byte[16];
 		sr.nextBytes(salt);
