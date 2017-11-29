@@ -43,7 +43,7 @@ public class TestMessages {
 		GameApp_Model model = new GameApp_Model(new Dominion_Main());
 		model.init("127.0.0.1");
 		model.setClientName("Lukas");
-		String result = model.sendGameMode(GameMode.Singleplayer);
+		String result = model.sendGameMode(GameMode.Multiplayer);
 	}
 	
 	/**

@@ -20,7 +20,7 @@ import MainClasses.Dominion_Main;
 import Messages.BuyCard_Message;
 import Messages.Chat_Message;
 import Messages.Commit_Message;
-import Messages.Content;
+import Messages.GameSuccess;
 import Messages.CreateGame_Message;
 import Messages.CreateNewPlayer_Message;
 import Messages.Failure_Message;
@@ -79,7 +79,7 @@ public class GameApp_Model extends Model {
 	protected Interaction interaction = Interaction.Skip;
 	protected LinkedList<Card> cardSelection;
 
-	protected Content success;
+	protected GameSuccess success;
 	protected int victoryPoints;
 
 	protected String gameMode;
@@ -320,7 +320,7 @@ public class GameApp_Model extends Model {
 		return this.translate(result);
 	}
 	
-	/**
+	/**TESTED
 	 * @author Lukas
 	 * The client sends his GameMode (Singleplayer or Multiplayer) to Server.
 	 * 
@@ -336,11 +336,9 @@ public class GameApp_Model extends Model {
 
 		Message msgIn = this.processMessage(gmmsg);
 		if(msgIn instanceof Commit_Message){
-//			this.main.startGameApp();
-			System.out.println("GameMode Commited");
+			this.main.startGameApp();
 		}
-		return result;
-		//		return this.translate(result);
+		return this.translate(result);
 	}
 
 	/**
