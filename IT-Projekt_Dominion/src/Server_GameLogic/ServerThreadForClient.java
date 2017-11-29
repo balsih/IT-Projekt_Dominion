@@ -15,6 +15,7 @@ import Cards.Cellar_Card;
 import Cards.Mine_Card;
 import Cards.Remodel_Card;
 import Cards.Workshop_Card;
+import Messages.AskForChanges_Message;
 import Messages.BuyCard_Message;
 import Messages.Chat_Message;
 import Messages.Commit_Message;
@@ -27,7 +28,7 @@ import Messages.HighScore_Message;
 import Messages.Interaction_Message;
 import Messages.Login_Message;
 import Messages.Message;
-import Messages.Content;
+import Messages.GameSuccess;
 import Messages.MessageType;
 import Messages.PlayCard_Message;
 import Messages.PlayerSuccess_Message;
@@ -53,8 +54,8 @@ public class ServerThreadForClient implements Runnable {
 	private Socket clientSocket;
 	private Game game;
 	private Player player;
-	private Queue<Message> waitingMessages;
-	private String clientName;
+	private Queue<Message> waitingMessages = new LinkedList<Message>();
+	private String clientName = "Lukas";//declaration just for test
 
 
 	private ServerThreadForClient(){
@@ -92,7 +93,7 @@ public class ServerThreadForClient implements Runnable {
 		try{				// Read a message from the client
 			Message msgIn = Message.receive(this.clientSocket);
 			Message msgOut = processMessage(msgIn);
-			msgOut.send(clientSocket);		
+			msgOut.send(clientSocket);
 		}catch(Exception e) {
 			logger.severe(e.toString());
 		}finally{
@@ -108,9 +109,12 @@ public class ServerThreadForClient implements Runnable {
 	 * @return msgOut, depends on the type of Message, which new Message will return to client
 	 */
     private Message processMessage(Message msgIn) {
-		logger.info("Message received from client: "+ msgIn.getType().toString());
-		String clientName = msgIn.getClient();		
 		Message msgOut = null;
+		if(msgIn instanceof AskForChanges_Message){
+			//nothing toDo here, would be too many logs
+		}else{
+			logger.info("Message received from "+msgIn.getClient()+": "+ msgIn.getType().toString());	
+		}
 		
 		switch (MessageType.getType(msgIn)) {
 		case AskForChanges:
@@ -146,9 +150,100 @@ public class ServerThreadForClient implements Runnable {
 		default:
 			msgOut = new Error_Message();
 		}
-		msgOut.setClient(clientName);
+		msgOut.setClient(this.clientName);
     	return msgOut;
     }
+    
+	/**TESTED
+	 * @author Lukas
+	 * Checks if the name is stored in the database and if yes,
+	 * it has to be the adequate password
+	 * 
+	 * @param msgIn
+	 * @return cmsg, Commit_Message if the login succeeded (clientName and password are correct)
+	 * @return fmsg, Failure_Message if login failed (clientName and/or password are wrong)
+	 */
+	private Message processLogin(Message msgIn) {
+		Login_Message lmsg = (Login_Message) msgIn;
+		this.clientName = lmsg.getClient();
+		DB_Connector dbConnector = DB_Connector.getDB_Connector();
+		boolean success = dbConnector.checkLoginInput(this.clientName, lmsg.getPassword());
+		
+		if(success){
+			this.logger.info(this.clientName+"'s login succeeded");
+			Commit_Message cmsg = new Commit_Message();
+			return cmsg;
+			
+		}else{
+			this.logger.info(this.clientName+"'s login failed");
+			Failure_Message fmsg = new Failure_Message();
+			fmsg.setNotification("login failed");
+			return fmsg;
+		}
+	}
+	
+    /**TESTED
+     * @author Lukas
+     * Try to store a new Player into the database
+     * If clientName is unique, the player will be stored successful
+     * 
+     * @param msgIn
+     * @return cmsg, Commit_Message if storage succeeded
+     * @return fmsg, Failure_Message if storage failed
+     */
+	private Message processCreateNewPlayer(Message msgIn) {
+		CreateNewPlayer_Message cnpmsg = (CreateNewPlayer_Message) msgIn;
+		this.clientName = cnpmsg.getClient();
+		String password = cnpmsg.getPassword();
+		this.logger.info(password);
+		
+		DB_Connector dbConnector = DB_Connector.getDB_Connector();
+		boolean success = dbConnector.addNewPlayer(this.clientName, password);
+		if(success){
+			this.logger.info(this.clientName+"'s storage succeeded");
+			Commit_Message cmsg = new Commit_Message();
+			return cmsg;
+			
+		}else{
+			this.logger.info(this.clientName+"'s storage failed");
+			Failure_Message fmsg = new Failure_Message();
+			fmsg.setNotification(this.clientName+" #isUsed#");
+			return fmsg;
+		}
+	}
+	
+	/**
+	 * @author Lukas
+	 * Takes the highscore from the database
+	 * 
+	 * @param msgIn
+	 * @return HighScore_Message, content of the top5 (name, points) in one String
+	 */
+	private Message processHighScore(Message msgIn) {
+		DB_Connector dbConnector = DB_Connector.getDB_Connector();
+		HighScore_Message hsmsg = new HighScore_Message();
+		hsmsg.setHighScore(dbConnector.getHighScore());
+		this.logger.info("send highscore to "+this.clientName);
+		return hsmsg;
+	}
+	
+	/**TESTED
+	 * @author Lukas
+	 * Gets the chosen (singleplayer or multiplayer) Game
+	 * If Client is the first Player in multiplayerMode, client has to wait for second Player
+	 * 
+	 * @param msgIn
+	 * @return cmsg, Commit_Message
+	 */
+	private Message processGameMode(Message msgIn) {
+		GameMode_Message gmmsg = (GameMode_Message) msgIn;
+		this.player = new Player(this.clientName, this);
+		this.game = Game.getGame(gmmsg.getMode(), this.player);
+		this.player.addGame(this.game);
+		this.logger.info(this.clientName+" waits for opponent");
+		Commit_Message cmsg = new Commit_Message();
+		return cmsg;
+	}
 
 
 	/**
@@ -169,113 +264,23 @@ public class ServerThreadForClient implements Runnable {
 		}
 		return new Failure_Message();
 	}
-
-	/**
-	 * @author Lukas
-	 * Checks if the name is stored in the database and if yes,
-	 * it has to be the adequate password
-	 * 
-	 * @param msgIn
-	 * @return cmsg, Commit_Message if the login succeeded (clientName and password are correct)
-	 * @return fmsg, Failure_Message if login failed (clientName and/or password are wrong)
-	 */
-	private Message processLogin(Message msgIn) {
-		Login_Message lmsg = (Login_Message) msgIn;
-		this.clientName = lmsg.getClient();
-		DB_Connector dbConnector = DB_Connector.getDB_Connector();
-		boolean success = dbConnector.checkLoginInput(this.clientName, lmsg.getPassword());
-		
-		if(success){
-			this.logger.info(this.clientName+"'s "+Content.Login.toString()+" succeeded");
-			Commit_Message cmsg = new Commit_Message();
-			return cmsg;
-			
-		}else{
-			this.logger.info(this.clientName+"'s "+Content.Login.toString()+" failed");
-			Failure_Message fmsg = new Failure_Message();
-			fmsg.setNotification(Content.Login.toString()+" failed");
-			return fmsg;
-		}
-	}
-
-	/**
-	 * @author Lukas
-	 * Takes the highscore from the database
-	 * 
-	 * @param msgIn
-	 * @return HighScore_Message, content of the top5 (name, points) in one String
-	 */
-	private Message processHighScore(Message msgIn) {
-		DB_Connector dbConnector = DB_Connector.getDB_Connector();
-		HighScore_Message hsmsg = new HighScore_Message();
-		hsmsg.setHighScore(dbConnector.getHighScore());
-		this.logger.info("send highscore to "+this.clientName);
-		return hsmsg;
-	}
-
-	/**
-	 * @author Lukas
-	 * Gets the chosen (singleplayer or multiplayer) Game
-	 * If Client is the first Player in multiplayerMode, client has to wait for second Player
-	 * 
-	 * @param msgIn
-	 * @return cmsg, Commit_Message
-	 */
-	private Message processGameMode(Message msgIn) {
-		GameMode_Message gmmsg = (GameMode_Message) msgIn;
-		this.player = new Player(this.clientName);
-		this.game = Game.getGame(gmmsg.getMode(), this.player);
-		this.player.addGame(this.game);
-		this.logger.info(this.clientName+"waits for opponent");
-		Commit_Message cmsg = new Commit_Message();
-		return cmsg;
-	}
 	
-	/**
+	/**TESTED
 	 * @author Lukas
 	 * Creates a CreateGame_Message when the Game is ready to start (i.e. two Players or one player with Bot were added)
 	 * 
 	 * @return cgmsg, CreateGame_Message
 	 */
-	protected CreateGame_Message getCG_Message(){
+	protected CreateGame_Message getCG_Message(Game game){
 		CreateGame_Message cgmsg = new CreateGame_Message();
-		cgmsg.setBuyCards(this.game.getBuyCards());
+		cgmsg.setBuyCards(game.getBuyCards());
 		cgmsg.setHandCards(this.player.getHandCards());
 		cgmsg.setDeckPile(this.player.getDeckPile());
-		cgmsg.setOpponent(this.game.getOpponent(this.player).getPlayerName());
-		cgmsg.setDeckNumber(this.game.getOpponent(this.player).getDeckPile().size());
-		cgmsg.setHandNumber(this.game.getOpponent(this.player).getHandCards().size());
-		cgmsg.setStartingPlayer(this.game.getCurrentPlayer().getPlayerName());
+		cgmsg.setOpponent(game.getOpponent(this.player).getPlayerName());
+		cgmsg.setDeckNumber(game.getOpponent(this.player).getDeckPile().size());
+		cgmsg.setHandNumber(game.getOpponent(this.player).getHandCards().size());
+		cgmsg.setStartingPlayer(game.getCurrentPlayer().getPlayerName());
 		return cgmsg;
-	}
-
-    /**
-     * @author Lukas
-     * Try to store a new Player into the database
-     * If clientName is unique, the player will be stored successful
-     * 
-     * @param msgIn
-     * @return cmsg, Commit_Message if storage succeeded
-     * @return fmsg, Failure_Message if storage failed
-     */
-	private Message processCreateNewPlayer(Message msgIn) {
-		CreateNewPlayer_Message cnpmsg = (CreateNewPlayer_Message) msgIn;
-		this.clientName = cnpmsg.getClient();
-		String password = cnpmsg.getPassword();
-		
-		DB_Connector dbConnector = DB_Connector.getDB_Connector();
-		boolean success = dbConnector.addNewPlayer(this.clientName, password);
-		if(success){
-			this.logger.info(this.clientName+"'s storage succeeded");
-			Commit_Message cmsg = new Commit_Message();
-			return cmsg;
-			
-		}else{
-			this.logger.info(this.clientName+"'s storage failed");
-			Failure_Message fmsg = new Failure_Message();
-			fmsg.setNotification(this.clientName+" #isUsed#");
-			return fmsg;
-		}
 	}
 
 
@@ -378,16 +383,16 @@ public class ServerThreadForClient implements Runnable {
     private Message processGiveUp(Message msgIn) {
     	PlayerSuccess_Message psmsgOpponent = new PlayerSuccess_Message();
     	Player opponent = this.game.getOpponent(this.player);
-    	psmsgOpponent.setSuccess(Content.Won);
+    	psmsgOpponent.setSuccess(GameSuccess.Won);
     	opponent.countVictoryPoints();
     	psmsgOpponent.setVictoryPoints(opponent.getVictoryPoints());
     	this.player.sendToOpponent(this.player, psmsgOpponent);
     	
     	PlayerSuccess_Message psmsgSelf = new PlayerSuccess_Message();
-    	psmsgSelf.setSuccess(Content.Lost);
+    	psmsgSelf.setSuccess(GameSuccess.Lost);
     	this.player.countVictoryPoints();
     	psmsgSelf.setVictoryPoints(this.player.getVictoryPoints());
-    	this.logger.info(opponent.getPlayerName()+" "+Content.Won.toString()+"!");
+    	this.logger.info(opponent.getPlayerName()+" "+GameSuccess.Won.toString()+"!");
     	return psmsgSelf;
 	}
 

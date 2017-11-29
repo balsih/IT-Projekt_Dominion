@@ -3,7 +3,9 @@ package Cards;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import Messages.Failure_Message;
 import Messages.Interaction;
+import Messages.Message;
 import Messages.UpdateGame_Message;
 import Server_GameLogic.Game;
 import Server_GameLogic.Player;
@@ -28,8 +30,7 @@ public class Mine_Card extends Card {
 	 */
 	@Override
 	public UpdateGame_Message executeCard(Player player){
-		player.setActions(player.getActions() - 1); // ???
-		player.setCoins(player.getCoins() ); //???
+		this.player = player;
 		
 		// eine geldkarte entsorgen und eine andere aufnehmen in die hand
 		
@@ -41,6 +42,7 @@ public class Mine_Card extends Card {
 				
 		ugmsg.setLog(player.getPlayerName()+": played Mine card"); // hashtags setzen
 		player.sendToOpponent(player, ugmsg); // info for opponent
+		
 		
 		// update game Messages -> XML 
 		ugmsg.setActions(player.getActions());
@@ -56,22 +58,25 @@ public class Mine_Card extends Card {
 	 * @return a linkedlist with all available cards
 	 */
 	
-	public UpdateGame_Message executeMine(Player player, Card discardedCard){
-		
+	public Message executeMine(Card discardedCard){
+		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		Game game = player.getGame();
+		player.getHandCards().remove(discardedCard); // removes the selected card
 		
-		// warum linkedList -> eine Geld-Karte ablegen und eine aufnehmen mit Wert max. +3 ??
-		LinkedList<Card> availableCards = new LinkedList<Card>();
-		Iterator<CardName> keyIterator = game.getBuyCards().keySet().iterator();
+		// add a treasure card with a higher value than the removed one
+		if (discardedCard.getCardName() == CardName.Copper){
+			player.getHandCards().add(game.getSilverPile().pop());
+			ugmsg.setNewHandCards(player.getHandCards());
+			return ugmsg;
+		} else if (discardedCard.getCardName() == CardName.Silver){
+			player.getHandCards().add(game.getGoldPile().pop());
+			ugmsg.setNewHandCards(player.getHandCards());
+			return ugmsg;
+		} 
+		// returns failure if discarded card is not copper or silver
+		return new Failure_Message(); 
 		
-		while (keyIterator.hasNext()) {
-			if (Card.getCard(keyIterator.next()).getCost() <= discardedCard.getCost() + 3)
-				availableCards.add(Card.getCard(keyIterator.next()));
-		}
 		
-		UpdateGame_Message ugmsg = (UpdateGame_Message) player.buy(cardName);
-		ugmsg.setCardSelection(availableCards);
-		return ugmsg;
 	}
 	
 }//end Mine_Card

@@ -34,6 +34,7 @@ import Server_GameLogic.Game;
 import Server_GameLogic.GameMode;
 import Server_GameLogic.Phase;
 import Server_GameLogic.Player;
+import Server_Services.DB_Connector;
 import javafx.application.Platform;
 
 public class TestMessages {
@@ -41,10 +42,8 @@ public class TestMessages {
 	public static void main(String[] args) {
 		GameApp_Model model = new GameApp_Model(new Dominion_Main());
 		model.init("127.0.0.1");
-		String login = model.sendLogin("Lukas", "password");
-		if(login == null)
-			System.out.println("test failed");
-		else System.out.println("test succeeded");
+		model.setClientName("Lukas");
+		String result = model.sendGameMode(GameMode.Multiplayer);
 	}
 	
 	/**

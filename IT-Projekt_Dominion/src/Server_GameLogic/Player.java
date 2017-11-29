@@ -13,7 +13,7 @@ import Cards.CardName;
 import Cards.CardType;
 import Cards.Cellar_Card;
 import Cards.Copper_Card;
-import Messages.Content;
+import Messages.GameSuccess;
 import Messages.Failure_Message;
 import Messages.Interaction;
 import Messages.Message;
@@ -41,7 +41,7 @@ public class Player {
 	protected int moves;
 	protected int victoryPoints;
 	protected boolean isFinished;
-	private Content status;
+	private GameSuccess status;
 
 	protected Game game;
 	protected Phase actualPhase;
@@ -304,41 +304,36 @@ public class Player {
 	 *         handPile
 	 * 
 	 * @param the
-	 *            number of cards which should be drawed.
+	 *            number of cards which should be drawn.
 	 * @return an updateGame message
 	 */
 	public UpdateGame_Message draw(int numOfCards) {
 
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
+		LinkedList<Card> newHandCards = new LinkedList<Card>();
 
 		for (int i = 0; i < numOfCards; i++) {
-			if (!deckPile.isEmpty() && discardPile.isEmpty()) {
-				Collections.shuffle(deckPile);
-				for (int y = 0; i < numOfCards; i++)
-					handCards.add(discardPile.pop());
+			//normal draw
+			if (!deckPile.isEmpty()) {
+				newHandCards.add(deckPile.pop());
+				continue;
+				//if deck is empty, put discardPile into deckPile and shuffle
 			} else if (deckPile.isEmpty() && !discardPile.isEmpty()) {
 				while (!discardPile.isEmpty())
 					deckPile.push(discardPile.pop());
 				Collections.shuffle(deckPile);
-				for (int y = 0; y < numOfCards; y++)
-					handCards.add(deckPile.pop());
-			} else if (deckPile.size() < numOfCards) {
-				while (!deckPile.isEmpty())
-					handCards.add(deckPile.pop());
-				while (!discardPile.isEmpty())
-					deckPile.push(discardPile.pop());
-				Collections.shuffle(deckPile);
-				for (int y = 0; y < numOfCards; y++)
-					handCards.add(deckPile.pop());
-			} else {
-				for (int y = 0; y < numOfCards - handCards.size(); y++)
-					handCards.add(deckPile.pop());
+				continue;
+				//if deckPile and discardPile are empty, no further draws
+			} else if (deckPile.size() < numOfCards - i) {
+				break;
 			}
 		}
 
 		ugmsg.setDeckPileCardNumber(this.deckPile.size());
 		ugmsg.setDiscardPileCardNumber(this.discardPile.size());
-		ugmsg.setNewHandCards(handCards);
+		ugmsg.setNewHandCards(newHandCards);
+		
+		this.handCards.addAll(newHandCards);
 
 		return ugmsg;
 
@@ -352,12 +347,8 @@ public class Player {
 	 * (Abfrage in Buy) InteractionType ueber UpdateGameMessage.
 	 */
 
-	/**
-	 * @author Bodo Gruetter
-	 *
-	 * @param discardedCards,
-	 *            a linkedList with discarded Cards
-	 * @return UpdateGame_Message
+	/*
+	 * DISCARD METHODEN ANPASSEN; SIEHE CARD EXECUTECELLAR etc.
 	 */
 	public UpdateGame_Message discard(LinkedList<Card> discardedCards) {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
@@ -635,11 +626,11 @@ public class Player {
 		return this.moves;
 	}
 
-	public Content getStatus() {
+	public GameSuccess getStatus() {
 		return status;
 	}
 
-	public void setStatus(Content status) {
+	public void setStatus(GameSuccess status) {
 		this.status = status;
 	}
 }// end Player

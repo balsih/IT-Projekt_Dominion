@@ -19,7 +19,8 @@ import Client_Services.Translator;
 import MainClasses.Dominion_Main;
 import Messages.BuyCard_Message;
 import Messages.Chat_Message;
-import Messages.Content;
+import Messages.Commit_Message;
+import Messages.GameSuccess;
 import Messages.CreateGame_Message;
 import Messages.CreateNewPlayer_Message;
 import Messages.Failure_Message;
@@ -78,7 +79,7 @@ public class GameApp_Model extends Model {
 	protected Interaction interaction = Interaction.Skip;
 	protected LinkedList<Card> cardSelection;
 
-	protected Content success;
+	protected GameSuccess success;
 	protected int victoryPoints;
 
 	protected String gameMode;
@@ -201,7 +202,7 @@ public class GameApp_Model extends Model {
 		return valid;
 	}
 
-	/**
+	/**SEMI_TESTED
 	 * @author Lukas
 	 * Translates any parts of a String between two #
 	 * 
@@ -254,6 +255,90 @@ public class GameApp_Model extends Model {
 			System.out.println(e.toString());
 		}
 		return socket;
+	}
+	
+	/**TESTED
+	 * @author Lukas (@author Adrian encryptPassword)
+	 * The client sends his encrypted password to server and will get to the MainMenu if the password is appropriate to clientName
+	 * 
+	 * @param clientName
+	 * @param password
+	 * @return result, usually only necessary if clientName and password don't work or the client lost connection to server
+	 */
+	public String sendLogin(String clientName, String password){
+		String result = NO_CONNECTION;
+		this.clientName = clientName;
+		Login_Message lmsg = new Login_Message();
+		lmsg.setClient(clientName);//set the clientName and encrypted password to XML
+		try {
+			String salt = getSalt();
+			lmsg.setPassword(this.encryptPassword(password, salt));
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+
+		Message msgIn = this.processMessage(lmsg);
+		if(msgIn instanceof Commit_Message){
+			this.main.startMainMenu();//login succeeded
+
+		}else if(msgIn instanceof Failure_Message){
+			Failure_Message fmsg = (Failure_Message) msgIn;//login failed, clientName and/or password wrong
+			result = fmsg.getNotification();
+		}
+		return this.translate(result);
+	}
+	
+	/**TESTED
+	 * @author Lukas (@author Adrian encryptPassword)
+	 * The client wants to create his own profile. For this purpose the clientName has to be unique in the database.
+	 * If the storage process succeeded, the client will get into the MainMenu.
+	 * 
+	 * @param clientName
+	 * @param password
+	 * @return result, usually only necessary if clientName is already set
+	 */
+	public String sendCreateNewPlayer(String clientName, String password){
+		String result = NO_CONNECTION;
+		this.clientName = clientName;
+		CreateNewPlayer_Message cnpmsg = new CreateNewPlayer_Message();
+		cnpmsg.setClient(this.clientName);//set the clientName and encrypted password to XML
+		try {
+			String salt = getSalt();
+			cnpmsg.setPassword(this.encryptPassword(password, salt));
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+
+		Message msgIn = this.processMessage(cnpmsg);
+		if(msgIn instanceof Commit_Message){
+			this.main.startMainMenu();//createNewPlayer succeeded
+
+		}else if(msgIn instanceof Failure_Message){
+			Failure_Message fmsg = (Failure_Message) msgIn;//createNewPlayer failed
+			result = fmsg.getNotification();
+		}
+		return this.translate(result);
+	}
+	
+	/**TESTED
+	 * @author Lukas
+	 * The client sends his GameMode (Singleplayer or Multiplayer) to Server.
+	 * 
+	 * @param mode
+	 * @return result, usually only necessary if the client lost connection to server
+	 */
+	public String sendGameMode(GameMode mode){
+		String result = NO_CONNECTION;
+		GameMode_Message gmmsg = new GameMode_Message();
+		gmmsg.setClient(this.clientName);//set the clientName and mode(SinglePlayer or MultiPlayer) to XML
+		gmmsg.setMode(mode);
+		this.gameMode = mode.toString();
+
+		Message msgIn = this.processMessage(gmmsg);
+		if(msgIn instanceof Commit_Message){
+			this.main.startGameApp();
+		}
+		return this.translate(result);
 	}
 
 	/**
@@ -349,86 +434,6 @@ public class GameApp_Model extends Model {
 		return update;
 	}
 
-
-	/**
-	 * @author Lukas
-	 * The client wants to create his own profile. For this purpose the clientName has to be unique in the database.
-	 * If the storage process succeeded, the client will get into the MainMenu.
-	 * 
-	 * @param clientName
-	 * @param password
-	 * @return result, usually only necessary if clientName is already set
-	 */
-	public String sendCreateNewPlayer(String clientName, String password) throws NoSuchAlgorithmException{
-		String result = NO_CONNECTION;
-		String salt = getSalt();
-		CreateNewPlayer_Message cnpmsg = new CreateNewPlayer_Message();
-		cnpmsg.setClient(clientName);//set the clientName and encrypted password to XML
-		cnpmsg.setPassword(this.encryptPassword(password, salt));
-
-		Message msgIn = this.processMessage(cnpmsg);
-		if(msgIn.getType().equals(MessageType.Commit)){
-			this.clientName = clientName;
-			this.main.startMainMenu();
-
-		}else if(msgIn.getType().equals(MessageType.Failure)){
-			Failure_Message fmsg = (Failure_Message) msgIn;
-			result = fmsg.getNotification();
-		}
-		return result;
-		//		return this.translate(result);
-
-	}
-
-	/**
-	 * @author Lukas
-	 * The client sends his GameMode (Singleplayer or Multiplayer) to Server.
-	 * 
-	 * @param mode
-	 * @return result, usually only necessary if the client lost connection to server
-	 */
-	public String sendGameMode(GameMode mode){
-		String result = NO_CONNECTION;
-		GameMode_Message gmmsg = new GameMode_Message();
-		gmmsg.setClient(this.clientName);//set the clientName and mode(SinglePlayer or MultiPlayer) to XML
-		gmmsg.setMode(mode);
-		this.gameMode = mode.toString();
-
-		Message msgIn = this.processMessage(gmmsg);
-		if(msgIn.getType().equals(MessageType.Commit)){
-			this.main.startGameApp();
-		}
-		return result;
-		//		return this.translate(result);
-	}
-
-	/**
-	 * @author Lukas
-	 * The client sends his encrypted password to server and will get to the MainMenu if the password is appropriate to clientName
-	 * 
-	 * @param clientName
-	 * @param password
-	 * @return result, usually only necessary if clientName and password don't work or the client lost connection to server
-	 */
-	public String sendLogin(String clientName, String password) throws NoSuchAlgorithmException {
-		String result = NO_CONNECTION;
-		String salt = getSalt();
-		Login_Message lmsg = new Login_Message();
-		lmsg.setClient(clientName);//set the clientName and encrypted password to XML
-		lmsg.setPassword(this.encryptPassword(password, salt));
-
-		Message msgIn = this.processMessage(lmsg);
-		if(msgIn.getType().equals(MessageType.Commit)){
-			this.clientName = clientName;//login succeeded
-			this.main.startMainMenu();
-
-		}else if(msgIn.getType().equals(MessageType.Failure)){
-			Failure_Message fmsg = (Failure_Message) msgIn;//login failed, clientName and/or password wrong
-			result = fmsg.getNotification();
-		}
-		return result;
-		//		return this.translate(result);
-	}
 
 	/**
 	 * @author Lukas

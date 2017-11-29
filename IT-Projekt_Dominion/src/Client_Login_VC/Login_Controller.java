@@ -50,7 +50,7 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 			}
 		});
 		
-		// set on action and handling for connectBtn
+		// set on action and handling for nameText
 		view.nameText.textProperty().addListener((change) -> {
 			try {
 				// check if fields are empty

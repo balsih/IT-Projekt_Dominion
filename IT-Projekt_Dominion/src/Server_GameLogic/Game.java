@@ -22,7 +22,7 @@ import Cards.Smithy_Card;
 import Cards.Village_Card;
 import Cards.Woodcutter_Card;
 import Cards.Workshop_Card;
-import Messages.Content;
+import Messages.GameSuccess;
 import Messages.Interaction;
 
 /**
@@ -211,22 +211,22 @@ public class Game {
 		player2.countVictoryPoints();
 
 		if (player1.getVictoryPoints() > player2.getVictoryPoints()) {
-			player1.setStatus(Content.Won);
-			player2.setStatus(Content.Lost);
+			player1.setStatus(GameSuccess.Won);
+			player2.setStatus(GameSuccess.Lost);
 		} else if (player1.getVictoryPoints() == player2.getVictoryPoints()) {
 			if (player1.getMoves() > player2.getMoves()) {
-				player1.setStatus(Content.Won);
-				player2.setStatus(Content.Lost);
+				player1.setStatus(GameSuccess.Won);
+				player2.setStatus(GameSuccess.Lost);
 			} else if (player1.getMoves() == player2.getMoves()) {
-				player1.setStatus(Content.Won);
-				player2.setStatus(Content.Won);
+				player1.setStatus(GameSuccess.Won);
+				player2.setStatus(GameSuccess.Won);
 			} else {
-				player2.setStatus(Content.Lost);
-				player2.setStatus(Content.Won);
+				player2.setStatus(GameSuccess.Lost);
+				player2.setStatus(GameSuccess.Won);
 			}
 		} else {
-			player1.setStatus(Content.Lost);
-			player2.setStatus(Content.Won);
+			player1.setStatus(GameSuccess.Lost);
+			player2.setStatus(GameSuccess.Won);
 		}
 	}
 
@@ -274,11 +274,12 @@ public class Game {
 			} else {
 				existingGame.setPlayer2(player);
 				gameCounter++;
-				existingGame.getPlayer1().getServerThreadForClient()
-						.addWaitingMessages(existingGame.getPlayer1().getServerThreadForClient().getCG_Message());
-				existingGame.getPlayer2().getServerThreadForClient()
-						.addWaitingMessages(existingGame.getPlayer2().getServerThreadForClient().getCG_Message());
 				existingGame.startGame();
+				
+				existingGame.getPlayer1().getServerThreadForClient()
+						.addWaitingMessages(existingGame.getPlayer1().getServerThreadForClient().getCG_Message(existingGame));
+				existingGame.getPlayer2().getServerThreadForClient()
+						.addWaitingMessages(existingGame.getPlayer2().getServerThreadForClient().getCG_Message(existingGame));
 			}
 
 			existingGame.gameMode = GameMode.Multiplayer;
@@ -289,11 +290,11 @@ public class Game {
 			game.setPlayer1(player);
 			game.setPlayer2(game.bot);
 			game.bot.addGame(game);
-			game.getPlayer1().getServerThreadForClient()
-					.addWaitingMessages(existingGame.getPlayer1().getServerThreadForClient().getCG_Message());
 			game.startGame();
-			
 			game.gameMode = GameMode.Singleplayer;
+			
+			game.getPlayer1().getServerThreadForClient()
+					.addWaitingMessages(game.getPlayer1().getServerThreadForClient().getCG_Message(game));
 			return game;
 		}
 
@@ -308,19 +309,14 @@ public class Game {
 	 * @return a hashmap with the stackname and the number of cards
 	 */
 	public HashMap<CardName, Integer> getBuyCards() {
-		for (int i = 0; i < NUM_OF_VICTORYCARDS; i++) {
 			this.buyCards.put(CardName.Province, this.provincePile.size());
 			this.buyCards.put(CardName.Duchy, this.duchyPile.size());
 			this.buyCards.put(CardName.Estate, this.estatePile.size());
-		}
 
-		for (int i = 0; i < NUM_OF_TREASURECARDS; i++) {
 			this.buyCards.put(CardName.Copper, this.copperPile.size());
 			this.buyCards.put(CardName.Gold, this.goldPile.size());
 			this.buyCards.put(CardName.Silver, this.silverPile.size());
-		}
 
-		for (int i = 0; i < NUM_OF_ACTIONCARDS; i++) {
 			this.buyCards.put(CardName.Workshop, this.workshopPile.size());
 			this.buyCards.put(CardName.Woodcutter, this.woodcutterPile.size());
 			this.buyCards.put(CardName.Village, this.villagePile.size());
@@ -329,7 +325,6 @@ public class Game {
 			this.buyCards.put(CardName.Mine, this.minePile.size());
 			this.buyCards.put(CardName.Market, this.marketPile.size());
 			this.buyCards.put(CardName.Cellar, this.cellarPile.size());
-		}
 
 		return this.buyCards;
 	}

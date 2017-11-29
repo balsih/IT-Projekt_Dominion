@@ -13,7 +13,7 @@ public class PlayerSuccess_Message extends Message {
 
 	private static final String ELEMENT_SUCCESS = "success";
 	private static final String ELEMENT_VICTORY_POINTS = "victoryPoints";
-	private Content success;
+	private GameSuccess success;
 	private Integer victoryPoints;
 
 
@@ -50,7 +50,7 @@ public class PlayerSuccess_Message extends Message {
 		NodeList tmpElements = root.getElementsByTagName(ELEMENT_SUCCESS);
         if (tmpElements.getLength() > 0) {
             Element success = (Element) tmpElements.item(0);
-            this.success = Content.parseContent(success.getTextContent());
+            this.success = GameSuccess.parseGameSuccess(success.getTextContent());
         }
         
         tmpElements = root.getElementsByTagName(ELEMENT_VICTORY_POINTS);
@@ -60,7 +60,7 @@ public class PlayerSuccess_Message extends Message {
         }
 	}
 
-	public Content getSuccess(){
+	public GameSuccess getSuccess(){
 		return this.success;
 	}
 	
@@ -68,7 +68,7 @@ public class PlayerSuccess_Message extends Message {
 		return this.victoryPoints;
 	}
 	
-	public void setSuccess(Content success){
+	public void setSuccess(GameSuccess success){
 		this.success = success;
 	}
 	

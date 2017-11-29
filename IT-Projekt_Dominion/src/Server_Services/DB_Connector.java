@@ -183,7 +183,7 @@ public class DB_Connector {
 	private boolean createDBStructure() {
 		try {
 			String createPlayer = "create table if not exists Player(" + "Username varchar(25) primary key,"
-					+ "Password varchar (25))";
+					+ "Password varchar (130))";
 			String createPlayer_Scoring = "create table if not exists Player_Scoring("
 					+ "ID int not null auto_increment primary key," + "Username varchar(25) not null,"
 					+ "Score int not null," + "foreign key (Username) references Player (Username))";
@@ -265,7 +265,7 @@ public class DB_Connector {
 	 * @author Bodo Gruetter service method which allows to select the existing
 	 *         player in database and print them out in console.
 	 */
-	private void selectPlayer() {
+	public void selectPlayer() {
 		try {
 			String selectPlayer = "select * from Player";
 
@@ -308,9 +308,9 @@ public class DB_Connector {
 	public static void main(String[] args) {
 		DB_Connector connector = new DB_Connector();
 		
-		connector.selectPlayer_Scoring();
 
-		System.out.println(connector.getHighScore());
+		connector.addNewPlayer("Bodo", "Test");
+		connector.selectPlayer();
 
 	}
 
