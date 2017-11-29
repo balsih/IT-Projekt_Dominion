@@ -29,14 +29,14 @@ public class GameApp_View extends View<GameApp_Model> {
 	// Controls Action cards area
 	protected Label lblActionCards = new Label("Action cards");
 	protected GridPane gridpActionCards = new GridPane();
-	protected Label lblNmbrOfCellarCards = new Label("nmbr");
-	protected Label lblNmbrOfMarketCards = new Label("nmbr");
-	protected Label lblNmbrOfRemodelCards = new Label("nmbr");
-	protected Label lblNmbrOfSmithyCards = new Label("nmbr");
-	protected Label lblNmbrOfWoodcutterCards = new Label("nmbr");
-	protected Label lblNmbrOfWorkshopCards = new Label("nmbr");
-	protected Label lblNmbrOfMineCards = new Label("nmbr");
-	protected Label lblNmbrOfVillageCards = new Label("nmbr");
+	protected Label lblNmbrOfCellarCards = new Label();
+	protected Label lblNmbrOfMarketCards = new Label();
+	protected Label lblNmbrOfRemodelCards = new Label();
+	protected Label lblNmbrOfSmithyCards = new Label();
+	protected Label lblNmbrOfWoodcutterCards = new Label();
+	protected Label lblNmbrOfWorkshopCards = new Label();
+	protected Label lblNmbrOfMineCards = new Label();
+	protected Label lblNmbrOfVillageCards = new Label();
 
 	protected VBox vboxActionCards = new VBox(lblActionCards, gridpActionCards);
 	protected VBox vboxCellarCards = new VBox(1, lblNmbrOfCellarCards);
@@ -51,9 +51,9 @@ public class GameApp_View extends View<GameApp_Model> {
 	// Controls Treasure cards area
 	protected Label lblTreasureCards = new Label("Treasure cards");
 	protected HBox hboxTreasureCards = new HBox();
-	protected Label lblNmbrOfGoldCards = new Label("nmbr");
-	protected Label lblNmbrOfSilverCards = new Label("nmbr");
-	protected Label lblNmbrOfCopperCards = new Label("nmbr");
+	protected Label lblNmbrOfGoldCards = new Label();
+	protected Label lblNmbrOfSilverCards = new Label();
+	protected Label lblNmbrOfCopperCards = new Label();
 
 	protected VBox vboxTreasureCards = new VBox(lblTreasureCards, hboxTreasureCards);
 	protected VBox vboxGoldCards = new VBox(1, lblNmbrOfGoldCards);
@@ -63,9 +63,9 @@ public class GameApp_View extends View<GameApp_Model> {
 	// Controls Victory cards area
 	protected Label lblVictoryCards = new Label("Victory cards");
 	protected HBox hboxVictoryCards = new HBox();
-	protected Label lblNmbrOfDuchyCards = new Label("nmbr");
-	protected Label lblNmbrOfEstateCards = new Label("nmbr");
-	protected Label lblNmbrOfProvinceCards = new Label("nmbr");
+	protected Label lblNmbrOfDuchyCards = new Label();
+	protected Label lblNmbrOfEstateCards = new Label();
+	protected Label lblNmbrOfProvinceCards = new Label();
 
 	protected VBox vboxVictoryCards = new VBox(lblVictoryCards, hboxVictoryCards);
 	protected VBox vboxDuchyCards = new VBox(1, lblNmbrOfDuchyCards);
@@ -86,12 +86,12 @@ public class GameApp_View extends View<GameApp_Model> {
 
 	// Controls discard area
 	protected Label lblDiscard = new Label("Discard");
-	protected Label lblNmbrOfDiscards = new Label("nmbr");
+	protected Label lblNmbrOfDiscards = new Label();
 	protected StackPane stackpDiscard = new StackPane();
 
 	// Controls deck area
 	protected Label lblDeck = new Label("Deck");
-	protected Label lblNmbrOfDeckCards = new Label("nmbr");
+	protected Label lblNmbrOfDeckCards = new Label();
 	protected StackPane stackpDeck = new StackPane();
 
 	// Controls played cards area
@@ -108,13 +108,13 @@ public class GameApp_View extends View<GameApp_Model> {
 	protected Label lblCurrentPlayer = new Label("Current player");
 	protected Label lblCurrentPhase = new Label("Current phase");
 	protected Label lblCrntHandCards = new Label("Hand cards");
-	protected Label lblNmbrOfCrntHandCards = new Label("0");
+	protected Label lblNmbrOfCrntHandCards = new Label();
 	protected Label lblCrntActions = new Label("Actions");
-	protected Label lblNmbrOfCrntActions = new Label("0");
+	protected Label lblNmbrOfCrntActions = new Label();
 	protected Label lblCrntBuys = new Label("Buys");
-	protected Label lblNmbrOfCrntBuys = new Label("0");
+	protected Label lblNmbrOfCrntBuys = new Label();
 	protected Label lblCrntCoins = new Label("Coins");
-	protected Label lblNmbrOfCrntCoins = new Label("0");
+	protected Label lblNmbrOfCrntCoins = new Label();
 
 	protected Button btnCommit = new Button("Commit");
 
@@ -274,11 +274,6 @@ public class GameApp_View extends View<GameApp_Model> {
 		// stage.setScene(scene);
 		// stage.setTitle("Dominion");
 		// stage.show();
-
-		GameMode_Message gmmsg = new GameMode_Message();
-		if (gmmsg.getMode().equals(GameMode.Singleplayer)){
-			txtfChatArea.setDisable(true);
-		}
 
 		return scene;
 	}
