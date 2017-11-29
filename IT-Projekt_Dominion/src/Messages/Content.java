@@ -8,11 +8,7 @@ package Messages;
  */
 public enum Content {
 	Won,
-	Lost,
-	Login,
-	CreateNewPlayer,
-	PlayCard,
-	AskForChanges;
+	Lost;
 	
 	/**
 	 * @author Bradley Richards

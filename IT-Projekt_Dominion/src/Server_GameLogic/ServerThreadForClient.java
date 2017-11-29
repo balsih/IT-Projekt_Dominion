@@ -92,7 +92,7 @@ public class ServerThreadForClient implements Runnable {
 		try{				// Read a message from the client
 			Message msgIn = Message.receive(this.clientSocket);
 			Message msgOut = processMessage(msgIn);
-			msgOut.send(clientSocket);		
+			msgOut.send(clientSocket);
 		}catch(Exception e) {
 			logger.severe(e.toString());
 		}finally{
@@ -108,9 +108,8 @@ public class ServerThreadForClient implements Runnable {
 	 * @return msgOut, depends on the type of Message, which new Message will return to client
 	 */
     private Message processMessage(Message msgIn) {
-		logger.info("Message received from client: "+ msgIn.getType().toString());
-		String clientName = msgIn.getClient();		
 		Message msgOut = null;
+		logger.info("Message received from "+msgIn.getClient()+": "+ msgIn.getType().toString());	
 		
 		switch (MessageType.getType(msgIn)) {
 		case AskForChanges:
@@ -146,7 +145,7 @@ public class ServerThreadForClient implements Runnable {
 		default:
 			msgOut = new Error_Message();
 		}
-		msgOut.setClient(clientName);
+		msgOut.setClient(this.clientName);
     	return msgOut;
     }
 
@@ -186,14 +185,14 @@ public class ServerThreadForClient implements Runnable {
 		boolean success = dbConnector.checkLoginInput(this.clientName, lmsg.getPassword());
 		
 		if(success){
-			this.logger.info(this.clientName+"'s "+Content.Login.toString()+" succeeded");
+			this.logger.info(this.clientName+"'s login succeeded");
 			Commit_Message cmsg = new Commit_Message();
 			return cmsg;
 			
 		}else{
-			this.logger.info(this.clientName+"'s "+Content.Login.toString()+" failed");
+			this.logger.info(this.clientName+"'s login failed");
 			Failure_Message fmsg = new Failure_Message();
-			fmsg.setNotification(Content.Login.toString()+" failed");
+			fmsg.setNotification("login failed");
 			return fmsg;
 		}
 	}
@@ -262,6 +261,7 @@ public class ServerThreadForClient implements Runnable {
 		CreateNewPlayer_Message cnpmsg = (CreateNewPlayer_Message) msgIn;
 		this.clientName = cnpmsg.getClient();
 		String password = cnpmsg.getPassword();
+		this.logger.info(password);
 		
 		DB_Connector dbConnector = DB_Connector.getDB_Connector();
 		boolean success = dbConnector.addNewPlayer(this.clientName, password);

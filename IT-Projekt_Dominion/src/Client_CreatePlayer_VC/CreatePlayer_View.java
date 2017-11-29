@@ -99,7 +99,9 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		languageSelectLbl.setId("languageSelectLbl");
 
 		ObservableList<String> language = FXCollections.observableArrayList(t.getString("program.german"), t.getString("program.english"));
+		
 		languageSelectComboBox = new ComboBox(language);
+		languageSelectComboBox.setValue(language.get(0)); // set default value -> German 
 		languageSelectComboBox.setTooltip(new Tooltip(t.getString("program.languageTip")));
 		languageSelectComboBox.setPrefSize(280.0, 30.0);
 		languageBox.getChildren().addAll(languageSelectLbl, languageSelectComboBox);
@@ -107,6 +109,7 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		// buttons
 		saveBtn = new Button(t.getString("cnp.saveBtn"));
 		saveBtn.setId("saveBtn");
+		saveBtn.setDisable(true);
 		backBtn = new Button(t.getString("cnp.backBtn"));
 		backBtn.setId("backBtn");	
 		HBox buttonBox = new HBox(saveBtn, backBtn);

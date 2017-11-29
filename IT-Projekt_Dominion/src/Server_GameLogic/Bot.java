@@ -23,7 +23,7 @@ import Messages.UpdateGame_Message;
 // reduce class variables where possible
 // UpdateGame_Message ugmsg = (UpdateGame_Message) m;
 
-public class Bot extends Player {
+public class Bot extends Player implements Runnable {
 	private HashMap<CardName, Integer> prioListForBuying1 = new HashMap<CardName, Integer>();
 	private HashMap<CardName, Integer> prioListForBuying2 = new HashMap<CardName, Integer>();
 	private HashMap<CardName, Integer> prioListForPlaying = new HashMap<CardName, Integer>();
@@ -33,10 +33,11 @@ public class Bot extends Player {
 	private static final ArrayList<String> NAMES = new ArrayList<String>();
 	private static final double SHARE_OF_TREASURE_CARDS = 0.35;
 	private static final int MIN_TIME_BEFORE_EXECUTING = 1000, MAX_TIME_BEFORE_EXECUTING = 3000;
-	private static final int MAX_TREASURE_CARDS = 7, MAX_ACTION_CARDS = 5;
-	private double numberOfTreasureCards = 0.0, numberOfTotalCards = 10.0;
+	private static final int MAX_TREASURE_CARDS = 7, MAX_ACTION_CARDS = 10;
+	private double numberOfGoldAndSilverCards = 0.0, numberOfTotalCards = 10.0;
 	private int numberOfActionCards = 0;
-	private CardName cardToPlay, cardToBuy;
+	private Card cardToPlay;
+	private CardName cardToBuy;
 	private boolean buyOneMore = false, playOneMore = false;
 
 	public Bot(String name) {
@@ -52,7 +53,7 @@ public class Bot extends Player {
 		prioListForBuying1.put(CardName.Silver, 40);
 		prioListForBuying1.put(CardName.Smithy, 64);
 		prioListForBuying1.put(CardName.Village, 66);
-		// prioListForBuying1.put(CardName.Woodcutter, 10); do not use
+		prioListForBuying1.put(CardName.Woodcutter, 20);
 		prioListForBuying1.put(CardName.Workshop, 58);
 
 		prioListForBuying2.put(CardName.Cellar, 10);
@@ -66,18 +67,19 @@ public class Bot extends Player {
 		prioListForBuying2.put(CardName.Silver, 70);
 		prioListForBuying2.put(CardName.Smithy, 74);
 		prioListForBuying2.put(CardName.Village, 78);
-		// prioListForBuying2.put(CardName.Woodcutter, 10); do not use
+		prioListForBuying2.put(CardName.Woodcutter, 20);
 		prioListForBuying2.put(CardName.Workshop, 58);
 
 		prioListForPlaying.put(CardName.Cellar, 30);
 		prioListForPlaying.put(CardName.Market, 90);
 		prioListForPlaying.put(CardName.Mine, 50);
 		prioListForPlaying.put(CardName.Remodel, 40);
-		prioListForPlaying.put(CardName.Smithy, 65);
+		prioListForPlaying.put(CardName.Smithy, 66);
 		prioListForPlaying.put(CardName.Village, 80);
-		// prioListForPlaying.put(CardName.Woodcutter, 20); do not use
+		prioListForPlaying.put(CardName.Woodcutter, 20);
 		prioListForPlaying.put(CardName.Workshop, 60);
 
+		// gewisse Karten rausnehmen
 		prioListForRemodel.put(CardName.Cellar, 10);
 		prioListForRemodel.put(CardName.Copper, 20);
 		prioListForRemodel.put(CardName.Duchy, 12);
@@ -90,7 +92,7 @@ public class Bot extends Player {
 		prioListForRemodel.put(CardName.Silver, 61);
 		prioListForRemodel.put(CardName.Smithy, 94);
 		prioListForRemodel.put(CardName.Village, 97);
-		// prioListForRemodel.put(CardName.Woodcutter, 87); do not use
+		prioListForRemodel.put(CardName.Woodcutter, 87);
 		prioListForRemodel.put(CardName.Workshop, 85);
 
 		cardNamesOfActionCards.add(CardName.Cellar);
@@ -100,28 +102,27 @@ public class Bot extends Player {
 		cardNamesOfActionCards.add(CardName.Workshop);
 		cardNamesOfActionCards.add(CardName.Village);
 		cardNamesOfActionCards.add(CardName.Remodel);
-		// cardname.add(CardName.Woodcutter); do not use
+		cardNamesOfActionCards.add(CardName.Woodcutter);
 
 		maxCardsOfAType.put(CardName.Market, 2);
 		maxCardsOfAType.put(CardName.Smithy, 1);
-		maxCardsOfAType.put(CardName.Village, 1);
+		maxCardsOfAType.put(CardName.Village, 2);
 		maxCardsOfAType.put(CardName.Mine, 1);
 		maxCardsOfAType.put(CardName.Cellar, 1);
 		maxCardsOfAType.put(CardName.Workshop, 1);
 		maxCardsOfAType.put(CardName.Remodel, 1);
-		// maxCardsOfAType.put(CardName.Woodcutter, 1); do not use
+		maxCardsOfAType.put(CardName.Woodcutter, 1);
 	}
 
 	/**
 	 * Executes the Bot with all its stages play and buy.
 	 */
-	public void execute() {
-		if (actions > 0 && actualPhase == Phase.Action) {
-			do {
-				estimatePlayPriorityOfActionCards();
-				playActionCards();
-			} while (actions > 0 && playOneMore == true && actualPhase == Phase.Action);
-		}
+	public void run() {
+		do {
+			estimatePlayPriorityOfActionCards();
+			playActionCards();
+		} while (actions > 0 && playOneMore == true && actualPhase == Phase.Action);
+
 		if (buys > 0 && actualPhase == Phase.Buy) {
 			playTreasureCards();
 			do {
@@ -140,7 +141,7 @@ public class Bot extends Player {
 	private void playTreasureCards() {
 		for (Card card : handCards) {
 			if (card.getType().equals(CardType.Treasure)) {
-				cardToPlay = card.getCardName();
+				cardToPlay = card;
 				play(cardToPlay);
 				makeBreak();
 			}
@@ -157,25 +158,26 @@ public class Bot extends Player {
 			if (card.getType().equals(CardType.Action)) {
 				if (tempPriority < prioListForPlaying.get(card.getCardName())) {
 					tempPriority = prioListForPlaying.get(card.getCardName());
-					cardToPlay = card.getCardName();
+					cardToPlay = card;
 				}
 			}
 		}
+		// if(cardToPlay == null) do nothing
 		play(cardToPlay);
 		makeBreak();
 
 		// do something with cards
-		switch (cardToPlay) {
+		switch (cardToPlay.getCardName()) {
 		case Mine:
-			if (cardToPlay.equals(CardName.Copper))
-				numberOfTreasureCards++;
+			// messages
+			numberOfGoldAndSilverCards++;
 			break;
 		case Cellar:
 			break;
 		case Remodel:
 			break;
-		// case Workshop: do not use
-		// break;
+		case Workshop:
+			break;
 		default:
 			break;
 		}
@@ -196,6 +198,7 @@ public class Bot extends Player {
 	 * Calculates which card has to be bought and checks if a second buy would make
 	 * sense.
 	 */
+	// if(buys > 2) zuerst und dann zuweisung
 	private void buy() {
 		Boolean succeededBuy = false;
 		List<CardName> list1 = prioListForBuying1.keySet().stream()
@@ -219,17 +222,14 @@ public class Bot extends Player {
 				numberOfTotalCards++;
 				succeededBuy = true;
 				if (cardToBuy.equals(CardName.Gold) || cardToBuy.equals(CardName.Silver))
-					numberOfTreasureCards++;
-				for (int i = 0; i < cardNamesOfActionCards.size(); i++) {
-					if (cardToBuy.equals(cardNamesOfActionCards.get(i)))
-						numberOfActionCards++;
-				}
+					numberOfGoldAndSilverCards++;
+				if (Card.getCard(cardToBuy).getType().equals(CardType.Action))
+					numberOfActionCards++;
 				makeBreak();
 				break;
 			} else {
 				succeededBuy = false;
 				cardToBuy = null;
-				continue;
 			}
 		}
 		// one more buy?
@@ -294,8 +294,9 @@ public class Bot extends Player {
 		else if (game.getDuchyPile().size() < 2)
 			gameStage += 20;
 
-		List<CardName> list0 = game.getBuyCards().keySet().stream().filter(c -> game.getBuyCards().containsValue(3))
-				// PROBLEM: 3, 2 und 1 zählen... aber ohne obengenannte Stacks
+		HashMap<CardName, Integer> buyCards;
+		buyCards = game.getBuyCards();
+		List<CardName> list0 = buyCards.keySet().stream().filter(c -> buyCards.get(c) <= 3)
 				.collect(Collectors.toList());
 		int lowStacks = list0.size();
 		if (lowStacks == 3)
@@ -345,13 +346,13 @@ public class Bot extends Player {
 	 * 
 	 */
 	private void estimateBuyPriorityOfTreasureCards() {
-		if (numberOfTreasureCards >= MAX_TREASURE_CARDS) {
+		if (numberOfGoldAndSilverCards >= MAX_TREASURE_CARDS) {
 			prioListForBuying1.remove(CardName.Gold);
 			prioListForBuying1.remove(CardName.Silver);
 		} else {
 			int tempGold = prioListForBuying1.get(CardName.Gold);
 			int tempSilver = prioListForBuying1.get(CardName.Silver);
-			if (numberOfTreasureCards / numberOfTotalCards < SHARE_OF_TREASURE_CARDS) {
+			if (numberOfGoldAndSilverCards / numberOfTotalCards < SHARE_OF_TREASURE_CARDS) {
 				tempGold += 10;
 				tempSilver += 10;
 				prioListForBuying1.replace(CardName.Gold, tempGold);
@@ -368,6 +369,7 @@ public class Bot extends Player {
 	/**
 	 * Calculate the priority of each ActionCards for the buying decision.
 	 */
+	// wenn gekauft, prio herabsetzen
 	private void estimateBuyPriorityOfActionCards() {
 		for (int i = 0; i < cardNamesOfActionCards.size(); i++) {
 			if (getNumberOfOwnedCards(cardNamesOfActionCards.get(i)) == maxCardsOfAType
@@ -392,7 +394,8 @@ public class Bot extends Player {
 	 * Calculate the priority of ActionCards for the playing phase.
 	 */
 	private void estimatePlayPriorityOfActionCards() {
-		// smithy, workshop, remodel unbekannt
+		// smithy, workshop
+		// remodel nur wenn schlechte karte
 		// village und market --> immer gleich!
 		int numOfVictoryCards = 0;
 		int numOfPossibleMine = 0;
@@ -404,6 +407,7 @@ public class Bot extends Player {
 				numOfPossibleMine++;
 		}
 
+		// smithy oder cellar? mit actions arbeiten
 		if (numOfVictoryCards >= 2) {
 			if (prioListForPlaying.containsKey(CardName.Cellar))
 				prioListForPlaying.replace(CardName.Cellar, 70);
@@ -412,7 +416,7 @@ public class Bot extends Player {
 		} else if (numOfVictoryCards == 0)
 			prioListForPlaying.remove(CardName.Cellar);
 
-		
+		// cooper or silver? mit actions arbeiten
 		if (numOfPossibleMine >= 1) {
 			if (prioListForPlaying.containsKey(CardName.Mine))
 				prioListForPlaying.replace(CardName.Mine, 70);
