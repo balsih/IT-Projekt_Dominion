@@ -352,12 +352,8 @@ public class Player {
 	 * (Abfrage in Buy) InteractionType ueber UpdateGameMessage.
 	 */
 
-	/**
-	 * @author Bodo Gruetter
-	 *
-	 * @param discardedCards,
-	 *            a linkedList with discarded Cards
-	 * @return UpdateGame_Message
+	/*
+	 * DISCARD METHODEN ANPASSEN; SIEHE CARD EXECUTECELLAR etc.
 	 */
 	public UpdateGame_Message discard(LinkedList<Card> discardedCards) {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
