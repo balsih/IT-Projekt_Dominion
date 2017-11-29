@@ -330,31 +330,21 @@ public class ServerThreadForClient implements Runnable {
 				}
 			}
 			break;
-		case Cellar://muss René übernehmen/anpassen
-//			LinkedList<Card> cellarDiscardCardsXML = imsg.getCellarDiscardCards();
-//			LinkedList<Card> cellarDiscardCards = new LinkedList<Card>();
-//			for(int i = 0; i < cellarDiscardCardsXML.size(); i++){
-//				for(int j = 0; j < this.player.handCards.size(); j++){
-//					if(cellarDiscardCardsXML.get(i).getCardName().equals(this.player.handCards.get(j).getCardName())){
-//						cellarDiscardCards.add(this.player.handCards.remove(j));
-//						break;
-//					}
-//				}
-//			}
+		case Cellar:
 			Cellar_Card cCard = (Cellar_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
-//			return cCard.executeCellar(imsg.getCellarDiscardCards());//muss René anpassen (Spieler nicht nötig)
+//			return cCard.executeCellar(imsg.getCellarDiscardCards());
 		case Workshop:
 			Workshop_Card wCard = (Workshop_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
 			return wCard.executeWorkshop(imsg.getWorkshopChoice());
 		case Remodel1:
 			Remodel_Card r1Card = (Remodel_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
-//			return r1Card.executeRemodel1(imsg.getDisposeRemodelCard());//muss René anpassen (Card nicht CardName)
+//			return r1Card.executeRemodel1(imsg.getDisposeRemodelCard());
 		case Remodel2:
 			Remodel_Card r2Card = (Remodel_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
-//			return r2Card.executeRemodel2(imsg.getRemodelChoice());
+			return r2Card.executeRemodel2(imsg.getRemodelChoice());
 		case Mine:
 			Mine_Card mCard = (Mine_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
-//			return mCard.executeMine(imsg.getDisposedMineCard());//muss René anpassen (3 Parameter?)
+//			return mCard.executeMine(imsg.getDisposedMineCard());
 		default:
 			return null;
 		}

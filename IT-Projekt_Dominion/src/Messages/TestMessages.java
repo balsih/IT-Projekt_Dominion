@@ -27,41 +27,24 @@ import Cards.Smithy_Card;
 import Cards.Village_Card;
 import Cards.Woodcutter_Card;
 import Cards.Workshop_Card;
+import Client_GameApp_MVC.GameApp_Model;
 import Client_Services.ServiceLocator;
+import MainClasses.Dominion_Main;
 import Server_GameLogic.Game;
 import Server_GameLogic.GameMode;
 import Server_GameLogic.Phase;
 import Server_GameLogic.Player;
+import javafx.application.Platform;
 
 public class TestMessages {
 
 	public static void main(String[] args) {
-		
-		LinkedList<Card> handList = new LinkedList<Card>();
-		handList.add(new Duchy_Card());
-		handList.add(new Mine_Card());
-		handList.add(new Village_Card());
-		handList.add(new Market_Card());
-		handList.add(new Gold_Card());
-		
-		LinkedList<Card> discardList = new LinkedList<Card>();
-		discardList.add(new Duchy_Card());
-		discardList.add(new Gold_Card());
-		
-		LinkedList<Card> newList = new LinkedList<Card>();
-		
-		for(int i = 0; i < discardList.size(); i++){
-			for(int j = 0; j < handList.size(); j++){
-				if(handList.get(j).getCardName().equals(discardList.get(i).getCardName())){
-					newList.add(handList.remove(j));
-					break;
-				}
-			}
-		}
-		System.out.println(newList.get(0).toString());
-		System.out.println(handList.get(0).toString());
-		if(newList.get(0).equals(handList.get(0)))
-			System.out.println("found");
+		GameApp_Model model = new GameApp_Model(new Dominion_Main());
+		model.init("127.0.0.1");
+		String login = model.sendLogin("Lukas", "password");
+		if(login == null)
+			System.out.println("test failed");
+		else System.out.println("test succeeded");
 	}
 	
 	/**
