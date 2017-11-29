@@ -163,7 +163,7 @@ public class GameApp_Model extends Model {
 	 * 
 	 * @param userInput
 	 * @param inputType
-	 * @return valid
+	 * @return boolean user input correct/incorrect
 	 */
 	public boolean checkUserInput(String userInput, UserInput inputType){
 		boolean valid = false;
