@@ -55,6 +55,8 @@ public class Server_Model extends Model {
 				}
 				
 			};
+			Thread t = new Thread(r, "ServerSocket");
+			t.start();
 		}catch (IOException e) {
 			this.logger.info(e.toString());
 		}
