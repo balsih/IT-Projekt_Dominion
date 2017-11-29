@@ -25,7 +25,6 @@ public class Woodcutter_Card extends Card {
 	@Override
 	public UpdateGame_Message executeCard(Player player){
 		
-		player.setActions(player.getActions() - 1);
 		player.setCoins(player.getCoins() + 2);
 		player.setBuys(player.getBuys() + 1);
 		

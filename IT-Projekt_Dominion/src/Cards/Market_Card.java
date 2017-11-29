@@ -25,9 +25,10 @@ public class Market_Card extends Card {
 	@Override
 	public UpdateGame_Message executeCard(Player player){
 		
-		player.setCoins(player.getCoins() + 1);
-		player.setBuys(player.getBuys() + 1);
 		player.draw(1); // draw 1 card
+		player.setActions(player.getActions() + 1);
+		player.setBuys(player.getBuys() + 1);
+		player.setCoins(player.getCoins() + 1);		
 		
 		Game game = player.getGame();
 		UpdateGame_Message ugmsg = new UpdateGame_Message();

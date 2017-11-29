@@ -52,14 +52,14 @@ public class Remodel_Card extends Card {
 	}
 	
 	
-	public UpdateGame_Message executeRemodel1(CardName discardedCard) {
-		UpdateGame_Message ugmsg = this.discard(discardedCard);
+	public UpdateGame_Message executeRemodel1(CardName discardedCard) { // card nicht cardName?
+		UpdateGame_Message ugmsg = player.discard(discardedCard);
 
 		return ugmsg;
 	}
 
 	public UpdateGame_Message executeRemodel2(CardName pickedCard) {
-		UpdateGame_Message ugmsg = (UpdateGame_Message) this.buy(pickedCard);
+		UpdateGame_Message ugmsg = (UpdateGame_Message) player.buy(pickedCard);
 
 		return ugmsg;
 	}

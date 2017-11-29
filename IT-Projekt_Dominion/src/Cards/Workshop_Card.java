@@ -29,9 +29,6 @@ public class Workshop_Card extends Card {
 	 */
 	@Override
 	public UpdateGame_Message executeCard(Player player){
-		player.setActions(player.getActions() - 1);
-		
-		
 		
 		// noch fehlender Code bzw. Funktionalität 
 		
@@ -51,7 +48,7 @@ public class Workshop_Card extends Card {
 	
 	
 	public UpdateGame_Message executeWorkshop(CardName cardName) {
-		UpdateGame_Message ugmsg = (UpdateGame_Message) this.buy(cardName);
+		UpdateGame_Message ugmsg = (UpdateGame_Message) player.buy(cardName);
 
 		return ugmsg;
 	}
@@ -59,8 +56,7 @@ public class Workshop_Card extends Card {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 * @param the
-	 *            from the player discarded Card
+	 * @param the from the player discarded Card
 	 * @return a linkedlist with all available cards
 	 */
 	public LinkedList<Card> getAvailableWorkshopCards(Card discardedCard, Interaction interaction) {

@@ -25,7 +25,6 @@ public class Smithy_Card extends Card {
 	@Override
 	public UpdateGame_Message executeCard(Player player){
 		
-		player.setActions(player.getActions() - 1);
 		player.draw(3); // draw 3 cards
 		
 		Game game = player.getGame();

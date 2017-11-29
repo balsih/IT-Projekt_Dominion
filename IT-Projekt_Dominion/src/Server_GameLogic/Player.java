@@ -387,7 +387,7 @@ public class Player {
 		while (!playedCards.isEmpty()) {
 			this.discardPile.push(playedCards.remove());
 		}
-
+		
 		while (!handCards.isEmpty()) {
 			if (!handCards.element().equals(selectedTopCard))
 				this.discardPile.push(handCards.remove());
