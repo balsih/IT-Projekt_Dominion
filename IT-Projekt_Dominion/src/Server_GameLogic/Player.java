@@ -52,15 +52,6 @@ public class Player {
 	private ServerThreadForClient serverThreadForClient;
 
 	private final Logger logger = Logger.getLogger("");
-	
-	public static void main(String[] args){
-		Player player = new Player("Dummy");
-		Cellar_Card cellar = new Cellar_Card();
-		for(int i = 0; i < 5; i++){
-			player.handCards.add(new Cellar_Card());
-			System.out.println(player.handCards.contains());
-		}
-	}
 
 	/**
 	 * Constructor for Bot
