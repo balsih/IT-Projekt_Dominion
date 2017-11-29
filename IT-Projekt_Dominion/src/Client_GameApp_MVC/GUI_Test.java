@@ -266,6 +266,9 @@ public class GUI_Test extends Application {
 		vboxHandCards.getStyleClass().add("vbox");
 		vboxHandCards.setPrefWidth(Double.MAX_VALUE);
 		hboxHandCards.getStyleClass().add("hbox");
+		
+		scrlpPlayedCards.setStyle("-fx-background-color: transparent;");
+		scrlpHandCards.setStyle("-fx-background-color: transparent;");
 
 		// Special styling for Current player area
 		hboxCurrentPlayer.getStyleClass().add("hbox");
@@ -300,6 +303,8 @@ public class GUI_Test extends Application {
 		ImageView img14 = new ImageView(new Image(getClass().getResourceAsStream("Images/Geld_01.jpg")));
 		ImageView img15 = new ImageView(new Image(getClass().getResourceAsStream("Images/Geld_01.jpg")));
 		ImageView img16 = new ImageView(new Image(getClass().getResourceAsStream("Images/Geld_01.jpg")));
+		ImageView img17 = new ImageView(new Image(getClass().getResourceAsStream("Images/Geld_01.jpg")));
+		ImageView img18 = new ImageView(new Image(getClass().getResourceAsStream("Images/Geld_01.jpg")));
 		
 		// Test: set width and height of images
 		img1.setFitWidth(50);
@@ -334,8 +339,12 @@ public class GUI_Test extends Application {
 		img15.setFitHeight(80);
 		img16.setFitWidth(50);
 		img16.setFitHeight(80);
+		img17.setFitWidth(50);
+		img17.setFitHeight(80);
+		img18.setFitWidth(50);
+		img18.setFitHeight(80);
 
-		// Test: add cards to the containers
+		// Test: add buy cards to the containers
 		vboxCellarCards.getChildren().add(0, img1);
 		vboxMarketCards.getChildren().add(0, img2);
 		vboxRemodelCards.getChildren().add(0, img3);
@@ -353,8 +362,14 @@ public class GUI_Test extends Application {
 		vboxEstateCards.getChildren().add(0, img13);
 		vboxProvinceCards.getChildren().add(0, img14);
 		
+		// Test: add cards to stacks deck & discard
 		stackpDeck.getChildren().add(img15);
 		stackpDiscard.getChildren().add(img16);
+		
+		// Test: add played cards & hand cards to containers
+		hboxPlayedCards.getChildren().add(img17);
+		
+		hboxHandCards.getChildren().add(img18);
 		
 		// Already implemented: Sends a chat message to the server 
 		btnSendChatArea.setOnAction(event -> {

@@ -3,6 +3,9 @@ package Client_GameApp_MVC;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
@@ -45,7 +48,7 @@ public class GameApp_Model extends Model {
 	private final String NO_CONNECTION = "No connection to Server";
 	private final int PORT = 8080;
 	private final String TRANSLATE_REGEX = "#[\\w\\s]*#";
-	
+
 	private ServiceLocator sl = ServiceLocator.getServiceLocator();
 	private Translator t = sl.getTranslator();
 
@@ -102,7 +105,7 @@ public class GameApp_Model extends Model {
 		this.main = main;
 
 		// start menusound
-//		this.startMediaPlayer("sound.mp3"); // start sound 
+		//		this.startMediaPlayer("sound.mp3"); // start sound 
 	}
 
 	/**
@@ -113,9 +116,44 @@ public class GameApp_Model extends Model {
 		return false;
 	}
 
+	/**
+	 * @author Adrian
+	 * Encrypts a password using the secure hash algorithm (SHA-512) and returns it.
+	 * @param unencryptedPassword
+	 * @param salt
+	 * @return encryptedPassword
+	 * @throws NoSuchAlgorithmException
+	 */
+	public String encryptPassword(String unencryptedPassword, String salt) throws NoSuchAlgorithmException {
+		String generatedPassword = null;
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-512");
+			md.update(salt.getBytes());
+			byte[] bytes = md.digest(unencryptedPassword.getBytes());
+			StringBuilder sb = new StringBuilder();
 
-	public String encryptPassword(String password){
-		return password;
+			for(int i=0; i< bytes.length ;i++) {
+				sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+			}
+			generatedPassword = sb.toString();
+		}
+		catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		return generatedPassword;
+	}
+
+	/**
+	 * @author Adrian
+	 * Adds salt for usage in the method encryptPassword
+	 * @return salt
+	 * @throws NoSuchAlgorithmException
+	 */
+	private static String getSalt() throws NoSuchAlgorithmException {
+		SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+		byte[] salt = new byte[16];
+		sr.nextBytes(salt);
+		return salt.toString();
 	}
 
 	/**
@@ -133,16 +171,14 @@ public class GameApp_Model extends Model {
 		String[] parts = userInput.split("\\.");
 
 		switch(inputType) {
-		// ClientName and password can't be longer than MAX_INPUT_LENGTH
-
 		case clientName:
 		case password:
+			// ClientName and password can't be longer than MAX_INPUT_LENGTH
 			if (userInput.length()<=MAX_INPUT_LENGTH && userInput.length() > 2)
 				valid = true;
 			break;
-			// The ipAddress must consist of 4 parts. Each part is an integer from 0 to 255.
-
 		case ipAddress:
+			// The ipAddress must consist of 4 parts. Each part is an integer from 0 to 255.
 			if (parts.length == 4){
 				valid = true;
 				for (String part : parts){
@@ -164,7 +200,7 @@ public class GameApp_Model extends Model {
 		}
 		return valid;
 	}
-	
+
 	/**
 	 * @author Lukas
 	 * Translates any parts of a String between two #
@@ -192,7 +228,7 @@ public class GameApp_Model extends Model {
 		}
 		return t.getString(input);
 	}
-	
+
 
 	/**
 	 * @author Lukas Gehrig
@@ -231,16 +267,16 @@ public class GameApp_Model extends Model {
 		BuyCard_Message bcmsg = new BuyCard_Message();
 		bcmsg.setCard(cardName);
 		boolean update = false;
-		
+
 		Message msgIn = this.processMessage(bcmsg);
 		if(msgIn.getType().equals(MessageType.UpdateGame)){//buy succeeded
 			this.processUpdateGame(msgIn);
 			update = true;
-			
+
 		}else if(msgIn.getType().equals(MessageType.PlayerSuccess)){//the game ended after this buy
 			this.processPlayerSuccess(msgIn);
 			update = true;
-			
+
 		}else if(msgIn.getType().equals(MessageType.Failure)){//it was not allowed to buy this card
 			//nothing toDo here
 		}
@@ -258,7 +294,7 @@ public class GameApp_Model extends Model {
 		Chat_Message cmsg = new Chat_Message();
 		cmsg.setChat(chat);
 		boolean update = false;
-		
+
 		Message msgIn = this.processMessage(cmsg);
 		if(msgIn.getType().equals(MessageType.UpdateGame)){
 			this.processUpdateGame(msgIn);
@@ -277,7 +313,7 @@ public class GameApp_Model extends Model {
 		Interaction_Message imsg = new Interaction_Message();
 		boolean update = false;
 		imsg.setInteractionType(this.interaction);
-		
+
 		switch(this.interaction){
 		case Skip:
 			break;
@@ -304,7 +340,7 @@ public class GameApp_Model extends Model {
 		default:
 			return false;
 		}
-		
+
 		Message msgIn = this.processMessage(imsg);
 		if(msgIn.getType().equals(MessageType.UpdateGame)){
 			update = true;
@@ -323,23 +359,24 @@ public class GameApp_Model extends Model {
 	 * @param password
 	 * @return result, usually only necessary if clientName is already set
 	 */
-	public String sendCreateNewPlayer(String clientName, String password){
+	public String sendCreateNewPlayer(String clientName, String password) throws NoSuchAlgorithmException{
 		String result = NO_CONNECTION;
+		String salt = getSalt();
 		CreateNewPlayer_Message cnpmsg = new CreateNewPlayer_Message();
 		cnpmsg.setClient(clientName);//set the clientName and encrypted password to XML
-		cnpmsg.setPassword(this.encryptPassword(password));
-		
+		cnpmsg.setPassword(this.encryptPassword(password, salt));
+
 		Message msgIn = this.processMessage(cnpmsg);
 		if(msgIn.getType().equals(MessageType.Commit)){
 			this.clientName = clientName;
 			this.main.startMainMenu();
-			
+
 		}else if(msgIn.getType().equals(MessageType.Failure)){
 			Failure_Message fmsg = (Failure_Message) msgIn;
 			result = fmsg.getNotification();
 		}
 		return result;
-//		return this.translate(result);
+		//		return this.translate(result);
 
 	}
 
@@ -356,13 +393,13 @@ public class GameApp_Model extends Model {
 		gmmsg.setClient(this.clientName);//set the clientName and mode(SinglePlayer or MultiPlayer) to XML
 		gmmsg.setMode(mode);
 		this.gameMode = mode.toString();
-		
+
 		Message msgIn = this.processMessage(gmmsg);
 		if(msgIn.getType().equals(MessageType.Commit)){
 			this.main.startGameApp();
 		}
 		return result;
-//		return this.translate(result);
+		//		return this.translate(result);
 	}
 
 	/**
@@ -373,25 +410,26 @@ public class GameApp_Model extends Model {
 	 * @param password
 	 * @return result, usually only necessary if clientName and password don't work or the client lost connection to server
 	 */
-	public String sendLogin(String clientName, String password){
+	public String sendLogin(String clientName, String password) throws NoSuchAlgorithmException {
 		String result = NO_CONNECTION;
+		String salt = getSalt();
 		Login_Message lmsg = new Login_Message();
 		lmsg.setClient(clientName);//set the clientName and encrypted password to XML
-		lmsg.setPassword(this.encryptPassword(password));
-		
+		lmsg.setPassword(this.encryptPassword(password, salt));
+
 		Message msgIn = this.processMessage(lmsg);
 		if(msgIn.getType().equals(MessageType.Commit)){
 			this.clientName = clientName;//login succeeded
 			this.main.startMainMenu();
-			
+
 		}else if(msgIn.getType().equals(MessageType.Failure)){
 			Failure_Message fmsg = (Failure_Message) msgIn;//login failed, clientName and/or password wrong
 			result = fmsg.getNotification();
 		}
 		return result;
-//		return this.translate(result);
+		//		return this.translate(result);
 	}
-	
+
 	/**
 	 * @author Lukas
 	 * The client sends a request to server for the top5 Highscore
@@ -400,9 +438,9 @@ public class GameApp_Model extends Model {
 	 */
 	public String sendHighScoreRequest(){
 		String result = this.NO_CONNECTION;
-//		String result = this.translate(NO_CONNECTION);
+		//		String result = this.translate(NO_CONNECTION);
 		HighScore_Message hsmsg = new HighScore_Message();
-		
+
 		Message msgIn = this.processMessage(hsmsg);
 		if(msgIn.getType().equals(MessageType.HighScore)){
 			HighScore_Message nhsmsg = (HighScore_Message) msgIn;
@@ -422,7 +460,7 @@ public class GameApp_Model extends Model {
 		PlayCard_Message pcmsg = new PlayCard_Message();
 		pcmsg.setCard(card);
 		boolean update = false;
-		
+
 		Message msgIn = this.processMessage(pcmsg);
 		if(msgIn.getType().equals(MessageType.UpdateGame)){
 			this.processUpdateGame(msgIn);
@@ -478,7 +516,7 @@ public class GameApp_Model extends Model {
 		//If something necessary happened in the Game, it will be provided to show
 		if(ugmsg.getLog() != null)
 			this.newLog = ugmsg.getLog();
-//			this.newLog = this.translate(ugmsg.getLog());
+		//			this.newLog = this.translate(ugmsg.getLog());
 
 		//If the client or opponent sent a chat, it will be provided to show
 		if(ugmsg.getChat() != null)
@@ -521,7 +559,7 @@ public class GameApp_Model extends Model {
 		//Always client's topCard
 		if(ugmsg.getDiscardPileTopCard() != null && this.currentPlayer == this.clientName)
 			this.yourDiscardPileTopCard = ugmsg.getDiscardPileTopCard();
-		
+
 		//If currentPlayer is set, the currentPlayer's turn ends
 		if(ugmsg.getCurrentPlayer() != null){
 			if(ugmsg.getCurrentPlayer() != this.currentPlayer){
@@ -537,7 +575,7 @@ public class GameApp_Model extends Model {
 			}
 			this.currentPlayer = ugmsg.getCurrentPlayer();
 		}
-		
+
 		//The new handCards just drawn. Always currentPlayer
 		//Move the drawn cards from the deck into yourNewHandCards
 		if(ugmsg.getNewHandCards() != null && (this.currentPlayer == this.clientName) || (ugmsg.getCurrentPlayer() == this.opponent)){
@@ -624,8 +662,8 @@ public class GameApp_Model extends Model {
 		mediaPlayer = new MediaPlayer(media);
 		mediaPlayer.play();
 	}
-	
-	
+
+
 	public String getClientName(){
 		return this.clientName;
 	}
@@ -633,11 +671,11 @@ public class GameApp_Model extends Model {
 	public void setGameMode(String gameMode){
 
 	}
-	
+
 	public void setIP(String ipAddress){
 		this.ipAddress = ipAddress;
 	}
-	
+
 	public void setClientName(String clientName){
 		this.clientName = clientName;
 	}

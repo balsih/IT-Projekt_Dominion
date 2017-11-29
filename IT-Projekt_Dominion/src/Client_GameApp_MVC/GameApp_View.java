@@ -28,15 +28,49 @@ public class GameApp_View extends View<GameApp_Model> {
 
 	// Controls Action cards area
 	protected Label lblActionCards = new Label("Action cards");
-	protected TilePane tilepActionCards = new TilePane();
+	protected GridPane gridpActionCards = new GridPane();
+	protected Label lblNmbrOfCellarCards = new Label("nmbr");
+	protected Label lblNmbrOfMarketCards = new Label("nmbr");
+	protected Label lblNmbrOfRemodelCards = new Label("nmbr");
+	protected Label lblNmbrOfSmithyCards = new Label("nmbr");
+	protected Label lblNmbrOfWoodcutterCards = new Label("nmbr");
+	protected Label lblNmbrOfWorkshopCards = new Label("nmbr");
+	protected Label lblNmbrOfMineCards = new Label("nmbr");
+	protected Label lblNmbrOfVillageCards = new Label("nmbr");
+
+	protected VBox vboxActionCards = new VBox(lblActionCards, gridpActionCards);
+	protected VBox vboxCellarCards = new VBox(1, lblNmbrOfCellarCards);
+	protected VBox vboxMarketCards = new VBox(1, lblNmbrOfMarketCards);
+	protected VBox vboxRemodelCards = new VBox(1, lblNmbrOfRemodelCards);
+	protected VBox vboxSmithyCards = new VBox(1, lblNmbrOfSmithyCards);
+	protected VBox vboxWoodcutterCards = new VBox(1, lblNmbrOfWoodcutterCards);
+	protected VBox vboxWorkshopCards = new VBox(1, lblNmbrOfWorkshopCards);
+	protected VBox vboxMineCards = new VBox(1, lblNmbrOfMineCards);
+	protected VBox vboxVillageCards = new VBox(1, lblNmbrOfVillageCards);
 
 	// Controls Treasure cards area
 	protected Label lblTreasureCards = new Label("Treasure cards");
-	protected HBox hboxTreasureCards = new HBox();	
+	protected HBox hboxTreasureCards = new HBox();
+	protected Label lblNmbrOfGoldCards = new Label("nmbr");
+	protected Label lblNmbrOfSilverCards = new Label("nmbr");
+	protected Label lblNmbrOfCopperCards = new Label("nmbr");
+
+	protected VBox vboxTreasureCards = new VBox(lblTreasureCards, hboxTreasureCards);
+	protected VBox vboxGoldCards = new VBox(1, lblNmbrOfGoldCards);
+	protected VBox vboxSilverCards = new VBox(1, lblNmbrOfSilverCards);
+	protected VBox vboxCopperCards = new VBox(1, lblNmbrOfCopperCards);
 
 	// Controls Victory cards area
 	protected Label lblVictoryCards = new Label("Victory cards");
 	protected HBox hboxVictoryCards = new HBox();
+	protected Label lblNmbrOfDuchyCards = new Label("nmbr");
+	protected Label lblNmbrOfEstateCards = new Label("nmbr");
+	protected Label lblNmbrOfProvinceCards = new Label("nmbr");
+
+	protected VBox vboxVictoryCards = new VBox(lblVictoryCards, hboxVictoryCards);
+	protected VBox vboxDuchyCards = new VBox(1, lblNmbrOfDuchyCards);
+	protected VBox vboxEstateCards = new VBox(1, lblNmbrOfEstateCards);
+	protected VBox vboxProvinceCards = new VBox(1, lblNmbrOfProvinceCards);
 
 	// Controls chat area
 	protected Label lblChatArea = new Label("Chat area");
@@ -93,25 +127,34 @@ public class GameApp_View extends View<GameApp_Model> {
 	protected Scene create_GUI(){
 
 		// Action cards area
-		VBox vboxActionCards = new VBox(lblActionCards, tilepActionCards);
-		tilepActionCards.setPrefColumns(4);
-		tilepActionCards.setPrefRows(2);
+		gridpActionCards.add(vboxCellarCards, 0, 0);
+		gridpActionCards.add(vboxMarketCards, 1, 0);
+		gridpActionCards.add(vboxRemodelCards, 2, 0);
+		gridpActionCards.add(vboxSmithyCards, 3, 0);
+		gridpActionCards.add(vboxWoodcutterCards, 0, 1);
+		gridpActionCards.add(vboxWorkshopCards, 1, 1);
+		gridpActionCards.add(vboxMineCards, 2, 1);
+		gridpActionCards.add(vboxVillageCards, 3, 1);
 
 		// Treasure cards area
-		VBox vboxTreasureCards = new VBox(lblTreasureCards, hboxTreasureCards);
+		hboxTreasureCards.getChildren().add(0, vboxGoldCards);
+		hboxTreasureCards.getChildren().add(1, vboxSilverCards);
+		hboxTreasureCards.getChildren().add(2, vboxCopperCards);
 
 		// Victory cards area
-		VBox vboxVictoryCards = new VBox(lblVictoryCards, hboxVictoryCards);
+		hboxVictoryCards.getChildren().add(0, vboxDuchyCards);
+		hboxVictoryCards.getChildren().add(1, vboxEstateCards);
+		hboxVictoryCards.getChildren().add(2, vboxProvinceCards);
 
 		// Chat area
-		txtaChatArea.setDisable(true);
 		scrlpChatArea.setContent(txtaChatArea);
+		txtaChatArea.setDisable(true);
 		HBox hboxChatArea = new HBox(txtfChatArea, btnSendChatArea);
 		VBox vboxChatArea = new VBox(lblChatArea, scrlpChatArea, hboxChatArea);
 
 		// Log area
-		txtaLog.setDisable(true);
 		scrlpLog.setContent(txtaLog);
+		txtaLog.setDisable(true);
 		VBox vboxLog = new VBox(lblLog, scrlpLog);
 
 		// Discard area
@@ -139,7 +182,7 @@ public class GameApp_View extends View<GameApp_Model> {
 		gridpCurrentPlayer.add(lblCrntBuys, 0, 2);
 		gridpCurrentPlayer.add(lblNmbrOfCrntBuys, 1, 2);
 		gridpCurrentPlayer.add(lblCrntCoins, 0, 3);
-		gridpCurrentPlayer.add(lblNmbrOfCrntCoins, 1, 3);		
+		gridpCurrentPlayer.add(lblNmbrOfCrntCoins, 1, 3);
 
 		HBox hboxCurrentPlayer = new HBox(lblCurrentPlayer, lblCurrentPhase);
 		VBox vboxCurrentPlayer = new VBox(hboxCurrentPlayer, gridpCurrentPlayer, btnCommit);
@@ -147,7 +190,7 @@ public class GameApp_View extends View<GameApp_Model> {
 		// Root
 		GridPane root = new GridPane();
 
-		// Add the boxes to the specified location in the root
+		// Add the containers to the specified location in the root
 		root.add(vboxActionCards, 0, 0, 4, 2);
 		root.add(vboxTreasureCards, 4, 0, 3, 1);
 		root.add(vboxVictoryCards, 4, 1, 3, 1);
@@ -160,57 +203,42 @@ public class GameApp_View extends View<GameApp_Model> {
 		root.add(vboxCurrentPlayer, 8, 3, 1, 1);
 
 		// Resizes the containers to the available size
-		root.setHgrow(vboxActionCards, Priority.ALWAYS);
-		root.setVgrow(vboxActionCards, Priority.ALWAYS);
-		root.setHgrow(vboxTreasureCards, Priority.ALWAYS);
-		root.setVgrow(vboxTreasureCards, Priority.ALWAYS);
-		root.setHgrow(vboxVictoryCards, Priority.ALWAYS);
-		root.setVgrow(vboxVictoryCards, Priority.ALWAYS);
 		root.setHgrow(vboxChatArea, Priority.ALWAYS);
 		root.setVgrow(vboxChatArea, Priority.ALWAYS);
 		root.setHgrow(vboxLog, Priority.ALWAYS);
 		root.setVgrow(vboxLog, Priority.ALWAYS);
-		root.setHgrow(vboxDiscard, Priority.ALWAYS);
-		root.setVgrow(vboxDiscard, Priority.ALWAYS);
-		root.setHgrow(vboxDeck, Priority.ALWAYS);
-		root.setVgrow(vboxDeck, Priority.ALWAYS);
 		root.setHgrow(vboxPlayedCards, Priority.ALWAYS);
 		root.setVgrow(vboxPlayedCards, Priority.ALWAYS);
 		root.setHgrow(vboxHandCards, Priority.ALWAYS);
 		root.setVgrow(vboxHandCards, Priority.ALWAYS);
-		root.setHgrow(vboxCurrentPlayer, Priority.ALWAYS);
-		root.setVgrow(vboxCurrentPlayer, Priority.ALWAYS);
 
 		// Styles the elements of the GUI
 		scene.getStylesheets().add(getClass().getResource("GameApp.css").toExternalForm());
 
 		vboxActionCards.getStyleClass().add("vbox");
-		tilepActionCards.getStyleClass().add("tilepActionCards");
+		gridpActionCards.getStyleClass().add("cardGaps");
 		lblActionCards.getStyleClass().add("Label");
-		
+
 		vboxTreasureCards.getStyleClass().add("vbox");
-		vboxTreasureCards.setMinWidth(290);
+		hboxTreasureCards.getStyleClass().add("cardGaps");
 		hboxTreasureCards.getStyleClass().add("hbox");
 
 		vboxVictoryCards.getStyleClass().add("vbox");
-		vboxVictoryCards.setMinWidth(290);
+		hboxVictoryCards.getStyleClass().add("cardGaps");
 		hboxVictoryCards.getStyleClass().add("hbox");
 
 		vboxChatArea.getStyleClass().add("vbox");
-		vboxChatArea.setMaxWidth(250);
+		vboxChatArea.setPrefWidth(150);
 		hboxChatArea.getStyleClass().add("hbox");
 
 		vboxLog.getStyleClass().add("vbox");
-		vboxLog.setMaxWidth(250);
+		vboxLog.setPrefWidth(150);
 
 		hboxDiscard.getStyleClass().add("hbox");
-		vboxDiscard.getStyleClass().add("cardStackHeight");
-		vboxDiscard.getStyleClass().add("cardStackWidth");
 		vboxDiscard.getStyleClass().add("vbox");
-		
+
 		hboxDeck.getStyleClass().add("hbox");
-		vboxDeck.getStyleClass().add("cardStackHeight");
-		vboxDeck.getStyleClass().add("cardStackWidth");
+		vboxDeck.getStyleClass().add("vbox");
 
 		vboxPlayedCards.getStyleClass().add("vbox");
 		vboxPlayedCards.setPrefWidth(Double.MAX_VALUE);
@@ -220,6 +248,10 @@ public class GameApp_View extends View<GameApp_Model> {
 		vboxHandCards.setPrefWidth(Double.MAX_VALUE);
 		hboxHandCards.getStyleClass().add("hbox");
 
+		scrlpPlayedCards.setStyle("-fx-background-color: transparent;");
+		scrlpHandCards.setStyle("-fx-background-color: transparent;");
+
+		// Special styling for Current player area
 		hboxCurrentPlayer.getStyleClass().add("hbox");
 		vboxCurrentPlayer.getStyleClass().add("vboxCurrentPlayer");
 		gridpCurrentPlayer.getStyleClass().add("gridpCurrentPlayer");
@@ -231,7 +263,8 @@ public class GameApp_View extends View<GameApp_Model> {
 		lblNmbrOfCrntBuys.getStyleClass().add("lblCurrentPlayer");
 		lblCrntCoins.getStyleClass().add("lblCurrentPlayer");
 		lblNmbrOfCrntCoins.getStyleClass().add("lblCurrentPlayer");
-		
+
+		// Background and gaps of the root
 		root.getStyleClass().add("rootFormat");
 
 		Scene scene = new Scene(root, 1000, 600);
@@ -240,12 +273,13 @@ public class GameApp_View extends View<GameApp_Model> {
 		stage.setMinHeight(stage.getHeight());
 		// stage.setScene(scene);
 		// stage.setTitle("Dominion");
-		
+		// stage.show();
+
 		GameMode_Message gmmsg = new GameMode_Message();
 		if (gmmsg.getMode().equals(GameMode.Singleplayer)){
 			txtfChatArea.setDisable(true);
 		}
-		
+
 		return scene;
 	}
 }//end GameApp_View

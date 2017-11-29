@@ -89,6 +89,9 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				model.sendInteraction();
 				break;
 				// kommt nach remodel 1: 1 karte neu nehmen --> aus einer liste von wählbaren karten (andere disablen)
+			case Mine:
+				model.sendInteraction();
+				break;
 			}
 		});
 
@@ -177,6 +180,8 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 				} else if (msgIn.getType().equals(MessageType.CreateGame)) {
 					model.processCreateGame(msgIn);
+					
+					// Creates a new game
 					
 
 				} else if (msgIn.getType().equals(MessageType.PlayerSuccess)) {
