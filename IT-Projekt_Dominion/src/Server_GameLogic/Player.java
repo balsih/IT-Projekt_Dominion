@@ -11,6 +11,8 @@ import java.util.logging.Logger;
 import Cards.Card;
 import Cards.CardName;
 import Cards.CardType;
+import Cards.Cellar_Card;
+import Cards.Copper_Card;
 import Messages.Content;
 import Messages.Failure_Message;
 import Messages.Interaction;
@@ -50,6 +52,15 @@ public class Player {
 	private ServerThreadForClient serverThreadForClient;
 
 	private final Logger logger = Logger.getLogger("");
+	
+	public static void main(String[] args){
+		Player player = new Player("Dummy");
+		Cellar_Card cellar = new Cellar_Card();
+		for(int i = 0; i < 5; i++){
+			player.handCards.add(new Cellar_Card());
+			System.out.println(player.handCards.contains());
+		}
+	}
 
 	/**
 	 * Constructor for Bot
@@ -434,7 +445,6 @@ public class Player {
 
 			case CleanUp:
 				game.switchPlayer();
-				game.getCurrentPlayer().startMove();
 				ugmsg.setCurrentPlayer(game.getCurrentPlayer().getPlayerName());
 				ugmsg.setCurrentPhase(Phase.Action);
 

@@ -45,9 +45,9 @@ public class Server_Model extends Model {
 					while(!stop){
 						try{
 							Socket socket = listener.accept();
-							//Client Object?
-							Client client = new Client(socket);
-							clients.add(client);
+							//start the thread
+							ServerThreadForClient client = ServerThreadForClient.getServerThreadForClient(socket);
+							new Thread(client).start();
 						} catch (Exception e){
 							logger.info(e.toString());
 						}
@@ -55,9 +55,6 @@ public class Server_Model extends Model {
 				}
 				
 			};
-			//start the thread
-			Thread t = new Thread(r, "ServerSocket");
-			t.start();
 		}catch (IOException e) {
 			this.logger.info(e.toString());
 		}
