@@ -336,9 +336,10 @@ public class GameApp_Model extends Model {
 
 		Message msgIn = this.processMessage(gmmsg);
 		if(msgIn instanceof Commit_Message){
-			this.main.startGameApp();
+//			this.main.startGameApp();
 		}
-		return this.translate(result);
+		return result;
+//		return this.translate(result);
 	}
 
 	/**
@@ -477,7 +478,7 @@ public class GameApp_Model extends Model {
 	}
 
 
-	/**
+	/**TESTED
 	 * @author Lukas
 	 * Creates a new Game
 	 * 

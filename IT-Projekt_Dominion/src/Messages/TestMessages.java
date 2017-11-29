@@ -1,5 +1,7 @@
 package Messages;
 
+import java.io.IOException;
+import java.net.Socket;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -20,9 +22,13 @@ import Cards.CardName;
 import Cards.Cellar_Card;
 import Cards.Copper_Card;
 import Cards.Duchy_Card;
+import Cards.Estate_Card;
 import Cards.Gold_Card;
 import Cards.Market_Card;
 import Cards.Mine_Card;
+import Cards.Province_Card;
+import Cards.Remodel_Card;
+import Cards.Silver_Card;
 import Cards.Smithy_Card;
 import Cards.Village_Card;
 import Cards.Woodcutter_Card;
@@ -43,7 +49,203 @@ public class TestMessages {
 		GameApp_Model model = new GameApp_Model(new Dominion_Main());
 		model.init("127.0.0.1");
 		model.setClientName("Lukas");
-		String result = model.sendGameMode(GameMode.Multiplayer);
+		System.out.println(model.sendHighScoreRequest());
+		
+		
+	}
+	
+	/**
+	 * @author Lukas
+	 * Interpret all updates and provides structures for further work
+	 * 
+	 * @param msgIn, UpdateGame_Message. Can consist various contents
+	 */
+
+	private static void processUpdateGame(Message msgIn) {	
+		
+		String clientName = "Lukas";
+		String currentPlayer = "Lukas";
+		String opponent = "Bodo";
+		
+		
+		HashMap<CardName, Integer> buyCards = new HashMap<CardName, Integer>();
+		buyCards.put(CardName.Province, 8);
+		buyCards.put(CardName.Duchy, 8);
+		buyCards.put(CardName.Estate, 8);
+
+		buyCards.put(CardName.Copper, 30);
+		buyCards.put(CardName.Gold, 30);
+		buyCards.put(CardName.Silver, 30);
+
+		buyCards.put(CardName.Workshop, 10);
+		buyCards.put(CardName.Woodcutter, 10);
+		buyCards.put(CardName.Village, 10);
+		buyCards.put(CardName.Smithy, 10);
+		buyCards.put(CardName.Remodel, 10);
+		buyCards.put(CardName.Mine, 10);
+		buyCards.put(CardName.Market, 10);
+		buyCards.put(CardName.Cellar, 10);
+		
+		UpdateGame_Message ugmsg = (UpdateGame_Message) msgIn;
+
+		//If something necessary happened in the Game, it will be provided to show
+		if(ugmsg.getLog() != null)
+			System.out.println("Log: "+ugmsg.getLog());
+		//			this.newLog = this.translate(ugmsg.getLog());
+
+		//If the client or opponent sent a chat, it will be provided to show
+		if(ugmsg.getChat() != null)
+			System.out.println("Chat: "+ugmsg.getChat());
+
+		//Always currentPlayer
+		if(ugmsg.getActions() != null)
+			System.out.println("Actions: "+ugmsg.getActions().toString());
+
+		//Always currentPlayer
+		if(ugmsg.getBuys() != null)
+			System.out.println("Buys: "+ugmsg.getBuys().toString());;
+
+		//Always currentPlayer
+		if(ugmsg.getCoins() != null)
+			System.out.println("Coins: "+ugmsg.getCoins().toString());
+
+		//Always currentPlayer
+		if(ugmsg.getCurrentPhase() != null)
+			System.out.println("CurrentPhase: "+ugmsg.getCurrentPhase().toString());
+
+		//If a buy was successful. Always currentPlayer
+		//stores the buyedCard of the currentPlayer and reduces the value of the buyCards(Cards which can be bought)
+		if(ugmsg.getBuyedCard() != null && currentPlayer == clientName){
+			Card yourBuyedCard = ugmsg.getBuyedCard();
+			System.out.println("yourBuyedCard: "+yourBuyedCard.toString());
+			buyCards.replace(yourBuyedCard.getCardName(), buyCards.get(yourBuyedCard.getCardName())-1);
+			System.out.println("buyCards: "+buyCards.toString());
+		}else{
+			Card opponentBuyedCard = ugmsg.getBuyedCard();
+			System.out.println("opponentBuyedCard: "+opponentBuyedCard.toString());
+			buyCards.replace(opponentBuyedCard.getCardName(), buyCards.get(opponentBuyedCard.getCardName())-1);
+			System.out.println("buyCards: "+buyCards.toString());
+		}
+
+		//Just necessary to show opponent's size of discardPile
+		if(ugmsg.getDeckPileCardNumber() != null && currentPlayer == opponent)
+			System.out.println("DiscardPileCardNumber: "+ugmsg.getDeckPileCardNumber().toString());
+
+		//Just necessary to show opponent's size of deckPile
+		if(ugmsg.getDiscardPileCardNumber() != null && currentPlayer == opponent)
+			System.out.println("DiscardPileCardNumber: "+ugmsg.getDiscardPileCardNumber().toString());
+
+		//Always client's topCard
+		if(ugmsg.getDiscardPileTopCard() != null && currentPlayer == clientName)
+			System.out.println("DiscardPileTopCard: "+ugmsg.getDiscardPileTopCard().toString());
+
+		//If currentPlayer is set, the currentPlayer's turn ends
+		if(ugmsg.getCurrentPlayer() != null){
+			if(ugmsg.getCurrentPlayer() != currentPlayer){
+				System.out.println("turnEnded");
+				if(ugmsg.getCurrentPlayer() == opponent){//if it was your turn that ended
+					System.out.println("CleanUp your hand and board");
+				}else{//if it was your opponents turn that ended
+					System.out.println("CleanUp opponents playedCard");
+				}
+			}
+			currentPlayer = ugmsg.getCurrentPlayer();
+		}
+
+		//The new handCards just drawn. Always currentPlayer
+		//Move the drawn cards from the deck into yourNewHandCards
+		if(ugmsg.getNewHandCards() != null && (currentPlayer == clientName) || (ugmsg.getCurrentPlayer() == opponent)){
+			LinkedList<Card> newHandCards = ugmsg.getNewHandCards();
+			System.out.println("YourNewHandCards:");
+			for(int i = 0; i < newHandCards.size(); i++){
+				System.out.println(newHandCards.get(i).toString());
+			}
+		}else{//for opponent
+			System.out.println("opponent has drawn "+ugmsg.getNewHandCards().size()+" Cards");
+		}
+
+		//If a card was played, it will be provided
+		//Move the played Card from the hand into newPlayedCard
+		if(ugmsg.getPlayedCard() != null && currentPlayer == clientName){
+			System.out.println("you played "+ugmsg.getPlayedCard().toString()+"successful");
+		}else if(ugmsg.getPlayedCard() != null){//for opponent
+			System.out.println("opponent played "+ugmsg.getPlayedCard().toString());
+		}
+
+		//If interaction is set, the Type of Interaction can be checked (i.e. meaning of the commit_Button)
+		if(ugmsg.getInteractionType() != null && currentPlayer == clientName)
+			System.out.println(ugmsg.getInteractionType().toString()+" activated");
+
+		//If cardSelection is set, it consists a selection of the cards to chose
+		if(ugmsg.getCardSelection() != null && currentPlayer == clientName){
+			System.out.println("your cardselection:");
+			for(int i = 0; i < ugmsg.getCardSelection().size(); i++){
+				System.out.println(ugmsg.getCardSelection().get(i));
+			}
+		}
+			
+
+	}
+	
+	private static boolean askForChanges(){
+		boolean update = false;
+
+		Message msgIn = processMessage(new AskForChanges_Message());
+		if(msgIn instanceof UpdateGame_Message){
+			processUpdateGame(msgIn);
+			update = true;
+		}else if(msgIn instanceof Commit_Message){
+			System.out.println("AskForChanges commited");
+		}else if(msgIn instanceof CreateGame_Message){
+			CreateGame_Message cgmsg = (CreateGame_Message) msgIn;
+			System.out.println("opponent: "+cgmsg.getOpponent());
+			System.out.println("startingPlayer: "+cgmsg.getStartingPlayer());
+			System.out.println("deckPile: "+cgmsg.getDeckPile().toString());
+			System.out.println("handCards: "+cgmsg.getHandCards().toString());
+			System.out.println("handNumber: "+cgmsg.getHandNumber().toString());
+			System.out.println("deckNumber: "+cgmsg.getDeckNumber().toString());
+			System.out.println("buyCards:"+cgmsg.getBuyCards().toString());
+			
+		}
+		return update;
+	}
+	
+	/**
+	 * @author Lukas
+	 * SetUp a socket_connection to server with the given message and returns the answer
+	 * 
+	 * @param message
+	 * @return msgIn, individual InputMessage
+	 */
+	private static Message processMessage(Message message){
+		Socket socket = connect();
+		Message msgIn = null;
+		if(socket != null){
+			try{
+				message.send(socket);
+				msgIn = Message.receive(socket);
+			}catch(Exception e){
+				System.out.println(e.toString());
+			}
+			try { if (socket != null) socket.close(); } catch (IOException e) {}
+		}
+		return msgIn;
+	}
+	
+	/**
+	 *@author Bradley Richards
+	 *Creates a new Socket with the set IP and Port
+	 * 
+	 * @return Socket
+	 */
+	private static Socket connect(){
+		Socket socket = null;
+		try {
+			socket = new Socket("127.0.0.1", 8080);
+		} catch (Exception e) {
+			System.out.println(e.toString());
+		}
+		return socket;
 	}
 	
 	/**
@@ -270,6 +472,58 @@ public class TestMessages {
 		cgmsg.toString();
 		System.out.println(cgmsg);
 		
+	}
+	
+	public static Card getCard(CardName cardName){
+		
+		Card card = null;
+		
+		switch (cardName) {
+		case Copper:
+			card = new Copper_Card();
+			break;
+		case Cellar:
+			card = new Cellar_Card();
+			break;
+		case Duchy:
+			card = new Duchy_Card();
+			break;
+		case Estate:
+			card = new Estate_Card();
+			break;
+		case Gold:
+			card = new Gold_Card();
+			break;
+		case Market:
+			card = new Market_Card();
+			break;
+		case Mine:
+			card = new Mine_Card();
+			break;
+		case Province:
+			card = new Province_Card();
+			break;
+		case Remodel:
+			card = new Remodel_Card();
+			break;
+		case Silver:
+			card = new Silver_Card();
+			break;
+		case Smithy:
+			card = new Smithy_Card();
+			break;
+		case Village:
+			card = new Village_Card();
+			break;
+		case Woodcutter:
+			card = new Woodcutter_Card();
+			break;
+		case Workshop:
+			card = new Workshop_Card();
+			break;
+		}
+		
+		return card;
 	}
 
 }
