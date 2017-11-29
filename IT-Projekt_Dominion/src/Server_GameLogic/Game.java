@@ -290,7 +290,7 @@ public class Game {
 			game.setPlayer2(game.bot);
 			game.bot.addGame(game);
 			game.getPlayer1().getServerThreadForClient()
-					.addWaitingMessages(existingGame.getPlayer1().getServerThreadForClient().getCG_Message());
+					.addWaitingMessages(game.getPlayer1().getServerThreadForClient().getCG_Message());
 			game.startGame();
 			
 			game.gameMode = GameMode.Singleplayer;

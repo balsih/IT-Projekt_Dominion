@@ -53,8 +53,8 @@ public class ServerThreadForClient implements Runnable {
 	private Socket clientSocket;
 	private Game game;
 	private Player player;
-	private Queue<Message> waitingMessages;
-	private String clientName;
+	private Queue<Message> waitingMessages = new LinkedList<Message>();
+	private String clientName = "Lukas";//declaration just for test
 
 
 	private ServerThreadForClient(){
@@ -148,28 +148,8 @@ public class ServerThreadForClient implements Runnable {
 		msgOut.setClient(this.clientName);
     	return msgOut;
     }
-
-
-	/**
-	 * @author Lukas
-	 * Checks if the hands of client and server are equal
-	 * If yes (should be usual), Player "trys" to play card. If not able it will be visible in the ugmsg
-	 * 
-	 * @param msgIn, PlayCard_Message
-	 * @return UpdateGame_Message, content depends if player was able to play the card or Failure_Message
-	 * PlayerSuccess_Message if player ended the game with this move
-	 */
-	private Message processPlayCard(Message msgIn) {
-		PlayCard_Message pcmsg = (PlayCard_Message) msgIn;
-		for(Card card: this.player.handCards){
-			if(card.getType().equals(pcmsg.getCard().getType())){
-				return this.player.play(card);
-			}
-		}
-		return new Failure_Message();
-	}
-
-	/**
+    
+	/**TESTED
 	 * @author Lukas
 	 * Checks if the name is stored in the database and if yes,
 	 * it has to be the adequate password
@@ -196,59 +176,8 @@ public class ServerThreadForClient implements Runnable {
 			return fmsg;
 		}
 	}
-
-	/**
-	 * @author Lukas
-	 * Takes the highscore from the database
-	 * 
-	 * @param msgIn
-	 * @return HighScore_Message, content of the top5 (name, points) in one String
-	 */
-	private Message processHighScore(Message msgIn) {
-		DB_Connector dbConnector = DB_Connector.getDB_Connector();
-		HighScore_Message hsmsg = new HighScore_Message();
-		hsmsg.setHighScore(dbConnector.getHighScore());
-		this.logger.info("send highscore to "+this.clientName);
-		return hsmsg;
-	}
-
-	/**
-	 * @author Lukas
-	 * Gets the chosen (singleplayer or multiplayer) Game
-	 * If Client is the first Player in multiplayerMode, client has to wait for second Player
-	 * 
-	 * @param msgIn
-	 * @return cmsg, Commit_Message
-	 */
-	private Message processGameMode(Message msgIn) {
-		GameMode_Message gmmsg = (GameMode_Message) msgIn;
-		this.player = new Player(this.clientName);
-		this.game = Game.getGame(gmmsg.getMode(), this.player);
-		this.player.addGame(this.game);
-		this.logger.info(this.clientName+"waits for opponent");
-		Commit_Message cmsg = new Commit_Message();
-		return cmsg;
-	}
 	
-	/**
-	 * @author Lukas
-	 * Creates a CreateGame_Message when the Game is ready to start (i.e. two Players or one player with Bot were added)
-	 * 
-	 * @return cgmsg, CreateGame_Message
-	 */
-	protected CreateGame_Message getCG_Message(){
-		CreateGame_Message cgmsg = new CreateGame_Message();
-		cgmsg.setBuyCards(this.game.getBuyCards());
-		cgmsg.setHandCards(this.player.getHandCards());
-		cgmsg.setDeckPile(this.player.getDeckPile());
-		cgmsg.setOpponent(this.game.getOpponent(this.player).getPlayerName());
-		cgmsg.setDeckNumber(this.game.getOpponent(this.player).getDeckPile().size());
-		cgmsg.setHandNumber(this.game.getOpponent(this.player).getHandCards().size());
-		cgmsg.setStartingPlayer(this.game.getCurrentPlayer().getPlayerName());
-		return cgmsg;
-	}
-
-    /**
+    /**TESTED
      * @author Lukas
      * Try to store a new Player into the database
      * If clientName is unique, the player will be stored successful
@@ -276,6 +205,77 @@ public class ServerThreadForClient implements Runnable {
 			fmsg.setNotification(this.clientName+" #isUsed#");
 			return fmsg;
 		}
+	}
+	
+	/**
+	 * @author Lukas
+	 * Takes the highscore from the database
+	 * 
+	 * @param msgIn
+	 * @return HighScore_Message, content of the top5 (name, points) in one String
+	 */
+	private Message processHighScore(Message msgIn) {
+		DB_Connector dbConnector = DB_Connector.getDB_Connector();
+		HighScore_Message hsmsg = new HighScore_Message();
+		hsmsg.setHighScore(dbConnector.getHighScore());
+		this.logger.info("send highscore to "+this.clientName);
+		return hsmsg;
+	}
+	
+	/**
+	 * @author Lukas
+	 * Gets the chosen (singleplayer or multiplayer) Game
+	 * If Client is the first Player in multiplayerMode, client has to wait for second Player
+	 * 
+	 * @param msgIn
+	 * @return cmsg, Commit_Message
+	 */
+	private Message processGameMode(Message msgIn) {
+		GameMode_Message gmmsg = (GameMode_Message) msgIn;
+		this.player = new Player(this.clientName, this);
+		this.game = Game.getGame(gmmsg.getMode(), this.player);
+		this.player.addGame(this.game);
+		this.logger.info(this.clientName+"waits for opponent");
+		Commit_Message cmsg = new Commit_Message();
+		return cmsg;
+	}
+
+
+	/**
+	 * @author Lukas
+	 * Checks if the hands of client and server are equal
+	 * If yes (should be usual), Player "trys" to play card. If not able it will be visible in the ugmsg
+	 * 
+	 * @param msgIn, PlayCard_Message
+	 * @return UpdateGame_Message, content depends if player was able to play the card or Failure_Message
+	 * PlayerSuccess_Message if player ended the game with this move
+	 */
+	private Message processPlayCard(Message msgIn) {
+		PlayCard_Message pcmsg = (PlayCard_Message) msgIn;
+		for(Card card: this.player.handCards){
+			if(card.getType().equals(pcmsg.getCard().getType())){
+				return this.player.play(card);
+			}
+		}
+		return new Failure_Message();
+	}
+	
+	/**
+	 * @author Lukas
+	 * Creates a CreateGame_Message when the Game is ready to start (i.e. two Players or one player with Bot were added)
+	 * 
+	 * @return cgmsg, CreateGame_Message
+	 */
+	protected CreateGame_Message getCG_Message(){
+		CreateGame_Message cgmsg = new CreateGame_Message();
+		cgmsg.setBuyCards(this.game.getBuyCards());
+		cgmsg.setHandCards(this.player.getHandCards());
+		cgmsg.setDeckPile(this.player.getDeckPile());
+		cgmsg.setOpponent(this.game.getOpponent(this.player).getPlayerName());
+		cgmsg.setDeckNumber(this.game.getOpponent(this.player).getDeckPile().size());
+		cgmsg.setHandNumber(this.game.getOpponent(this.player).getHandCards().size());
+		cgmsg.setStartingPlayer(this.game.getCurrentPlayer().getPlayerName());
+		return cgmsg;
 	}
 
 

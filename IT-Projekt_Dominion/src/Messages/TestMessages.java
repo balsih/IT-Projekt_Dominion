@@ -42,9 +42,8 @@ public class TestMessages {
 	public static void main(String[] args) {
 		GameApp_Model model = new GameApp_Model(new Dominion_Main());
 		model.init("127.0.0.1");
-		String success = model.sendCreateNewPlayer("Helena", "abcde");
-		if(success != null)
-			System.out.println(success);
+		model.setClientName("Lukas");
+		String result = model.sendGameMode(GameMode.Singleplayer);
 	}
 	
 	/**
