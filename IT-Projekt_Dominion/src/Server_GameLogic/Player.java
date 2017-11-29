@@ -53,6 +53,18 @@ public class Player {
 
 	private final Logger logger = Logger.getLogger("");
 
+	public static void main(String[] args) {
+		Player player = new Player("Dummy");
+		Cellar_Card cellar = new Cellar_Card();
+		Copper_Card copper = new Copper_Card();
+		Copper_Card copper2 = new Copper_Card();
+		player.handCards.add(cellar);
+		player.handCards.add(copper);
+		player.handCards.add(copper2);
+		player.handCards.remove(cellar);
+		System.out.println(player.containsCardType(player.handCards, CardType.Action));
+	}
+
 	/**
 	 * Constructor for Bot
 	 * 
@@ -116,15 +128,8 @@ public class Player {
 
 			this.sendToOpponent(this, ugmsg);
 
-			// If no more interactions are necessary skip to the next phase
-			if (!(playedCard.getCardName().equals(CardName.Cellar) || playedCard.getCardName().equals(CardName.Workshop)
-					|| playedCard.getCardName().equals(CardName.Remodel)
-					|| playedCard.getCardName().equals(CardName.Mine))) {
-				if (this.actions == 0 && !this.handCards.contains(CardType.Action))
-					this.skipPhase();
-			} else {
-				// Do Something...
-			}
+			if (this.actions == 0 || !this.containsCardType(this.handCards, CardType.Action))
+				UpdateGame_Message.merge((UpdateGame_Message) this.skipPhase(), ugmsg);
 
 			return ugmsg;
 
@@ -389,7 +394,7 @@ public class Player {
 		while (!playedCards.isEmpty()) {
 			this.discardPile.push(playedCards.remove());
 		}
-		
+
 		while (!handCards.isEmpty()) {
 			if (!handCards.element().equals(selectedTopCard))
 				this.discardPile.push(handCards.remove());
@@ -467,6 +472,16 @@ public class Player {
 			if (iter.next().getType().equals(CardType.Victory)) {
 				iter.next().executeCard(this);
 			}
+	}
+
+	private boolean containsCardType(LinkedList<Card> list, CardType cardType) {
+		Iterator<Card> iter = list.iterator();
+		while (iter.hasNext()) {
+			if (iter.next().getType() == cardType)
+				return true;
+		}
+
+		return false;
 	}
 
 	/**
