@@ -26,6 +26,7 @@ public class Cellar_Card extends Card {
 	 */
 	@Override
 	public UpdateGame_Message executeCard(Player player){
+		this.player = player;
 		player.setActions(player.getActions() + 1);
 		
 		player.draw(player.getHandCards().size()); // beliebige Anzahl aus der Hand ablegen und für jede eine neue aufnehmen
@@ -48,11 +49,12 @@ public class Cellar_Card extends Card {
 		return ugmsg;
 	}
 	
-	public UpdateGame_Message executeCellar(Player player, LinkedList<Card> discardedCards) {
-		UpdateGame_Message ugmsg = player.discard(discardedCards);
+	public UpdateGame_Message executeCellar(LinkedList<Card> discardedCards) {
+		UpdateGame_Message ugmsg = this.player.discard(discardedCards);
 
-		return UpdateGame_Message.merge(player.draw(discardedCards.size()), ugmsg);
+		return UpdateGame_Message.merge(this.player.draw(discardedCards.size()), ugmsg);
 		
+		// ev noch log ergänzen
 	}
 	
 }//end Cellar_Card
