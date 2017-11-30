@@ -2,6 +2,7 @@ package Client_GameApp_MVC;
 
 import Abstract_MVC.View;
 import Client_Services.ServiceLocator;
+import Client_Services.Translator;
 import Messages.GameMode_Message;
 import Server_GameLogic.GameMode;
 import javafx.scene.Scene;
@@ -24,10 +25,11 @@ import javafx.stage.Stage;
  */
 public class GameApp_View extends View<GameApp_Model> {
 
-	private ServiceLocator sl = ServiceLocator.getServiceLocator();
+	// Translates GUI-text
+	private ServiceLocator sl;
 
 	// Controls Action cards area
-	protected Label lblActionCards = new Label("Action cards");
+	protected Label lblActionCards;
 	protected GridPane gridpActionCards = new GridPane();
 	protected Label lblNmbrOfCellarCards = new Label();
 	protected Label lblNmbrOfMarketCards = new Label();
@@ -49,7 +51,7 @@ public class GameApp_View extends View<GameApp_Model> {
 	protected VBox vboxVillageCards = new VBox(1, lblNmbrOfVillageCards);
 
 	// Controls Treasure cards area
-	protected Label lblTreasureCards = new Label("Treasure cards");
+	protected Label lblTreasureCards;
 	protected HBox hboxTreasureCards = new HBox();
 	protected Label lblNmbrOfGoldCards = new Label();
 	protected Label lblNmbrOfSilverCards = new Label();
@@ -61,7 +63,7 @@ public class GameApp_View extends View<GameApp_Model> {
 	protected VBox vboxCopperCards = new VBox(1, lblNmbrOfCopperCards);
 
 	// Controls Victory cards area
-	protected Label lblVictoryCards = new Label("Victory cards");
+	protected Label lblVictoryCards;
 	protected HBox hboxVictoryCards = new HBox();
 	protected Label lblNmbrOfDuchyCards = new Label();
 	protected Label lblNmbrOfEstateCards = new Label();
@@ -73,50 +75,51 @@ public class GameApp_View extends View<GameApp_Model> {
 	protected VBox vboxProvinceCards = new VBox(1, lblNmbrOfProvinceCards);
 
 	// Controls chat area
-	protected Label lblChatArea = new Label("Chat area");
+	protected Label lblChatArea;
 	protected ScrollPane scrlpChatArea = new ScrollPane();
 	protected TextArea txtaChatArea = new TextArea();
 	protected TextField txtfChatArea = new TextField();
-	protected Button btnSendChatArea = new Button("Send");
+	protected Button btnSendChatArea;
 
 	// Controls log area
-	protected Label lblLog = new Label("Log");
+	protected Label lblLog;
 	protected ScrollPane scrlpLog = new ScrollPane();
 	protected TextArea txtaLog = new TextArea();
 
 	// Controls discard area
-	protected Label lblDiscard = new Label("Discard");
+	protected Label lblDiscard;
 	protected Label lblNmbrOfDiscards = new Label();
 	protected StackPane stackpDiscard = new StackPane();
 
 	// Controls deck area
-	protected Label lblDeck = new Label("Deck");
+	protected Label lblDeck;
 	protected Label lblNmbrOfDeckCards = new Label();
 	protected StackPane stackpDeck = new StackPane();
 
 	// Controls played cards area
-	protected Label lblPlayedCards = new Label("Played cards");
+	protected Label lblPlayedCards;
 	protected ScrollPane scrlpPlayedCards = new ScrollPane();
 	protected HBox hboxPlayedCards = new HBox();
 
 	// Controls hand cards area
-	protected Label lblHandCards = new Label("Hand cards");
+	protected Label lblHandCards;
 	protected ScrollPane scrlpHandCards = new ScrollPane();
 	protected HBox hboxHandCards = new HBox();
 
 	// Controls current player area
-	protected Label lblCurrentPlayer = new Label("Current player");
-	protected Label lblCurrentPhase = new Label("Current phase");
-	protected Label lblCrntHandCards = new Label("Hand cards");
+	protected Label lblCurrentPlayer;
+	protected Label lblNameOfCurrentPlayer = new Label();
+	protected Label lblCurrentPhase = new Label();
+	protected Label lblCrntHandCards;
 	protected Label lblNmbrOfCrntHandCards = new Label();
-	protected Label lblCrntActions = new Label("Actions");
+	protected Label lblCrntActions;
 	protected Label lblNmbrOfCrntActions = new Label();
-	protected Label lblCrntBuys = new Label("Buys");
+	protected Label lblCrntBuys;
 	protected Label lblNmbrOfCrntBuys = new Label();
-	protected Label lblCrntCoins = new Label("Coins");
+	protected Label lblCrntCoins;
 	protected Label lblNmbrOfCrntCoins = new Label();
 
-	protected Button btnCommit = new Button("Commit");
+	protected Button btnCommit;
 
 	public GameApp_View(Stage stage, GameApp_Model model){
 		super(stage, model);
@@ -125,8 +128,13 @@ public class GameApp_View extends View<GameApp_Model> {
 
 	@Override
 	protected Scene create_GUI(){
+		
+		// Translates GUI-text
+		sl = ServiceLocator.getServiceLocator();
+		Translator t = sl.getTranslator();
 
 		// Action cards area
+		lblActionCards = new Label(t.getString("actions.lblActionCards")); // Action cards
 		gridpActionCards.add(vboxCellarCards, 0, 0);
 		gridpActionCards.add(vboxMarketCards, 1, 0);
 		gridpActionCards.add(vboxRemodelCards, 2, 0);
@@ -137,43 +145,58 @@ public class GameApp_View extends View<GameApp_Model> {
 		gridpActionCards.add(vboxVillageCards, 3, 1);
 
 		// Treasure cards area
+		lblTreasureCards = new Label(t.getString("treasures.lblTreasureCards")); // Treasure cards
 		hboxTreasureCards.getChildren().add(0, vboxGoldCards);
 		hboxTreasureCards.getChildren().add(1, vboxSilverCards);
 		hboxTreasureCards.getChildren().add(2, vboxCopperCards);
 
 		// Victory cards area
+		lblVictoryCards = new Label(t.getString("victories.lblVictoryCards")); // Victory cards
 		hboxVictoryCards.getChildren().add(0, vboxDuchyCards);
 		hboxVictoryCards.getChildren().add(1, vboxEstateCards);
 		hboxVictoryCards.getChildren().add(2, vboxProvinceCards);
 
 		// Chat area
+		lblChatArea = new Label(t.getString("chat.lblChatArea")); // Chat
+		btnSendChatArea = new Button(t.getString("chat.btnSendChatArea")); // Send
 		scrlpChatArea.setContent(txtaChatArea);
 		txtaChatArea.setDisable(true);
 		HBox hboxChatArea = new HBox(txtfChatArea, btnSendChatArea);
 		VBox vboxChatArea = new VBox(lblChatArea, scrlpChatArea, hboxChatArea);
 
 		// Log area
+		lblLog = new Label(t.getString("log.lblLog")); // Log
 		scrlpLog.setContent(txtaLog);
 		txtaLog.setDisable(true);
 		VBox vboxLog = new VBox(lblLog, scrlpLog);
 
 		// Discard area
+		lblDiscard = new Label(t.getString("discard.lblDiscard")); // Discard
 		HBox hboxDiscard = new HBox(lblDiscard, lblNmbrOfDiscards);
 		VBox vboxDiscard = new VBox(hboxDiscard, stackpDiscard);
 
 		// Deck area
+		lblDeck = new Label(t.getString("deck.lblDeck")); // Deck
 		HBox hboxDeck = new HBox(lblDeck, lblNmbrOfDeckCards);
 		VBox vboxDeck = new VBox(hboxDeck, stackpDeck);
 
 		// Played cards area
+		lblPlayedCards = new Label(t.getString("played.lblPlayedCards")); // Played cards
 		scrlpPlayedCards.setContent(hboxPlayedCards);
 		VBox vboxPlayedCards = new VBox(lblPlayedCards, scrlpPlayedCards);
 
 		// Hand cards area
+		lblHandCards = new Label(t.getString("hand.lblHandCards")); // Hand cards
 		scrlpHandCards.setContent(hboxHandCards);
 		VBox vboxHandCards = new VBox(lblHandCards, scrlpHandCards);
 
 		// Current player area
+		lblCurrentPlayer = new Label(t.getString("current.lblCurrentPlayer")); // Current player:
+		lblCrntHandCards = new Label(t.getString("current.lblCrntHandCards")); // Hand cards (current player)
+		lblCrntActions = new Label(t.getString("current.lblCrntActions")); // Actions (current player)
+		lblCrntBuys = new Label(t.getString("current.lblCrntBuys")); // Buys (current player)
+		lblCrntCoins = new Label(t.getString("current.lblCrntCoins")); // Coins (current player)
+		btnCommit = new Button(t.getString("current.btnCommit")); // Commit
 		GridPane gridpCurrentPlayer = new GridPane();
 		gridpCurrentPlayer.add(lblCrntHandCards, 0, 0);
 		gridpCurrentPlayer.add(lblNmbrOfCrntHandCards, 1, 0);
@@ -184,7 +207,7 @@ public class GameApp_View extends View<GameApp_Model> {
 		gridpCurrentPlayer.add(lblCrntCoins, 0, 3);
 		gridpCurrentPlayer.add(lblNmbrOfCrntCoins, 1, 3);
 
-		HBox hboxCurrentPlayer = new HBox(lblCurrentPlayer, lblCurrentPhase);
+		HBox hboxCurrentPlayer = new HBox(lblCurrentPlayer, lblNameOfCurrentPlayer, lblCurrentPhase);
 		VBox vboxCurrentPlayer = new VBox(hboxCurrentPlayer, gridpCurrentPlayer, btnCommit);
 
 		// Root

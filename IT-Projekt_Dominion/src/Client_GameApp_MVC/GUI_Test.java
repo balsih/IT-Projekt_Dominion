@@ -70,7 +70,7 @@ public class GUI_Test extends Application {
 		Label lblNmbrOfProvinceCards = new Label("nmbr");
 
 		// Controls chat area
-		Label lblChatArea = new Label("Chat area");
+		Label lblChatArea = new Label("Chat");
 		ScrollPane scrlpChatArea = new ScrollPane();
 		TextArea txtaChatArea = new TextArea();
 		txtaChatArea.setDisable(true);
@@ -104,15 +104,16 @@ public class GUI_Test extends Application {
 		HBox hboxHandCards = new HBox();
 
 		// Controls current player area
-		Label lblCurrentPlayer = new Label("Current player");
+		Label lblCurrentPlayer = new Label("Current player:");
+		Label lblNameOfCurrentPlayer = new Label("Thomas");  // Name
 		Label lblCurrentPhase = new Label("Current phase");
-		Label lblCrntHandCards = new Label("Hand cards");
+		Label lblCrntHandCards = new Label("Hand cards (current player)");
 		Label lblNmbrOfCrntHandCards = new Label("0");
-		Label lblCrntActions = new Label("Actions");
+		Label lblCrntActions = new Label("Actions (current player)");
 		Label lblNmbrOfCrntActions = new Label("0");
-		Label lblCrntBuys = new Label("Buys");
+		Label lblCrntBuys = new Label("Buys (current player)");
 		Label lblNmbrOfCrntBuys = new Label("0");
-		Label lblCrntCoins = new Label("Coins");
+		Label lblCrntCoins = new Label("Coins (current player)");
 		Label lblNmbrOfCrntCoins = new Label("0");
 
 		Button btnCommit = new Button("Commit");
@@ -193,7 +194,7 @@ public class GUI_Test extends Application {
 		gridpCurrentPlayer.add(lblCrntCoins, 0, 3);
 		gridpCurrentPlayer.add(lblNmbrOfCrntCoins, 1, 3);
 
-		HBox hboxCurrentPlayer = new HBox(lblCurrentPlayer, lblCurrentPhase);
+		HBox hboxCurrentPlayer = new HBox(lblCurrentPlayer, lblNameOfCurrentPlayer, lblCurrentPhase);
 		VBox vboxCurrentPlayer = new VBox(hboxCurrentPlayer, gridpCurrentPlayer, btnCommit);
 
 		// Root

@@ -8,6 +8,8 @@ import Abstract_MVC.Controller;
 import Cards.Card;
 import Cards.CardName;
 import Cards.CardType;
+import Client_Services.ServiceLocator;
+import Client_Services.Translator;
 import MainClasses.Dominion_Main;
 import Messages.AskForChanges_Message;
 import Messages.GameMode_Message;
@@ -21,6 +23,8 @@ import Server_GameLogic.Phase;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -32,6 +36,10 @@ import javafx.scene.input.MouseEvent;
 public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> {
 
 	private boolean listenToServer;
+
+	// Translates GUI-text
+	private ServiceLocator sl = ServiceLocator.getServiceLocator();
+	Translator t = sl.getTranslator();
 
 	public GameApp_Controller(GameApp_Model model, GameApp_View view) {
 		super(model, view);
@@ -59,25 +67,36 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				model.sendInteraction();
 				break;
 			case EndOfTurn:
-				view.stackpDiscard.getChildren().add(model.yourDiscardPileTopCard.getImage());
+				view.stackpDiscard.getChildren().clear();
+				view.stackpDiscard.getChildren().add(model.cardSelection.get(0).getImage());
 				view.lblNmbrOfDiscards.setText(Integer.toString(model.yourDiscardPile.size()));
 
-
-				//				ist karte gesetzt?, wenn ja auf discard pile setzen
-				//				fragen ob null
-				//				played cards und hand cards aus den boxen leeren
+				//				ist karte gesetzt (nicht null)?, wenn ja auf discard pile setzen
+				//				played cards und hand cards aus den boxen leeren?
 
 				model.sendInteraction();
 				break;
 			case Cellar:
+				private boolean onMouseClicked(MouseEvent e) {
+					for (int i=0; i<view.hboxHandCards.getChildren().size(); i++) {
+						ImageView imgView = (ImageView) view.hboxHandCards.getChildren().get(i);
+
+						if (e.getSource() == imgView){
+							view.hboxHandCards.getChildren().remove(i);
+						}
+					}
+				}
+
+
+				// Ok? --> 
 				//				view.hboxHandCards.getChildren().clear();
 				//				for (Card card : model.yourHandCards){
 				//					view.hboxHandCards.getChildren().add(card.getImage());
 				//				}
-				//				view.lblNmbrOfCrntHandCards.setText(Integer.toString((model.yourHandCards.size())));
-				//				view.lblNmbrOfDeckCards.setText(Integer.toString(model.yourDeck.size()));
-				//				view.stackpDiscard.getChildren().add(model.yourDiscardPileTopCard.getImage());
-				//				view.lblNmbrOfDiscards.setText(Integer.toString(model.yourDiscardPile.size()));
+				view.lblNmbrOfCrntHandCards.setText(Integer.toString((model.yourHandCards.size())));
+				view.lblNmbrOfDeckCards.setText(Integer.toString(model.yourDeck.size()));
+				view.stackpDiscard.getChildren().add(model.yourDiscardPileTopCard.getImage());
+				view.lblNmbrOfDiscards.setText(Integer.toString(model.yourDiscardPile.size()));
 				model.sendInteraction();
 				break;
 			case Workshop:
@@ -155,19 +174,19 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 					// Displays the current phase
 					switch(model.currentPhase){
 					case Action:
-						view.lblCurrentPhase.setText("Phase: Action");
+						view.lblCurrentPhase.setText(t.getString("action.lblCurrentPhase")); // Phase: Action
 						break;
 					case Buy:
-						view.lblCurrentPhase.setText("Phase: Buy");
+						view.lblCurrentPhase.setText(t.getString("buy.lblCurrentPhase")); // Phase: Buy
 						break;
 					case CleanUp:
-						view.lblCurrentPhase.setText("Phase: CleanUp");
+						view.lblCurrentPhase.setText(t.getString("cleanUp.lblCurrentPhase")); // Phase: Clean up
 						break;
 					}
 
 					// Displays the current player
-					view.lblCurrentPlayer.setText(model.currentPlayer);
-					
+					view.lblNameOfCurrentPlayer.setText(model.currentPlayer);
+
 					// Updates the number of current actions
 					view.lblNmbrOfCrntActions.setText(Integer.toString(model.actions));
 
@@ -176,51 +195,51 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 					// Updates the number of current coins
 					view.lblNmbrOfCrntCoins.setText(Integer.toString(model.coins));
-					
-//					// Updates the number of current hand cards
-//					view.lblNmbrOfCrntHandCards.setText();
-//					
-//					// Updates the number of current discards
-//					view.lblNmbrOfDiscards.setText(value);
-//					
-//					// Updates the number of current deck cards
-//					view.lblNmbrOfDeckCards.setText(value);
-//					
-//					// Update the number of action cards, treasure cards and victory cards
-//					Card card = card.getCard(CardName.Cellar);
-//					model.buyCards.keySet().stream()
-//					.filter(card -> card.getType()
-							
+
+					//					// Updates the number of current hand cards
+					//					view.lblNmbrOfCrntHandCards.setText();
+					//					
+					//					// Updates the number of current discards
+					//					view.lblNmbrOfDiscards.setText(value);
+					//					
+					//					// Updates the number of current deck cards
+					//					view.lblNmbrOfDeckCards.setText(value);
+					//					
+					//					// Update the number of action cards, treasure cards and victory cards
+					//					Card card = card.getCard(CardName.Cellar);
+					//					model.buyCards.keySet().stream()
+					//					.filter(card -> card.getType()
+
 					for (Object value : model.buyCards.keySet()){
 						Card card = card.getCard(CardName.Cellar);
 					}
-					
-//					view.lblNmbrOfCellarCards.setText();
-//					view.lblNmbrOfMarketCards.setText();
-//					view.lblNmbrOfRemodelCards.setText();
-//					view.lblNmbrOfSmithyCards.setText();
-//					view.lblNmbrOfWoodcutterCards.setText();
-//					view.lblNmbrOfWorkshopCards.setText();
-//					view.lblNmbrOfMineCards.setText();
-//					view.lblNmbrOfVillageCards.setText();
-//					
-//					view.lblNmbrOfGoldCards.setText();
-//					view.lblNmbrOfSilverCards.setText();
-//					view.lblNmbrOfCopperCards.setText();
-//					
-//					view.lblNmbrOfDuchyCards.setText();
-//					view.lblNmbrOfEstateCards.setText();
-//					view.lblNmbrOfProvinceCards.setText();
+
+					//					view.lblNmbrOfCellarCards.setText();
+					//					view.lblNmbrOfMarketCards.setText();
+					//					view.lblNmbrOfRemodelCards.setText();
+					//					view.lblNmbrOfSmithyCards.setText();
+					//					view.lblNmbrOfWoodcutterCards.setText();
+					//					view.lblNmbrOfWorkshopCards.setText();
+					//					view.lblNmbrOfMineCards.setText();
+					//					view.lblNmbrOfVillageCards.setText();
+					//					
+					//					view.lblNmbrOfGoldCards.setText();
+					//					view.lblNmbrOfSilverCards.setText();
+					//					view.lblNmbrOfCopperCards.setText();
+					//					
+					//					view.lblNmbrOfDuchyCards.setText();
+					//					view.lblNmbrOfEstateCards.setText();
+					//					view.lblNmbrOfProvinceCards.setText();
 
 				} else if (msgIn.getType().equals(MessageType.CreateGame)) {
 					model.processCreateGame(msgIn);
-					
+
 					// Sets the current phase
-					view.lblCurrentPhase.setText("Phase: Buy");
-					
+					view.lblCurrentPhase.setText(t.getString("buy.lblCurrentPhase")); // Phase: Buy
+
 					// Sets the current player
-					view.lblCurrentPlayer.setText(model.currentPlayer);
-					
+					view.lblNameOfCurrentPlayer.setText(model.currentPlayer);
+
 					// Sets the number of current actions
 					view.lblNmbrOfCrntActions.setText(Integer.toString(model.actions));
 
@@ -229,16 +248,16 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 					// Sets the number of current coins
 					view.lblNmbrOfCrntCoins.setText(Integer.toString(model.coins));
-					
+
 					// Sets the number of hand cards
 					view.lblNmbrOfCrntHandCards.setText("5");
-					
+
 					// Sets the number of discards
 					view.lblNmbrOfDiscards.setText("0");
-					
+
 					// Sets the number of deck cards
 					view.lblNmbrOfDeckCards.setText("5");
-					
+
 					// Sets the initial number of Action cards
 					view.lblNmbrOfCellarCards.setText("10");
 					view.lblNmbrOfMarketCards.setText("10");
@@ -248,40 +267,41 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 					view.lblNmbrOfWorkshopCards.setText("10");
 					view.lblNmbrOfMineCards.setText("10");
 					view.lblNmbrOfVillageCards.setText("10");
-					
+
 					// Sets the initial number of Treasure cards
 					view.lblNmbrOfGoldCards.setText("30");
 					view.lblNmbrOfSilverCards.setText("30");
 					view.lblNmbrOfCopperCards.setText("30");
-					
+
 					// Sets the initial number of Victory cards
 					view.lblNmbrOfDuchyCards.setText("8");
 					view.lblNmbrOfEstateCards.setText("8");
 					view.lblNmbrOfProvinceCards.setText("8");
-					
+
 					// Disables chat while playing singleplayer mode
 					if(model.gameMode.equals(GameMode.Singleplayer)){
 						view.txtfChatArea.setDisable(true);
 						view.btnSendChatArea.setDisable(true);
 					}
-					
+
 					// Adds hand cards to the pane
 					for(Card card : model.yourNewHandCards){
 						view.hboxHandCards.getChildren().add(card.getImage());
 					}
-					
+
 					// Adds deck card
 					// nur Rückseite der Karte!
 					view.stackpDeck.getChildren().add(CardName.);
-					
+
 					// Adds buy cards to the panes					
-//					model.buyCards.keySet().stream()
-//					.filter
-		
+					//					model.buyCards.keySet().stream()
+					//					.filter
+
 					for (Object cardName : model.buyCards.values()){
-//						// Card card = card.getCard();
-//						ImageView img1 = new ImageView();
-//						img1 = card.getImage();
+						//						// Card card = card.getCard();
+						//						ImageView img1 = new ImageView();
+						//						img1 = card.getImage();
+					}
 
 				} else if (msgIn.getType().equals(MessageType.PlayerSuccess)) {
 					PlayerSuccess_Message psmsg = (PlayerSuccess_Message) msgIn;
@@ -292,12 +312,4 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			}
 		}
 	}
-
-	// Adrian
-	// Über Main-Methode starten (nicht in Konstruktor, da die Strukturen
-	// anfangs noch nicht befüllt werden sollen)
-	public void fillPanes() {
-		// Fill panes
-	}
-
 }// end GameApp_Controller
