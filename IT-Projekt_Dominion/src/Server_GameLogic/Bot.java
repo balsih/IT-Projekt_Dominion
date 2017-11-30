@@ -198,22 +198,22 @@ public class Bot extends Player implements Runnable {
 	 * Calculates which card has to be bought and checks if a second buy would make
 	 * sense.
 	 */
-	// if(buys > 2) zuerst und dann zuweisung
+	//  zuerst und dann zuweisung
 	private void buy() {
 		Boolean succeededBuy = false;
+		List<CardName> list;
+		if(buys > 2) {
+			List<CardName> list2 = prioListForBuying2.keySet().stream()
+					.sorted((s1, s2) -> Integer.compare(prioListForBuying1.get(s2), prioListForBuying1.get(s1)))
+					.collect(Collectors.toList());
+			list = list2;
+		} else {
 		List<CardName> list1 = prioListForBuying1.keySet().stream()
 				.sorted((s1, s2) -> Integer.compare(prioListForBuying1.get(s2), prioListForBuying1.get(s1)))
 				.collect(Collectors.toList());
-		List<CardName> list2 = prioListForBuying2.keySet().stream()
-				.sorted((s1, s2) -> Integer.compare(prioListForBuying1.get(s2), prioListForBuying1.get(s1)))
-				.collect(Collectors.toList());
-		List<CardName> list;
-		// one ore more buys possible?
-		if (buys >= 2) {
-			list = list2;
-		} else {
 			list = list1;
 		}
+		
 		for (int indexCounter = 0; indexCounter < list.size(); indexCounter++) {
 			cardToBuy = list.get(indexCounter);
 			buy(cardToBuy);
