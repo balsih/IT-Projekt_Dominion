@@ -1,5 +1,6 @@
 package Server_GameLogic;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -159,6 +160,8 @@ public class Game {
 			}
 		}
 
+		Collections.shuffle(this.player1.deckPile);
+		Collections.shuffle(this.player2.deckPile);
 		this.player1.draw(player1.NUM_OF_HANDCARDS);
 		this.player2.draw(player2.NUM_OF_HANDCARDS);
 		this.currentPlayer = this.getStarter();

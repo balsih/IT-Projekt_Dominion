@@ -322,6 +322,7 @@ public class Player {
 				while (!discardPile.isEmpty())
 					deckPile.push(discardPile.pop());
 				Collections.shuffle(deckPile);
+				newHandCards.add(deckPile.pop());
 				continue;
 				//if deckPile and discardPile are empty, no further draws
 			} else if (deckPile.size() < numOfCards - i) {
