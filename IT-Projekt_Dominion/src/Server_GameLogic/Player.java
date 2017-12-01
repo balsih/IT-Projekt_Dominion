@@ -13,6 +13,8 @@ import Cards.CardName;
 import Cards.CardType;
 import Cards.Cellar_Card;
 import Cards.Copper_Card;
+import Cards.Duchy_Card;
+import Cards.Remodel_Card;
 import Messages.GameSuccess;
 import Messages.Failure_Message;
 import Messages.Interaction;
@@ -123,11 +125,12 @@ public class Player {
 
 			ugmsg = playedCard.executeCard(this);
 			this.actions--;
+			ugmsg.setActions(this.actions);
 
 			this.sendToOpponent(this, ugmsg);
 
 			if (this.actions == 0 || !this.containsCardType(this.handCards, CardType.Action))
-				UpdateGame_Message.merge((UpdateGame_Message) this.skipPhase(), ugmsg);
+				ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.skipPhase(), ugmsg);
 
 			return ugmsg;
 
@@ -193,7 +196,7 @@ public class Player {
 			this.sendToOpponent(this, ugmsg);
 
 			if (this.buys == 0) {
-				UpdateGame_Message.merge((UpdateGame_Message) skipPhase(), ugmsg);
+				ugmsg = UpdateGame_Message.merge((UpdateGame_Message) skipPhase(), ugmsg);
 			}
 			return ugmsg;
 		}
@@ -363,16 +366,19 @@ public class Player {
 			case Action:
 				this.actualPhase = Phase.Buy;
 				ugmsg.setCurrentPhase(Phase.Buy);
-
+				break;
+				
 			case Buy:
 					this.actualPhase = Phase.CleanUp;
 					ugmsg.setCurrentPhase(Phase.CleanUp);
 					// this.cleanUp();
+					break;
 
 			case CleanUp:
 				game.switchPlayer();
 				ugmsg.setCurrentPlayer(game.getCurrentPlayer().getPlayerName());
 				ugmsg.setCurrentPhase(Phase.Action);
+				break;
 
 			default:
 				break;

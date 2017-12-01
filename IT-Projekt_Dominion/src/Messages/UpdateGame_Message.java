@@ -8,6 +8,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import com.sun.istack.internal.logging.Logger;
+
 import Cards.Card;
 import Cards.CardName;
 import Server_GameLogic.Phase;
@@ -77,7 +79,9 @@ public class UpdateGame_Message extends Message {
 		this.integerElements = new HashMap<String, Integer>();
 		this.cardElements = new HashMap<String, Card>();
 		this.handCardListElements = new HashMap<String, LinkedList<Card>>();
+		this.handCardListElements.put(ELEMENT_NEW_HANDCARD, null);
 		this.cardSelectionElements = new HashMap<String, LinkedList<CardName>>();
+		this.cardSelectionElements.put(ELEMENT_CARDSELECTION, null);
 		
 		//Top_Level Attributes
 		this.attrValues = new HashMap<String, String>();
@@ -131,15 +135,15 @@ public class UpdateGame_Message extends Message {
 		this.cardElements.put(ELEMENT_DISCARDPILE_TOP_CARD, this.discardPileTopCard);
 		
 		//The values has to be null if they were not set. Necessary to ask if a content was set (not null)
-		if(this.deckPileCardNumber != null)
+		if(this.deckPileCardNumber != null){
 			this.attrValues.put(ATTR_DECKPILE_CARD_NUMBER, this.deckPileCardNumber.toString());
-		else this.attrValues.put(ATTR_DECKPILE_CARD_NUMBER, null);
-		if(this.discardPileCardNumber != null)
+		}else{ this.attrValues.put(ATTR_DECKPILE_CARD_NUMBER, null);}
+		if(this.discardPileCardNumber != null){
 			this.attrValues.put(ATTR_DISCARDPILE_CARD_NUMBER, this.discardPileCardNumber.toString());
-		else this.attrValues.put(ATTR_DISCARDPILE_CARD_NUMBER, null);
-		if(this.interactionType != null)
+		}else{ this.attrValues.put(ATTR_DISCARDPILE_CARD_NUMBER, null);}
+		if(this.interactionType != null){
 			this.attrValues.put(ATTR_INTERACTION_TYPE, this.interactionType.toString());
-		else this.attrValues.put(ATTR_INTERACTION_TYPE, null);
+		}else{ this.attrValues.put(ATTR_INTERACTION_TYPE, null);}
 		
 		this.attrElements.put(ELEMENT_DECKPILE, ATTR_DECKPILE_CARD_NUMBER);
 		this.attrElements.put(ELEMENT_DISCARDPILE_TOP_CARD, ATTR_DISCARDPILE_CARD_NUMBER);
@@ -160,18 +164,30 @@ public class UpdateGame_Message extends Message {
 		Set<String> keys = content.keySet();
         for(String key : keys){
         	//If there is just one element but multiple possible Elements, the content has to be unpacked from the LinkedList
-        	if(content.get(key) instanceof LinkedList<?> && content.get(key) != null){
-        		LinkedList<Card> cardList = (LinkedList<Card>) content.get(key);
-        		for(int i = 0; i < cardList.size(); i++){
-                	Element element = docIn.createElement(key);
-                	if(this.attrElements.containsKey(key))//If an element contains an attribute, it will be set
-                		element.setAttribute(this.attrElements.get(key), this.attrValues.get(this.attrElements.get(key)));
-                	element.setTextContent(cardList.get(i).toString());
-                	root.appendChild(element);
-        		}
+        	if(content.get(key) instanceof LinkedList && content.get(key) != null){
+        		try{
+        			LinkedList<Card> cardList = (LinkedList<Card>) content.get(key);
+            		for(int i = 0; i < cardList.size(); i++){
+                    	Element element = docIn.createElement(key);
+                    	if(this.attrElements.containsKey(key))//If an element contains an attribute, it will be set
+                    		element.setAttribute(this.attrElements.get(key), this.attrValues.get(this.attrElements.get(key)));
+                    	element.setTextContent(cardList.get(i).toString());
+                    	root.appendChild(element);
+            		}
+        		}catch(Exception e){}
+        		try{
+        			LinkedList<CardName> cardList = (LinkedList<CardName>) content.get(key);
+            		for(int i = 0; i < cardList.size(); i++){
+                    	Element element = docIn.createElement(key);
+                    	if(this.attrElements.containsKey(key))//If an element contains an attribute, it will be set
+                    		element.setAttribute(this.attrElements.get(key), this.attrValues.get(this.attrElements.get(key)));
+                    	element.setTextContent(cardList.get(i).toString());
+                    	root.appendChild(element);
+            		}
+        		}catch(Exception e){}
         	}else{//If an element has just one content, it can be resolved the "normal" way (one element, one content)
             	Element element = docIn.createElement(key);
-            	if(this.attrElements.containsKey(key))//If an element contains an attribute, it will be set
+            	if(this.attrElements.containsKey(key) && this.attrValues.get(this.attrElements.get(key)) != null)//If an element contains an attribute, it will be set
             		element.setAttribute(this.attrElements.get(key), this.attrValues.get(this.attrElements.get(key)).toString());
             	if(content.get(key) != null && content.get(key).toString().length() > 0)//if content has changed, it will be set
             		element.setTextContent(content.get(key).toString());
@@ -251,43 +267,45 @@ public class UpdateGame_Message extends Message {
 	}
 	
 	/**
-	 * @author Bodo Gr�tter
+	 * @author Bodo Gruetter
 	 * merges two UpdateGame_Messages together
 	 * 
 	 * @param a first message which gets merged with a second message
 	 * @return the first message with the merged content
 	 */
 	public static UpdateGame_Message merge(UpdateGame_Message first, UpdateGame_Message second){
-		if(first.getActions() == null)
-			first.setActions(second.getActions());
-		if(first.getBuys() == null)
-			first.setBuys(second.getBuys());
-		if(first.getCoins() == null)
-			first.setCoins(second.getCoins());
-		if(first.getChat() == null)
-			first.setChat(second.getChat());
-		if(first.getCurrentPhase() == null)
-			first.setCurrentPhase(second.getCurrentPhase());
-		if(first.getCurrentPlayer() == null)
-			first.setCurrentPlayer(second.getCurrentPlayer());
-		if(first.getDeckPileCardNumber() == null)
-			first.setDeckPileCardNumber(second.getDeckPileCardNumber());
-		if(first.getDiscardPileCardNumber() == null)
-			first.setDiscardPileCardNumber(second.getDiscardPileCardNumber());
-		if(first.getDiscardPileTopCard() == null)
-			first.setDiscardPileTopCard(second.getDiscardPileTopCard());
-		if(first.getLog() == null)
-			first.setLog(second.getLog());
-		if(first.getInteractionType() == null)
-			first.setInteractionType(second.getInteractionType());
+		if(first.actions == null)
+			first.actions = second.actions;
+		if(first.buys == null)
+			first.buys = second.buys;
+		if(first.coins == null)
+			first.coins = second.coins;
+		if(first.chat == null)
+			first.chat = second.chat;
+		if(first.currentPhase == null)
+			first.currentPhase = second.currentPhase;
+		if(first.currentPlayer == null)
+			first.currentPlayer = second.currentPlayer;
+		if(first.deckPileCardNumber == null)
+			first.deckPileCardNumber = second.deckPileCardNumber;
+		if(first.discardPileCardNumber == null)
+			first.discardPileCardNumber = second.discardPileCardNumber;
+		if(first.discardPileTopCard == null)
+			first.discardPileTopCard = second.discardPileTopCard;
+		if(first.log == null)
+			first.log = second.log;
+		if(first.interactionType == null)
+			first.interactionType = second.interactionType;
 		if(first.getNewHandCards() == null)
 			first.setNewHandCards(second.getNewHandCards());
-		if(first.getPlayedCard() == null)
-			first.setPlayedCards(second.getPlayedCard());
-		if(first.getBuyedCard() == null)
-			first.setBuyedCard(second.getBuyedCard());
-		if(first.getInteractionType() == null)
-			first.setInteractionType(second.getInteractionType());
+		if(first.playedCard == null)
+			first.playedCard = second.playedCard;
+		if(first.buyedCard == null)
+			first.buyedCard = second.buyedCard;
+		if(first.interactionType == null)
+			first.interactionType = second.interactionType;
+		if(first.getCardSelection() == null)
+			first.setCardSelection(second.getCardSelection());
 		
 		return first;
 	}
@@ -298,7 +316,9 @@ public class UpdateGame_Message extends Message {
 	}
 
 	public Phase getCurrentPhase(){
-		return Phase.parsePhase(this.stringElements.get(ELEMENT_CURRENT_PHASE));
+		if(this.stringElements.get(ELEMENT_CURRENT_PHASE) != null)
+			return Phase.parsePhase(this.stringElements.get(ELEMENT_CURRENT_PHASE));
+		return null;
 	}
 	
 	public String getChat(){
@@ -310,7 +330,9 @@ public class UpdateGame_Message extends Message {
 	}
 	
 	public Interaction getInteractionType(){
-		return Interaction.parseInteraction(this.attrValues.get(ATTR_INTERACTION_TYPE));
+		if(this.attrValues.get(ATTR_INTERACTION_TYPE) != null)
+			return Interaction.parseInteraction(this.attrValues.get(ATTR_INTERACTION_TYPE));
+		return null;
 	}
 
 	public Card getPlayedCard(){
@@ -326,11 +348,15 @@ public class UpdateGame_Message extends Message {
 	}
 	
 	public Integer getDiscardPileCardNumber(){
-		return Integer.parseInt(this.attrValues.get(ATTR_DISCARDPILE_CARD_NUMBER));
+		if(this.attrValues.get(ATTR_DISCARDPILE_CARD_NUMBER) != null)
+			return Integer.parseInt(this.attrValues.get(ATTR_DISCARDPILE_CARD_NUMBER));
+		return null;
 	}
 	
 	public Integer getDeckPileCardNumber(){
-		return Integer.parseInt(this.attrValues.get(ATTR_DECKPILE_CARD_NUMBER));
+		if(this.attrValues.get(ATTR_DECKPILE_CARD_NUMBER) != null)
+			return Integer.parseInt(this.attrValues.get(ATTR_DECKPILE_CARD_NUMBER));
+		return null;
 	}
 
 	public Integer getActions(){

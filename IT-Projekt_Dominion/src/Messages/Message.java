@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.net.Socket;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -98,6 +99,10 @@ public abstract class Message {
     	
     	// Convert to XML
         String xmlOut = this.toString();
+        if(this instanceof UpdateGame_Message){
+        	Logger logger = Logger.getLogger("");
+        	logger.info(xmlOut);
+        }
 
         try { // Ignore IO errors
             OutputStreamWriter out = new OutputStreamWriter(s.getOutputStream());

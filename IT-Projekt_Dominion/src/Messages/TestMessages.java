@@ -47,11 +47,11 @@ import javafx.application.Platform;
 public class TestMessages {
 
 	public static void main(String[] args) {
-		GameApp_Model model = new GameApp_Model(new Dominion_Main());
-		model.init("127.0.0.1", 8008);
-		model.setClientName("Lukas");
-		checkPlayActionCard(model);
-		
+//		GameApp_Model model = new GameApp_Model(new Dominion_Main());
+//		model.init("127.0.0.1", 8008);
+//		model.setClientName("Lukas");
+//		checkPlayActionCard(model);
+		testUpdateGame_Message();
 	}
 	
 	public static void checkPlayActionCard(GameApp_Model model){
@@ -202,7 +202,7 @@ public class TestMessages {
 			System.out.println("yourBuyedCard: "+yourBuyedCard.toString());
 			buyCards.replace(yourBuyedCard.getCardName(), buyCards.get(yourBuyedCard.getCardName())-1);
 			System.out.println("buyCards: "+buyCards.toString());
-		}else{
+		}else if(ugmsg.getBuyedCard() != null){
 			Card opponentBuyedCard = ugmsg.getBuyedCard();
 			System.out.println("opponentBuyedCard: "+opponentBuyedCard.toString());
 			buyCards.replace(opponentBuyedCard.getCardName(), buyCards.get(opponentBuyedCard.getCardName())-1);
@@ -242,7 +242,7 @@ public class TestMessages {
 			for(int i = 0; i < newHandCards.size(); i++){
 				System.out.println(newHandCards.get(i).toString());
 			}
-		}else{//for opponent
+		}else if(ugmsg.getNewHandCards() != null){//for opponent
 			System.out.println("opponent has drawn "+ugmsg.getNewHandCards().size()+" Cards");
 		}
 

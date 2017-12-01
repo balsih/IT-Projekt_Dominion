@@ -453,6 +453,10 @@ public class GameApp_Model extends Model {
 		if(msgIn instanceof UpdateGame_Message){
 			update = true;
 			this.interaction = Interaction.Skip;//defaultSetting
+			
+		}else if(msgIn instanceof PlayerSuccess_Message){
+			this.processPlayerSuccess(msgIn);
+			update = true;
 		}
 		return update;
 	}
@@ -553,7 +557,7 @@ public class GameApp_Model extends Model {
 		if(ugmsg.getBuyedCard() != null && this.currentPlayer == this.clientName){
 			this.yourBuyedCard = ugmsg.getBuyedCard();
 			this.buyCards.replace(this.yourBuyedCard.getCardName(), this.buyCards.get(this.yourBuyedCard.getCardName())-1);
-		}else{
+		}else if(ugmsg.getBuyedCard() != null){
 			this.opponentBuyedCard = ugmsg.getBuyedCard();
 			this.buyCards.replace(this.opponentBuyedCard.getCardName(), this.buyCards.get(this.opponentBuyedCard.getCardName())-1);
 		}
@@ -603,7 +607,7 @@ public class GameApp_Model extends Model {
 					}
 				}
 			}
-		}else{//for opponent
+		}else if(ugmsg.getNewHandCards() != null){//for opponent
 			this.opponentNewHandCards = ugmsg.getNewHandCards().size();
 		}
 
