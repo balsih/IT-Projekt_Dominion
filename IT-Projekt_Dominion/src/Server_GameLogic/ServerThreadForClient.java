@@ -352,7 +352,7 @@ public class ServerThreadForClient implements Runnable {
 			return wCard.executeWorkshop(imsg.getWorkshopChoice());
 		case Remodel1:
 			Remodel_Card r1Card = (Remodel_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
-//			return r1Card.executeRemodel1(imsg.getDisposeRemodelCard());
+			return r1Card.executeRemodel1(imsg.getDisposeRemodelCard());
 		case Remodel2:
 			Remodel_Card r2Card = (Remodel_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
 			return r2Card.executeRemodel2(imsg.getRemodelChoice());

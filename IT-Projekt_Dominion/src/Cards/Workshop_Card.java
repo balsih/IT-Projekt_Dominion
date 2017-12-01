@@ -53,6 +53,7 @@ public class Workshop_Card extends Card {
 		ugmsg.setActions(player.getActions());
 		ugmsg.setBuys(player.getBuys());
 		ugmsg.setCoins(player.getCoins());
+		ugmsg.setInteractionType(Interaction.Workshop);
 		ugmsg.setCardSelection(availableCards);
 		return ugmsg;
 	}

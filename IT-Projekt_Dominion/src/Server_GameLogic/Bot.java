@@ -2,6 +2,7 @@ package Server_GameLogic;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -9,6 +10,7 @@ import java.util.stream.Collectors;
 import Cards.Card;
 import Cards.CardName;
 import Cards.CardType;
+import Cards.Workshop_Card;
 import Messages.Message;
 import Messages.UpdateGame_Message;
 
@@ -173,6 +175,19 @@ public class Bot extends Player implements Runnable {
 			case Remodel:
 				break;
 			case Workshop:
+				LinkedList<CardName> takeChoices = ugmsg.getCardSelection();
+				List<CardName> prioList = this.buyPrioOneCard.keySet().stream()
+						.sorted((s1, s2) -> Integer.compare(this.buyPrioOneCard.get(s2), this.buyPrioOneCard.get(s1)))
+						.collect(Collectors.toList());
+				for(CardName cardName: prioList){
+					if(takeChoices.contains(cardName)){
+						Workshop_Card wCard = (Workshop_Card) this.getPlayedCards().get(this.getPlayedCards().size()-1);
+						ugmsg = wCard.executeWorkshop(cardName);
+						//hier oder später musst du selbst entscheiden, ob du skippen willst (wenn es das spiel nicht schon gemacht hat)
+						//wahrscheinlich erst vor dem else
+						break;
+					}
+				}
 				break;
 			default:
 				break;

@@ -62,7 +62,7 @@ public class Game {
 	private static Game existingGame;
 	private GameMode gameMode;
 	
-	private final Logger logger = Logger.getLogger("");
+	private static final Logger logger = Logger.getLogger("");
 
 	/**
 	 * 
@@ -286,7 +286,7 @@ public class Game {
 						.addWaitingMessages(existingGame.getPlayer1().getServerThreadForClient().getCG_Message(existingGame));
 				existingGame.getPlayer2().getServerThreadForClient()
 						.addWaitingMessages(existingGame.getPlayer2().getServerThreadForClient().getCG_Message(existingGame));
-				existingGame.logger.info(existingGame.player1.getPlayerName() + " started a multiplayer game versus " + existingGame.player2.getPlayerName());
+				logger.info(existingGame.player1.getPlayerName() + " started a multiplayer game versus " + existingGame.player2.getPlayerName());
 				
 			}
 
@@ -304,7 +304,7 @@ public class Game {
 			
 			game.getPlayer1().getServerThreadForClient()
 					.addWaitingMessages(game.getPlayer1().getServerThreadForClient().getCG_Message(game));
-			existingGame.logger.info(game.player1.getPlayerName() + " started a singleplayer game");
+			logger.info(game.player1.getPlayerName() + " started a singleplayer game");
 			return game;
 		}
 
