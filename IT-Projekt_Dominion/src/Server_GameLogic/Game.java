@@ -272,10 +272,13 @@ public class Game {
 
 				game.setPlayer1(player);
 				existingGame = game;
+				existingGame.player1.setGame(existingGame);
 
 				gameCounter++;
 			} else {
 				existingGame.setPlayer2(player);
+				existingGame.player2.setGame(existingGame);
+				
 				gameCounter++;
 				existingGame.startGame();
 				
@@ -291,8 +294,9 @@ public class Game {
 			Game game = new Game();
 			game.bot = new Bot(Bot.getNameOfBot());
 			game.setPlayer1(player);
+			game.player1.setGame(game);
 			game.setPlayer2(game.bot);
-			game.bot.addGame(game);
+			game.bot.setGame(game);
 			game.startGame();
 			game.gameMode = GameMode.Singleplayer;
 			

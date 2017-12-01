@@ -155,73 +155,15 @@ public class Player {
 	 *         methods returns a failure message.
 	 */
 	public Message buy(CardName cardName) {
-		Card buyedCard = null;
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		Failure_Message fmsg = new Failure_Message();
+		Card buyedCard = null;
 
 		if (Card.getCard(cardName).getCost() <= this.getCoins() && this.getBuys() > 0 && this.actualPhase == Phase.Buy
 				&& this.equals(game.getCurrentPlayer())) {
 
 			try {
-				// wenn gekauft, noch buys zur verfuegung
-				switch (cardName) {
-				case Copper:
-					buyedCard = this.game.getCopperPile().pop();
-					this.discardPile.push(buyedCard);
-					break;
-				case Cellar:
-					buyedCard = this.game.getCellarPile().pop();
-					this.discardPile.push(buyedCard);
-					break;
-				case Duchy:
-					buyedCard = this.game.getDuchyPile().pop();
-					this.discardPile.push(buyedCard);
-					break;
-				case Estate:
-					buyedCard = this.game.getEstatePile().pop();
-					this.discardPile.push(buyedCard);
-					break;
-				case Gold:
-					buyedCard = this.game.getGoldPile().pop();
-					this.discardPile.push(buyedCard);
-					break;
-				case Market:
-					buyedCard = this.game.getMarketPile().pop();
-					this.discardPile.push(buyedCard);
-					break;
-				case Mine:
-					buyedCard = this.game.getMinePile().pop();
-					this.discardPile.push(buyedCard);
-					break;
-				case Province:
-					buyedCard = this.game.getProvincePile().pop();
-					this.discardPile.push(buyedCard);
-					break;
-				case Remodel:
-					buyedCard = this.game.getRemodelPile().pop();
-					this.discardPile.push(buyedCard);
-					break;
-				case Silver:
-					buyedCard = this.game.getSilverPile().pop();
-					this.discardPile.push(buyedCard);
-					break;
-				case Smithy:
-					buyedCard = this.game.getSmithyPile().pop();
-					this.discardPile.push(buyedCard);
-					break;
-				case Village:
-					buyedCard = this.game.getVillagePile().pop();
-					this.discardPile.push(buyedCard);
-					break;
-				case Woodcutter:
-					buyedCard = this.game.getWoodcutterPile().pop();
-					this.discardPile.push(buyedCard);
-					break;
-				case Workshop:
-					buyedCard = this.game.getWorkshopPile().pop();
-					this.discardPile.push(buyedCard);
-					break;
-				}
+				buyedCard = this.pick(cardName);
 
 				this.coins -= buyedCard.getCost();
 				this.buys--;
@@ -260,6 +202,72 @@ public class Player {
 
 		return fmsg;
 	}
+	
+	public Card pick(CardName cardName){
+		Card pickedCard = null;
+		
+		// wenn gekauft, noch buys zur verfuegung
+		switch (cardName) {
+		case Copper:
+			pickedCard = this.game.getCopperPile().pop();
+			this.discardPile.push(pickedCard);
+			break;
+		case Cellar:
+			pickedCard = this.game.getCellarPile().pop();
+			this.discardPile.push(pickedCard);
+			break;
+		case Duchy:
+			pickedCard = this.game.getDuchyPile().pop();
+			this.discardPile.push(pickedCard);
+			break;
+		case Estate:
+			pickedCard = this.game.getEstatePile().pop();
+			this.discardPile.push(pickedCard);
+			break;
+		case Gold:
+			pickedCard = this.game.getGoldPile().pop();
+			this.discardPile.push(pickedCard);
+			break;
+		case Market:
+			pickedCard = this.game.getMarketPile().pop();
+			this.discardPile.push(pickedCard);
+			break;
+		case Mine:
+			pickedCard = this.game.getMinePile().pop();
+			this.discardPile.push(pickedCard);
+			break;
+		case Province:
+			pickedCard = this.game.getProvincePile().pop();
+			this.discardPile.push(pickedCard);
+			break;
+		case Remodel:
+			pickedCard = this.game.getRemodelPile().pop();
+			this.discardPile.push(pickedCard);
+			break;
+		case Silver:
+			pickedCard = this.game.getSilverPile().pop();
+			this.discardPile.push(pickedCard);
+			break;
+		case Smithy:
+			pickedCard = this.game.getSmithyPile().pop();
+			this.discardPile.push(pickedCard);
+			break;
+		case Village:
+			pickedCard = this.game.getVillagePile().pop();
+			this.discardPile.push(pickedCard);
+			break;
+		case Woodcutter:
+			pickedCard = this.game.getWoodcutterPile().pop();
+			this.discardPile.push(pickedCard);
+			break;
+		case Workshop:
+			pickedCard = this.game.getWorkshopPile().pop();
+			this.discardPile.push(pickedCard);
+			break;
+		}
+		
+		return pickedCard;
+	}
 
 	/**
 	 * @author Bodo Gruetter
@@ -275,7 +283,7 @@ public class Player {
 
 		this.moves++;
 
-		if (this.handCards.size() > 1) {
+		if (this.handCards.size() > 1 && selectedTopCard != null) {
 			this.discard(selectedTopCard);
 		} else {
 			this.discard();
@@ -347,40 +355,6 @@ public class Player {
 	 * auf dem DiscardPile ist. Nur wenn mehr als eine Karte in der Hand ist
 	 * (Abfrage in Buy) InteractionType ueber UpdateGameMessage.
 	 */
-
-	/*
-	 * DISCARD METHODEN ANPASSEN; SIEHE CARD EXECUTECELLAR etc.
-	 */
-	public UpdateGame_Message discard(LinkedList<Card> discardedCards) {
-		UpdateGame_Message ugmsg = new UpdateGame_Message();
-
-		while (!discardedCards.isEmpty()) {
-			discardPile.push(discardedCards.remove());
-		}
-
-		ugmsg.setDiscardPileCardNumber(this.discardPile.size());
-		ugmsg.setDiscardPileTopCard(this.discardPile.peek());
-		ugmsg.setNewHandCards(this.handCards);
-		return ugmsg;
-	}
-
-	/**
-	 * @author Bodo Gruetter
-	 *
-	 * @param discardedCard,
-	 *            the cardName of the discarded Card
-	 * @return UpdateGame_Message
-	 */
-	public UpdateGame_Message discard(CardName discardedCard) {
-		UpdateGame_Message ugmsg = new UpdateGame_Message();
-
-		discardPile.push(Card.getCard(discardedCard));
-
-		ugmsg.setDiscardPileCardNumber(this.discardPile.size());
-		ugmsg.setDiscardPileTopCard(this.discardPile.peek());
-		ugmsg.setNewHandCards(this.handCards);
-		return ugmsg;
-	}
 
 	public void discard(Card selectedTopCard) {
 		while (!playedCards.isEmpty()) {
@@ -559,7 +533,7 @@ public class Player {
 	 * 
 	 * @param gameThread
 	 */
-	public void addGame(Game game) {
+	public void setGame(Game game) {
 		this.game = game;
 	}
 
