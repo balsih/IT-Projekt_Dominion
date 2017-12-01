@@ -14,6 +14,7 @@ import Cards.CardName;
 import Cards.Cellar_Card;
 import Cards.Mine_Card;
 import Cards.Remodel_Card;
+import Cards.Village_Card;
 import Cards.Workshop_Card;
 import Messages.AskForChanges_Message;
 import Messages.BuyCard_Message;
@@ -212,7 +213,7 @@ public class ServerThreadForClient implements Runnable {
 		}
 	}
 	
-	/**
+	/**TESTED
 	 * @author Lukas
 	 * Takes the highscore from the database
 	 * 
@@ -222,7 +223,12 @@ public class ServerThreadForClient implements Runnable {
 	private Message processHighScore(Message msgIn) {
 		DB_Connector dbConnector = DB_Connector.getDB_Connector();
 		HighScore_Message hsmsg = new HighScore_Message();
-		hsmsg.setHighScore(dbConnector.getHighScore());
+		String highScore = dbConnector.getHighScore();
+		if(highScore.length() == 0){
+			hsmsg.setHighScore("No player's in highscore!");
+		}else{
+			hsmsg.setHighScore(highScore);
+		}
 		this.logger.info("send highscore to "+this.clientName);
 		return hsmsg;
 	}
@@ -258,7 +264,7 @@ public class ServerThreadForClient implements Runnable {
 	private Message processPlayCard(Message msgIn) {
 		PlayCard_Message pcmsg = (PlayCard_Message) msgIn;
 		for(Card card: this.player.handCards){
-			if(card.getType().equals(pcmsg.getCard().getType())){
+			if(card.getCardName().equals(pcmsg.getCard().getCardName())){
 				return this.player.play(card);
 			}
 		}
@@ -274,7 +280,10 @@ public class ServerThreadForClient implements Runnable {
 	protected CreateGame_Message getCG_Message(Game game){
 		CreateGame_Message cgmsg = new CreateGame_Message();
 		cgmsg.setBuyCards(game.getBuyCards());
-		cgmsg.setHandCards(this.player.getHandCards());
+		//just for testing
+		LinkedList<Card> handCards = this.player.getHandCards();
+		handCards.add(new Village_Card());
+		cgmsg.setHandCards(handCards);
 		cgmsg.setDeckPile(this.player.getDeckPile());
 		cgmsg.setOpponent(game.getOpponent(this.player).getPlayerName());
 		cgmsg.setDeckNumber(game.getOpponent(this.player).getDeckPile().size());
@@ -337,7 +346,7 @@ public class ServerThreadForClient implements Runnable {
 			break;
 		case Cellar:
 			Cellar_Card cCard = (Cellar_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
-//			return cCard.executeCellar(imsg.getCellarDiscardCards());
+			return cCard.executeCellar(imsg.getCellarDiscardCards());
 		case Workshop:
 			Workshop_Card wCard = (Workshop_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
 			return wCard.executeWorkshop(imsg.getWorkshopChoice());
@@ -349,7 +358,7 @@ public class ServerThreadForClient implements Runnable {
 			return r2Card.executeRemodel2(imsg.getRemodelChoice());
 		case Mine:
 			Mine_Card mCard = (Mine_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
-//			return mCard.executeMine(imsg.getDisposedMineCard());
+			return mCard.executeMine(imsg.getDisposedMineCard());
 		default:
 			return null;
 		}

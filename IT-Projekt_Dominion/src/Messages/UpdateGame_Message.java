@@ -54,7 +54,7 @@ public class UpdateGame_Message extends Message {
 	private static final String ATTR_INTERACTION_TYPE = "interactionType";
 	private static final String ELEMENT_CARDSELECTION = "cardSelection";
 	private Interaction interactionType = null;
-    private HashMap<String, LinkedList<Card>> cardSelectionElements;
+    private HashMap<String, LinkedList<CardName>> cardSelectionElements;
     
 	private static final String ELEMENT_NEW_HANDCARDS = "newHandCards";
     private HashMap<String, String> stringElements;
@@ -77,7 +77,7 @@ public class UpdateGame_Message extends Message {
 		this.integerElements = new HashMap<String, Integer>();
 		this.cardElements = new HashMap<String, Card>();
 		this.handCardListElements = new HashMap<String, LinkedList<Card>>();
-		this.cardSelectionElements = new HashMap<String, LinkedList<Card>>();
+		this.cardSelectionElements = new HashMap<String, LinkedList<CardName>>();
 		
 		//Top_Level Attributes
 		this.attrValues = new HashMap<String, String>();
@@ -238,10 +238,10 @@ public class UpdateGame_Message extends Message {
 					}
 					this.handCardListElements.put(key, newHandCards);
 				}else if(key == ELEMENT_INTERACTION){
-					LinkedList<Card> cardSelection = this.cardSelectionElements.get(key);
+					LinkedList<CardName> cardSelection = this.cardSelectionElements.get(key);
 					for(int i = 0; i < cardList.getLength(); i++){
 						Element cardElement = (Element) cardList.item(i);
-						cardSelection.add(Card.getCard(CardName.parseName(cardElement.getTextContent())));
+						cardSelection.add(CardName.parseName(cardElement.getTextContent()));
 					}
 					this.cardSelectionElements.put(key, cardSelection);
 				}
@@ -350,7 +350,7 @@ public class UpdateGame_Message extends Message {
 	}
 	
 	
-	public LinkedList<Card> getCardSelection(){
+	public LinkedList<CardName> getCardSelection(){
 		return this.cardSelectionElements.get(ELEMENT_CARDSELECTION);
 	}
 	
@@ -414,7 +414,7 @@ public class UpdateGame_Message extends Message {
 	}
 	
 	//fill the cardListElement to use addContentElements
-	public void setCardSelection(LinkedList<Card> cardSelection){
+	public void setCardSelection(LinkedList<CardName> cardSelection){
 		this.cardSelectionElements.put(ELEMENT_CARDSELECTION, cardSelection);
 	}
 }//end UpdateGame_Message

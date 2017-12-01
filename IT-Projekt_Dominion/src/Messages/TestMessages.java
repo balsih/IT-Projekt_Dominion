@@ -19,6 +19,7 @@ import com.sun.xml.internal.txw2.Document;
 
 import Cards.Card;
 import Cards.CardName;
+import Cards.CardType;
 import Cards.Cellar_Card;
 import Cards.Copper_Card;
 import Cards.Duchy_Card;
@@ -47,11 +48,92 @@ public class TestMessages {
 
 	public static void main(String[] args) {
 		GameApp_Model model = new GameApp_Model(new Dominion_Main());
-		model.init("127.0.0.1");
+		model.init("127.0.0.1", 8008);
 		model.setClientName("Lukas");
-		System.out.println(model.sendHighScoreRequest());
+		checkPlayActionCard(model);
 		
+	}
+	
+	public static void checkPlayActionCard(GameApp_Model model){
 		
+		sendGameMode(GameMode.Singleplayer, model);
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			System.out.println("Thread.sleep throwed exception");
+		}
+		askForChanges(model);
+		System.out.println("currentPlayer: "+model.currentPlayer);
+		if(model.currentPlayer.compareTo(model.clientName) == 0){
+			model.yourHandCards = model.yourNewHandCards;
+			boolean actionCard = false;
+			for(int j = 0; j < model.yourHandCards.size(); j++){
+				if(model.yourHandCards.get(j).getType() == CardType.Action)
+					actionCard = true;
+			}
+			if(!actionCard){
+				System.out.println("no ActionCards in the hand");
+			}
+			for(int i = 0; i < model.yourHandCards.size(); i++){
+				if(model.yourHandCards.get(i).getType() == CardType.Action){
+					Card card = model.yourHandCards.get(i);
+					System.out.println("wanna play: "+card.toString());
+					boolean success = sendPlayCard(card);
+					if(success){
+						System.out.println("you played the "+card.toString()+" successful");
+					}else{
+						System.out.println("failed to play the "+card.toString()+" card");
+					}
+					break;
+				}
+			}
+		}else{
+			System.out.println("try again, you're not currentPlayer");
+		}
+	}
+	
+	/**TESTED
+	 * @author Lukas
+	 * The client sends his GameMode (Singleplayer or Multiplayer) to Server.
+	 * 
+	 * @param mode
+	 * @return result, usually only necessary if the client lost connection to server
+	 */
+	public static String sendGameMode(GameMode mode, GameApp_Model model){
+		String result = "no connection";
+		GameMode_Message gmmsg = new GameMode_Message();
+		gmmsg.setClient(model.clientName);//set the clientName and mode(SinglePlayer or MultiPlayer) to XML
+		gmmsg.setMode(mode);
+		model.gameMode = mode.toString();
+
+		Message msgIn = processMessage(gmmsg);
+		if(msgIn instanceof Commit_Message){
+			System.out.println(mode.toString()+": succeeded");
+		}
+		return result;
+	}
+	
+	/**
+	 * @author Lukas
+	 * The client wants to play a chosen Card. The result depends on the validity of the move
+	 * 
+	 * @param card
+	 * @return update, tells the controller if the game has to be updated
+	 */
+	public static boolean sendPlayCard(Card card){
+		PlayCard_Message pcmsg = new PlayCard_Message();
+		pcmsg.setCard(card);
+		boolean update = false;
+
+		Message msgIn = processMessage(pcmsg);
+		if(msgIn instanceof UpdateGame_Message){
+			processUpdateGame(msgIn);
+			update = true;
+		}else if(msgIn instanceof Failure_Message){
+			//nothing toDo here
+		}
+		return update;
 	}
 	
 	/**
@@ -187,7 +269,7 @@ public class TestMessages {
 
 	}
 	
-	private static boolean askForChanges(){
+	private static boolean askForChanges(GameApp_Model model){
 		boolean update = false;
 
 		Message msgIn = processMessage(new AskForChanges_Message());
@@ -205,6 +287,7 @@ public class TestMessages {
 			System.out.println("handNumber: "+cgmsg.getHandNumber().toString());
 			System.out.println("deckNumber: "+cgmsg.getDeckNumber().toString());
 			System.out.println("buyCards:"+cgmsg.getBuyCards().toString());
+			model.processCreateGame(msgIn);
 			
 		}
 		return update;
@@ -410,11 +493,11 @@ public class TestMessages {
 		Card discardPileTopCard = new Gold_Card();
 		
 		Interaction interaction = Interaction.EndOfTurn;
-		LinkedList<Card> cardSelection = new LinkedList<Card>();
-		cardSelection.add(new Cellar_Card());
-		cardSelection.add(new Market_Card());
-		cardSelection.add(new Smithy_Card());
-		cardSelection.add(new Workshop_Card());
+		LinkedList<CardName> cardSelection = new LinkedList<CardName>();
+		cardSelection.add(CardName.Cellar);
+		cardSelection.add(CardName.Market);
+		cardSelection.add(CardName.Smithy);
+		cardSelection.add(CardName.Workshop);
 		
 		LinkedList<Card> handCards = new LinkedList<Card>();
 		handCards.add(new Smithy_Card());
