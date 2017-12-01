@@ -58,11 +58,11 @@ public class Workshop_Card extends Card {
 	}
 	
 	
-	public UpdateGame_Message executeWorkshop(Card selectedCard) {
+	public UpdateGame_Message executeWorkshop(CardName selectedCard) {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
-		this.player.getHandCards().add(this.player.pick(selectedCard.getCardName()));
+		this.player.getHandCards().add(this.player.pick(selectedCard));
 		
-		ugmsg.setLog(player.getPlayerName()+": picked "+selectedCard.getCardName().toString()+" card");
+		ugmsg.setLog(player.getPlayerName()+": picked "+selectedCard.toString()+" card");
 		
 		// update game Messages -> XML 
 		ugmsg.setNewHandCards(player.getHandCards());

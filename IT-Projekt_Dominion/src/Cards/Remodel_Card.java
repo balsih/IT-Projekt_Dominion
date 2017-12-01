@@ -78,12 +78,12 @@ public class Remodel_Card extends Card {
 		return ugmsg;
 	}
 
-	public UpdateGame_Message executeRemodel2(Card pickedCard) {
+	public UpdateGame_Message executeRemodel2(CardName pickedCard) {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 
-		this.player.getHandCards().add(this.player.pick(pickedCard.getCardName()));
+		this.player.getHandCards().add(this.player.pick(pickedCard));
 		
-		ugmsg.setLog(player.getPlayerName()+": picked "+pickedCard.getCardName().toString()+" card");
+		ugmsg.setLog(player.getPlayerName()+": picked "+pickedCard.toString()+" card");
 		
 		// update game Messages -> XML 
 		ugmsg.setNewHandCards(player.getHandCards());

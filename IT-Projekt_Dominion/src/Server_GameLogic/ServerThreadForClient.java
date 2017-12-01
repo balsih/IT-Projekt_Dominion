@@ -245,7 +245,7 @@ public class ServerThreadForClient implements Runnable {
 		GameMode_Message gmmsg = (GameMode_Message) msgIn;
 		this.player = new Player(this.clientName, this);
 		this.game = Game.getGame(gmmsg.getMode(), this.player);
-		this.player.addGame(this.game);
+		this.player.setGame(this.game);
 		this.logger.info(this.clientName+" waits for opponent");
 		Commit_Message cmsg = new Commit_Message();
 		return cmsg;
