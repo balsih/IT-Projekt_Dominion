@@ -3,12 +3,11 @@ package Server_GameLogic;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Random;
 import java.util.Stack;
+import java.util.logging.Logger;
 
 import Cards.Copper_Card;
-import Cards.Card;
 import Cards.CardName;
 import Cards.Cellar_Card;
 import Cards.Duchy_Card;
@@ -24,7 +23,6 @@ import Cards.Village_Card;
 import Cards.Woodcutter_Card;
 import Cards.Workshop_Card;
 import Messages.GameSuccess;
-import Messages.Interaction;
 
 /**
  * @author Bodo
@@ -63,6 +61,8 @@ public class Game {
 
 	private static Game existingGame;
 	private GameMode gameMode;
+	
+	private final Logger logger = Logger.getLogger("");
 
 	/**
 	 * 
@@ -286,6 +286,8 @@ public class Game {
 						.addWaitingMessages(existingGame.getPlayer1().getServerThreadForClient().getCG_Message(existingGame));
 				existingGame.getPlayer2().getServerThreadForClient()
 						.addWaitingMessages(existingGame.getPlayer2().getServerThreadForClient().getCG_Message(existingGame));
+				existingGame.logger.info(existingGame.player1.getPlayerName() + " started a multiplayer game versus " + existingGame.player2.getPlayerName());
+				
 			}
 
 			existingGame.gameMode = GameMode.Multiplayer;
@@ -302,6 +304,7 @@ public class Game {
 			
 			game.getPlayer1().getServerThreadForClient()
 					.addWaitingMessages(game.getPlayer1().getServerThreadForClient().getCG_Message(game));
+			existingGame.logger.info(game.player1.getPlayerName() + " started a singleplayer game");
 			return game;
 		}
 

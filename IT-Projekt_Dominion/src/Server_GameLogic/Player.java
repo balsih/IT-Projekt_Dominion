@@ -40,7 +40,6 @@ public class Player {
 	protected int coins;
 	protected int moves;
 	protected int victoryPoints;
-	protected boolean isFinished;
 	private GameSuccess status;
 
 	protected Game game;
@@ -100,7 +99,6 @@ public class Player {
 		this.coins = 0;
 		this.counter = 0;
 		this.actualPhase = Phase.Action;
-		this.isFinished = false;
 	}
 
 	/**
@@ -164,6 +162,7 @@ public class Player {
 
 			try {
 				buyedCard = this.pick(cardName);
+				this.discardPile.push(buyedCard);
 
 				this.coins -= buyedCard.getCost();
 				this.buys--;
@@ -194,7 +193,6 @@ public class Player {
 			this.sendToOpponent(this, ugmsg);
 
 			if (this.buys == 0) {
-				this.isFinished = true;
 				UpdateGame_Message.merge((UpdateGame_Message) skipPhase(), ugmsg);
 			}
 			return ugmsg;
@@ -210,59 +208,45 @@ public class Player {
 		switch (cardName) {
 		case Copper:
 			pickedCard = this.game.getCopperPile().pop();
-			this.discardPile.push(pickedCard);
 			break;
 		case Cellar:
 			pickedCard = this.game.getCellarPile().pop();
-			this.discardPile.push(pickedCard);
 			break;
 		case Duchy:
 			pickedCard = this.game.getDuchyPile().pop();
-			this.discardPile.push(pickedCard);
 			break;
 		case Estate:
 			pickedCard = this.game.getEstatePile().pop();
-			this.discardPile.push(pickedCard);
 			break;
 		case Gold:
 			pickedCard = this.game.getGoldPile().pop();
-			this.discardPile.push(pickedCard);
 			break;
 		case Market:
 			pickedCard = this.game.getMarketPile().pop();
-			this.discardPile.push(pickedCard);
 			break;
 		case Mine:
 			pickedCard = this.game.getMinePile().pop();
-			this.discardPile.push(pickedCard);
 			break;
 		case Province:
 			pickedCard = this.game.getProvincePile().pop();
-			this.discardPile.push(pickedCard);
 			break;
 		case Remodel:
 			pickedCard = this.game.getRemodelPile().pop();
-			this.discardPile.push(pickedCard);
 			break;
 		case Silver:
 			pickedCard = this.game.getSilverPile().pop();
-			this.discardPile.push(pickedCard);
 			break;
 		case Smithy:
 			pickedCard = this.game.getSmithyPile().pop();
-			this.discardPile.push(pickedCard);
 			break;
 		case Village:
 			pickedCard = this.game.getVillagePile().pop();
-			this.discardPile.push(pickedCard);
 			break;
 		case Woodcutter:
 			pickedCard = this.game.getWoodcutterPile().pop();
-			this.discardPile.push(pickedCard);
 			break;
 		case Workshop:
 			pickedCard = this.game.getWorkshopPile().pop();
-			this.discardPile.push(pickedCard);
 			break;
 		}
 		
@@ -277,21 +261,36 @@ public class Player {
 	 */
 	public Message cleanUp(Card selectedTopCard) {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
-		ugmsg.setInteractionType(Interaction.EndOfTurn);
-
-		this.setFinished(true);
-
-		this.moves++;
-
+		boolean endOfTurn = false;
+		
 		if (this.handCards.size() > 1 && selectedTopCard != null) {
-			this.discard(selectedTopCard);
+			ugmsg.setInteractionType(Interaction.EndOfTurn);
+			ugmsg.setDiscardPileTopCard(selectedTopCard);
+			this.sendToOpponent(this, ugmsg);
+			endOfTurn = true;
+		} else if (this.handCards.size() == 1 && selectedTopCard == null){
+			ugmsg.setDiscardPileTopCard(this.handCards.element());
+			ugmsg.setDiscardPileCardNumber(this.discardPile.size());
 		} else {
-			this.discard();
-			this.skipPhase();
+			ugmsg.setDiscardPileTopCard(this.discardPile.peek());
+		}
+		
+		if(!endOfTurn){
+		while (!playedCards.isEmpty()) {
+			this.discardPile.push(playedCards.remove());
 		}
 
-		this.draw(this.NUM_OF_HANDCARDS);
+		while (!handCards.isEmpty()) {
+			this.discardPile.push(handCards.remove());
+		}
 
+		this.moves++;
+		
+		this.draw(this.NUM_OF_HANDCARDS);
+		
+		this.sendToOpponent(this, ugmsg);
+		}
+		
 		return ugmsg;
 	}
 
@@ -348,37 +347,6 @@ public class Player {
 
 	}
 
-	/*
-	 * Interaction methoden
-	 * 
-	 * EndOfTurn: Phase auf CleanUp, dem Gegner mitteilen, welche die TopCard
-	 * auf dem DiscardPile ist. Nur wenn mehr als eine Karte in der Hand ist
-	 * (Abfrage in Buy) InteractionType ueber UpdateGameMessage.
-	 */
-
-	public void discard(Card selectedTopCard) {
-		while (!playedCards.isEmpty()) {
-			this.discardPile.push(playedCards.remove());
-		}
-
-		while (!handCards.isEmpty()) {
-			if (!handCards.element().equals(selectedTopCard))
-				this.discardPile.push(handCards.remove());
-		}
-
-		discardPile.push(handCards.remove());
-	}
-
-	public void discard() {
-		while (!playedCards.isEmpty()) {
-			this.discardPile.push(playedCards.remove());
-		}
-
-		while (!handCards.isEmpty()) {
-			this.discardPile.push(handCards.remove());
-		}
-	}
-
 	/**
 	 * @author Bodo Gruetter skips actual phase and goes to the next phase
 	 * 
@@ -389,8 +357,6 @@ public class Player {
 
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		Failure_Message fmsg = new Failure_Message();
-		// notwendig?
-		// ugmsg.setInteractionType(Interaction.Skip);
 
 		if (this.equals(game.getCurrentPlayer())) {
 			switch (this.actualPhase) {
@@ -399,11 +365,9 @@ public class Player {
 				ugmsg.setCurrentPhase(Phase.Buy);
 
 			case Buy:
-				if (isFinished == true) {
 					this.actualPhase = Phase.CleanUp;
 					ugmsg.setCurrentPhase(Phase.CleanUp);
 					// this.cleanUp();
-				}
 
 			case CleanUp:
 				game.switchPlayer();
@@ -567,14 +531,6 @@ public class Player {
 
 	public void setVictoryPoints(int victoryPoints) {
 		this.victoryPoints = victoryPoints;
-	}
-
-	public boolean isFinished() {
-		return isFinished;
-	}
-
-	public void setFinished(boolean isFinished) {
-		this.isFinished = isFinished;
 	}
 
 	public Phase getActualPhase() {
