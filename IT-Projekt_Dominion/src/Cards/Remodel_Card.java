@@ -2,6 +2,8 @@ package Cards;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import Messages.Interaction;
 import Messages.Message;
@@ -52,35 +54,41 @@ public class Remodel_Card extends Card {
 	}
 	
 	
-	public UpdateGame_Message executeRemodel1(CardName discardedCard) { // card nicht cardName?
-		UpdateGame_Message ugmsg = player.discard(discardedCard);
+	public UpdateGame_Message executeRemodel1(Card discardedCard) { 
+		UpdateGame_Message ugmsg = new UpdateGame_Message();
+		
+		Game game = this.player.getGame();
+		
+		List<CardName> list = game.getBuyCards().keySet().stream()
+				.filter(cardName -> (Card.getCard(cardName).getCost() <= discardedCard.getCost() + 2) && (game.getBuyCards().get(cardName) > 0))
+				.collect(Collectors.toList());
+		
+		LinkedList<CardName> availableCards = new LinkedList<CardName>();
+		availableCards.addAll(list);
+		
+		this.player.getHandCards().remove(discardedCard); // removes card from hand 
+		
+		ugmsg.setLog(player.getPlayerName()+": disposed "+discardedCard.getCardName().toString()+" card"); 
+		
+		ugmsg.setCardSelection(availableCards);
+		ugmsg.setNewHandCards(this.player.getHandCards());
+		ugmsg.setDiscardPileCardNumber(this.player.getDiscardPile().size());
+		ugmsg.setDiscardPileTopCard(this.player.getDiscardPile().peek());
 
 		return ugmsg;
 	}
 
-	public UpdateGame_Message executeRemodel2(CardName pickedCard) {
-		UpdateGame_Message ugmsg = (UpdateGame_Message) player.buy(pickedCard);
+	public UpdateGame_Message executeRemodel2(Card pickedCard) {
+		UpdateGame_Message ugmsg = new UpdateGame_Message();
 
+		this.player.getHandCards().add(this.player.pick(pickedCard.getCardName()));
+		
+		ugmsg.setLog(player.getPlayerName()+": picked "+pickedCard.getCardName().toString()+" card");
+		
+		// update game Messages -> XML 
+		ugmsg.setNewHandCards(player.getHandCards());
+		
 		return ugmsg;
-	}
-	
-	/**
-	 * @author Bodo Gruetter
-	 * 
-	 * @param the
-	 *            from the player discarded Card
-	 * @return a linkedlist with all available cards
-	 */
-	public LinkedList<Card> getAvailableRemodelCards(Card discardedCard, Interaction interaction) {
-		LinkedList<Card> availableCards = new LinkedList<Card>();
-		Iterator<CardName> keyIterator = game.getBuyCards().keySet().iterator();
-
-		while (keyIterator.hasNext()) {
-			if (Card.getCard(keyIterator.next()).getCost() <= discardedCard.getCost() + 2)
-				availableCards.add(Card.getCard(keyIterator.next()));
-		}
-
-		return availableCards;
 	}
 	
 }//end Remodel_Card

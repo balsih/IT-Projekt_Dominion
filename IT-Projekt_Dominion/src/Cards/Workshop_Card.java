@@ -2,10 +2,14 @@ package Cards;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import Messages.Interaction;
 import Messages.UpdateGame_Message;
 import Server_GameLogic.Game;
+import Server_GameLogic.GameMode;
 import Server_GameLogic.Player;
 
 /**
@@ -34,40 +38,36 @@ public class Workshop_Card extends Card {
 		
 		Game game = player.getGame();
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
-				
+		
+		List<CardName> list = game.getBuyCards().keySet().stream()
+				.filter(cardName -> (Card.getCard(cardName).getCost() <= 4) && (game.getBuyCards().get(cardName) > 0))
+				.collect(Collectors.toList());
+		
+		LinkedList<CardName> availableCards = new LinkedList<CardName>();
+		availableCards.addAll(list);
+		
 		ugmsg.setLog(player.getPlayerName()+": played "+this.cardName.toString()+" card");
 		player.sendToOpponent(player, ugmsg); // info for opponent
-				
+			
 		// update game Messages -> XML 
 		ugmsg.setActions(player.getActions());
 		ugmsg.setBuys(player.getBuys());
 		ugmsg.setCoins(player.getCoins());
-				
+		ugmsg.setCardSelection(availableCards);
 		return ugmsg;
 	}
 	
 	
-	public UpdateGame_Message executeWorkshop(CardName cardName) {
-		UpdateGame_Message ugmsg = (UpdateGame_Message) player.buy(cardName);
-
+	public UpdateGame_Message executeWorkshop(Card selectedCard) {
+		UpdateGame_Message ugmsg = new UpdateGame_Message();
+		this.player.getHandCards().add(this.player.pick(selectedCard.getCardName()));
+		
+		ugmsg.setLog(player.getPlayerName()+": picked "+selectedCard.getCardName().toString()+" card");
+		
+		// update game Messages -> XML 
+		ugmsg.setNewHandCards(player.getHandCards());
+		
 		return ugmsg;
 	}
 	
-	/**
-	 * @author Bodo Gruetter
-	 * 
-	 * @param the from the player discarded Card
-	 * @return a linkedlist with all available cards
-	 */
-	public LinkedList<Card> getAvailableWorkshopCards(Card discardedCard, Interaction interaction) {
-		LinkedList<Card> availableCards = new LinkedList<Card>();
-		Iterator<CardName> keyIterator = game.getBuyCards().keySet().iterator();
-
-		while (keyIterator.hasNext()) {
-			if (Card.getCard(keyIterator.next()).getCost() <= 4)
-				availableCards.add(Card.getCard(keyIterator.next()));
-		}
-
-		return availableCards;
-	}
 }//end Workshop_Card

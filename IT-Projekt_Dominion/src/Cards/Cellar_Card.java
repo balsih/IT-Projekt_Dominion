@@ -50,9 +50,19 @@ public class Cellar_Card extends Card {
 	}
 	
 	public UpdateGame_Message executeCellar(LinkedList<Card> discardedCards) {
-		UpdateGame_Message ugmsg = this.player.discard(discardedCards);
-
-		return UpdateGame_Message.merge(this.player.draw(discardedCards.size()), ugmsg);
+		UpdateGame_Message ugmsg = new UpdateGame_Message();
+		
+		int numDiscardedCards = discardedCards.size();
+		this.player.getHandCards().removeAll(discardedCards);
+		while(!discardedCards.isEmpty()){
+			this.player.getDiscardPile().push(discardedCards.removeFirst());
+		}
+		
+		ugmsg.setLog(player.getPlayerName()+": picked "+discardedCards.size()+" cards"); // how many card have been picked 
+		
+		ugmsg = this.player.draw(numDiscardedCards);
+		
+		return ugmsg;
 		
 		// ev noch log ergänzen
 	}
