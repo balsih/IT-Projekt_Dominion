@@ -102,6 +102,8 @@ public abstract class Card {
 		case Workshop:
 			card = new Workshop_Card();
 			break;
+		case Flipside:
+			card = new Flipside_Card();
 		}
 		card.setImage(ServiceLocator.getServiceLocator().getGallery().getImage(t.getString(cardName.toString())));
 		return card;

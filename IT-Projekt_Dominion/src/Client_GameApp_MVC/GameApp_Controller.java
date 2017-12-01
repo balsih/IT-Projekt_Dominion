@@ -3,6 +3,8 @@ package Client_GameApp_MVC;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import Abstract_MVC.Controller;
 import Cards.Card;
@@ -12,6 +14,8 @@ import Client_Services.ServiceLocator;
 import Client_Services.Translator;
 import MainClasses.Dominion_Main;
 import Messages.AskForChanges_Message;
+import Messages.Commit_Message;
+import Messages.CreateGame_Message;
 import Messages.GameMode_Message;
 import Messages.Interaction;
 import Messages.Message;
@@ -150,12 +154,12 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 				Message msgIn = model.processMessage(new AskForChanges_Message());
 
-				if (msgIn.getType().equals(MessageType.Commit)) {
+				if (msgIn instanceof Commit_Message) {
 					// nothing toDo here
 
-				} else if (msgIn.getType().equals(MessageType.UpdateGame)) {
+				} else if (msgIn instanceof UpdateGame_Message) {
 					model.processUpdateGame(msgIn);
-
+					
 					// Updates the log
 					if(model.newLog != null){
 						String existingLog = view.txtaLog.getText();
@@ -204,15 +208,9 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 					//					
 					//					// Updates the number of current deck cards
 					//					view.lblNmbrOfDeckCards.setText(value);
-					//					
-					//					// Update the number of action cards, treasure cards and victory cards
-					//					Card card = card.getCard(CardName.Cellar);
-					//					model.buyCards.keySet().stream()
-					//					.filter(card -> card.getType()
-
-					for (Object value : model.buyCards.keySet()){
-						Card card = card.getCard(CardName.Cellar);
-					}
+					
+					// Update the number of action cards, treasure cards and victory cards
+					model.buyCards.get(CardName.Cellar); // number of Cellar Cards in buy cards
 
 					//					view.lblNmbrOfCellarCards.setText();
 					//					view.lblNmbrOfMarketCards.setText();
@@ -231,7 +229,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 					//					view.lblNmbrOfEstateCards.setText();
 					//					view.lblNmbrOfProvinceCards.setText();
 
-				} else if (msgIn.getType().equals(MessageType.CreateGame)) {
+				} else if (msgIn instanceof CreateGame_Message) {
 					model.processCreateGame(msgIn);
 
 					// Sets the current phase
@@ -289,21 +287,57 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 						view.hboxHandCards.getChildren().add(card.getImage());
 					}
 
-					// Adds deck card
-					// nur Rückseite der Karte!
-					view.stackpDeck.getChildren().add(CardName.);
+					// Adds deck flipside card
+					Card flipsideCard = Card.getCard(CardName.Flipside);
+					view.stackpDeck.getChildren().add(flipsideCard.getImage());
 
-					// Adds buy cards to the panes					
-					//					model.buyCards.keySet().stream()
-					//					.filter
+					// Adds Action cards
+					Card cellarCard = Card.getCard(CardName.Cellar);
+					view.vboxCellarCards.getChildren().add(0, cellarCard.getImage());	
+					
+					Card marketCard = Card.getCard(CardName.Market);
+					view.vboxMarketCards.getChildren().add(0, marketCard.getImage());
 
-					for (Object cardName : model.buyCards.values()){
-						//						// Card card = card.getCard();
-						//						ImageView img1 = new ImageView();
-						//						img1 = card.getImage();
+					Card remodelCard = Card.getCard(CardName.Remodel);
+					view.vboxRemodelCards.getChildren().add(0, remodelCard.getImage());
+
+					Card smithyCard = Card.getCard(CardName.Smithy);
+					view.vboxSmithyCards.getChildren().add(0, smithyCard.getImage());
+
+					Card woodcutterCard = Card.getCard(CardName.Woodcutter);
+					view.vboxWoodcutterCards.getChildren().add(0, woodcutterCard.getImage());
+				
+					Card workshopCard = Card.getCard(CardName.Workshop);
+					view.vboxWorkshopCards.getChildren().add(0, workshopCard.getImage());
+					
+					Card mineCard = Card.getCard(CardName.Mine);
+					view.vboxMineCards.getChildren().add(0, mineCard.getImage());
+					
+					Card villageCard = Card.getCard(CardName.Village);
+					view.vboxVillageCards.getChildren().add(0, villageCard.getImage());
+					
+					// Adds Treasure cards
+					Card goldCard = Card.getCard(CardName.Gold);
+					view.vboxGoldCards.getChildren().add(0, goldCard.getImage());
+					
+					Card silverCard = Card.getCard(CardName.Silver);
+					view.vboxSilverCards.getChildren().add(0, silverCard.getImage());
+					
+					Card copperCard = Card.getCard(CardName.Copper);
+					view.vboxCopperCards.getChildren().add(0, copperCard.getImage());
+					
+					// Adds Victory cards
+					Card duchyCard = Card.getCard(CardName.Duchy);
+					view.vboxDuchyCards.getChildren().add(0, duchyCard.getImage());
+					
+					Card estateCard = Card.getCard(CardName.Estate);
+					view.vboxEstateCards.getChildren().add(0, estateCard.getImage());
+					
+					Card provinceCard = Card.getCard(CardName.Province);
+					view.vboxProvinceCards.getChildren().add(0, provinceCard.getImage());
 					}
 
-				} else if (msgIn.getType().equals(MessageType.PlayerSuccess)) {
+				} else if (msgIn instanceof PlayerSuccess_Message) {
 					PlayerSuccess_Message psmsg = (PlayerSuccess_Message) msgIn;
 					// main.startSuccess(psmsg.getSuccess());
 					// Spieler hat gewonnen: z. B. in Log anzeigen oder Bild anzeigen

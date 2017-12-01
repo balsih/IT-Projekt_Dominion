@@ -20,7 +20,8 @@ public enum CardName {
 	Smithy,
 	Village,
 	Woodcutter,
-	Workshop;
+	Workshop,
+	Flipside;
 	
 	/**
 	 * @author Bradley Richards
