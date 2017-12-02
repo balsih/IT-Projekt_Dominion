@@ -27,8 +27,10 @@ public class DB_Connector {
 	private ResultSet rs;
 
 	/**
-	 * @author Bodo Gruetter The constructor creates a connection to the
-	 *         database and if creates if not exists the database structure.
+	 * @author Bodo Gruetter
+	 * 
+	 * The constructor creates a connection to the
+	 * database and if creates if not exists the database structure.
 	 * 
 	 */
 	protected DB_Connector() {
@@ -37,13 +39,14 @@ public class DB_Connector {
 	}
 
 	/**
-	 * @author Bodo Gruetter creates a new user in database with a username as
-	 *         primary key and a password if not already exists.
+	 * @author Bodo Gruetter
 	 * 
-	 * @param the
-	 *            username and the password, which a new player inserts into the
-	 *            login window.
-	 * @return true or false depending on the username already exists.
+	 * Creates a new user in database with a username as
+	 * primary key and a password if not already exists.
+	 * 
+	 * @param username - the username of a new player
+	 * @param password - the password of a new player
+	 * @return Boolean - depending on if the username already exists.
 	 */
 	public boolean addNewPlayer(String username, String password) {
 		try {
@@ -65,12 +68,14 @@ public class DB_Connector {
 	}
 
 	/**
-	 * @autor Bodo Gruetter inserts an existing player with his score of a game
-	 *        into the database.
+	 * @autor Bodo Gruetter
 	 * 
-	 * @param the
-	 *            existing player and the achieved score in a game.
-	 * @return true or false depending on the insert statement works.
+	 * Inserts an existing player with his score of a game
+	 * into the database.
+	 * 
+	 * @param player - the existing player
+	 * @param score - the achieved score in a game.
+	 * @return Boolean - depending on if the insert statement works.
 	 */
 	public boolean addScore(Player player, int score) {
 		try {
@@ -91,11 +96,12 @@ public class DB_Connector {
 	}
 
 	/**
-	 * @author Bodo Gruetter deletes an existing player from the database.
+	 * @author Bodo Gruetter
 	 * 
-	 * @param username
-	 *            of the player which should been deleted.
-	 * @return true or false depending on the delete statement works.
+	 * Deletes an existing player from the database.
+	 * 
+	 * @param username - the username of the player which should been deleted.
+	 * @return Boolean - depending on the delete statement works.
 	 */
 	public boolean deletePlayer(String username) {
 		try {
@@ -116,11 +122,12 @@ public class DB_Connector {
 	}
 	
 	/**
-	 * @author Bodo Gruetter deletes an existing player_Scoring from the database.
+	 * @author Bodo Gruetter
 	 * 
-	 * @param username
-	 *            of the player which should been deleted.
-	 * @return true or false depending on the delete statement works.
+	 * Deletes an existing player_Scoring from the database.
+	 * 
+	 * @param username - the username of the player which should been deleted.
+	 * @return Boolean - depending on the delete statement works.
 	 */
 	public boolean deletePlayer_Scoring(String username){
 		try{
@@ -137,9 +144,11 @@ public class DB_Connector {
 	}
 
 	/**
-	 * @author Bodo Gruetter selects the 5 highscores in the database
+	 * @author Bodo Gruetter
 	 * 
-	 * @return the 5 highscores
+	 * Selects the 5 highscores in the database
+	 * 
+	 * @return highScore - the 5 best players with their score.
 	 */
 	public String getHighScore() {
 		String selectHighScore = "Select Username, Score from Player_Scoring order by Score desc limit 0,5";
@@ -163,9 +172,11 @@ public class DB_Connector {
 	}
 
 	/**
-	 * @author Bodo Gruetter creates a new instance of database if not exists
+	 * @author Bodo Gruetter
 	 * 
-	 * @return existing connector
+	 * Creates a new instance of database if not exists
+	 * 
+	 * @return connector - an existing connector
 	 */
 	public static DB_Connector getDB_Connector() {
 		if (connector == null) {
@@ -175,10 +186,12 @@ public class DB_Connector {
 	}
 
 	/**
-	 * @author Bodo Gruetter creates the database schema with two tables if no
-	 *         database exists.
+	 * @author Bodo Gruetter
 	 * 
-	 * @return true or false depending on the create table statement works.
+	 * Creates the database schema with two tables if no
+	 * database exists.
+	 * 
+	 * @return Boolean - depending on the create table statement works.
 	 */
 	private boolean createDBStructure() {
 		try {
@@ -199,8 +212,10 @@ public class DB_Connector {
 	}
 
 	/**
-	 * @author Bodo Gruetter creates Connection with DB on Server, and creates
-	 *         DB_Dominion in workspace of actual user if not exists.
+	 * @author Bodo Gruetter
+	 * 
+	 * Creates Connection with DB on Server, and creates
+	 * DB_Dominion in workspace of actual user if not exists.
 	 * 
 	 * @return true or false depending on the connection could been created.
 	 */
