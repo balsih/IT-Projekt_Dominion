@@ -15,7 +15,6 @@ public class Gold_Card extends Treasure_Card {
 	public Gold_Card(){
 		this.cardName = CardName.Gold;
 		this.cost = 6;
-		this.type = CardType.Treasure;
 		this.coinValue = 3;
 	}
 

@@ -62,32 +62,10 @@ public class Splash_View extends View<Splash_Model> {
 		root.setAlignment(Pos.CENTER);
 		
 		
-		
-		
-		
-		
-		//root.setCenter(vBox);
-		
-		//vBox.setVgrow(lblStatus, Priority.ALWAYS);
-		
-		
-		
-		//vBox.setSpacing(180);
-		
-		// -fx-background-image: url("loading.jpg");
-
-       
-		//vBox.getChildren().addAll(lblStatus, progress);
-		
         
         Scene scene = new Scene(root, 300, 300);
-        //Scene scene = new Scene(root, 300, 300, Color.TRANSPARENT);
-        //Scene scene = new Scene(root);
-        scene.getStylesheets().addAll(this.getClass().getResource("Splash.css").toExternalForm());
         
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
-	    
+        scene.getStylesheets().addAll(this.getClass().getResource("Splash.css").toExternalForm());
 		
         return scene;
 	}

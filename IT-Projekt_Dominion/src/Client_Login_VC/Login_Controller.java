@@ -31,7 +31,7 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 			try {
 				if (!view.ipText.getText().isEmpty() && !view.portText.getText().isEmpty()) {
 					boolean ipAdresse = model.checkUserInput(view.ipText.getText(), UserInput.ipAddress); 
-					boolean portNumber = model.checkUserInput(view.portText.getText(), UserInput.ipAddress);
+					boolean portNumber = model.checkUserInput(view.portText.getText(), UserInput.clientName); // provisorisch
 					view.connectBtn.setDisable(!(ipAdresse && portNumber));
 				} else {
 					view.connectBtn.setDisable(true);
@@ -46,8 +46,8 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 		view.portText.textProperty().addListener((change) -> {
 			try {
 				if (!view.ipText.getText().isEmpty() && !view.portText.getText().isEmpty()) {
-					boolean ipAdresse = model.checkUserInput(view.ipText.getText(), UserInput.clientName);// UserInput Type nur provisorisch
-					boolean portNumber = model.checkUserInput(view.portText.getText(), UserInput.clientName);// UserInput Type nur provisorisch
+					boolean ipAdresse = model.checkUserInput(view.ipText.getText(), UserInput.ipAddress);
+					boolean portNumber = model.checkUserInput(view.portText.getText(), UserInput.clientName); // provisorisch
 					view.connectBtn.setDisable(!(ipAdresse && portNumber));
 				} else {
 					view.connectBtn.setDisable(true);

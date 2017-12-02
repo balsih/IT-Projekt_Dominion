@@ -42,7 +42,7 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 	protected TextField passwordText;
 	
 	protected Label languageSelectLbl;
-	protected ComboBox languageSelectComboBox;
+	protected ComboBox<String> languageSelectComboBox;
 		
 	protected Button saveBtn;
 	protected Button backBtn;
@@ -99,9 +99,9 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		languageSelectLbl.setId("languageSelectLbl");
 
 		ObservableList<String> language = FXCollections.observableArrayList(t.getString("program.german"), t.getString("program.english"));
-		
-		languageSelectComboBox = new ComboBox(language);
+		languageSelectComboBox = new ComboBox<String>(language);
 		languageSelectComboBox.setValue(language.get(0)); // set default value -> German 
+		//languageSelectComboBox.setPromptText(""); -> wird angezeigt vor erster Auswahl, z.B. "Sprache wählen"
 		languageSelectComboBox.setTooltip(new Tooltip(t.getString("program.languageTip")));
 		languageSelectComboBox.setPrefSize(280.0, 30.0);
 		languageBox.getChildren().addAll(languageSelectLbl, languageSelectComboBox);
@@ -127,17 +127,6 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		// centerBox.getChildren().addAll(createNewPlayer, nameBox, passwordBox, buttonBox); // -> ohne Sprachauswahl 
 		root.getChildren().add(centerBox);
 		
-		
-//		// https://panjutorials.de/tutorials/javafx-8-gui/lektionen/audio-player-in-javafx-2/?cache-flush=1510439948.4916 
-//		// hier legen wir die Resource an, welche unbedingt im entsprechenden Ordner sein muss
-//		final URL resource = getClass().getResource("sound.mp3");
-//		// wir legen das Mediaobjekt and und weisen unsere Resource zu
-//		final Media media = new Media(resource.toString());
-//		// wir legen den Mediaplayer an und weisen ihm das Media Objekt zu
-//		final MediaPlayer mediaPlayer = new MediaPlayer(media);
-//		
-//		mediaPlayer.play();
-//		//mediaPlayer.stop();
 		
 		
 		Scene scene = new Scene(root);	

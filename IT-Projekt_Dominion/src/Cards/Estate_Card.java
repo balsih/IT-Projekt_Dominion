@@ -15,7 +15,6 @@ public class Estate_Card extends Victory_Card {
 	public Estate_Card(){
 		this.cardName = CardName.Estate;
 		this.cost = 2;
-		this.type = CardType.Victory;
 		this.victoryPoints = 1;
 	}
 

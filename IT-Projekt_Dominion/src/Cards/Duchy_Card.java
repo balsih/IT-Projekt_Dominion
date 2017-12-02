@@ -15,7 +15,6 @@ public class Duchy_Card extends Victory_Card {
 	public Duchy_Card(){
 		this.cardName = CardName.Duchy;
 		this.cost = 5;
-		this.type = CardType.Victory;
 		this.victoryPoints = 3;
 	}
 
