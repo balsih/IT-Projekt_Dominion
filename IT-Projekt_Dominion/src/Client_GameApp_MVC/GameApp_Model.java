@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 import Abstract_MVC.Model;
 import Cards.Card;
 import Cards.CardName;
+import Cards.CardType;
 import Client_Services.ServiceLocator;
 import Client_Services.Translator;
 import MainClasses.Dominion_Main;
@@ -46,7 +47,7 @@ import javafx.scene.media.MediaPlayer;
  */
 public class GameApp_Model extends Model {
 
-	private final String NO_CONNECTION = "No connection to Server";
+	private final String NO_CONNECTION = "NoConnection";
 	private final String TRANSLATE_REGEX = "#[\\w\\s]*#";
 
 	private ServiceLocator sl = ServiceLocator.getServiceLocator();
@@ -56,9 +57,9 @@ public class GameApp_Model extends Model {
 	public String opponent;
 	public String currentPlayer;
 
-	public int actions;
-	public int buys;
-	public int coins;
+	public int actions = 1;
+	public int buys = 1;
+	public int coins = 0;
 
 	public LinkedList<Card> yourNewHandCards;
 	public LinkedList<Card> yourHandCards;
@@ -411,7 +412,7 @@ public class GameApp_Model extends Model {
 		return update;
 	}
 
-	/**
+	/**TESTED
 	 * @author Lukas
 	 * The clients sends a Chat_Message to the opponent. The chat of the client will also be sent to server and back.
 	 * 
@@ -444,6 +445,7 @@ public class GameApp_Model extends Model {
 
 		switch(this.interaction){
 		case Skip:
+			//skip is already set in this.interaction, nothing toDo here
 			break;
 		case EndOfTurn:
 			imsg.setDiscardCard(this.discardCard);
@@ -498,6 +500,7 @@ public class GameApp_Model extends Model {
 		this.opponentDeck = cgmsg.getDeckNumber();
 		this.opponentHandCards = cgmsg.getHandNumber();
 		this.currentPlayer = cgmsg.getStartingPlayer();
+		this.currentPhase = cgmsg.getPhase();
 		for(int i = 0; i < cgmsg.getDeckPile().size(); i++){
 			this.yourDeck.add(cgmsg.getDeckPile().pop());
 		}
@@ -516,7 +519,7 @@ public class GameApp_Model extends Model {
 	}
 
 
-	/**
+	/**MOSTLY TESTED
 	 * @author Lukas
 	 * Interpret all updates and provides structures for further work
 	 * 
@@ -577,11 +580,13 @@ public class GameApp_Model extends Model {
 		if(ugmsg.getCurrentPlayer() != null){
 			if(ugmsg.getCurrentPlayer() != this.currentPlayer){
 				this.turnEnded = true;
+				
 				if(ugmsg.getCurrentPlayer() == this.opponent){//if it was your turn that ended
 					for(int i = 0; i < this.playedCards.size(); i++)
 						this.yourDiscardPile.add(this.playedCards.remove(i));
 					for(int j = 0; j < this.yourHandCards.size(); j++)
 						this.yourDiscardPile.add(this.yourHandCards.remove(j));
+					
 				}else{//if it was your opponents turn that ended
 					this.playedCards.clear();
 				}

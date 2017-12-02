@@ -280,20 +280,18 @@ public class ServerThreadForClient implements Runnable {
 	protected CreateGame_Message getCG_Message(Game game){
 		CreateGame_Message cgmsg = new CreateGame_Message();
 		cgmsg.setBuyCards(game.getBuyCards());
-		//just for testing
-		LinkedList<Card> handCards = this.player.getHandCards();
-		handCards.add(new Mine_Card());
-		cgmsg.setHandCards(handCards);
+		cgmsg.setHandCards(this.player.getHandCards());
 		cgmsg.setDeckPile(this.player.getDeckPile());
 		cgmsg.setOpponent(game.getOpponent(this.player).getPlayerName());
 		cgmsg.setDeckNumber(game.getOpponent(this.player).getDeckPile().size());
 		cgmsg.setHandNumber(game.getOpponent(this.player).getHandCards().size());
 		cgmsg.setStartingPlayer(game.getCurrentPlayer().getPlayerName());
+		cgmsg.setPhase(this.player.getActualPhase());
 		return cgmsg;
 	}
 
 
-	/**
+	/**TESTED
 	 * @author Lukas
 	 * The Chat_Message wrote by client has to be sent to opponent.
 	 * Addes the clientName to the Chat for better reading
@@ -308,7 +306,7 @@ public class ServerThreadForClient implements Runnable {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		ugmsg.setChat(chat);
 		this.player.sendToOpponent(this.player, ugmsg);
-		this.logger.info(cmsg.getClient()+" has sent chat to"+this.game.getOpponent(this.player).getPlayerName()+": "+cmsg.getChat());
+		this.logger.info(cmsg.getClient()+" has sent chat to "+this.game.getOpponent(this.player).getPlayerName()+": "+cmsg.getChat());
 		return ugmsg;
 	}
 

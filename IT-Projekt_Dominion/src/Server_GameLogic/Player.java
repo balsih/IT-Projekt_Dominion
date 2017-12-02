@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import Cards.Card;
 import Cards.CardName;
 import Cards.CardType;
+import Cards.Mine_Card;
 import Messages.GameSuccess;
 import Messages.Failure_Message;
 import Messages.Interaction;
@@ -107,13 +108,13 @@ public class Player {
 		int index = this.handCards.indexOf(selectedCard);
 		playedCards.add(this.handCards.remove(index));
 		
-		if(selectedCard.getCardName().equals(CardName.Mine)
-			&& !this.containsCard(this.handCards, CardName.Copper) || !this.containsCard(this.handCards, CardName.Silver))
+		if(selectedCard.getCardName().equals(CardName.Mine) && 
+				(!(this.containsCard(this.handCards, CardName.Copper) || (this.containsCard(this.handCards, CardName.Silver)))))
 			return fmsg;
 		else if (selectedCard.getCardName().equals(CardName.Remodel) && this.handCards.size() == 0)
 			return fmsg;
 		else if (selectedCard.getCardName().equals(CardName.Cellar) && this.handCards.size() == 0)
-			ugmsg.setInteractionType(null);
+			return fmsg;
 			
 
 		// Executes the clicked Card, if the player has enough actions

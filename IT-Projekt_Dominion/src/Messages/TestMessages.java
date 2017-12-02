@@ -48,12 +48,23 @@ public class TestMessages {
 	
 
 	public static void main(String[] args) {
-//		GameApp_Model model = new GameApp_Model(new Dominion_Main());
-//		model.init("127.0.0.1", 8008);
-//		model.setClientName("Lukas");
-//		checkPlayActionCard(model);
-//		testUpdateGame_Message();
-
+		GameApp_Model model = new GameApp_Model(new Dominion_Main());
+		model.init("127.0.0.1", 8080);
+		model.setClientName("Lukas");
+		sendGameMode(GameMode.Singleplayer, model);
+		askForChanges(model);
+		if(model.currentPlayer.compareTo(model.clientName) == 0){
+			for(Card card: model.yourNewHandCards){
+				if(card.getType() == CardType.Treasure){
+					System.out.println("you reached to Play: "+card.toString());
+					if(model.sendPlayCard(card))
+						System.out.println("update received");
+				}
+			}
+			System.out.println("You have "+model.coins+" coins!");
+		}else{
+			System.out.println("you're not currentPlayer, try again");
+		}
 	}
 
 	
