@@ -303,8 +303,8 @@ public class Game {
 			game.startGame();
 			game.gameMode = GameMode.Singleplayer;
 			
-			game.getPlayer1().getServerThreadForClient()
-					.addWaitingMessages(game.getPlayer1().getServerThreadForClient().getCG_Message(game));
+//			game.getPlayer1().getServerThreadForClient()
+//					.addWaitingMessages(game.getPlayer1().getServerThreadForClient().getCG_Message(game));
 			game.logger.info(game.player1.getPlayerName() + " started a singleplayer game");
 			return game;
 		}

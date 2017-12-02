@@ -106,9 +106,6 @@ public class Player {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		Failure_Message fmsg = new Failure_Message();
 		
-		int index = this.handCards.indexOf(selectedCard);
-		playedCards.add(this.handCards.remove(index));
-		
 		if(selectedCard.getCardName().equals(CardName.Mine) && 
 				(!(this.containsCard(this.handCards, CardName.Copper) || (this.containsCard(this.handCards, CardName.Silver)))))
 			return fmsg;
@@ -116,6 +113,9 @@ public class Player {
 			return fmsg;
 		else if (selectedCard.getCardName().equals(CardName.Cellar) && this.handCards.size() == 0)
 			return fmsg;
+		
+		int index = this.handCards.indexOf(selectedCard);
+		playedCards.add(this.handCards.remove(index));
 			
 
 		// Executes the clicked Card, if the player has enough actions
@@ -379,6 +379,7 @@ public class Player {
 				game.switchPlayer();
 				ugmsg.setCurrentPlayer(game.getCurrentPlayer().getPlayerName());
 				ugmsg.setCurrentPhase(Phase.Action);
+				ugmsg.setInteractionType(Interaction.EndOfTurn);
 				break;
 
 			default:
