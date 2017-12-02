@@ -5,6 +5,7 @@ import Client_Services.ServiceLocator;
 import Client_Services.Translator;
 import Messages.GameMode_Message;
 import Server_GameLogic.GameMode;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -28,7 +29,7 @@ public class GameApp_View extends View<GameApp_Model> {
 	// Translates GUI-text
 	private ServiceLocator sl;
 
-	// Controls Action cards area
+	// Controls action cards area
 	protected Label lblActionCards;
 	protected GridPane gridpActionCards = new GridPane();
 	protected Label lblNmbrOfCellarCards = new Label();
@@ -50,7 +51,7 @@ public class GameApp_View extends View<GameApp_Model> {
 	protected VBox vboxMineCards = new VBox(1, lblNmbrOfMineCards);
 	protected VBox vboxVillageCards = new VBox(1, lblNmbrOfVillageCards);
 
-	// Controls Treasure cards area
+	// Controls treasure cards area
 	protected Label lblTreasureCards;
 	protected HBox hboxTreasureCards = new HBox();
 	protected Label lblNmbrOfGoldCards = new Label();
@@ -62,7 +63,7 @@ public class GameApp_View extends View<GameApp_Model> {
 	protected VBox vboxSilverCards = new VBox(1, lblNmbrOfSilverCards);
 	protected VBox vboxCopperCards = new VBox(1, lblNmbrOfCopperCards);
 
-	// Controls Victory cards area
+	// Controls victory cards area
 	protected Label lblVictoryCards;
 	protected HBox hboxVictoryCards = new HBox();
 	protected Label lblNmbrOfDuchyCards = new Label();
@@ -88,12 +89,10 @@ public class GameApp_View extends View<GameApp_Model> {
 
 	// Controls discard area
 	protected Label lblDiscard;
-	protected Label lblNmbrOfDiscards = new Label();
 	protected StackPane stackpDiscard = new StackPane();
 
 	// Controls deck area
 	protected Label lblDeck;
-	protected Label lblNmbrOfDeckCards = new Label();
 	protected StackPane stackpDeck = new StackPane();
 
 	// Controls played cards area
@@ -112,6 +111,10 @@ public class GameApp_View extends View<GameApp_Model> {
 	protected Label lblCurrentPhase = new Label();
 	protected Label lblCrntHandCards;
 	protected Label lblNmbrOfCrntHandCards = new Label();
+	protected Label lblCrntDeckCards;
+	protected Label lblNmbrOfCrntDeckCards = new Label();
+	protected Label lblCrntDiscardCards;
+	protected Label lblNmbrOfCrntDiscards = new Label();
 	protected Label lblCrntActions;
 	protected Label lblNmbrOfCrntActions = new Label();
 	protected Label lblCrntBuys;
@@ -172,13 +175,11 @@ public class GameApp_View extends View<GameApp_Model> {
 
 		// Discard area
 		lblDiscard = new Label(t.getString("discard.lblDiscard")); // Discard
-		HBox hboxDiscard = new HBox(lblDiscard, lblNmbrOfDiscards);
-		VBox vboxDiscard = new VBox(hboxDiscard, stackpDiscard);
+		VBox vboxDiscard = new VBox(lblDiscard, stackpDiscard);
 
 		// Deck area
 		lblDeck = new Label(t.getString("deck.lblDeck")); // Deck
-		HBox hboxDeck = new HBox(lblDeck, lblNmbrOfDeckCards);
-		VBox vboxDeck = new VBox(hboxDeck, stackpDeck);
+		VBox vboxDeck = new VBox(lblDeck, stackpDeck);
 
 		// Played cards area
 		lblPlayedCards = new Label(t.getString("played.lblPlayedCards")); // Played cards
@@ -192,23 +193,32 @@ public class GameApp_View extends View<GameApp_Model> {
 
 		// Current player area
 		lblCurrentPlayer = new Label(t.getString("current.lblCurrentPlayer")); // Current player:
-		lblCrntHandCards = new Label(t.getString("current.lblCrntHandCards")); // Hand cards (current player)
-		lblCrntActions = new Label(t.getString("current.lblCrntActions")); // Actions (current player)
-		lblCrntBuys = new Label(t.getString("current.lblCrntBuys")); // Buys (current player)
-		lblCrntCoins = new Label(t.getString("current.lblCrntCoins")); // Coins (current player)
+		lblCrntHandCards = new Label(t.getString("current.lblCrntHandCards")); // Hand cards
+		lblCrntDeckCards = new Label(t.getString("current.lblCrntDeckCards")); // Deck cards
+		lblCrntDiscardCards = new Label (t.getString("current.lblCrntDiscardCards")); // Discard cards
+		lblCrntActions = new Label(t.getString("current.lblCrntActions")); // Actions
+		lblCrntBuys = new Label(t.getString("current.lblCrntBuys")); // Buys
+		lblCrntCoins = new Label(t.getString("current.lblCrntCoins")); // Coins
 		btnCommit = new Button(t.getString("current.btnCommit")); // Commit
+		
 		GridPane gridpCurrentPlayer = new GridPane();
 		gridpCurrentPlayer.add(lblCrntHandCards, 0, 0);
 		gridpCurrentPlayer.add(lblNmbrOfCrntHandCards, 1, 0);
-		gridpCurrentPlayer.add(lblCrntActions, 0, 1);
-		gridpCurrentPlayer.add(lblNmbrOfCrntActions, 1, 1);
-		gridpCurrentPlayer.add(lblCrntBuys, 0, 2);
-		gridpCurrentPlayer.add(lblNmbrOfCrntBuys, 1, 2);
-		gridpCurrentPlayer.add(lblCrntCoins, 0, 3);
-		gridpCurrentPlayer.add(lblNmbrOfCrntCoins, 1, 3);
+		gridpCurrentPlayer.add(lblCrntDeckCards, 0, 1);
+		gridpCurrentPlayer.add(lblNmbrOfCrntDeckCards, 1, 1);
+		gridpCurrentPlayer.add(lblCrntDiscardCards, 0, 2);
+		gridpCurrentPlayer.add(lblNmbrOfCrntDiscards, 1, 2);
+		gridpCurrentPlayer.add(lblCrntActions, 0, 3);
+		gridpCurrentPlayer.add(lblNmbrOfCrntActions, 1, 3);
+		gridpCurrentPlayer.add(lblCrntBuys, 0, 4);
+		gridpCurrentPlayer.add(lblNmbrOfCrntBuys, 1, 4);
+		gridpCurrentPlayer.add(lblCrntCoins, 0, 5);
+		gridpCurrentPlayer.add(lblNmbrOfCrntCoins, 1, 5);
 
 		HBox hboxCurrentPlayer = new HBox(lblCurrentPlayer, lblNameOfCurrentPlayer, lblCurrentPhase);
-		VBox vboxCurrentPlayer = new VBox(hboxCurrentPlayer, gridpCurrentPlayer, btnCommit);
+		HBox hboxContentCurrentPlayer = new HBox (gridpCurrentPlayer, btnCommit);
+		hboxContentCurrentPlayer.setAlignment(Pos.BOTTOM_LEFT);
+		VBox vboxCurrentPlayer = new VBox(hboxCurrentPlayer, hboxContentCurrentPlayer);
 
 		// Root
 		GridPane root = new GridPane();
@@ -257,10 +267,8 @@ public class GameApp_View extends View<GameApp_Model> {
 		vboxLog.getStyleClass().add("vbox");
 		vboxLog.setPrefWidth(150);
 
-		hboxDiscard.getStyleClass().add("hbox");
 		vboxDiscard.getStyleClass().add("vbox");
 
-		hboxDeck.getStyleClass().add("hbox");
 		vboxDeck.getStyleClass().add("vbox");
 
 		vboxPlayedCards.getStyleClass().add("vbox");
@@ -276,10 +284,15 @@ public class GameApp_View extends View<GameApp_Model> {
 
 		// Special styling for Current player area
 		hboxCurrentPlayer.getStyleClass().add("hbox");
+		hboxContentCurrentPlayer.getStyleClass().add("hbox");
 		vboxCurrentPlayer.getStyleClass().add("vboxCurrentPlayer");
 		gridpCurrentPlayer.getStyleClass().add("gridpCurrentPlayer");
 		lblCrntHandCards.getStyleClass().add("lblCurrentPlayer");
 		lblNmbrOfCrntHandCards.getStyleClass().add("lblCurrentPlayer");
+		lblCrntDeckCards.getStyleClass().add("lblCurrentPlayer");
+		lblNmbrOfCrntDeckCards.getStyleClass().add("lblCurrentPlayer");
+		lblCrntDiscardCards.getStyleClass().add("lblCurrentPlayer");
+		lblNmbrOfCrntDiscards.getStyleClass().add("lblCurrentPlayer");
 		lblCrntActions.getStyleClass().add("lblCurrentPlayer");
 		lblNmbrOfCrntActions.getStyleClass().add("lblCurrentPlayer");
 		lblCrntBuys.getStyleClass().add("lblCurrentPlayer");
@@ -294,9 +307,9 @@ public class GameApp_View extends View<GameApp_Model> {
 		// Prevent resizing below initial size
 		stage.setMinWidth(stage.getWidth());
 		stage.setMinHeight(stage.getHeight());
-		// stage.setScene(scene);
-		// stage.setTitle("Dominion");
-		// stage.show();
+		stage.setScene(scene);
+		stage.setTitle("Dominion");
+		stage.show();
 
 		return scene;
 	}
