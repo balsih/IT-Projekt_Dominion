@@ -60,14 +60,11 @@ public class Workshop_Card extends Card {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
 		Card selectedCard = this.player.pick(selectedNameCard);
-		this.player.getHandCards().add(selectedCard);
+		this.player.getDiscardPile().add(selectedCard);
 		
 		ugmsg.setLog(player.getPlayerName()+": #picked# #"+selectedNameCard.toString()+"# #card#");
 		
 		// update game Messages -> XML 
-		LinkedList<Card> newHandCard = new LinkedList<Card>();
-		newHandCard.add(selectedCard);
-		ugmsg.setNewHandCards(newHandCard);
 		if (this.player.getActions() == 0 || !this.player.containsCardType(this.player.getHandCards(), CardType.Action))
 			ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.player.skipPhase(), ugmsg);
 		

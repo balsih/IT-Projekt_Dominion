@@ -72,7 +72,7 @@ public class Remodel_Card extends Card {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 
 		Card pickedCard = this.player.pick(pickedCardName);
-		this.player.getHandCards().add(pickedCard);
+		this.player.getDiscardPile().add(pickedCard);
 		
 		ugmsg.setLog(player.getPlayerName()+": #picked# #"+pickedCardName.toString()+"# #card#");
 		

@@ -13,8 +13,7 @@ import Server_GameLogic.Player;
  * @created 31-Okt-2017 16:58:05
  */
 public class Cellar_Card extends Card {
-
-
+	
 	public Cellar_Card(){
 		this.cardName = CardName.Cellar;
 		this.cost = 2;

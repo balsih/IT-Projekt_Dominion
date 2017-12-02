@@ -294,6 +294,9 @@ public class Player {
 			}
 
 			this.draw(this.NUM_OF_HANDCARDS);
+			
+			if(ugmsg.getDiscardPileTopCard() != this.topCard)
+					ugmsg.setDiscardPileTopCard(this.topCard);
 
 			UpdateGame_Message.merge((UpdateGame_Message) this.skipPhase(), ugmsg);
 			this.sendToOpponent(this, ugmsg);
@@ -332,6 +335,8 @@ public class Player {
 				break;
 			}
 		}
+		
+		this.topCard = this.discardPile.peek();
 
 		ugmsg.setDeckPileCardNumber(this.deckPile.size());
 		ugmsg.setDiscardPileCardNumber(this.discardPile.size());
