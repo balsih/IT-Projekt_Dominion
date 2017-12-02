@@ -27,11 +27,12 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 		
 		
 		// set on action and handling for ipText
-		view.ipText.setOnAction((event) -> {
+		view.ipText.textProperty().addListener((change) -> {
 			try {
-				if (!view.ipText.getText().isEmpty()) {
-					boolean ipAdresse = model.checkUserInput(view.ipText.getText(), UserInput.ipAddress);
-					view.connectBtn.setDisable(!(ipAdresse));
+				if (!view.ipText.getText().isEmpty() && !view.portText.getText().isEmpty()) {
+					boolean ipAdresse = model.checkUserInput(view.ipText.getText(), UserInput.ipAddress); 
+					boolean portNumber = model.checkUserInput(view.portText.getText(), UserInput.ipAddress);
+					view.connectBtn.setDisable(!(ipAdresse && portNumber));
 				} else {
 					view.connectBtn.setDisable(true);
 				}
@@ -41,10 +42,27 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 			}
 		});
 		
+		// set on action and handling for portText
+		view.portText.textProperty().addListener((change) -> {
+			try {
+				if (!view.ipText.getText().isEmpty() && !view.portText.getText().isEmpty()) {
+					boolean ipAdresse = model.checkUserInput(view.ipText.getText(), UserInput.clientName);// UserInput Type nur provisorisch
+					boolean portNumber = model.checkUserInput(view.portText.getText(), UserInput.clientName);// UserInput Type nur provisorisch
+					view.connectBtn.setDisable(!(ipAdresse && portNumber));
+				} else {
+					view.connectBtn.setDisable(true);
+				}
+				// model.doSoSomethingWith setName;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+		
+		
 		// set on action and handling for connectBtn
 		view.connectBtn.setOnAction((event) -> {
 			try {
-				//model.init(view.ipText.getText());
+				model.init(view.ipText.getText(), Integer.parseInt(view.portText.getText()));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -89,9 +107,7 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 		// set on action and handling for loginBtn
 		view.loginBtn.setOnAction((event) -> {
 			try {
-				model.sendLogin(view.nameText.getText(), view.passwordText.getText()); // sends Name and PW
-				//sendLogin(String clientName, String password)
-				// model.doSoSomethingWith loginBtn;
+				model.sendLogin(view.nameText.getText(), view.passwordText.getText()); // sends Name and PW, starts main menu if correct 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

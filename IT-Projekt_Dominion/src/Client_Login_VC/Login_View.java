@@ -36,7 +36,9 @@ public class Login_View extends View<GameApp_Model> {
 	// controls -> accessed by controller 
 	protected Label loginLbl;
 	protected Label ipLbl;
+	protected Label portLbl;
 	protected TextField ipText;
+	protected TextField portText;
 	protected Button connectBtn;
 	
 	protected Label nameLbl;
@@ -87,14 +89,26 @@ public class Login_View extends View<GameApp_Model> {
 		
 		ipLbl = new Label(t.getString("login.ipLbl"));
 		ipLbl.setId("ipLbl");
+		portLbl = new Label(t.getString("login.portLbl"));
+		portLbl.setId("portLbl");
+		HBox ipAndPortLblBox = new HBox(ipLbl, portLbl);
+		ipAndPortLblBox.setId("ipAndPortLblBox");
+		
 		ipText = new TextField();
 		ipText.setId("ipText");
-		ipText.setPrefSize(220.0, 30.0);
+		//ipText.setPrefSize(220.0, 30.0);
+		ipText.setPrefSize(150.0, 30.0);
+		portText = new TextField();
+		portText.setId("portText");
+		portText.setPrefSize(60.0, 30.0);
+		
 		connectBtn = new Button(t.getString("login.connectBtn"));
 		connectBtn.setId("connectBtn");	
-		HBox ipAndConnectBox = new HBox(ipText, connectBtn);
+		connectBtn.setDisable(true);
+		
+		HBox ipAndConnectBox = new HBox(ipText, portText, connectBtn);
 		ipAndConnectBox.setId("ipAndConnectBox");
-		ipBox.getChildren().addAll(ipLbl, ipAndConnectBox);
+		ipBox.getChildren().addAll(ipAndPortLblBox, ipAndConnectBox);
 		
 		nameLbl = new Label(t.getString("login.nameLbl"));
 		nameLbl.setId("nameLbl");

@@ -18,8 +18,14 @@
 	-fx-spacing: 10px;
 }
 
+#ipAndPortLblBox {
+	-fx-spacing: 135px;
+
+}
+
+
 #ipAndConnectBox {
-	-fx-spacing: 20px;
+	-fx-spacing: 10px;
 
 }
 
@@ -54,6 +60,10 @@
     -fx-font-weight: bold;
 }
 #ipText {
+	-fx-font-size: 10pt
+}
+
+#portText {
 	-fx-font-size: 10pt
 }
 
