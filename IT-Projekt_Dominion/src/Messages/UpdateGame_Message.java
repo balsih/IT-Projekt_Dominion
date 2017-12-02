@@ -241,6 +241,7 @@ public class UpdateGame_Message extends Message {
 
 		this.parseContent(root, this.stringElements);
 		this.parseContent(root, this.integerElements);
+		this.parseContent(root, this.cardElements);
 		this.parseContent(root, this.handCardListElements);
 		this.parseContent(root, this.cardSelectionElements);
 	}
@@ -283,6 +284,11 @@ public class UpdateGame_Message extends Message {
 				try {
 					HashMap<String, Integer> integerMap = (HashMap<String, Integer>) content;
 					this.integerElements.put(key, Integer.parseInt(element.getTextContent()));
+				} catch (Exception e) {
+				}
+				try {
+					HashMap<String, Card> cardMap = (HashMap<String, Card>) content;
+					this.cardElements.put(key, TestMessages.getCard(CardName.parseName(element.getTextContent())));
 				} catch (Exception e) {
 				}
 				try {

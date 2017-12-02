@@ -556,7 +556,7 @@ public class GameApp_Model extends Model {
 
 		//If a buy was successful. Always currentPlayer
 		//stores the buyedCard of the currentPlayer and reduces the value of the buyCards(Cards which can be bought)
-		if(ugmsg.getBuyedCard() != null && this.currentPlayer == this.clientName){
+		if(ugmsg.getBuyedCard() != null && this.currentPlayer.compareTo(this.clientName) == 0){
 			this.yourBuyedCard = ugmsg.getBuyedCard();
 			this.buyCards.replace(this.yourBuyedCard.getCardName(), this.buyCards.get(this.yourBuyedCard.getCardName())-1);
 		}else if(ugmsg.getBuyedCard() != null){

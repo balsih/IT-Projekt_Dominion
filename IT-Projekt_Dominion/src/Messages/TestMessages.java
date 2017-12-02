@@ -56,12 +56,11 @@ public class TestMessages {
 		if(model.currentPlayer.compareTo(model.clientName) == 0){
 			for(Card card: model.yourNewHandCards){
 				if(card.getType() == CardType.Treasure){
-					System.out.println("you reached to Play: "+card.toString());
-					if(model.sendPlayCard(card))
-						System.out.println("update received");
+					model.sendPlayCard(card);
 				}
 			}
-			System.out.println("You have "+model.coins+" coins!");
+			model.sendBuyCard(CardName.Cellar);
+			System.out.println("You have bought: "+model.yourBuyedCard);
 		}else{
 			System.out.println("you're not currentPlayer, try again");
 		}
