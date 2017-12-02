@@ -27,14 +27,13 @@ public class Gold_Card extends Treasure_Card {
 	public UpdateGame_Message executeCard(Player player){
 		player.setCoins(player.getCoins() + coinValue); // increment coin value
 		
-		Game game = player.getGame();
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
-		ugmsg.setLog(player.getPlayerName()+": played "+this.cardName.toString()+" card");
-		player.sendToOpponent(player, ugmsg); // info for opponent
+		ugmsg.setLog(player.getPlayerName()+": #played# #"+this.cardName.toString()+"# #card#");
 		
 		// update game Messages -> XML 
 		ugmsg.setCoins(player.getCoins());
+		ugmsg.setPlayedCards(this);
 		
 		return ugmsg;
 	}

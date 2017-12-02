@@ -46,7 +46,8 @@ public class PlayCard_Message extends Message {
 		NodeList tmpElements = root.getElementsByTagName(ELEMENT_CARD);
         if (tmpElements.getLength() > 0) {
             Element card = (Element) tmpElements.item(0);
-            this.card = Card.getCard(CardName.parseName(card.getTextContent()));
+            this.card = TestMessages.getCard(CardName.parseName(card.getTextContent()));
+//            this.card = Card.getCard(CardName.parseName(card.getTextContent()));
         }
 	}
 	

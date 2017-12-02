@@ -28,16 +28,14 @@ public class Woodcutter_Card extends Card {
 		player.setCoins(player.getCoins() + 2);
 		player.setBuys(player.getBuys() + 1);
 		
-		Game game = player.getGame();
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
-		ugmsg.setLog(player.getPlayerName()+": played "+this.cardName.toString()+" card");
-		player.sendToOpponent(player, ugmsg); // info for opponent
+		ugmsg.setLog(player.getPlayerName()+": #played# #"+this.cardName.toString()+"# #card#");
 		
 		// update game Messages -> XML 
-		ugmsg.setActions(player.getActions());
 		ugmsg.setBuys(player.getBuys());
 		ugmsg.setCoins(player.getCoins());
+		ugmsg.setPlayedCards(this);
 		
 		return ugmsg;
 	}

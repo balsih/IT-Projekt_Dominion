@@ -19,6 +19,7 @@ import com.sun.xml.internal.txw2.Document;
 
 import Cards.Card;
 import Cards.CardName;
+import Cards.CardType;
 import Cards.Cellar_Card;
 import Cards.Copper_Card;
 import Cards.Duchy_Card;
@@ -44,14 +45,109 @@ import Server_Services.DB_Connector;
 import javafx.application.Platform;
 
 public class TestMessages {
+	
 
 	public static void main(String[] args) {
 		GameApp_Model model = new GameApp_Model(new Dominion_Main());
-		model.init("127.0.0.1");
+		model.init("127.0.0.1", 8080);
 		model.setClientName("Lukas");
-		System.out.println(model.sendHighScoreRequest());
+		sendGameMode(GameMode.Singleplayer, model);
+		askForChanges(model);
+		if(model.currentPlayer.compareTo(model.clientName) == 0){
+			for(Card card: model.yourNewHandCards){
+				if(card.getType() == CardType.Treasure){
+					System.out.println("you reached to Play: "+card.toString());
+					if(model.sendPlayCard(card))
+						System.out.println("update received");
+				}
+			}
+			System.out.println("You have "+model.coins+" coins!");
+		}else{
+			System.out.println("you're not currentPlayer, try again");
+		}
+	}
+
+	
+	public static void checkPlayActionCard(GameApp_Model model){
 		
-		
+		sendGameMode(GameMode.Singleplayer, model);
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			System.out.println("Thread.sleep throwed exception");
+		}
+		askForChanges(model);
+		System.out.println("currentPlayer: "+model.currentPlayer);
+		if(model.currentPlayer.compareTo(model.clientName) == 0){
+			model.yourHandCards = model.yourNewHandCards;
+			boolean actionCard = false;
+			for(int j = 0; j < model.yourHandCards.size(); j++){
+				if(model.yourHandCards.get(j).getType() == CardType.Action)
+					actionCard = true;
+			}
+			if(!actionCard){
+				System.out.println("no ActionCards in the hand");
+			}
+			for(int i = 0; i < model.yourHandCards.size(); i++){
+				if(model.yourHandCards.get(i).getType() == CardType.Action){
+					Card card = model.yourHandCards.get(i);
+					System.out.println("wanna play: "+card.toString());
+					boolean success = sendPlayCard(card);
+					if(success){
+						System.out.println("you played the "+card.toString()+" successful");
+					}else{
+						System.out.println("failed to play the "+card.toString()+" card");
+					}
+					break;
+				}
+			}
+		}else{
+			System.out.println("try again, you're not currentPlayer");
+		}
+	}
+	
+	/**TESTED
+	 * @author Lukas
+	 * The client sends his GameMode (Singleplayer or Multiplayer) to Server.
+	 * 
+	 * @param mode
+	 * @return result, usually only necessary if the client lost connection to server
+	 */
+	public static String sendGameMode(GameMode mode, GameApp_Model model){
+		String result = "no connection";
+		GameMode_Message gmmsg = new GameMode_Message();
+		gmmsg.setClient(model.clientName);//set the clientName and mode(SinglePlayer or MultiPlayer) to XML
+		gmmsg.setMode(mode);
+		model.gameMode = mode.toString();
+
+		Message msgIn = processMessage(gmmsg);
+		if(msgIn instanceof Commit_Message){
+			System.out.println(mode.toString()+": succeeded");
+		}
+		return result;
+	}
+	
+	/**
+	 * @author Lukas
+	 * The client wants to play a chosen Card. The result depends on the validity of the move
+	 * 
+	 * @param card
+	 * @return update, tells the controller if the game has to be updated
+	 */
+	public static boolean sendPlayCard(Card card){
+		PlayCard_Message pcmsg = new PlayCard_Message();
+		pcmsg.setCard(card);
+		boolean update = false;
+
+		Message msgIn = processMessage(pcmsg);
+		if(msgIn instanceof UpdateGame_Message){
+			processUpdateGame(msgIn);
+			update = true;
+		}else if(msgIn instanceof Failure_Message){
+			//nothing toDo here
+		}
+		return update;
 	}
 	
 	/**
@@ -120,7 +216,7 @@ public class TestMessages {
 			System.out.println("yourBuyedCard: "+yourBuyedCard.toString());
 			buyCards.replace(yourBuyedCard.getCardName(), buyCards.get(yourBuyedCard.getCardName())-1);
 			System.out.println("buyCards: "+buyCards.toString());
-		}else{
+		}else if(ugmsg.getBuyedCard() != null){
 			Card opponentBuyedCard = ugmsg.getBuyedCard();
 			System.out.println("opponentBuyedCard: "+opponentBuyedCard.toString());
 			buyCards.replace(opponentBuyedCard.getCardName(), buyCards.get(opponentBuyedCard.getCardName())-1);
@@ -142,11 +238,11 @@ public class TestMessages {
 		//If currentPlayer is set, the currentPlayer's turn ends
 		if(ugmsg.getCurrentPlayer() != null){
 			if(ugmsg.getCurrentPlayer() != currentPlayer){
-				System.out.println("turnEnded");
+				System.out.println("turnEnded!!");
 				if(ugmsg.getCurrentPlayer() == opponent){//if it was your turn that ended
-					System.out.println("CleanUp your hand and board");
+					System.out.println("CleanUp your hand and board, "+ugmsg.getCurrentPlayer()+"'s turn");
 				}else{//if it was your opponents turn that ended
-					System.out.println("CleanUp opponents playedCard");
+					System.out.println("CleanUp opponents playedCard, "+ugmsg.getCurrentPlayer()+"'s turn");
 				}
 			}
 			currentPlayer = ugmsg.getCurrentPlayer();
@@ -160,7 +256,7 @@ public class TestMessages {
 			for(int i = 0; i < newHandCards.size(); i++){
 				System.out.println(newHandCards.get(i).toString());
 			}
-		}else{//for opponent
+		}else if(ugmsg.getNewHandCards() != null){//for opponent
 			System.out.println("opponent has drawn "+ugmsg.getNewHandCards().size()+" Cards");
 		}
 
@@ -174,7 +270,7 @@ public class TestMessages {
 
 		//If interaction is set, the Type of Interaction can be checked (i.e. meaning of the commit_Button)
 		if(ugmsg.getInteractionType() != null && currentPlayer == clientName)
-			System.out.println(ugmsg.getInteractionType().toString()+" activated");
+			System.out.println(ugmsg.getInteractionType().toString()+" Interaction activated");
 
 		//If cardSelection is set, it consists a selection of the cards to chose
 		if(ugmsg.getCardSelection() != null && currentPlayer == clientName){
@@ -187,7 +283,7 @@ public class TestMessages {
 
 	}
 	
-	private static boolean askForChanges(){
+	private static boolean askForChanges(GameApp_Model model){
 		boolean update = false;
 
 		Message msgIn = processMessage(new AskForChanges_Message());
@@ -205,6 +301,7 @@ public class TestMessages {
 			System.out.println("handNumber: "+cgmsg.getHandNumber().toString());
 			System.out.println("deckNumber: "+cgmsg.getDeckNumber().toString());
 			System.out.println("buyCards:"+cgmsg.getBuyCards().toString());
+			model.processCreateGame(msgIn);
 			
 		}
 		return update;
@@ -410,11 +507,11 @@ public class TestMessages {
 		Card discardPileTopCard = new Gold_Card();
 		
 		Interaction interaction = Interaction.EndOfTurn;
-		LinkedList<Card> cardSelection = new LinkedList<Card>();
-		cardSelection.add(new Cellar_Card());
-		cardSelection.add(new Market_Card());
-		cardSelection.add(new Smithy_Card());
-		cardSelection.add(new Workshop_Card());
+		LinkedList<CardName> cardSelection = new LinkedList<CardName>();
+		cardSelection.add(CardName.Cellar);
+		cardSelection.add(CardName.Market);
+		cardSelection.add(CardName.Smithy);
+		cardSelection.add(CardName.Workshop);
 		
 		LinkedList<Card> handCards = new LinkedList<Card>();
 		handCards.add(new Smithy_Card());

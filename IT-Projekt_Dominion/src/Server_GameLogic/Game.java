@@ -3,12 +3,11 @@ package Server_GameLogic;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Random;
 import java.util.Stack;
+import java.util.logging.Logger;
 
 import Cards.Copper_Card;
-import Cards.Card;
 import Cards.CardName;
 import Cards.Cellar_Card;
 import Cards.Duchy_Card;
@@ -24,10 +23,9 @@ import Cards.Village_Card;
 import Cards.Woodcutter_Card;
 import Cards.Workshop_Card;
 import Messages.GameSuccess;
-import Messages.Interaction;
 
 /**
- * @author Bodo
+ * @author Bodo Gruetter
  * @version 1.0
  * @created 31-Okt-2017 17:08:54
  */
@@ -63,12 +61,11 @@ public class Game {
 
 	private static Game existingGame;
 	private GameMode gameMode;
+	
+	private final Logger logger = Logger.getLogger("");
 
 	/**
-	 * 
-	 * @param clientSocket
-	 * @param gameMode
-	 * @param player
+	 * Constructor for the game
 	 */
 	private Game() {
 		// Build treasure stacks for a new game
@@ -83,7 +80,7 @@ public class Game {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 *         builds the stacks for the treasure cards with 30 cards per stack.
+	 * Builds the stacks for the treasure cards with 30 cards per stack.
 	 */
 	private void buildTreasureCardStacks() {
 		this.copperPile = new Stack<Copper_Card>();
@@ -100,7 +97,7 @@ public class Game {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 *         builds the stacks for the victory cards with 20 cards per stack.
+	 * Builds the stacks for the victory cards with 8 cards per stack.
 	 */
 	private void buildVictoryCardStacks() {
 		this.estatePile = new Stack<Estate_Card>();
@@ -117,7 +114,7 @@ public class Game {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 *         builds the stacks for the action cards with 10 cards per stack.
+	 * Builds the stacks for the action cards with 10 cards per stack.
 	 */
 	private void buildActionCardStacks() {
 		this.cellarPile = new Stack<Cellar_Card>();
@@ -144,9 +141,9 @@ public class Game {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 *         fills the deckpile of the player with 7 copper cards and 3 estate
-	 *         cards. Each player draws 5 cards of its stack in the hand.
-	 *         finally the the starter of the game will be determined.
+	 * Fills the deckpile of the player with 7 copper cards and 3 estate
+	 * cards and shuffles the deck. Each player draws 5 cards of its stack in the hand.
+	 * Finally the the starter of the game will be determined.
 	 */
 	public void startGame() {
 		for (int i = 0; i < 10; i++) {
@@ -160,6 +157,8 @@ public class Game {
 			}
 		}
 
+		System.out.println(player1.getDeckPile());
+		System.out.println(player2.getDeckPile());
 		Collections.shuffle(this.player1.deckPile);
 		Collections.shuffle(this.player2.deckPile);
 		this.player1.draw(player1.NUM_OF_HANDCARDS);
@@ -171,9 +170,9 @@ public class Game {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 *         determines randomly the player who starts.
+	 * Determines randomly who starts the game.
 	 * 
-	 * @return the player who starts.
+	 * @return Player - the player who starts.
 	 */
 	private Player getStarter() {
 		Random rand = new Random();
@@ -187,7 +186,8 @@ public class Game {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 *         switches the current player.
+	 * Switches the current player. In singleplayer the bot will be executed if its turn.
+	 * In multiplayer the current player will be initialized.
 	 */
 	public void switchPlayer() {
 			if (currentPlayer.equals(this.player1)) {
@@ -206,8 +206,8 @@ public class Game {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 *         lets the players count their points, checks the winner of a game
-	 *         and sets the player status.
+	 * Lets the players count their points, checks the winner of a game
+	 * and sets the player status.
 	 */
 	public void checkWinner() {
 		player1.countVictoryPoints();
@@ -236,9 +236,9 @@ public class Game {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 *         checks if the game is over.
+	 * Checks if the game is over.
 	 * 
-	 * @return true or false dependng if the game is finished.
+	 * @return Boolean - depending if the game is finished.
 	 */
 	public boolean checkGameEnding() {
 		int counter = 0;
@@ -259,10 +259,11 @@ public class Game {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 * @param the
-	 *            selected gameMode and the player who starts a game.
-	 * @return an existing or a new game depending on gameMode and if a player
-	 *         is waiting for another.
+	 * Prepares a game for playing.
+	 * 
+	 * @param gameMode - the selected gameMode
+	 * @param player - the player who starts a game.
+	 * @return Game - an existing or a new game depending on gameMode and if a player is waiting for another.
 	 */
 	public static Game getGame(GameMode gameMode, Player player) {
 		if (gameMode == GameMode.Multiplayer) {
@@ -286,6 +287,8 @@ public class Game {
 						.addWaitingMessages(existingGame.getPlayer1().getServerThreadForClient().getCG_Message(existingGame));
 				existingGame.getPlayer2().getServerThreadForClient()
 						.addWaitingMessages(existingGame.getPlayer2().getServerThreadForClient().getCG_Message(existingGame));
+				existingGame.logger.info(existingGame.player1.getPlayerName() + " started a multiplayer game versus " + existingGame.player2.getPlayerName());
+				
 			}
 
 			existingGame.gameMode = GameMode.Multiplayer;
@@ -302,6 +305,7 @@ public class Game {
 			
 			game.getPlayer1().getServerThreadForClient()
 					.addWaitingMessages(game.getPlayer1().getServerThreadForClient().getCG_Message(game));
+			game.logger.info(game.player1.getPlayerName() + " started a singleplayer game");
 			return game;
 		}
 
@@ -310,10 +314,9 @@ public class Game {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 *         fills a hashmap with all stacks and numbers of cards which a
-	 *         player could buy.
+	 * Builds a Hashmap with all names of the card stacks and their size.
 	 * 
-	 * @return a hashmap with the stackname and the number of cards
+	 * @return Hashmap - with the stackname and the number of cards
 	 */
 	public HashMap<CardName, Integer> getBuyCards() {
 			this.buyCards.put(CardName.Province, this.provincePile.size());
@@ -339,11 +342,10 @@ public class Game {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 *         checks the opponent of the current player.
+	 * Gets the opponent of the current player.
 	 * 
-	 * @param the
-	 *            current Player
-	 * @return the opponent of the currentplayer
+	 * @param currentPlayer - the current Player
+	 * @return Player - the opponent of the currentplayer
 	 */
 	public Player getOpponent(Player currentPlayer) {
 		if (currentPlayer.equals(player1))
@@ -382,7 +384,6 @@ public class Game {
 
 	public Stack<Cellar_Card> getCellarPile() {
 		return cellarPile;
-
 	}
 
 	public Stack<Market_Card> getMarketPile() {
@@ -443,5 +444,9 @@ public class Game {
 
 	public void setCurrentPlayer(Player currentPlayer) {
 		this.currentPlayer = currentPlayer;
+	}
+	
+	public GameMode getGameMode(){
+		return gameMode;
 	}
 }// end Game

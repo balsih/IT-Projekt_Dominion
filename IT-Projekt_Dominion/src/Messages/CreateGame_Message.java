@@ -11,6 +11,7 @@ import org.w3c.dom.NodeList;
 
 import Cards.Card;
 import Cards.CardName;
+import Server_GameLogic.Phase;
 
 /**
  * The client wants to start a Game. For this purpose the client chooses a singleplayer or multiplayer Game.
@@ -34,6 +35,7 @@ public class CreateGame_Message extends Message {
 	private static final String ELEMENT_OPPONENT = "opponent";
 	private static final String ATTR_DECK_NUMBER = "deckNumber";
 	private static final String ATTR_HAND_NUMBER = "handNumber";
+	private static final String ELEMENT_PHASE = "phase";
 	private HashMap<CardName, Integer> buyCards;
 	private Stack<Card> deckPile;
 	private LinkedList<Card> handCards;
@@ -41,6 +43,7 @@ public class CreateGame_Message extends Message {
 	private String opponent;
 	private Integer deckNumber;
 	private Integer handNumber;
+	private Phase phase;
 
 
 	public CreateGame_Message(){
@@ -99,6 +102,10 @@ public class CreateGame_Message extends Message {
 		startingPlayer.setTextContent(this.startingPlayer);
 		root.appendChild(startingPlayer);
 		
+		//insert Phase
+		Element phase = docIn.createElement(ELEMENT_PHASE);
+		phase.setTextContent(this.phase.toString());
+		root.appendChild(phase);
 	
 	}
 	
@@ -117,7 +124,8 @@ public class CreateGame_Message extends Message {
             NodeList deckElements = deckPile.getElementsByTagName(ELEMENT_DECKCARD);
             for(int i = deckElements.getLength() -1; i >= 0; i--){
             	Element deckCard = (Element) deckElements.item(i);
-            	this.deckPile.push(Card.getCard(CardName.parseName(deckCard.getTextContent())));
+               	this.deckPile.push(TestMessages.getCard(CardName.parseName(deckCard.getTextContent())));
+//            	this.deckPile.push(Card.getCard(CardName.parseName(deckCard.getTextContent())));
             }
         }
         
@@ -140,7 +148,8 @@ public class CreateGame_Message extends Message {
         	NodeList handElements = handCards.getElementsByTagName(ELEMENT_HANDCARD);
         	for(int i = handElements.getLength() -1; i >= 0; i--){
         		Element handCard = (Element) handElements.item(i);
-        		this.handCards.add(Card.getCard(CardName.parseName(handCard.getTextContent())));
+        		this.handCards.add(TestMessages.getCard(CardName.parseName(handCard.getTextContent())));
+//        		this.handCards.add(Card.getCard(CardName.parseName(handCard.getTextContent())));
         	}
         }
         
@@ -158,6 +167,13 @@ public class CreateGame_Message extends Message {
         if(tmpElements.getLength() > 0){
         	Element startingPlayer = (Element) tmpElements.item(0);
         	this.startingPlayer = startingPlayer.getTextContent();
+        }
+        
+        //set the phase
+        tmpElements = root.getElementsByTagName(ELEMENT_PHASE);
+        if(tmpElements.getLength() > 0){
+        	Element phase = (Element) tmpElements.item(0);
+        	this.phase = Phase.parsePhase(phase.getTextContent());
         }
 	}
 	
@@ -194,6 +210,10 @@ public class CreateGame_Message extends Message {
 	public String getStartingPlayer(){
 		return this.startingPlayer;
 	}
+	
+	public Phase getPhase(){
+		return this.phase;
+	}
 
 	
 	
@@ -226,5 +246,9 @@ public class CreateGame_Message extends Message {
 	
 	public void setStartingPlayer(String startingPlayer){
 		this.startingPlayer = startingPlayer;
+	}
+	
+	public void setPhase(Phase phase){
+		this.phase = phase;
 	}
 }//end CreateGame_Message

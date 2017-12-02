@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 import Abstract_MVC.Model;
 import Cards.Card;
 import Cards.CardName;
+import Cards.CardType;
 import Client_Services.ServiceLocator;
 import Client_Services.Translator;
 import MainClasses.Dominion_Main;
@@ -46,50 +47,52 @@ import javafx.scene.media.MediaPlayer;
  */
 public class GameApp_Model extends Model {
 
-	private final String NO_CONNECTION = "No connection to Server";
-	private final int PORT = 8080;
+	private final String NO_CONNECTION = "NoConnection";
 	private final String TRANSLATE_REGEX = "#[\\w\\s]*#";
 
 	private ServiceLocator sl = ServiceLocator.getServiceLocator();
 	private Translator t = sl.getTranslator();
 
-	protected String clientName;
-	protected String opponent;
-	protected String currentPlayer;
+	public String clientName;
+	public String opponent;
+	public String currentPlayer;
 
-	protected int actions;
-	protected int buys;
-	protected int coins;
+	public int actions = 1;
+	public int buys = 1;
+	public int coins = 0;
 
-	protected LinkedList<Card> yourNewHandCards;
-	protected LinkedList<Card> yourHandCards;
-	protected int opponentNewHandCards;
-	protected int opponentHandCards;
-	protected LinkedList<Card> yourDeck;
-	protected int opponentDeck;
-	protected LinkedList<Card> yourDiscardPile;
-	protected int opponentDiscardPile;
-	protected LinkedList<Card> playedCards;
-	protected Card newPlayedCard;
-	protected Card yourBuyedCard;
-	protected Card opponentBuyedCard;
-	protected Card yourDiscardPileTopCard;
-	protected String newChat;
-	protected String newLog;
-	protected Interaction interaction = Interaction.Skip;
-	protected LinkedList<Card> cardSelection;
+	public LinkedList<Card> yourNewHandCards;
+	public LinkedList<Card> yourHandCards;
+	public int opponentNewHandCards;
+	public int opponentHandCards;
+	public LinkedList<Card> yourDeck = new LinkedList<Card>();
+	public int opponentDeck;
+	public LinkedList<Card> yourDiscardPile;
+	public int opponentDiscardPile;
+	public LinkedList<Card> playedCards;
+	public Card newPlayedCard;
+	public Card yourBuyedCard;
+	public Card opponentBuyedCard;
+	public Card yourDiscardPileTopCard;
+	public String newChat;
+	public String newLog;
+	public Interaction interaction = Interaction.Skip;
+	public LinkedList<CardName> cardSelection;
+	public Card discardCard;
+	public LinkedList<Card> cellarDiscards;
 
 	protected GameSuccess success;
 	protected int victoryPoints;
 
-	protected String gameMode;
-	protected HashMap<CardName, Integer> buyCards;
-	protected CardName buyChoice;
-	protected Phase currentPhase;
-	protected boolean turnEnded = false;
+	public String gameMode;
+	public HashMap<CardName, Integer> buyCards;
+	public CardName buyChoice;
+	public Phase currentPhase;
+	public boolean turnEnded = false;
 
 	private Dominion_Main main;
 	private String ipAddress;
+	private Integer port;
 
 	public enum UserInput {
 		clientName,
@@ -237,8 +240,9 @@ public class GameApp_Model extends Model {
 	 * 
 	 * @param ipAdress
 	 */
-	public void init(String ipAddress){
+	public void init(String ipAddress, Integer port){
 		this.ipAddress = ipAddress;
+		this.port = port;
 	}
 
 	/**
@@ -250,7 +254,7 @@ public class GameApp_Model extends Model {
 	private Socket connect(){
 		Socket socket = null;
 		try {
-			socket = new Socket(this.ipAddress, this.PORT);
+			socket = new Socket(this.ipAddress, this.port);
 		} catch (Exception e) {
 			System.out.println(e.toString());
 		}
@@ -322,6 +326,24 @@ public class GameApp_Model extends Model {
 	
 	/**TESTED
 	 * @author Lukas
+	 * The client sends a request to server for the top5 Highscore
+	 * 
+	 * @return result, the Highscore in one String or the message that client lost connection to server
+	 */
+	public String sendHighScoreRequest(){
+		String result = this.translate(NO_CONNECTION);
+		HighScore_Message hsmsg = new HighScore_Message();
+
+		Message msgIn = this.processMessage(hsmsg);
+		if(msgIn instanceof HighScore_Message){
+			HighScore_Message nhsmsg = (HighScore_Message) msgIn;
+			result = nhsmsg.getHighScore();
+		}
+		return result;
+	}
+	
+	/**TESTED
+	 * @author Lukas
 	 * The client sends his GameMode (Singleplayer or Multiplayer) to Server.
 	 * 
 	 * @param mode
@@ -336,10 +358,9 @@ public class GameApp_Model extends Model {
 
 		Message msgIn = this.processMessage(gmmsg);
 		if(msgIn instanceof Commit_Message){
-//			this.main.startGameApp();
+			this.main.startGameApp();
 		}
-		return result;
-//		return this.translate(result);
+		return this.translate(result);
 	}
 
 	/**
@@ -355,21 +376,43 @@ public class GameApp_Model extends Model {
 		boolean update = false;
 
 		Message msgIn = this.processMessage(bcmsg);
-		if(msgIn.getType().equals(MessageType.UpdateGame)){//buy succeeded
+		if(msgIn instanceof UpdateGame_Message){//buy succeeded
 			this.processUpdateGame(msgIn);
 			update = true;
 
-		}else if(msgIn.getType().equals(MessageType.PlayerSuccess)){//the game ended after this buy
+		}else if(msgIn instanceof PlayerSuccess_Message){//the game ended after this buy
 			this.processPlayerSuccess(msgIn);
 			update = true;
 
-		}else if(msgIn.getType().equals(MessageType.Failure)){//it was not allowed to buy this card
+		}else if(msgIn instanceof Failure_Message){//it was not allowed to buy this card
+			//nothing toDo here
+		}
+		return update;
+	}
+	
+	/**TESTED
+	 * @author Lukas
+	 * The client wants to play a chosen Card. The result depends on the validity of the move
+	 * 
+	 * @param card
+	 * @return update, tells the controller if the game has to be updated
+	 */
+	public boolean sendPlayCard(Card card){
+		PlayCard_Message pcmsg = new PlayCard_Message();
+		pcmsg.setCard(card);
+		boolean update = false;
+
+		Message msgIn = this.processMessage(pcmsg);
+		if(msgIn instanceof UpdateGame_Message){
+			this.processUpdateGame(msgIn);
+			update = true;
+		}else if(msgIn instanceof Failure_Message){
 			//nothing toDo here
 		}
 		return update;
 	}
 
-	/**
+	/**TESTED
 	 * @author Lukas
 	 * The clients sends a Chat_Message to the opponent. The chat of the client will also be sent to server and back.
 	 * 
@@ -382,7 +425,7 @@ public class GameApp_Model extends Model {
 		boolean update = false;
 
 		Message msgIn = this.processMessage(cmsg);
-		if(msgIn.getType().equals(MessageType.UpdateGame)){
+		if(msgIn instanceof UpdateGame_Message){
 			this.processUpdateGame(msgIn);
 			update = true;
 		}
@@ -402,77 +445,42 @@ public class GameApp_Model extends Model {
 
 		switch(this.interaction){
 		case Skip:
+			//skip is already set in this.interaction, nothing toDo here
 			break;
 		case EndOfTurn:
-			imsg.setDiscardCard(this.cardSelection.remove(0));
+			imsg.setDiscardCard(this.discardCard);
 			break;
 		case Cellar:
-			imsg.setCellarDiscardCards(this.cardSelection);
-			for(int i = 0; i < this.cardSelection.size(); i++)
-				this.yourDiscardPile.add(this.cardSelection.remove(i));
+			imsg.setCellarDiscardCards(this.cellarDiscards);
+			for(int i = 0; i < this.cellarDiscards.size(); i++)
+				this.yourDiscardPile.add(this.cellarDiscards.remove(i));
 			break;
 		case Workshop:
 			imsg.setWorkshopChoice(this.buyChoice);
+			this.buyCards.replace(this.buyChoice, this.buyCards.get(this.buyChoice)-1);
 			break;
 		case Remodel1:
-			imsg.setDisposeRemodelCard(this.cardSelection.remove(0));
+			imsg.setDisposeRemodelCard(this.discardCard);
 			break;
 		case Remodel2:
 			imsg.setRemodelChoice(this.buyChoice);
+			this.buyCards.replace(this.buyChoice, this.buyCards.get(this.buyChoice)-1);
 			break;
 		case Mine:
-			imsg.setDisposedMineCard(this.cardSelection.remove(0));
+			imsg.setDisposedMineCard(this.discardCard);
 			break;
 		default:
 			return false;
 		}
 
 		Message msgIn = this.processMessage(imsg);
-		if(msgIn.getType().equals(MessageType.UpdateGame)){
+		if(msgIn instanceof UpdateGame_Message){
 			update = true;
 			this.interaction = Interaction.Skip;//defaultSetting
-		}
-		return update;
-	}
-
-
-	/**
-	 * @author Lukas
-	 * The client sends a request to server for the top5 Highscore
-	 * 
-	 * @return result, the Highscore in one String or the message that client lost connection to server
-	 */
-	public String sendHighScoreRequest(){
-		String result = this.NO_CONNECTION;
-		//		String result = this.translate(NO_CONNECTION);
-		HighScore_Message hsmsg = new HighScore_Message();
-
-		Message msgIn = this.processMessage(hsmsg);
-		if(msgIn.getType().equals(MessageType.HighScore)){
-			HighScore_Message nhsmsg = (HighScore_Message) msgIn;
-			result = nhsmsg.getHighScore();
-		}
-		return result;
-	}
-
-	/**
-	 * @author Lukas
-	 * The client wants to play a chosen Card. The result depends on the validity of the move
-	 * 
-	 * @param card
-	 * @return update, tells the controller if the game has to be updated
-	 */
-	public boolean sendPlayCard(Card card){
-		PlayCard_Message pcmsg = new PlayCard_Message();
-		pcmsg.setCard(card);
-		boolean update = false;
-
-		Message msgIn = this.processMessage(pcmsg);
-		if(msgIn.getType().equals(MessageType.UpdateGame)){
-			this.processUpdateGame(msgIn);
+			
+		}else if(msgIn instanceof PlayerSuccess_Message){
+			this.processPlayerSuccess(msgIn);
 			update = true;
-		}else if(msgIn.getType().equals(MessageType.Failure)){
-			//nothing toDo here
 		}
 		return update;
 	}
@@ -484,7 +492,7 @@ public class GameApp_Model extends Model {
 	 * 
 	 * @param msgIn
 	 */
-	protected void processCreateGame(Message msgIn) {		
+	public void processCreateGame(Message msgIn) {		
 		CreateGame_Message cgmsg = (CreateGame_Message) msgIn;
 		this.yourNewHandCards = cgmsg.getHandCards();
 		this.buyCards = cgmsg.getBuyCards();
@@ -492,8 +500,10 @@ public class GameApp_Model extends Model {
 		this.opponentDeck = cgmsg.getDeckNumber();
 		this.opponentHandCards = cgmsg.getHandNumber();
 		this.currentPlayer = cgmsg.getStartingPlayer();
-		for(Card card: cgmsg.getDeckPile())
-			this.yourDeck.add(card);
+		this.currentPhase = cgmsg.getPhase();
+		for(int i = 0; i < cgmsg.getDeckPile().size(); i++){
+			this.yourDeck.add(cgmsg.getDeckPile().pop());
+		}
 	}
 
 	/**
@@ -509,7 +519,7 @@ public class GameApp_Model extends Model {
 	}
 
 
-	/**
+	/**MOSTLY TESTED
 	 * @author Lukas
 	 * Interpret all updates and provides structures for further work
 	 * 
@@ -549,7 +559,7 @@ public class GameApp_Model extends Model {
 		if(ugmsg.getBuyedCard() != null && this.currentPlayer == this.clientName){
 			this.yourBuyedCard = ugmsg.getBuyedCard();
 			this.buyCards.replace(this.yourBuyedCard.getCardName(), this.buyCards.get(this.yourBuyedCard.getCardName())-1);
-		}else{
+		}else if(ugmsg.getBuyedCard() != null){
 			this.opponentBuyedCard = ugmsg.getBuyedCard();
 			this.buyCards.replace(this.opponentBuyedCard.getCardName(), this.buyCards.get(this.opponentBuyedCard.getCardName())-1);
 		}
@@ -570,11 +580,13 @@ public class GameApp_Model extends Model {
 		if(ugmsg.getCurrentPlayer() != null){
 			if(ugmsg.getCurrentPlayer() != this.currentPlayer){
 				this.turnEnded = true;
+				
 				if(ugmsg.getCurrentPlayer() == this.opponent){//if it was your turn that ended
 					for(int i = 0; i < this.playedCards.size(); i++)
 						this.yourDiscardPile.add(this.playedCards.remove(i));
 					for(int j = 0; j < this.yourHandCards.size(); j++)
 						this.yourDiscardPile.add(this.yourHandCards.remove(j));
+					
 				}else{//if it was your opponents turn that ended
 					this.playedCards.clear();
 				}
@@ -599,7 +611,7 @@ public class GameApp_Model extends Model {
 					}
 				}
 			}
-		}else{//for opponent
+		}else if(ugmsg.getNewHandCards() != null){//for opponent
 			this.opponentNewHandCards = ugmsg.getNewHandCards().size();
 		}
 

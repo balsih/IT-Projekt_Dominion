@@ -2,6 +2,7 @@ package Cards;
 
 import java.util.LinkedList;
 
+import Messages.Interaction;
 import Messages.UpdateGame_Message;
 import Server_GameLogic.Game;
 import Server_GameLogic.Player;
@@ -12,8 +13,7 @@ import Server_GameLogic.Player;
  * @created 31-Okt-2017 16:58:05
  */
 public class Cellar_Card extends Card {
-
-
+	
 	public Cellar_Card(){
 		this.cardName = CardName.Cellar;
 		this.cost = 2;
@@ -29,32 +29,32 @@ public class Cellar_Card extends Card {
 		this.player = player;
 		player.setActions(player.getActions() + 1);
 		
-		player.draw(player.getHandCards().size()); // beliebige Anzahl aus der Hand ablegen und für jede eine neue aufnehmen
-		
-		
-		
-		// noch fehlender Code bzw. Funktionalität 
-		
-		Game game = player.getGame();
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
-		ugmsg.setLog(player.getPlayerName()+": #played# #"+this.cardName.toString()+"# #card#");
-		player.sendToOpponent(player, ugmsg); // info for opponent
+		//#DiscardCards# Chose cards to discard
+		ugmsg.setLog(player.getPlayerName()+": #played# #"+this.cardName.toString()+"# #card#. #DiscardCards#");
 		
 		// update game Messages -> XML 
-		ugmsg.setActions(player.getActions());
-		ugmsg.setBuys(player.getBuys());
-		ugmsg.setCoins(player.getCoins());
+		ugmsg.setInteractionType(Interaction.Cellar);
+		ugmsg.setPlayedCards(this);
 		
 		return ugmsg;
 	}
 	
 	public UpdateGame_Message executeCellar(LinkedList<Card> discardedCards) {
-		UpdateGame_Message ugmsg = this.player.discard(discardedCards);
-
-		return UpdateGame_Message.merge(this.player.draw(discardedCards.size()), ugmsg);
 		
-		// ev noch log ergänzen
+		int numDiscardedCards = discardedCards.size();
+		this.player.getHandCards().removeAll(discardedCards);
+		while(!discardedCards.isEmpty()){
+			this.player.getDiscardPile().push(discardedCards.removeFirst());
+		}
+		
+		UpdateGame_Message ugmsg = this.player.draw(numDiscardedCards);
+		ugmsg.setLog(player.getPlayerName()+": #picked# #"+discardedCards.size()+"# #cards#"); // how many card have been picked 
+		if (!this.player.containsCardType(this.player.getHandCards(), CardType.Action))
+			ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.player.skipPhase(), ugmsg);
+		
+		return ugmsg;
 	}
 	
 }//end Cellar_Card

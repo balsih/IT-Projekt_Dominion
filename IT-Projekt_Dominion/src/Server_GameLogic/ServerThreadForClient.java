@@ -14,6 +14,7 @@ import Cards.CardName;
 import Cards.Cellar_Card;
 import Cards.Mine_Card;
 import Cards.Remodel_Card;
+import Cards.Village_Card;
 import Cards.Workshop_Card;
 import Messages.AskForChanges_Message;
 import Messages.BuyCard_Message;
@@ -212,7 +213,7 @@ public class ServerThreadForClient implements Runnable {
 		}
 	}
 	
-	/**
+	/**TESTED
 	 * @author Lukas
 	 * Takes the highscore from the database
 	 * 
@@ -222,7 +223,12 @@ public class ServerThreadForClient implements Runnable {
 	private Message processHighScore(Message msgIn) {
 		DB_Connector dbConnector = DB_Connector.getDB_Connector();
 		HighScore_Message hsmsg = new HighScore_Message();
-		hsmsg.setHighScore(dbConnector.getHighScore());
+		String highScore = dbConnector.getHighScore();
+		if(highScore.length() == 0){
+			hsmsg.setHighScore("No player's in highscore!");
+		}else{
+			hsmsg.setHighScore(highScore);
+		}
 		this.logger.info("send highscore to "+this.clientName);
 		return hsmsg;
 	}
@@ -239,14 +245,14 @@ public class ServerThreadForClient implements Runnable {
 		GameMode_Message gmmsg = (GameMode_Message) msgIn;
 		this.player = new Player(this.clientName, this);
 		this.game = Game.getGame(gmmsg.getMode(), this.player);
-		this.player.addGame(this.game);
+		this.player.setGame(this.game);
 		this.logger.info(this.clientName+" waits for opponent");
 		Commit_Message cmsg = new Commit_Message();
 		return cmsg;
 	}
 
 
-	/**
+	/**TESTED
 	 * @author Lukas
 	 * Checks if the hands of client and server are equal
 	 * If yes (should be usual), Player "trys" to play card. If not able it will be visible in the ugmsg
@@ -258,7 +264,7 @@ public class ServerThreadForClient implements Runnable {
 	private Message processPlayCard(Message msgIn) {
 		PlayCard_Message pcmsg = (PlayCard_Message) msgIn;
 		for(Card card: this.player.handCards){
-			if(card.getType().equals(pcmsg.getCard().getType())){
+			if(card.getCardName().equals(pcmsg.getCard().getCardName())){
 				return this.player.play(card);
 			}
 		}
@@ -280,11 +286,12 @@ public class ServerThreadForClient implements Runnable {
 		cgmsg.setDeckNumber(game.getOpponent(this.player).getDeckPile().size());
 		cgmsg.setHandNumber(game.getOpponent(this.player).getHandCards().size());
 		cgmsg.setStartingPlayer(game.getCurrentPlayer().getPlayerName());
+		cgmsg.setPhase(this.player.getActualPhase());
 		return cgmsg;
 	}
 
 
-	/**
+	/**TESTED
 	 * @author Lukas
 	 * The Chat_Message wrote by client has to be sent to opponent.
 	 * Addes the clientName to the Chat for better reading
@@ -299,7 +306,7 @@ public class ServerThreadForClient implements Runnable {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		ugmsg.setChat(chat);
 		this.player.sendToOpponent(this.player, ugmsg);
-		this.logger.info(cmsg.getClient()+" has sent chat to"+this.game.getOpponent(this.player).getPlayerName()+": "+cmsg.getChat());
+		this.logger.info(cmsg.getClient()+" has sent chat to "+this.game.getOpponent(this.player).getPlayerName()+": "+cmsg.getChat());
 		return ugmsg;
 	}
 
@@ -337,19 +344,19 @@ public class ServerThreadForClient implements Runnable {
 			break;
 		case Cellar:
 			Cellar_Card cCard = (Cellar_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
-//			return cCard.executeCellar(imsg.getCellarDiscardCards());
+			return cCard.executeCellar(imsg.getCellarDiscardCards());
 		case Workshop:
 			Workshop_Card wCard = (Workshop_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
 			return wCard.executeWorkshop(imsg.getWorkshopChoice());
 		case Remodel1:
 			Remodel_Card r1Card = (Remodel_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
-//			return r1Card.executeRemodel1(imsg.getDisposeRemodelCard());
+			return r1Card.executeRemodel1(imsg.getDisposeRemodelCard());
 		case Remodel2:
 			Remodel_Card r2Card = (Remodel_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
 			return r2Card.executeRemodel2(imsg.getRemodelChoice());
 		case Mine:
 			Mine_Card mCard = (Mine_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
-//			return mCard.executeMine(imsg.getDisposedMineCard());
+			return mCard.executeMine(imsg.getDisposedMineCard());
 		default:
 			return null;
 		}
