@@ -388,6 +388,28 @@ public class GameApp_Model extends Model {
 		}
 		return update;
 	}
+	
+	/**TESTED
+	 * @author Lukas
+	 * The client wants to play a chosen Card. The result depends on the validity of the move
+	 * 
+	 * @param card
+	 * @return update, tells the controller if the game has to be updated
+	 */
+	public boolean sendPlayCard(Card card){
+		PlayCard_Message pcmsg = new PlayCard_Message();
+		pcmsg.setCard(card);
+		boolean update = false;
+
+		Message msgIn = this.processMessage(pcmsg);
+		if(msgIn instanceof UpdateGame_Message){
+			this.processUpdateGame(msgIn);
+			update = true;
+		}else if(msgIn instanceof Failure_Message){
+			//nothing toDo here
+		}
+		return update;
+	}
 
 	/**
 	 * @author Lukas
@@ -457,29 +479,6 @@ public class GameApp_Model extends Model {
 		}else if(msgIn instanceof PlayerSuccess_Message){
 			this.processPlayerSuccess(msgIn);
 			update = true;
-		}
-		return update;
-	}
-
-
-	/**
-	 * @author Lukas
-	 * The client wants to play a chosen Card. The result depends on the validity of the move
-	 * 
-	 * @param card
-	 * @return update, tells the controller if the game has to be updated
-	 */
-	public boolean sendPlayCard(Card card){
-		PlayCard_Message pcmsg = new PlayCard_Message();
-		pcmsg.setCard(card);
-		boolean update = false;
-
-		Message msgIn = this.processMessage(pcmsg);
-		if(msgIn instanceof UpdateGame_Message){
-			this.processUpdateGame(msgIn);
-			update = true;
-		}else if(msgIn instanceof Failure_Message){
-			//nothing toDo here
 		}
 		return update;
 	}

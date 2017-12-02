@@ -25,21 +25,18 @@ public class Market_Card extends Card {
 	@Override
 	public UpdateGame_Message executeCard(Player player){
 		
-		player.draw(1); // draw 1 card
+		UpdateGame_Message ugmsg = player.draw(1); // draw 1 card
 		player.setActions(player.getActions() + 1);
 		player.setBuys(player.getBuys() + 1);
 		player.setCoins(player.getCoins() + 1);		
 		
-		Game game = player.getGame();
-		UpdateGame_Message ugmsg = new UpdateGame_Message();
-		
-		ugmsg.setLog(player.getPlayerName()+": played "+this.cardName.toString()+" card");
-		player.sendToOpponent(player, ugmsg); // info for opponent
+		ugmsg.setLog(player.getPlayerName()+": #played# #"+this.cardName.toString()+"# #card#");
 		
 		// update game Messages -> XML 
 		ugmsg.setActions(player.getActions());
 		ugmsg.setBuys(player.getBuys());
 		ugmsg.setCoins(player.getCoins());
+		ugmsg.setPlayedCards(this);
 		
 		return ugmsg;
 	}

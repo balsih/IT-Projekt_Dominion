@@ -27,13 +27,7 @@ public class Province_Card extends Victory_Card {
 	public UpdateGame_Message executeCard(Player player){
 		player.setVictoryPoints(player.getVictoryPoints() + victoryPoints);
 		
-		Game game = player.getGame();
-		UpdateGame_Message ugmsg = new UpdateGame_Message();
-		
-		ugmsg.setLog(player.getPlayerName()+": played "+this.cardName.toString()+" card");
-		player.sendToOpponent(player, ugmsg); // info for opponent
-		
-		return ugmsg;
+		return null;
 	}
 
 	
