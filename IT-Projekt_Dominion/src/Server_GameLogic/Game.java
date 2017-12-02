@@ -157,6 +157,8 @@ public class Game {
 			}
 		}
 
+		System.out.println(player1.getDeckPile());
+		System.out.println(player2.getDeckPile());
 		Collections.shuffle(this.player1.deckPile);
 		Collections.shuffle(this.player2.deckPile);
 		this.player1.draw(player1.NUM_OF_HANDCARDS);
@@ -382,7 +384,6 @@ public class Game {
 
 	public Stack<Cellar_Card> getCellarPile() {
 		return cellarPile;
-
 	}
 
 	public Stack<Market_Card> getMarketPile() {
@@ -443,5 +444,9 @@ public class Game {
 
 	public void setCurrentPlayer(Player currentPlayer) {
 		this.currentPlayer = currentPlayer;
+	}
+	
+	public GameMode getGameMode(){
+		return gameMode;
 	}
 }// end Game

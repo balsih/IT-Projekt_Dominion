@@ -64,6 +64,7 @@ public class Player {
 
 		this.playerName = name;
 		startMove();
+		actualPhase = Phase.Buy;
 	}
 
 	/**
@@ -335,8 +336,6 @@ public class Player {
 				break;
 			}
 		}
-		
-		this.topCard = this.discardPile.peek();
 
 		ugmsg.setDeckPileCardNumber(this.deckPile.size());
 		ugmsg.setDiscardPileCardNumber(this.discardPile.size());
@@ -419,7 +418,8 @@ public class Player {
 	 * @param msg - the message which should be send
 	 */
 	public void sendToOpponent(Player source, Message msg) {
-		source.getServerThreadForClient().addWaitingMessages(msg);
+		if(game.getGameMode().equals(GameMode.Multiplayer))
+			source.getServerThreadForClient().addWaitingMessages(msg);
 	}
 	
 	/**
