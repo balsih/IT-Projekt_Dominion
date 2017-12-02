@@ -29,6 +29,7 @@ public class Player {
 	protected LinkedList<Card> playedCards;
 	protected Stack<Card> deckPile;
 	protected Stack<Card> discardPile;
+	protected Card topCard;
 
 	protected final int NUM_OF_HANDCARDS = 5;
 
@@ -269,6 +270,7 @@ public class Player {
 	public UpdateGame_Message cleanUp(Card selectedTopCard) {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		boolean interaction = false;
+		this.topCard = selectedTopCard;
 
 		if (this.handCards.size() > 1 && selectedTopCard != null) {
 			ugmsg.setInteractionType(Interaction.EndOfTurn);
@@ -424,7 +426,7 @@ public class Player {
 	 * @pram cardType - the type that should be in the list.
 	 * @return Boolean - depending if list contains the card type or not.
 	 */
-	private boolean containsCardType(LinkedList<Card> list, CardType cardType) {
+	public boolean containsCardType(LinkedList<Card> list, CardType cardType) {
 		Iterator<Card> iter = list.iterator();
 		while (iter.hasNext()) {
 			if (iter.next().getType() == cardType)
@@ -434,7 +436,7 @@ public class Player {
 		return false;
 	}
 	
-	private boolean containsCard(LinkedList<Card> list, CardName cardName){
+	public boolean containsCard(LinkedList<Card> list, CardName cardName){
 		Iterator<Card> iter = list.iterator();
 		while (iter.hasNext()) {
 			if (iter.next().getCardName() == cardName)
