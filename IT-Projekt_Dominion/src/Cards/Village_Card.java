@@ -26,9 +26,9 @@ public class Village_Card extends Card {
 	public UpdateGame_Message executeCard(Player player){
 		
 		player.setActions(player.getActions() + 2);
-		UpdateGame_Message ugmsg = player.draw(1); // draw 1 card
+		UpdateGame_Message ugmsg = player.draw(1);
 		
-		ugmsg.setLog(player.getPlayerName()+": played "+this.cardName.toString()+" card");
+		ugmsg.setLog(player.getPlayerName()+": #played# #"+this.cardName.toString()+"# #card#");
 		
 		// update game Messages -> XML 
 		ugmsg.setPlayedCards(this);

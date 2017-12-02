@@ -252,7 +252,7 @@ public class ServerThreadForClient implements Runnable {
 	}
 
 
-	/**
+	/**TESTED
 	 * @author Lukas
 	 * Checks if the hands of client and server are equal
 	 * If yes (should be usual), Player "trys" to play card. If not able it will be visible in the ugmsg
@@ -282,7 +282,7 @@ public class ServerThreadForClient implements Runnable {
 		cgmsg.setBuyCards(game.getBuyCards());
 		//just for testing
 		LinkedList<Card> handCards = this.player.getHandCards();
-		handCards.add(new Village_Card());
+		handCards.add(new Mine_Card());
 		cgmsg.setHandCards(handCards);
 		cgmsg.setDeckPile(this.player.getDeckPile());
 		cgmsg.setOpponent(game.getOpponent(this.player).getPlayerName());

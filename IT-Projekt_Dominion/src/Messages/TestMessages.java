@@ -45,14 +45,17 @@ import Server_Services.DB_Connector;
 import javafx.application.Platform;
 
 public class TestMessages {
+	
 
 	public static void main(String[] args) {
 //		GameApp_Model model = new GameApp_Model(new Dominion_Main());
 //		model.init("127.0.0.1", 8008);
 //		model.setClientName("Lukas");
 //		checkPlayActionCard(model);
-		testUpdateGame_Message();
+//		testUpdateGame_Message();
+
 	}
+
 	
 	public static void checkPlayActionCard(GameApp_Model model){
 		
@@ -224,11 +227,11 @@ public class TestMessages {
 		//If currentPlayer is set, the currentPlayer's turn ends
 		if(ugmsg.getCurrentPlayer() != null){
 			if(ugmsg.getCurrentPlayer() != currentPlayer){
-				System.out.println("turnEnded");
+				System.out.println("turnEnded!!");
 				if(ugmsg.getCurrentPlayer() == opponent){//if it was your turn that ended
-					System.out.println("CleanUp your hand and board");
+					System.out.println("CleanUp your hand and board, "+ugmsg.getCurrentPlayer()+"'s turn");
 				}else{//if it was your opponents turn that ended
-					System.out.println("CleanUp opponents playedCard");
+					System.out.println("CleanUp opponents playedCard, "+ugmsg.getCurrentPlayer()+"'s turn");
 				}
 			}
 			currentPlayer = ugmsg.getCurrentPlayer();
@@ -256,7 +259,7 @@ public class TestMessages {
 
 		//If interaction is set, the Type of Interaction can be checked (i.e. meaning of the commit_Button)
 		if(ugmsg.getInteractionType() != null && currentPlayer == clientName)
-			System.out.println(ugmsg.getInteractionType().toString()+" activated");
+			System.out.println(ugmsg.getInteractionType().toString()+" Interaction activated");
 
 		//If cardSelection is set, it consists a selection of the cards to chose
 		if(ugmsg.getCardSelection() != null && currentPlayer == clientName){

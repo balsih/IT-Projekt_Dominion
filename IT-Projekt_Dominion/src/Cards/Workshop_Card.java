@@ -46,27 +46,30 @@ public class Workshop_Card extends Card {
 		LinkedList<CardName> availableCards = new LinkedList<CardName>();
 		availableCards.addAll(list);
 		
-		ugmsg.setLog(player.getPlayerName()+": played "+this.cardName.toString()+" card");
-		player.sendToOpponent(player, ugmsg); // info for opponent
+		ugmsg.setLog(player.getPlayerName()+": #played# #"+this.cardName.toString()+"# #card#");
 			
 		// update game Messages -> XML 
-		ugmsg.setActions(player.getActions());
-		ugmsg.setBuys(player.getBuys());
-		ugmsg.setCoins(player.getCoins());
 		ugmsg.setInteractionType(Interaction.Workshop);
 		ugmsg.setCardSelection(availableCards);
+		ugmsg.setPlayedCards(this);
 		return ugmsg;
 	}
 	
 	
-	public UpdateGame_Message executeWorkshop(CardName selectedCard) {
+	public UpdateGame_Message executeWorkshop(CardName selectedNameCard) {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
-		this.player.getHandCards().add(this.player.pick(selectedCard));
 		
-		ugmsg.setLog(player.getPlayerName()+": picked "+selectedCard.toString()+" card");
+		Card selectedCard = this.player.pick(selectedNameCard);
+		this.player.getHandCards().add(selectedCard);
+		
+		ugmsg.setLog(player.getPlayerName()+": #picked# #"+selectedNameCard.toString()+"# #card#");
 		
 		// update game Messages -> XML 
-		ugmsg.setNewHandCards(player.getHandCards());
+		LinkedList<Card> newHandCard = new LinkedList<Card>();
+		newHandCard.add(selectedCard);
+		ugmsg.setNewHandCards(newHandCard);
+		if (this.player.getActions() == 0 || !this.player.containsCardType(this.player.getHandCards(), CardType.Action))
+			ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.player.skipPhase(), ugmsg);
 		
 		return ugmsg;
 	}

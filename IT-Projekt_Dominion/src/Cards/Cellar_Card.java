@@ -2,6 +2,7 @@ package Cards;
 
 import java.util.LinkedList;
 
+import Messages.Interaction;
 import Messages.UpdateGame_Message;
 import Server_GameLogic.Game;
 import Server_GameLogic.Player;
@@ -29,28 +30,19 @@ public class Cellar_Card extends Card {
 		this.player = player;
 		player.setActions(player.getActions() + 1);
 		
-		player.draw(player.getHandCards().size()); // beliebige Anzahl aus der Hand ablegen und für jede eine neue aufnehmen
-		
-		
-		
-		// noch fehlender Code bzw. Funktionalität 
-		
-		Game game = player.getGame();
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
-		ugmsg.setLog(player.getPlayerName()+": #played# #"+this.cardName.toString()+"# #card#");
-		player.sendToOpponent(player, ugmsg); // info for opponent
+		//#DiscardCards# Chose cards to discard
+		ugmsg.setLog(player.getPlayerName()+": #played# #"+this.cardName.toString()+"# #card#. #DiscardCards#");
 		
 		// update game Messages -> XML 
-		ugmsg.setActions(player.getActions());
-		ugmsg.setBuys(player.getBuys());
-		ugmsg.setCoins(player.getCoins());
+		ugmsg.setInteractionType(Interaction.Cellar);
+		ugmsg.setPlayedCards(this);
 		
 		return ugmsg;
 	}
 	
 	public UpdateGame_Message executeCellar(LinkedList<Card> discardedCards) {
-		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
 		int numDiscardedCards = discardedCards.size();
 		this.player.getHandCards().removeAll(discardedCards);
@@ -58,13 +50,12 @@ public class Cellar_Card extends Card {
 			this.player.getDiscardPile().push(discardedCards.removeFirst());
 		}
 		
-		ugmsg.setLog(player.getPlayerName()+": picked "+discardedCards.size()+" cards"); // how many card have been picked 
-		
-		ugmsg = this.player.draw(numDiscardedCards);
+		UpdateGame_Message ugmsg = this.player.draw(numDiscardedCards);
+		ugmsg.setLog(player.getPlayerName()+": #picked# #"+discardedCards.size()+"# #cards#"); // how many card have been picked 
+		if (!this.player.containsCardType(this.player.getHandCards(), CardType.Action))
+			ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.player.skipPhase(), ugmsg);
 		
 		return ugmsg;
-		
-		// ev noch log ergänzen
 	}
 	
 }//end Cellar_Card
