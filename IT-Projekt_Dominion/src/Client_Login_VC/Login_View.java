@@ -126,6 +126,7 @@ public class Login_View extends View<GameApp_Model> {
 		nameLbl.setId("nameLbl");
 		nameText = new TextField();
 		nameText.setId("nameText");
+		//nameText.setDisable(true); -> disable before connecting 
 		//nameText.setPrefSize(220.0, 30.0);
 		nameText.setMaxSize(220.0, 30.0);
 		nameBox.getChildren().addAll(nameLbl, nameText);

@@ -109,7 +109,7 @@ public class GameApp_Model extends Model {
 		this.main = main;
 
 		// start menusound
-		//		this.startMediaPlayer("sound.mp3"); // start sound 
+		this.startMediaPlayer("Medieval_Camelot.mp3"); // start sound 
 	}
 
 	/**

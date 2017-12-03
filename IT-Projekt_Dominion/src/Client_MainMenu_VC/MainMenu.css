@@ -22,7 +22,13 @@
 	-fx-spacing: 15px;
 }
 
-#highscoreBox {
+#highscoreListLbl {
+	-fx-spacing: 0px;
+	-fx-background-color: rgba(0, 0, 0, 6);
+	-fx-border-color: black;
+}
+
+#highscoreBoxuuuuuuuuuuuuuuu {
 	-fx-spacing: 2px;
 	-fx-background-color: rgba(0, 0, 0, 6);
 	-fx-border-color: white;

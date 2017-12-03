@@ -68,7 +68,6 @@ public class CreatePlayer_Controller extends Controller<GameApp_Model, CreatePla
 		});
 
 		// set on action and handling for languageSelectComboBox
-		
 //		view.languageSelectComboBox.getValue();
 //		
 //		view.languageSelectComboBox.getSelectedItem().toString().addListener((change) -> {
@@ -84,32 +83,17 @@ public class CreatePlayer_Controller extends Controller<GameApp_Model, CreatePla
 		// set on action and handling for languageSelectComboBox
 		view.languageSelectComboBox.setOnAction((event) -> {
 			try {
-				// model.doSoSomethingWith language;
+				if (view.languageSelectComboBox.getValue() == "Deutsch" || view.languageSelectComboBox.getValue() == "German") {
+					sl.setTranslator(new Translator("de"));
+				} else {
+					sl.setTranslator(new Translator("en"));
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		});
 
-		
-		
-//		// set on action and handling for saveBtn
-//		view.saveBtn.setOnAction((event) -> {
-//			try {
-//				model.sendCreateNewPlayer(view.nameText.getText(), view.passwordText.getText());
-//				sl = ServiceLocator.getServiceLocator();
-//				//sl.setTranslator(translator);
-//				if (view.languageSelectComboBox.getValue() == "Deutsch" || view.languageSelectComboBox.getValue() == "German") {
-//					sl.locales = "de";
-//					else
-//					sl.locales = "en"
-//					}
-//				}
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		});
 
-		
 		
 		// set on action and handling for saveBtn
 		view.saveBtn.setOnAction((event) -> {
@@ -131,6 +115,11 @@ public class CreatePlayer_Controller extends Controller<GameApp_Model, CreatePla
 					
 				
 				//sl.setTranslator(translator);
+					
+					
+				// if sucessfull -> back to Login screen
+					main.startLogin();
+					 view.stop();
 	
 				}
 			} catch (Exception e) {
