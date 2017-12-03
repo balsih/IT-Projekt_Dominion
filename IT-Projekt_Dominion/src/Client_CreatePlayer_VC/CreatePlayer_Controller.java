@@ -117,6 +117,8 @@ public class CreatePlayer_Controller extends Controller<GameApp_Model, CreatePla
 				model.sendCreateNewPlayer(view.nameText.getText(), view.passwordText.getText());
 				sl = ServiceLocator.getServiceLocator();
 				
+				// if fail, then ->    view.saveAlert.showAndWait();
+				
 				/* Die gewählte Sprache in der Comboboox (Deutsch oder Englisch) soll das local_cfg File 
 				 * entsprechend überschreiben und den Wert entsprechend setzen. 
 				 * 1. wie kann ich diesen Wert speichern bzw. schreiben?
