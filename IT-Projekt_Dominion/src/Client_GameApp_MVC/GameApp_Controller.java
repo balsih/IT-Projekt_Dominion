@@ -73,52 +73,39 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				model.sendInteraction();
 				break;
 			case EndOfTurn:
-				view.stackpDiscard.getChildren().clear();
-				view.stackpDiscard.getChildren().add(model.cardSelection.get(0).getImage());
-
-				//				ist karte gesetzt (nicht null)?, wenn ja auf discard pile setzen
-				//				played cards und hand cards aus den boxen leeren?
-
+				if (model.interaction == Interaction.EndOfTurn) {
+					view.hboxPlayedCards.getChildren().clear();
+					view.hboxHandCards.getChildren().clear();
+				}
 				model.sendInteraction();
 				break;
 			case Cellar:
-
-				//				private boolean onMouseClicked(MouseEvent e) {
-				//					for (int i=0; i<view.hboxHandCards.getChildren().size(); i++) {
-				//						ImageView imgView = (ImageView) view.hboxHandCards.getChildren().get(i);
-				//
-				//						if (e.getSource() == imgView){
-				//							view.hboxHandCards.getChildren().remove(i);
-				//							}
-				//						}
-				//					}
-
-
-				// Ok? --> 
-				//				view.hboxHandCards.getChildren().clear();
-				//				for (Card card : model.yourHandCards){
-				//					view.hboxHandCards.getChildren().add(card.getImage());
-				// }
-
-				view.lblNmbrOfCrntHandCards.setText(Integer.toString((model.yourHandCards.size())));
-				// Updates the discard pile top card
-				view.stackpDiscard.getChildren().add(model.yourDiscardPileTopCard.getImage());
-
+				if (model.interaction == Interaction.Cellar) {
+					// already done in method setInitialHandCardsEvents 
+				}
 				model.sendInteraction();
 				break;
 			case Workshop:
+				if (model.interaction == Interaction.Workshop) {
+				}
 				// workshop: wahl aus feld
 				model.sendInteraction();
 				break;
 			case Remodel1:
+				if (model.interaction == Interaction.Remodel1) {
+				}
 				// remodel: 1 Karte wegnehmen aus Hand, (1 nehmen --> erst bei remodel2)
 				model.sendInteraction();
 				break;
 			case Remodel2:
+				if (model.interaction == Interaction.Remodel2) {
+				}
 				model.sendInteraction();
 				break;
 				// kommt nach remodel 1: 1 karte neu nehmen --> aus einer liste von wählbaren karten (andere disablen)
 			case Mine:
+				if (model.interaction == Interaction.Mine) {
+				}
 				model.sendInteraction();
 				break;
 			}
@@ -150,8 +137,57 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		ColorAdjust brighter = new ColorAdjust();
 		brighter.setBrightness(+0.5);
 
+		// // If the user clicks a hand card, he either wants play it (action card) or he wants to pay with it (treasure card).
 		image.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-			// do stuff here
+			// In the buy phase, the card is used to pay for another card
+			if (model.currentPhase.equals(Phase.Buy)) {
+				view.hboxHandCards.getChildren().remove(image);
+				view.hboxPlayedCards.getChildren().add(0, image);
+			}
+			// In the action phase, the card is being played
+			if (model.currentPhase.equals(Phase.Action)) {
+				view.hboxHandCards.getChildren().remove(image);
+				view.hboxPlayedCards.getChildren().add(0, image);
+
+				for (Card card : model.yourHandCards) {
+					if (card.getType() == CardType.Action) {
+						if (!view.hboxHandCards.getChildren().contains(resizeImage(card.getImage()))){
+							model.sendPlayCard(card);
+
+							// If a cellar card has been played, discard a user-defined number of hand cards and draw new hand cards
+							if (card.getCardName() == CardName.Cellar){
+								// Adds new event handlers to the hand cards
+								for (Node child : view.hboxHandCards.getChildren()) {
+									ImageView img = (ImageView) child;
+									img.addEventHandler(MouseEvent.MOUSE_CLICKED, cellarEvent -> {
+										view.hboxHandCards.getChildren().remove(img);
+									});
+								}
+
+								// Store the discarded cards
+								for (Card card2 : model.yourHandCards){
+									if (!view.hboxHandCards.getChildren().contains(resizeImage(card2.getImage()))){
+										model.cellarDiscards.add(card2);
+									}
+								}
+
+								// Adds initial event handlers to the hand cards
+								for (Node child : view.hboxHandCards.getChildren()) {
+									ImageView img = (ImageView) child;
+									setInitialHandCardsEvents(img);
+								}
+								model.interaction = Interaction.Cellar;
+							} else if (card.getCardName() == CardName.Mine){
+								model.interaction = Interaction.Mine;
+							} else if (card.getCardName() == CardName.Remodel){
+								model.interaction = Interaction.Remodel1;
+							} else if (card.getCardName() == CardName.Workshop){
+								model.interaction = Interaction.Workshop;
+							} 
+						}
+					}
+				}
+			}
 		});
 
 		// If the user enters an image, it gets brighter
@@ -175,7 +211,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 	}
 
 	// Sets events on action cards when the game starts
-	private void setInitialActionCardsEvents(ImageView image){
+	private void setInitialActionCardsEvents(ImageView image, CardName cardName){
 		// Stores the image height and width
 		int imageHeight = (int) image.getFitHeight();
 		int imageWidth = (int) image.getFitWidth();
@@ -186,8 +222,14 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		ColorAdjust brighter = new ColorAdjust();
 		brighter.setBrightness(+0.5);
 
+		// If the user clicks a card, he wants to buy it. This handler sends a message with the chosen card.
 		image.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-			// do stuff here
+			if (model.currentPhase.equals(Phase.Buy)) {
+				if(model.sendBuyCard(cardName)){
+					view.stackpDiscard.getChildren().add(0, image);
+				}
+
+			}
 		});
 
 		// If the user enters an image, it gets brighter
@@ -266,6 +308,11 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 						break;
 					}
 
+					// If the deck is empty, the discard pile needs to be added to the deck pile. In the GUI we only remove the discard pile top card.
+					if(model.yourDeck.size() == 0){
+						view.stackpDiscard.getChildren().clear();
+					}
+
 					// Updates the name of the current player
 					view.lblNameOfCurrentPlayer.setText(model.currentPlayer);
 
@@ -306,6 +353,22 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 					view.lblNmbrOfDuchyCards.setText(Integer.toString(model.buyCards.get(CardName.Duchy)));
 					view.lblNmbrOfEstateCards.setText(Integer.toString(model.buyCards.get(CardName.Estate)));
 					view.lblNmbrOfProvinceCards.setText(Integer.toString(model.buyCards.get(CardName.Province)));
+
+					// Adds hand cards
+					if (model.yourNewHandCards != null){
+						for(Card card : model.yourNewHandCards){
+							view.hboxHandCards.getChildren().add(resizeImage(card.getImage()));
+						}
+
+						// Adds event handlers to the hand cards
+						for (Node child : view.hboxHandCards.getChildren()) {
+							ImageView img = (ImageView) child;
+							setInitialHandCardsEvents(img);
+						}
+					}
+
+					// Updates the discard pile top card
+					view.stackpDiscard.getChildren().add(0, resizeImage(model.yourDiscardPileTopCard.getImage()));
 
 				} else if (msgIn instanceof CreateGame_Message) {
 					model.processCreateGame(msgIn);
@@ -409,9 +472,8 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 					Card flipsideCard = Card.getCard(CardName.Flipside);
 					view.stackpDeck.getChildren().add(resizeImage(flipsideCard.getImage()));
 
-					// Adds the initial number of hand cards to the hbox
+					// Adds hand cards
 					for(Card card : model.yourNewHandCards){
-						ImageView img = new ImageView();
 						view.hboxHandCards.getChildren().add(resizeImage(card.getImage()));
 					}
 
@@ -422,24 +484,24 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 					}
 
 					// Adds event handlers to the action cards
-					setInitialActionCardsEvents((ImageView) view.vboxCellarCards.getChildren().get(0));
-					setInitialActionCardsEvents((ImageView) view.vboxMarketCards.getChildren().get(0));
-					setInitialActionCardsEvents((ImageView) view.vboxRemodelCards.getChildren().get(0));
-					setInitialActionCardsEvents((ImageView) view.vboxSmithyCards.getChildren().get(0));
-					setInitialActionCardsEvents((ImageView) view.vboxWoodcutterCards.getChildren().get(0));
-					setInitialActionCardsEvents((ImageView) view.vboxWorkshopCards.getChildren().get(0));
-					setInitialActionCardsEvents((ImageView) view.vboxMineCards.getChildren().get(0));
-					setInitialActionCardsEvents((ImageView) view.vboxVillageCards.getChildren().get(0));
+					setInitialActionCardsEvents((ImageView) view.vboxCellarCards.getChildren().get(0), CardName.Cellar);
+					setInitialActionCardsEvents((ImageView) view.vboxMarketCards.getChildren().get(0), CardName.Market);
+					setInitialActionCardsEvents((ImageView) view.vboxRemodelCards.getChildren().get(0), CardName.Remodel);
+					setInitialActionCardsEvents((ImageView) view.vboxSmithyCards.getChildren().get(0), CardName.Smithy);
+					setInitialActionCardsEvents((ImageView) view.vboxWoodcutterCards.getChildren().get(0), CardName.Woodcutter);
+					setInitialActionCardsEvents((ImageView) view.vboxWorkshopCards.getChildren().get(0), CardName.Workshop);
+					setInitialActionCardsEvents((ImageView) view.vboxMineCards.getChildren().get(0), CardName.Mine);
+					setInitialActionCardsEvents((ImageView) view.vboxVillageCards.getChildren().get(0), CardName.Village);
 
 					// Adds event handlers to the treasure cards
-					setInitialActionCardsEvents((ImageView) view.vboxGoldCards.getChildren().get(0));
-					setInitialActionCardsEvents((ImageView) view.vboxSilverCards.getChildren().get(0));
-					setInitialActionCardsEvents((ImageView) view.vboxCopperCards.getChildren().get(0));
+					setInitialActionCardsEvents((ImageView) view.vboxGoldCards.getChildren().get(0), CardName.Gold);
+					setInitialActionCardsEvents((ImageView) view.vboxSilverCards.getChildren().get(0), CardName.Silver);
+					setInitialActionCardsEvents((ImageView) view.vboxCopperCards.getChildren().get(0), CardName.Copper);
 
 					// Adds event handlers to the victory cards
-					setInitialActionCardsEvents((ImageView) view.vboxDuchyCards.getChildren().get(0));
-					setInitialActionCardsEvents((ImageView) view.vboxEstateCards.getChildren().get(0));
-					setInitialActionCardsEvents((ImageView) view.vboxProvinceCards.getChildren().get(0));
+					setInitialActionCardsEvents((ImageView) view.vboxDuchyCards.getChildren().get(0), CardName.Duchy);
+					setInitialActionCardsEvents((ImageView) view.vboxEstateCards.getChildren().get(0), CardName.Estate);
+					setInitialActionCardsEvents((ImageView) view.vboxProvinceCards.getChildren().get(0), CardName.Province);
 
 				} else if (msgIn instanceof PlayerSuccess_Message) {
 					PlayerSuccess_Message psmsg = (PlayerSuccess_Message) msgIn;
