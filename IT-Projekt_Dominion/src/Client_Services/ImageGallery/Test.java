@@ -1,6 +1,7 @@
-package Client_Services.Gallery;
+package Client_Services.ImageGallery;
 
 import Cards.CardName;
+import Client_Services.Gallery;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -29,7 +30,7 @@ public class Test extends Application{
 		
 //		Image image = new Image(Gallery.class.getResourceAsStream("cardName.toString()"));
 
-		//Image image = new Image("/CardName.Gold_Card.jpg");
+		Image image = new Image("/Gold_Card.jpg");
 	    ImageView iv = new ImageView();
 //	    iv.setImage(image);
 	    
