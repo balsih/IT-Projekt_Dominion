@@ -10,11 +10,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -46,6 +48,8 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		
 	protected Button saveBtn;
 	protected Button backBtn;
+	
+	protected Alert saveAlert;
 	
 
 	/**
@@ -114,6 +118,12 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		backBtn.setId("backBtn");	
 		HBox buttonBox = new HBox(saveBtn, backBtn);
 		buttonBox.setId("buttonBox");
+		
+		// warning message, if login fails
+		saveAlert = new Alert(AlertType.WARNING);
+		saveAlert.setTitle(t.getString("cnp.saveAlert"));
+		saveAlert.setHeaderText(t.getString("isUsed"));
+		// loginAlert.setContentText("do this or that");
 		
 		// VBox for layout and spacing 
 		VBox namePasswordLanguageBox = new VBox();

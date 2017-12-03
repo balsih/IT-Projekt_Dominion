@@ -128,7 +128,6 @@ public class CreatePlayer_Controller extends Controller<GameApp_Model, CreatePla
 				//	menuFileLanguage.getItems().add(language);
 					
 				
-				
 				//sl.setTranslator(translator);
 	
 				}
