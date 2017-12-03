@@ -58,6 +58,7 @@ public abstract class Card {
 	// and sets the corresponding image 
 	public static Card getCard(CardName cardName) {
 		Translator t = ServiceLocator.getServiceLocator().getTranslator();
+		//String name = cardName.toString();
 		Card card = null;
 		switch (cardName) {
 		case Copper:
