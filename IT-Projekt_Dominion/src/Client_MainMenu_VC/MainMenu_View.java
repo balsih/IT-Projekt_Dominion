@@ -130,13 +130,13 @@ public class MainMenu_View extends View<GameApp_Model> {
 		// https://panjutorials.de/tutorials/javafx-8-gui/lektionen/audio-player-in-javafx-2/?cache-flush=1510439948.4916
 		// hier legen wir die Resource an, welche unbedingt im entsprechenden
 		// Ordner sein muss
-		final URL resource = getClass().getResource("Medieval_Camelot.mp3");
+		//final URL resource = getClass().getResource("Medieval_Camelot.mp3");
 		// wir legen das Mediaobjekt and und weisen unsere Resource zu
-		final Media media = new Media(resource.toString());
+		//final Media media = new Media(resource.toString());
 		// wir legen den Mediaplayer an und weisen ihm das Media Objekt zu
-		final MediaPlayer mediaPlayer = new MediaPlayer(media);
+		//final MediaPlayer mediaPlayer = new MediaPlayer(media);
 
-		mediaPlayer.play();
+	//	mediaPlayer.play();
 		// mediaPlayer.stop();
 
 		Scene scene = new Scene(root);
