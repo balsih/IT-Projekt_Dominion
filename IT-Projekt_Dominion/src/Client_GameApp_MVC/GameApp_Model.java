@@ -201,6 +201,16 @@ public class GameApp_Model extends Model {
 				}		
 			}
 			break;
+		case port:
+			// The port must be an integer from 1 to 65535. 
+			try {
+				int number = Integer.parseInt(userInput);
+				if (number > 0 && number <= 65535) valid = true;
+			} catch (NumberFormatException e) {
+				// input was not an integer
+				valid = false;
+			}
+			break;
 		}
 		return valid;
 	}
