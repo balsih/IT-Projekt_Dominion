@@ -26,7 +26,9 @@ public class Gallery {
 	 * @param key
 	 */
 	public ImageView getImage(String cardName){
-		String path = this.getClass().getResource("/Client_Services/ImageGallery/" + cardName + ".jpg").toExternalForm();
+		Translator t = ServiceLocator.getServiceLocator().getTranslator();
+		String localeString = t.getCurrentLocale().getLanguage();
+		String path = this.getClass().getResource("/Client_Services/ImageGallery/" + cardName + "_" + localeString + ".jpg").toExternalForm();
 		System.out.println(path);
 		Image image = new Image(path);
 		return new ImageView(image);
