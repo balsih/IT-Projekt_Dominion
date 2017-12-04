@@ -57,12 +57,14 @@ public class Mine_Card extends Card {
 			
 			// add a treasure card with a higher value than the removed one
 			if (discardedCard.getCardName() == CardName.Copper){
-				player.getHandCards().add(game.getSilverPile().pop());
-				ugmsg.setNewHandCards(player.getHandCards());
+				Silver_Card silverCard = game.getSilverPile().pop();
+				player.getHandCards().add(silverCard);
+				ugmsg.setBuyedCard(silverCard);
 				ugmsg.setLog(this.player.getPlayerName()+": #disposed# #"+discardedCard.toString()+"# #received# #"+CardName.Silver.toString()+"#");
 			} else if (discardedCard.getCardName() == CardName.Silver){
-				player.getHandCards().add(game.getGoldPile().pop());
-				ugmsg.setNewHandCards(player.getHandCards());
+				Gold_Card goldCard = game.getGoldPile().pop();
+				player.getHandCards().add(goldCard);
+				ugmsg.setBuyedCard(goldCard);
 				ugmsg.setLog(this.player.getPlayerName()+": #disposed# #"+discardedCard.toString()+"# #received# #"+CardName.Gold.toString()+"#");
 			}
 			if (this.player.getActions() == 0 || !this.player.containsCardType(this.player.getHandCards(), CardType.Action))
