@@ -96,8 +96,8 @@ public class MainMenu_View extends View<GameApp_Model> {
 			// Find current language index
 			if (locale.equals(sl.getTranslator().getCurrentLocale())) {
 				currentIndex = i;
-			}
-		}
+			} 
+		} 
 		languageSelectComboBox = new ComboBox<String>(lang);
 		languageSelectComboBox.setValue(lang.get(currentIndex)); // set default value-> German
 		languageSelectComboBox.setId("languageSelectComboBox");
@@ -108,7 +108,6 @@ public class MainMenu_View extends View<GameApp_Model> {
 		
 		HBox playerAndLanguageBox = new HBox(playerLbl, languageSelectComboBox);
 		playerAndLanguageBox.setId("playerAndLanguageBox");
-		
 		
 		
 		mainMenuLbl = new Label(t.getString("menu.mainMenuLbl"));

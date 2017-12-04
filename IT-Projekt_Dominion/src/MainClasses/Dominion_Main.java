@@ -6,7 +6,9 @@ import Abstract_MVC.View;
 import Cards.CardName;
 import Client_CreatePlayer_VC.CreatePlayer_Controller;
 import Client_CreatePlayer_VC.CreatePlayer_View;
+import Client_GameApp_MVC.GameApp_Controller;
 import Client_GameApp_MVC.GameApp_Model;
+import Client_GameApp_MVC.GameApp_View;
 import Client_Login_VC.Login_Controller;
 import Client_Login_VC.Login_View;
 import Client_MainMenu_VC.MainMenu_Controller;
@@ -28,7 +30,9 @@ import javafx.stage.Stage;
  * @created 31-Okt-2017 17:28:23
  */
 public class Dominion_Main extends Application {
+	
 	Splash_View splashView;
+	MainMenu_View mainMenu_View;
 	ServiceLocator sl;
 	
 	GameApp_Model model;
@@ -64,14 +68,6 @@ public class Dominion_Main extends Application {
 		splashView.stop(); // Hides splashscreen
 		sl = ServiceLocator.getServiceLocator();
 		
-//		ImageView testView = sl.getGallery().getImage("Gold_Card");
-//		Stage testStage = new Stage();
-//		Pane p = new Pane();
-//		p.getChildren().add(testView);
-//		Scene testScene = new Scene(p);
-//		testStage.setScene(testScene);
-//		testStage.show();
-		
 		if (this.model == null) {
 			this.model = new GameApp_Model(this);
 		}
@@ -85,60 +81,36 @@ public class Dominion_Main extends Application {
 		CreatePlayer_View view = new CreatePlayer_View(new Stage(), model);
 		CreatePlayer_Controller controller = new CreatePlayer_Controller(this, model, view);
 		view.start();
-		
-		//Thread.sleep(3000);
 
 		//view.stop();
 	}
 	
-
+	
 	public void startGameApp(){
+		
+		mainMenu_View.stop();
 		// Create game mvc
-		
-		//sl = ServiceLocator.getServiceLocator();
-
-		//--- Testcode
-		// Button: Language DE
-		sl.setTranslator(new Translator("de"));
-		// Button: Language EN
-		//sl.setTranslator(new Translator("en"));
-		// Get label texts from translator
-		Translator t = sl.getTranslator();
-		System.out.println(t.getString("program.menu.file"));
-		System.out.println(t.getString("program.menu.file.language"));
-		System.out.println(t.getString("program.menu.help"));
-		System.out.println(t.getString("login"));
-		//---
-		
-		splashView.stop(); // Hides splashscreen
+		GameApp_View view = new GameApp_View(new Stage(), model);
+		GameApp_Controller controller = new GameApp_Controller(model, view);
+		view.start();
 	}
-
-//	public void startLogin(){  /// -> nicht sicher ob das so gemacht wird
-//		GameApp_Model model = new GameApp_Model(null);
-//		Login_View view = new Login_View(new Stage(), model);
-//		Login_Controller controller = new Login_Controller(this, model, view);
-//		view.start();
-//
-//	}
-
+	
 	public void startMainMenu(){
 		MainMenu_View view = new MainMenu_View(new Stage(), model);
 		MainMenu_Controller controller = new MainMenu_Controller(this, model, view);
 		view.start();
 		
-		//Thread.sleep(3000);
-
 		//view.stop();
-
+		
 	}
 	
 	@Override
 	public void init(){
-
+	
 	}
-
+	
 	@Override
 	public void stop(){
-
+	
 	}
 }//end Dominion_Main

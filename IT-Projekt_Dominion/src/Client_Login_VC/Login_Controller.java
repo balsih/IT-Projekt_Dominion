@@ -63,7 +63,7 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 		view.connectBtn.setOnAction((event) -> {
 			try {
 				model.init(view.ipText.getText(), Integer.parseInt(view.portText.getText()));
-				//view.connectAlert.showAndWait();
+				//view.connectAlert.showAndWait(); -> keien Fehlermeldung vorgesehen
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -108,12 +108,11 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 		// set on action and handling for loginBtn
 		view.loginBtn.setOnAction((event) -> {
 			try {
-				if (model.sendLogin(view.nameText.getText(), view.passwordText.getText()).equals("NoConnection")){
-					// test code -> erfolgt bei erfolgreichem login automatisch 
-					view.stop();
-				} else {
-					view.loginAlert.showAndWait(); // warning alert if login fails
-				}	
+			
+				view.loginAlert.setHeaderText(model.sendLogin(view.nameText.getText(), view.passwordText.getText()));
+				view.loginAlert.showAndWait(); // warning alert if login fails
+				
+//				}	
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -131,7 +130,7 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 		
 		// set on action and handling for quitBtn
 		view.quitBtn.setOnAction((event) -> {
-			Platform.exit();
+			view.stop();
 		});
 		
 	}

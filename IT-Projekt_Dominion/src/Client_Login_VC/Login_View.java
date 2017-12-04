@@ -115,11 +115,11 @@ public class Login_View extends View<GameApp_Model> {
 		ipAndConnectBox.setId("ipAndConnectBox");
 		ipBox.getChildren().addAll(ipAndPortLblBox, ipAndConnectBox);
 		
-		// warning message, if connection fails
-		connectAlert = new Alert(AlertType.WARNING);
-		connectAlert.setTitle(t.getString("login.connectAlert"));
-		connectAlert.setHeaderText(t.getString("NoConnection"));
-		//connectAlert.setContentText("do this or that");
+//		// warning message, if connection fails
+//		connectAlert = new Alert(AlertType.WARNING);
+//		connectAlert.setTitle(t.getString("login.connectAlert"));
+//		connectAlert.setHeaderText(t.getString("NoConnection"));
+//		//connectAlert.setContentText("do this or that");
 		
 		
 		nameLbl = new Label(t.getString("login.nameLbl"));
@@ -148,7 +148,7 @@ public class Login_View extends View<GameApp_Model> {
 		// warning message, if login fails
 		loginAlert = new Alert(AlertType.WARNING);
 		loginAlert.setTitle(t.getString("login.connectAlert"));
-		loginAlert.setHeaderText(t.getString("NoConnection"));
+		//loginAlert.setHeaderText(t.getString("NoConnection"));
 		// loginAlert.setContentText("do this or that");
 		
 		// buttons
@@ -159,13 +159,12 @@ public class Login_View extends View<GameApp_Model> {
 		
 		HBox buttonBox = new HBox(createNewPlayerBtn, quitBtn);
 		buttonBox.setId("buttonBox");
-		
+	
 		
 		// VBox for layout and spacing 
 		VBox ipNamePasswordBox = new VBox();
 		ipNamePasswordBox.setId("ipNamePasswordBox");
 		ipNamePasswordBox.getChildren().addAll(ipBox, nameBox, passwordBox);
-		
 		
 		// layout and size configurations 
 		root.setPrefSize(1280,720);
@@ -182,7 +181,7 @@ public class Login_View extends View<GameApp_Model> {
 		
 		return scene;
 	}
-
+	
 	//public void start() {
 	
 }//end Login_View
