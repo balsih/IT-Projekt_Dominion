@@ -462,19 +462,15 @@ public class GameApp_Model extends Model {
 			break;
 		case Cellar:
 			imsg.setCellarDiscardCards(this.cellarDiscards);
-			for(int i = 0; i < this.cellarDiscards.size(); i++)
-				this.yourDiscardPile.add(this.cellarDiscards.remove(i));
 			break;
 		case Workshop:
 			imsg.setWorkshopChoice(this.buyChoice);
-			this.buyCards.replace(this.buyChoice, this.buyCards.get(this.buyChoice)-1);
 			break;
 		case Remodel1:
 			imsg.setDisposeRemodelCard(this.discardCard);
 			break;
 		case Remodel2:
 			imsg.setRemodelChoice(this.buyChoice);
-			this.buyCards.replace(this.buyChoice, this.buyCards.get(this.buyChoice)-1);
 			break;
 		case Mine:
 			imsg.setDisposedMineCard(this.discardCard);
@@ -486,6 +482,26 @@ public class GameApp_Model extends Model {
 		Message msgIn = this.processMessage(imsg);
 		if(msgIn instanceof UpdateGame_Message){
 			update = true;
+			
+			//If the Interactions are committed, the changes for Cellar, Remodel1 and Mine have to be executed
+			switch(this.interaction){
+			case Cellar:
+				for(int i = 0; i < this.cellarDiscards.size(); i++){
+					for(int j = 0; j < this.yourHandCards.size(); j++){
+						if(this.cellarDiscards.get(i) == this.yourHandCards.get(j)){
+							this.yourDiscardPile.add(this.yourHandCards.remove(j));
+							break;
+						}
+					}
+				}
+				break;
+			case Remodel1:
+				this.yourHandCards.remove(this.discardCard);
+				break;
+			case Mine:
+				this.yourHandCards.remove(this.discardCard);
+				break;
+			}
 			this.interaction = Interaction.Skip;//defaultSetting
 			
 		}else if(msgIn instanceof PlayerSuccess_Message){
@@ -541,8 +557,7 @@ public class GameApp_Model extends Model {
 
 		//If something necessary happened in the Game, it will be provided to show
 		if(ugmsg.getLog() != null)
-			this.newLog = ugmsg.getLog();
-		//			this.newLog = this.translate(ugmsg.getLog());
+		this.newLog = this.translate(ugmsg.getLog());
 
 		//If the client or opponent sent a chat, it will be provided to show
 		if(ugmsg.getChat() != null)

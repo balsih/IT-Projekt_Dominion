@@ -157,6 +157,30 @@ public class UpdateGame_Message extends Message {
 		this.attrElements.put(ELEMENT_DISCARDPILE_TOP_CARD, ATTR_DISCARDPILE_CARD_NUMBER);
 		this.attrElements.put(ELEMENT_INTERACTION, ATTR_INTERACTION_TYPE);
 	}
+	
+	/**
+	 * @author Lukas
+	 * Puts the content of the maps into the variables
+	 */
+	private void initializeVariables() {
+		
+		this.currentPlayer = this.stringElements.get(ELEMENT_CURRENT_PLAYER);
+		this.currentPhase = this.stringElements.get(ELEMENT_CURRENT_PHASE);
+		this.chat = this.stringElements.get(ELEMENT_CHAT);
+		this.log = this.stringElements.get(ELEMENT_LOG);
+		this.playedCard = this.cardElements.get(ELEMENT_PLAYEDCARD);
+		this.buyedCard = this.cardElements.get(ELEMENT_BUYEDCARD);
+		this.discardPileTopCard = this.cardElements.get(ELEMENT_DISCARDPILE_TOP_CARD);
+		if(this.attrValues.get(ATTR_INTERACTION_TYPE) != null)
+			this.interactionType = Interaction.parseInteraction(this.attrValues.get(ATTR_INTERACTION_TYPE));
+		if (this.attrValues.get(ATTR_DISCARDPILE_CARD_NUMBER) != null)
+			this.discardPileCardNumber = Integer.parseInt(this.attrValues.get(ATTR_DISCARDPILE_CARD_NUMBER));
+		if (this.attrValues.get(ATTR_DECKPILE_CARD_NUMBER) != null)
+			this.deckPileCardNumber = Integer.parseInt(this.attrValues.get(ATTR_DECKPILE_CARD_NUMBER));
+		this.actions = this.integerElements.get(ELEMENT_ACTIONS);
+		this.coins = this.integerElements.get(ELEMENT_COINS);
+		this.buys = this.integerElements.get(ELEMENT_BUYS);
+	}
 
 	/**
 	 * Helps the addNodes method to add elements in the given root If an element
@@ -244,7 +268,10 @@ public class UpdateGame_Message extends Message {
 		this.parseContent(root, this.cardElements);
 		this.parseContent(root, this.handCardListElements);
 		this.parseContent(root, this.cardSelectionElements);
+		
+		initializeVariables();
 	}
+
 
 	/**
 	 * Helps the init method to parse the content in the appropriate structure
@@ -324,7 +351,8 @@ public class UpdateGame_Message extends Message {
 	/**
 	 * @author Bodo Gruetter merges two UpdateGame_Messages together
 	 * 
-	 * @param a
+	 * @param first
+	 * @param second
 	 *            first message which gets merged with a second message
 	 * @return the first message with the merged content
 	 */
@@ -364,74 +392,71 @@ public class UpdateGame_Message extends Message {
 
 		return first;
 	}
+	
 
 	public String getCurrentPlayer() {
-		return this.stringElements.get(ELEMENT_CURRENT_PLAYER);
+		return this.currentPlayer;
 	}
 
 	public Phase getCurrentPhase() {
-		if (this.stringElements.get(ELEMENT_CURRENT_PHASE) != null)
-			return Phase.parsePhase(this.stringElements.get(ELEMENT_CURRENT_PHASE));
+		if (this.currentPhase != null)
+			return Phase.parsePhase(this.currentPhase);
 		return null;
 	}
 
 	public String getChat() {
-		return this.stringElements.get(ELEMENT_CHAT);
+		return this.chat;
 	}
 
 	public String getLog() {
-		return this.stringElements.get(ELEMENT_LOG);
+		return this.log;
 	}
 
 	public Interaction getInteractionType() {
-		if (this.attrValues.get(ATTR_INTERACTION_TYPE) != null)
-			return Interaction.parseInteraction(this.attrValues.get(ATTR_INTERACTION_TYPE));
-		return null;
+		return this.interactionType;
 	}
 
 	public Card getPlayedCard() {
-		return this.cardElements.get(ELEMENT_PLAYEDCARD);
+		return this.playedCard;
 	}
 
 	public Card getBuyedCard() {
-		return this.cardElements.get(ELEMENT_BUYEDCARD);
+		return this.buyedCard;
 	}
 
 	public Card getDiscardPileTopCard() {
-		return this.cardElements.get(ELEMENT_DISCARDPILE_TOP_CARD);
+		return this.discardPileTopCard;
 	}
 
 	public Integer getDiscardPileCardNumber() {
-		if (this.attrValues.get(ATTR_DISCARDPILE_CARD_NUMBER) != null)
-			return Integer.parseInt(this.attrValues.get(ATTR_DISCARDPILE_CARD_NUMBER));
-		return null;
+		return this.discardPileCardNumber;
 	}
 
 	public Integer getDeckPileCardNumber() {
-		if (this.attrValues.get(ATTR_DECKPILE_CARD_NUMBER) != null)
-			return Integer.parseInt(this.attrValues.get(ATTR_DECKPILE_CARD_NUMBER));
-		return null;
+		return this.deckPileCardNumber;
 	}
 
 	public Integer getActions() {
-		return this.integerElements.get(ELEMENT_ACTIONS);
+		return this.actions;
 	}
 
 	public Integer getCoins() {
-		return this.integerElements.get(ELEMENT_COINS);
+		return this.coins;
 	}
 
 	public Integer getBuys() {
-		return this.integerElements.get(ELEMENT_BUYS);
+		return this.buys;
 	}
 
 	public LinkedList<Card> getNewHandCards() {
-		return this.handCardListElements.get(ELEMENT_NEW_HANDCARDS);
+		return this.handCardListElements.get(ELEMENT_NEW_HANDCARD);
 	}
 
 	public LinkedList<CardName> getCardSelection() {
 		return this.cardSelectionElements.get(ELEMENT_CARDSELECTION);
 	}
+	
+	
 
 	public void setCurrentPlayer(String currentPlayer) {
 		this.currentPlayer = currentPlayer;
