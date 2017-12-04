@@ -67,7 +67,7 @@ public class GameApp_Model extends Model {
 	public int opponentHandCards;
 	public LinkedList<Card> yourDeck = new LinkedList<Card>();
 	public int opponentDeck;
-	public LinkedList<Card> yourDiscardPile;
+	public LinkedList<Card> yourDiscardPile = new LinkedList<Card>();
 	public int opponentDiscardPile;
 	public LinkedList<Card> playedCards;
 	public Card newPlayedCard;
@@ -482,6 +482,7 @@ public class GameApp_Model extends Model {
 
 		Message msgIn = this.processMessage(imsg);
 		if(msgIn instanceof UpdateGame_Message){
+			UpdateGame_Message ugmsg = (UpdateGame_Message) msgIn;
 			update = true;
 			
 			//If the Interactions are committed, the changes for Cellar, Remodel1 and Mine have to be executed
@@ -499,11 +500,16 @@ public class GameApp_Model extends Model {
 			case Remodel1:
 				this.yourHandCards.remove(this.discardCard);
 				break;
+			//The picked card with mine will come into the hand and not to discardPile. But the buyCards has to be decreased
 			case Mine:
 				this.yourHandCards.remove(this.discardCard);
+				this.yourNewHandCards.add(ugmsg.getBuyedCard());
+				this.buyCards.replace(ugmsg.getBuyedCard().getCardName(), this.buyCards.get(ugmsg.getBuyedCard().getCardName())-1);
+				ugmsg.setBuyedCard(null);
 				break;
 			}
 			this.interaction = Interaction.Skip;//defaultSetting
+			this.processUpdateGame(ugmsg);
 			
 		}else if(msgIn instanceof PlayerSuccess_Message){
 			this.processPlayerSuccess(msgIn);
@@ -623,7 +629,7 @@ public class GameApp_Model extends Model {
 		//The new handCards just drawn. Always currentPlayer
 		//Move the drawn cards from the deck into yourNewHandCards
 		if(ugmsg.getNewHandCards() != null && 
-				((this.currentPlayer.compareTo(this.clientName) == 0) || (ugmsg.getCurrentPlayer().compareTo(this.opponent) == 0))){
+				((this.currentPlayer.compareTo(this.clientName) == 0) || (this.opponent.compareTo(ugmsg.getCurrentPlayer()) == 0))){
 			LinkedList<Card> newHandCards = ugmsg.getNewHandCards();
 			for(int i = 0; i < newHandCards.size(); i++){
 				if(this.yourDeck.size() == 0){//Mandatory if the DeckPile is empty, the DiscardPile has to be added to the DeckPile
@@ -662,6 +668,10 @@ public class GameApp_Model extends Model {
 		//If cardSelection is set, it consists a selection of the cards to chose
 		if(ugmsg.getCardSelection() != null && this.currentPlayer.compareTo(this.clientName) == 0)
 			this.cardSelection = ugmsg.getCardSelection();
+		
+		//just for testing
+		System.out.println("CardSelection: "+ugmsg.getCardSelection());
+		System.out.println("NewHandCards: "+ugmsg.getNewHandCards());
 
 	}
 

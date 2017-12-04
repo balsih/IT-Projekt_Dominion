@@ -266,8 +266,16 @@ public class UpdateGame_Message extends Message {
 		this.parseContent(root, this.stringElements);
 		this.parseContent(root, this.integerElements);
 		this.parseContent(root, this.cardElements);
-		this.parseContent(root, this.handCardListElements);
-		this.parseContent(root, this.cardSelectionElements);
+		
+		//The elements with deeper contents need their specific root for the parseContent method
+		Element newHandCardsRoot = (Element) root.getElementsByTagName(ELEMENT_NEW_HANDCARDS).item(0);
+		if(newHandCardsRoot != null)
+			this.parseContent(newHandCardsRoot, this.handCardListElements);
+		
+		Element interactionRoot = (Element) root.getElementsByTagName(ELEMENT_INTERACTION).item(0);
+		if(interactionRoot != null)
+			this.parseContent((Element) root.getElementsByTagName(ELEMENT_INTERACTION).item(0), this.cardSelectionElements);
+		
 		
 		initializeVariables();
 	}
@@ -302,42 +310,31 @@ public class UpdateGame_Message extends Message {
 						this.attrValues.put(attrKey, element.getAttribute(attrKey));
 					}
 				}
-				// Checks the generic type to ensure the correct put's into the structure
+				//Try to put the inputs into the generic specified HashMap. If it's not the correct map, it will skip into the next try
 				try {
-					HashMap<String, String> stringMap = (HashMap<String, String>) content;
 					this.stringElements.put(key, element.getTextContent());
-				} catch (Exception e) {
-				}
+				} catch (Exception e) {}
 				try {
-					HashMap<String, Integer> integerMap = (HashMap<String, Integer>) content;
 					this.integerElements.put(key, Integer.parseInt(element.getTextContent()));
-				} catch (Exception e) {
-				}
+				} catch (Exception e) {}
 				try {
-					HashMap<String, Card> cardMap = (HashMap<String, Card>) content;
 					this.cardElements.put(key, TestMessages.getCard(CardName.parseName(element.getTextContent())));
-				} catch (Exception e) {
-				}
+				} catch (Exception e) {}
 				try {
-					HashMap<String, LinkedList<Card>> cardMap = (HashMap<String, LinkedList<Card>>) content;
-					NodeList cardList = element.getElementsByTagName(key);
-					if (key == ELEMENT_NEW_HANDCARDS) {
-						LinkedList<Card> newHandCards = this.handCardListElements.get(key);
-						for (int i = 0; i < cardList.getLength(); i++) {
-							Element cardElement = (Element) cardList.item(i);
+					if (key == ELEMENT_NEW_HANDCARD) {
+						LinkedList<Card> newHandCards = new LinkedList<Card>();
+						for (int i = 0; i < tmpElements.getLength(); i++) {
+							Element cardElement = (Element) tmpElements.item(i);
 							newHandCards.add(TestMessages.getCard(CardName.parseName(cardElement.getTextContent())));
 						}
 						this.handCardListElements.put(key, newHandCards);
 					}
-				} catch (Exception e) {
-				}
+				} catch (Exception e) {}
 				try {
-					HashMap<String, LinkedList<CardName>> cardNameMap = (HashMap<String, LinkedList<CardName>>) content;
-					NodeList cardNameList = element.getElementsByTagName(key);
-					if (key == ELEMENT_INTERACTION) {
-						LinkedList<CardName> cardSelection = this.cardSelectionElements.get(key);
-						for (int i = 0; i < cardNameList.getLength(); i++) {
-							Element cardNameElement = (Element) cardNameList.item(i);
+					if (key == ELEMENT_CARDSELECTION) {
+						LinkedList<CardName> cardSelection = new LinkedList<CardName>();
+						for (int i = 0; i < tmpElements.getLength(); i++) {
+							Element cardNameElement = (Element) tmpElements.item(i);
 							cardSelection.add(CardName.parseName(cardNameElement.getTextContent()));
 						}
 						this.cardSelectionElements.put(key, cardSelection);

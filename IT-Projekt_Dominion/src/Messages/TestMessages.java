@@ -55,12 +55,29 @@ public class TestMessages {
 		askForChanges(model);
 		if(model.currentPlayer.compareTo(model.clientName) == 0){
 			for(Card card: model.yourHandCards){
-				if(card.getCardName() == CardName.Village){
+				if(card.getCardName() == CardName.Mine){
 					model.sendPlayCard(card);
 					break;
 				}
 			}
-			System.out.println("You played: "+model.newPlayedCard.toString());
+			System.out.println("You played: "+model.newPlayedCard);
+			if(model.interaction == Interaction.Mine){
+				System.out.println("");
+				System.out.println(model.yourHandCards);
+				System.out.println("");
+				for(Card card: model.yourHandCards){
+					if(card.getCardName() == CardName.Copper){
+						model.discardCard = card;
+						break;
+					}
+				}
+				model.sendInteraction();
+				System.out.println("");
+				System.out.println(model.yourNewHandCards);
+			}else{
+				System.out.println("somehow not in Interaction.Mine");
+				System.out.println(model.interaction.toString());
+			}
 		}else{
 			System.out.println("you're not currentPlayer, try again");
 		}

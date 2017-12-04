@@ -119,7 +119,7 @@ public class Interaction_Message extends Message {
         	tmpElements = interaction.getElementsByTagName(ELEMENT_ENDOFTURN_DISCARDCARD);
         	if(tmpElements.getLength() > 0){
         		Element EOTDiscardCard = (Element) tmpElements.item(0);
-        		this.EOTdiscardCard = Card.getCard((CardName.parseName(EOTDiscardCard.getTextContent())));
+        		this.EOTdiscardCard = TestMessages.getCard((CardName.parseName(EOTDiscardCard.getTextContent())));
         	}
         	break;
         case Cellar://get the CardNames of the discarded cards with Cellar
@@ -127,7 +127,7 @@ public class Interaction_Message extends Message {
         	this.cellarDiscardCards = new LinkedList<Card>();
         	for(int i = 0; i < tmpElements.getLength(); i++){
         		Element cellarDiscardCard = (Element) tmpElements.item(i);
-        		this.cellarDiscardCards.add(Card.getCard(CardName.parseName(cellarDiscardCard.getTextContent())));
+        		this.cellarDiscardCards.add(TestMessages.getCard(CardName.parseName(cellarDiscardCard.getTextContent())));
         	}
         	break;
         case Workshop://get the CardName of the chosen card (max. cost 4)
@@ -141,7 +141,7 @@ public class Interaction_Message extends Message {
         	tmpElements = interaction.getElementsByTagName(ELEMENT_DISPOSED_REMODEL_CARD);
         	if(tmpElements.getLength() > 0){
         		Element disposedCard = (Element) tmpElements.item(0);
-        		this.disposedRemodelCard = Card.getCard(CardName.parseName(disposedCard.getTextContent()));
+        		this.disposedRemodelCard = TestMessages.getCard(CardName.parseName(disposedCard.getTextContent()));
         	}
         	break;
         case Remodel2://get the chosen card which the client would like to take (max 2+ of the disposed card)
@@ -155,7 +155,7 @@ public class Interaction_Message extends Message {
         	tmpElements = interaction.getElementsByTagName(ELEMENT_DISPOSED_MINE_CARD);
         	if(tmpElements.getLength() > 0){
         		Element disposedMineCard = (Element) tmpElements.item(0);
-        		this.disposedMineCard = Card.getCard(CardName.parseName(disposedMineCard.getTextContent()));
+        		this.disposedMineCard = TestMessages.getCard(CardName.parseName(disposedMineCard.getTextContent()));
         	}
         	break;
         }
