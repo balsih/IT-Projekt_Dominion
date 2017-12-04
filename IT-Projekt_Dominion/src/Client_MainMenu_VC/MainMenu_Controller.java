@@ -29,19 +29,7 @@ public class MainMenu_Controller extends Controller<GameApp_Model, MainMenu_View
 		super(model, view);
 		sl = ServiceLocator.getServiceLocator();
 		
-		// set on action and handling for languageSelectComboBox
-//		view.languageSelectComboBox.setOnAction((event) -> {
-//			try {
-//				if (view.languageSelectComboBox.getValue() == "Deutsch" || view.languageSelectComboBox.getValue() == "German") {
-//					sl.setTranslator(new Translator("de"));
-//				} else {
-//					sl.setTranslator(new Translator("en"));
-//				}
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		});
-		
+
 		// set on action and handling for singlePlayerBtn
 		view.singlePlayerBtn.setOnAction((event) -> {
 			try {
@@ -69,7 +57,7 @@ public class MainMenu_Controller extends Controller<GameApp_Model, MainMenu_View
 			}
 		});
 		
-		//
+		// sets values of the combobox and updates the texts to selected language 
 		view.languageSelectComboBox.setOnAction((e) -> {
 			String newLang = view.languageSelectComboBox.getValue();
 			sl.setTranslator(new Translator(newLang));
@@ -82,11 +70,12 @@ public class MainMenu_Controller extends Controller<GameApp_Model, MainMenu_View
 			view.stop();
 		});
 		
+		
 		// gets called when the window is closed -> save the language of the combobox to the local cfg File
 		view.getStage().setOnHiding((e) -> {
 			// save config file
 			sl.getConfiguration().save();
-			System.out.println("saved config");
+			//System.out.println("saved config");
 		}); 
 		
 		

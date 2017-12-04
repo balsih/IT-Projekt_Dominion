@@ -81,7 +81,6 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 				} else {
 					view.loginBtn.setDisable(true);
 				}
-				// model.doSoSomethingWith setName;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -99,7 +98,6 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 				} else {
 					view.loginBtn.setDisable(true);
 				}
-				// model.doSoSomethingWith passwordText;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -108,10 +106,8 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 		// set on action and handling for loginBtn
 		view.loginBtn.setOnAction((event) -> {
 			try {
-			
 				view.loginAlert.setHeaderText(model.sendLogin(view.nameText.getText(), view.passwordText.getText()));
 				view.loginAlert.showAndWait(); // warning alert if login fails
-				
 //				}	
 			} catch (Exception e) {
 				e.printStackTrace();
