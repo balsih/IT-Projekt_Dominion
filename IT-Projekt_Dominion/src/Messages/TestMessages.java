@@ -54,6 +54,25 @@ public class TestMessages {
 		sendGameMode(GameMode.Singleplayer, model);
 		askForChanges(model);
 		if(model.currentPlayer.compareTo(model.clientName) == 0){
+			for(Card card: model.yourHandCards){
+				if(card.getCardName() == CardName.Village){
+					model.sendPlayCard(card);
+					break;
+				}
+			}
+			System.out.println("You played: "+model.newPlayedCard.toString());
+		}else{
+			System.out.println("you're not currentPlayer, try again");
+		}
+	}
+	
+	public static void checkBuyCellar(){
+		GameApp_Model model = new GameApp_Model(new Dominion_Main());
+		model.init("127.0.0.1", 8080);
+		model.sendLogin("Lukas", "Lukas");
+		sendGameMode(GameMode.Singleplayer, model);
+		askForChanges(model);
+		if(model.currentPlayer.compareTo(model.clientName) == 0){
 			for(int i = 0; i < 2; i++){
 				for(Card card: model.yourHandCards){
 					if(card.getType() == CardType.Treasure){

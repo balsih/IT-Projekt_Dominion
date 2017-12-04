@@ -66,7 +66,10 @@ public class Player {
 
 		this.playerName = name;
 		this.startMove();
+
 		this.actualPhase = Phase.Buy;
+		//for testing Phase.Action
+		this.actualPhase = Phase.Action;
 	}
 
 	/**
