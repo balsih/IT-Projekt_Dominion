@@ -120,21 +120,26 @@ public class Player {
 		if (this.getActions() > 0 && this.actualPhase == Phase.Action && this.equals(game.getCurrentPlayer())) {
 
 			ugmsg = selectedCard.executeCard(this);
+			System.out.println(this.buys);
+			System.out.println(this.coins);
 			playedCards.add(this.handCards.remove(index));
 			this.actions--;
 			ugmsg.setActions(this.actions);
-			
-
 			this.sendToOpponent(this, ugmsg);
 
 			if (this.actions == 0 || !this.containsCardType(this.handCards, CardType.Action) && ugmsg.getInteractionType() == null){
+				System.out.println("Skip");
 				ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.skipPhase(), ugmsg);
+				System.out.println(this.actualPhase.toString());
 			}
 			return ugmsg;
 
 		} else if (this.actualPhase == Phase.Buy && this.equals(game.getCurrentPlayer())) {
 			ugmsg = selectedCard.executeCard(this);
 			playedCards.add(this.handCards.remove(index));
+			System.out.println(this.coins);
+			System.out.println(this.handCards.toString());
+			System.out.println(this.playedCards.toString());
 			return ugmsg;
 		}
 
@@ -165,6 +170,10 @@ public class Player {
 
 				this.coins -= buyedCard.getCost();
 				this.buys--;
+				
+				System.out.println(this.discardPile.toString());
+				System.out.println(this.buys);
+				System.out.println(this.coins);
 			} catch (EmptyStackException e) {
 				this.logger.severe("The buy card stack is empty!");
 				return fmsg;
@@ -177,6 +186,8 @@ public class Player {
 				this.sendToOpponent(this, this.getOpponentSuccessMsg());
 				return this.getCurrentPlayerSuccessMsg();
 			}
+			
+			System.out.println("not over");
 
 			/**
 			 * checks if the buy of the current player is valid, then actualize
@@ -192,7 +203,9 @@ public class Player {
 			this.sendToOpponent(this, ugmsg);
 
 			if (this.buys == 0) {
+				System.out.println("skip");
 				ugmsg = UpdateGame_Message.merge((UpdateGame_Message) skipPhase(), ugmsg);
+				System.out.println(this.actualPhase.toString());
 			}
 			return ugmsg;
 		}
@@ -275,7 +288,15 @@ public class Player {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		boolean interaction = false;
 		this.topCard = selectedTopCard;
+		
+		// lays played cards down on the discard pile
+		while (!playedCards.isEmpty()) {
+			this.discardPile.push(playedCards.remove());
+		}
 
+		/* checks if the player has more than one cards in his hand
+		 * and if there is a interaction of the player required
+		 */
 		if (this.handCards.size() > 1 && selectedTopCard != null) {
 			ugmsg.setInteractionType(Interaction.EndOfTurn);
 			ugmsg.setDiscardPileTopCard(selectedTopCard);
@@ -288,11 +309,11 @@ public class Player {
 			ugmsg.setDiscardPileTopCard(this.discardPile.peek());
 		}
 
+		/* If no more Interaction, the player lays his handcards
+		 * down on the discardPile and draw five new cards of his
+		 * deckPile.
+		 */
 		if (!interaction) {
-			while (!playedCards.isEmpty()) {
-				this.discardPile.push(playedCards.remove());
-			}
-
 			while (!handCards.isEmpty()) {
 				this.discardPile.push(handCards.remove());
 			}
@@ -373,6 +394,7 @@ public class Player {
 			case Buy:
 				this.actualPhase = Phase.CleanUp;
 				ugmsg.setCurrentPhase(Phase.CleanUp);
+				System.out.println(ugmsg.getCurrentPhase());
 				break;
 
 			case CleanUp:
@@ -399,6 +421,7 @@ public class Player {
 	 * Counts the victory points.
 	 */
 	public void countVictoryPoints() {
+		// Puts all left cards in the deckpile
 		while (!this.handCards.isEmpty())
 			this.deckPile.push(handCards.remove());
 		while (!this.playedCards.isEmpty())
@@ -406,6 +429,7 @@ public class Player {
 		while (!this.discardPile.isEmpty())
 			this.deckPile.push(discardPile.pop());
 
+		// Counts the number of victory points
 		Iterator<Card> iter = deckPile.iterator();
 		while (iter.hasNext())
 			if (iter.next().getType().equals(CardType.Victory)) {
