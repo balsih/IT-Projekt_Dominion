@@ -50,7 +50,7 @@ public class TestMessages {
 	public static void main(String[] args) {
 		GameApp_Model model = new GameApp_Model(new Dominion_Main());
 		model.init("127.0.0.1", 8080);
-		model.setClientName("Lukas");
+		model.sendLogin("Lukas", "Lukas");
 		sendGameMode(GameMode.Singleplayer, model);
 		askForChanges(model);
 		if(model.currentPlayer.compareTo(model.clientName) == 0){

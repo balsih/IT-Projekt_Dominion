@@ -170,6 +170,9 @@ public class ServerThreadForClient implements Runnable {
 		DB_Connector dbConnector = DB_Connector.getDB_Connector();
 		boolean success = dbConnector.checkLoginInput(this.clientName, lmsg.getPassword());
 		
+		logger.info("Client: "+this.clientName);
+		logger.info("Password: "+lmsg.getPassword());
+		
 		if(success){
 			this.logger.info(this.clientName+"'s login succeeded");
 			Commit_Message cmsg = new Commit_Message();
@@ -196,12 +199,12 @@ public class ServerThreadForClient implements Runnable {
 		CreateNewPlayer_Message cnpmsg = (CreateNewPlayer_Message) msgIn;
 		this.clientName = cnpmsg.getClient();
 		String password = cnpmsg.getPassword();
-		this.logger.info(password);
 		
 		DB_Connector dbConnector = DB_Connector.getDB_Connector();
 		boolean success = dbConnector.addNewPlayer(this.clientName, password);
 		if(success){
 			this.logger.info(this.clientName+"'s storage succeeded");
+			this.logger.info("password: "+password);
 			Commit_Message cmsg = new Commit_Message();
 			return cmsg;
 			

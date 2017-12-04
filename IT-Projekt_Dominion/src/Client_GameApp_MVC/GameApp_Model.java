@@ -108,8 +108,8 @@ public class GameApp_Model extends Model {
 		super();
 		this.main = main;
 
-		// start menusound
-		this.startMediaPlayer("Medieval_Camelot.mp3"); // start sound 
+//		// start menusound
+//		this.startMediaPlayer("Medieval_Camelot.mp3"); // start sound 
 	}
 
 	/**
@@ -293,7 +293,8 @@ public class GameApp_Model extends Model {
 
 		Message msgIn = this.processMessage(lmsg);
 		if(msgIn instanceof Commit_Message){
-			this.main.startMainMenu();//login succeeded
+//			this.main.startMainMenu();//login succeeded
+			System.out.println("Login suceeded");
 			
 		}else if(msgIn instanceof Failure_Message){
 			Failure_Message fmsg = (Failure_Message) msgIn;//login failed, clientName and/or password wrong

@@ -315,7 +315,7 @@ public class UpdateGame_Message extends Message {
 				}
 				try {
 					HashMap<String, Card> cardMap = (HashMap<String, Card>) content;
-					this.cardElements.put(key, Card.getCard(CardName.parseName(element.getTextContent())));
+					this.cardElements.put(key, TestMessages.getCard(CardName.parseName(element.getTextContent())));
 				} catch (Exception e) {
 				}
 				try {
@@ -325,7 +325,7 @@ public class UpdateGame_Message extends Message {
 						LinkedList<Card> newHandCards = this.handCardListElements.get(key);
 						for (int i = 0; i < cardList.getLength(); i++) {
 							Element cardElement = (Element) cardList.item(i);
-							newHandCards.add(Card.getCard(CardName.parseName(cardElement.getTextContent())));
+							newHandCards.add(TestMessages.getCard(CardName.parseName(cardElement.getTextContent())));
 						}
 						this.handCardListElements.put(key, newHandCards);
 					}
