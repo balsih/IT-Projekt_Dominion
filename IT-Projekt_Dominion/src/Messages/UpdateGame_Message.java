@@ -288,7 +288,7 @@ public class UpdateGame_Message extends Message {
 				}
 				try {
 					HashMap<String, Card> cardMap = (HashMap<String, Card>) content;
-					this.cardElements.put(key, TestMessages.getCard(CardName.parseName(element.getTextContent())));
+					this.cardElements.put(key, Card.getCard(CardName.parseName(element.getTextContent())));
 				} catch (Exception e) {
 				}
 				try {

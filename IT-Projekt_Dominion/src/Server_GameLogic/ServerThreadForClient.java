@@ -56,7 +56,7 @@ public class ServerThreadForClient implements Runnable {
 	private Game game;
 	private Player player;
 	private Queue<Message> waitingMessages = new LinkedList<Message>();
-	private String clientName = "Lukas";//declaration just for test
+	private String clientName;
 
 
 	private ServerThreadForClient(){
@@ -310,7 +310,7 @@ public class ServerThreadForClient implements Runnable {
 		return ugmsg;
 	}
 
-	/**
+	/**TESTED
 	 * @author Lukas
 	 * Try to buy a card
 	 * 

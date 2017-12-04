@@ -363,7 +363,7 @@ public class GameApp_Model extends Model {
 		return this.translate(result);
 	}
 
-	/**
+	/**TESTED
 	 * @author Lukas
 	 * The client wants to buy a card. The result depends on the players validity to buy.
 	 * 
@@ -565,23 +565,23 @@ public class GameApp_Model extends Model {
 		}
 
 		//Just necessary to show opponent's size of discardPile
-		if(ugmsg.getDeckPileCardNumber() != null && this.currentPlayer == this.opponent)
+		if(ugmsg.getDeckPileCardNumber() != null && this.currentPlayer.compareTo(this.opponent) == 0)
 			this.opponentDiscardPile = ugmsg.getDeckPileCardNumber();
 
 		//Just necessary to show opponent's size of deckPile
-		if(ugmsg.getDiscardPileCardNumber() != null && this.currentPlayer == this.opponent)
+		if(ugmsg.getDiscardPileCardNumber() != null && this.currentPlayer.compareTo(this.opponent) == 0)
 			this.opponentDeck = ugmsg.getDiscardPileCardNumber();
 
 		//Always client's topCard
-		if(ugmsg.getDiscardPileTopCard() != null && this.currentPlayer == this.clientName)
+		if(ugmsg.getDiscardPileTopCard() != null && this.currentPlayer.compareTo(this.clientName) == 0)
 			this.yourDiscardPileTopCard = ugmsg.getDiscardPileTopCard();
 
 		//If currentPlayer is set, the currentPlayer's turn ends
 		if(ugmsg.getCurrentPlayer() != null){
-			if(ugmsg.getCurrentPlayer() != this.currentPlayer){
+			if(ugmsg.getCurrentPlayer().compareTo(this.currentPlayer) != 0){
 				this.turnEnded = true;
 				
-				if(ugmsg.getCurrentPlayer() == this.opponent){//if it was your turn that ended
+				if(ugmsg.getCurrentPlayer().compareTo(this.opponent) == 0){//if it was your turn that ended
 					for(int i = 0; i < this.playedCards.size(); i++)
 						this.yourDiscardPile.add(this.playedCards.remove(i));
 					for(int j = 0; j < this.yourHandCards.size(); j++)
@@ -596,7 +596,8 @@ public class GameApp_Model extends Model {
 
 		//The new handCards just drawn. Always currentPlayer
 		//Move the drawn cards from the deck into yourNewHandCards
-		if(ugmsg.getNewHandCards() != null && (this.currentPlayer == this.clientName) || (ugmsg.getCurrentPlayer() == this.opponent)){
+		if(ugmsg.getNewHandCards() != null && 
+				((this.currentPlayer.compareTo(this.clientName) == 0) || (ugmsg.getCurrentPlayer().compareTo(this.opponent) == 0))){
 			LinkedList<Card> newHandCards = ugmsg.getNewHandCards();
 			for(int i = 0; i < newHandCards.size(); i++){
 				if(this.yourDeck.size() == 0){//Mandatory if the DeckPile is empty, the DiscardPile has to be added to the DeckPile
@@ -617,7 +618,7 @@ public class GameApp_Model extends Model {
 
 		//If a card was played, it will be provided
 		//Move the played Card from the hand into newPlayedCard
-		if(ugmsg.getPlayedCard() != null && this.currentPlayer == this.clientName){
+		if(ugmsg.getPlayedCard() != null && this.currentPlayer.compareTo(this.clientName) == 0){
 			for(int i = 0; i < this.yourHandCards.size(); i++){
 				if(this.yourHandCards.get(i).getCardName().equals(ugmsg.getPlayedCard().getCardName())){
 					this.newPlayedCard = this.yourHandCards.remove(i);
@@ -628,11 +629,11 @@ public class GameApp_Model extends Model {
 		}
 
 		//If interaction is set, the Type of Interaction can be checked (i.e. meaning of the commit_Button)
-		if(ugmsg.getInteractionType() != null && this.currentPlayer == this.clientName)
+		if(ugmsg.getInteractionType() != null && this.currentPlayer.compareTo(this.clientName) == 0)
 			this.interaction = ugmsg.getInteractionType();
 
 		//If cardSelection is set, it consists a selection of the cards to chose
-		if(ugmsg.getCardSelection() != null && this.currentPlayer == this.clientName)
+		if(ugmsg.getCardSelection() != null && this.currentPlayer.compareTo(this.clientName) == 0)
 			this.cardSelection = ugmsg.getCardSelection();
 
 	}
