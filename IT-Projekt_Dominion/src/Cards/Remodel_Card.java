@@ -79,7 +79,7 @@ public class Remodel_Card extends Card {
 		// update game Messages -> XML
 		LinkedList<Card> newHandCard = new LinkedList<Card>();
 		newHandCard.add(pickedCard);
-		ugmsg.setNewHandCards(newHandCard);
+		ugmsg.setBuyedCard(pickedCard);
 		if (this.player.getActions() == 0 || !this.player.containsCardType(this.player.getHandCards(), CardType.Action))
 			ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.player.skipPhase(), ugmsg);
 		
