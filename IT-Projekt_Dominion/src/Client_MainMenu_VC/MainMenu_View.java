@@ -7,6 +7,7 @@ import Abstract_MVC.View;
 import Client_GameApp_MVC.GameApp_Model;
 import Client_Services.ServiceLocator;
 import Client_Services.Translator;
+import Server_GameLogic.Game;
 import Server_GameLogic.Player;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -34,6 +35,7 @@ import javafx.stage.Stage;
 public class MainMenu_View extends View<GameApp_Model> {
 	
 	private ServiceLocator sl;
+	private Player player;
 	
 	// controls -> accessed by controller
 	protected Label playerLbl;
@@ -78,16 +80,13 @@ public class MainMenu_View extends View<GameApp_Model> {
 		highscoreBox.setId("highscoreBox");
 
 		// labels and text fields
-		
 		// shows the name of the actual player
-		//playerLbl = new Label(t.getString("menu.playerLbl"));
-		//playerLbl = new Label(model.getClientName());
-		
-		playerLbl = new Label("Spieler: Bodo Grütter");
-		playerLbl.setId("playerLbl");
 	
+		// playerLbl = new Label(player.getPlayerName());
+		playerLbl = new Label("Spieler: Bodo Grütter"); // zum testen da noch kein Playername vorhanden
+		playerLbl.setId("playerLbl");
+		
 		// language selection with ComboBox
-		//ObservableList<String> language = FXCollections.observableArrayList(t.getString("program.german"), t.getString("program.english"));
 		ObservableList<String> lang = FXCollections.observableArrayList();
 		int currentIndex = 0;
 		for (int i = 0; i < sl.getLocales().length; i++) {
@@ -99,9 +98,8 @@ public class MainMenu_View extends View<GameApp_Model> {
 			} 
 		} 
 		languageSelectComboBox = new ComboBox<String>(lang);
-		languageSelectComboBox.setValue(lang.get(currentIndex)); // set default value-> German
+		languageSelectComboBox.setValue(lang.get(currentIndex)); 
 		languageSelectComboBox.setId("languageSelectComboBox");
-		// languageSelectComboBox.setPromptText(""); -> wird angezeigt vor erster Auswahl, z.B. "Sprache wählen"
 		
 		//languageSelectComboBox.setTooltip(new Tooltip(t.getString("program.languageTip")));
 		//languageSelectComboBox.setPrefSize(280.0, 30.0);

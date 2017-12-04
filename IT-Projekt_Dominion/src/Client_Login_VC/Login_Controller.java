@@ -108,7 +108,7 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 			try {
 				view.loginAlert.setHeaderText(model.sendLogin(view.nameText.getText(), view.passwordText.getText()));
 				view.loginAlert.showAndWait(); // warning alert if login fails
-//				}	
+				main.startMainMenu(); // manueller Start zum Testen
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
