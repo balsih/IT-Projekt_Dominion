@@ -26,8 +26,10 @@ import Messages.GameSuccess;
 
 /**
  * @author Bodo Gruetter
- * @version 1.0
- * @created 31-Okt-2017 17:08:54
+ * 
+ * The game class represents a game with all available cards and two players.
+ * If player 2 is a human or a computer player depends on the game mode.
+ * 
  */
 public class Game {
 
@@ -281,11 +283,11 @@ public class Game {
 				gameCounter++;
 				existingGame.startGame();
 				
-//				existingGame.getPlayer1().getServerThreadForClient()
-//						.addWaitingMessages(existingGame.getPlayer1().getServerThreadForClient().getCG_Message(existingGame));
-//				existingGame.getPlayer2().getServerThreadForClient()
-//						.addWaitingMessages(existingGame.getPlayer2().getServerThreadForClient().getCG_Message(existingGame));
-//				existingGame.logger.info(existingGame.player1.getPlayerName() + " started a multiplayer game versus " + existingGame.player2.getPlayerName());
+				existingGame.getPlayer1().getServerThreadForClient()
+						.addWaitingMessages(existingGame.getPlayer1().getServerThreadForClient().getCG_Message(existingGame));
+				existingGame.getPlayer2().getServerThreadForClient()
+						.addWaitingMessages(existingGame.getPlayer2().getServerThreadForClient().getCG_Message(existingGame));
+				existingGame.logger.info(existingGame.player1.getPlayerName() + " started a multiplayer game versus " + existingGame.player2.getPlayerName());
 				
 			}
 

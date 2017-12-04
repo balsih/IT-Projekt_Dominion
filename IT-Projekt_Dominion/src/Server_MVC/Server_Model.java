@@ -12,12 +12,11 @@ import javafx.collections.ObservableList;
 
 /**
  * @author Bodo
- * @version 1.0
- * @created 31-Okt-2017 17:09:18
+ * 
+ * The server model allows to start the server and to open a thread for the clients.
  */
 public class Server_Model extends Model {
 
-	private int port;
 	private ServerSocket listener;
 	private final Logger logger = Logger.getLogger("");
 	
@@ -32,7 +31,12 @@ public class Server_Model extends Model {
 		super();
 	}
 
-	//starts the server with the entered port
+	/**
+	 * @author Bodo Gruetter
+	 * 
+	 * @param port
+	 * @throws IOException
+	 */
 	public void startServerSocket(int port) throws IOException{
 		this.info = "Start Server";
 		logger.info(info);

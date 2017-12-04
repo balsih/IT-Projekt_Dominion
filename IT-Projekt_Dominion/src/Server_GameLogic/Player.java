@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 import Cards.Card;
 import Cards.CardName;
 import Cards.CardType;
-import Cards.Mine_Card;
 import Messages.GameSuccess;
 import Messages.Failure_Message;
 import Messages.Interaction;
@@ -22,8 +21,11 @@ import Messages.UpdateGame_Message;
 
 /**
  * @author Bodo Gruetter
- * @version 1.0
- * @created 31-Okt-2017 17:08:57
+ * 
+ * The player class represents a player with his/her card stacks and hand.
+ * It allows him/her to interact with the game and
+ * play through the three phases 'Action', 'Buy' and 'Clean up'.
+ * 
  */
 public class Player {
 
@@ -66,10 +68,7 @@ public class Player {
 
 		this.playerName = name;
 		this.startMove();
-
 		this.actualPhase = Phase.Buy;
-		//for testing Phase.Action
-		this.actualPhase = Phase.Action;
 	}
 
 	/**
@@ -123,26 +122,18 @@ public class Player {
 		if (this.getActions() > 0 && this.actualPhase == Phase.Action && this.equals(game.getCurrentPlayer())) {
 
 			ugmsg = selectedCard.executeCard(this);
-			System.out.println(this.buys);
-			System.out.println(this.coins);
 			playedCards.add(this.handCards.remove(index));
 			this.actions--;
 			ugmsg.setActions(this.actions);
 			this.sendToOpponent(this, ugmsg);
 
-			if (this.actions == 0 || !this.containsCardType(this.handCards, CardType.Action) && ugmsg.getInteractionType() == null){
-				System.out.println("Skip");
+			if ((this.actions == 0 || !this.containsCardType(this.handCards, CardType.Action)) && ugmsg.getInteractionType() == null)
 				ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.skipPhase(), ugmsg);
-				System.out.println(this.actualPhase.toString());
-			}
 			return ugmsg;
 
 		} else if (this.actualPhase == Phase.Buy && this.equals(game.getCurrentPlayer())) {
 			ugmsg = selectedCard.executeCard(this);
 			playedCards.add(this.handCards.remove(index));
-			System.out.println(this.coins);
-			System.out.println(this.handCards.toString());
-			System.out.println(this.playedCards.toString());
 			return ugmsg;
 		}
 
@@ -175,9 +166,6 @@ public class Player {
 				this.coins -= buyedCard.getCost();
 				this.buys--;
 				
-				System.out.println(this.discardPile.toString());
-				System.out.println(this.buys);
-				System.out.println(this.coins);
 			} catch (EmptyStackException e) {
 				this.logger.severe("The buy card stack is empty!");
 				return fmsg;
@@ -190,8 +178,6 @@ public class Player {
 				this.sendToOpponent(this, this.getOpponentSuccessMsg());
 				return this.getCurrentPlayerSuccessMsg();
 			}
-			
-			System.out.println("not over");
 
 			/**
 			 * checks if the buy of the current player is valid, then actualize
@@ -206,11 +192,9 @@ public class Player {
 			ugmsg.setBuyedCard(buyedCard);
 			this.sendToOpponent(this, ugmsg);
 
-			if (this.buys == 0) {
-				System.out.println("skip");
+			if (this.buys == 0) 
 				ugmsg = UpdateGame_Message.merge((UpdateGame_Message) skipPhase(), ugmsg);
-				System.out.println(this.actualPhase.toString());
-			}
+			
 			return ugmsg;
 		}
 
@@ -398,7 +382,6 @@ public class Player {
 			case Buy:
 				this.actualPhase = Phase.CleanUp;
 				ugmsg.setCurrentPhase(Phase.CleanUp);
-				System.out.println(ugmsg.getCurrentPhase());
 				break;
 
 			case CleanUp:
