@@ -1,7 +1,9 @@
 package Client_Services;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -55,9 +57,6 @@ public class Configuration {
 				e.printStackTrace();
 			}
 		}
-		
-		
-
 	}
 
 	/**
@@ -68,10 +67,27 @@ public class Configuration {
 		return localOptions.getProperty(name);
 	}
 
+	// saves the language at teh local.cfg file. Method is called always when mainMenu view gets closed
 	public void save() {
-		
+		FileOutputStream propFile = null;
+		try {
+			File localeFile = new File(sl.getAPP_CLASS().getResource(sl.getAPP_NAME() + "_local.cfg").toURI());
+			propFile = new FileOutputStream(localeFile);
+			localOptions.store(propFile, null);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (propFile != null) {
+				try {
+					propFile.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
+	
 	/**
 	 * 
 	 * @param name

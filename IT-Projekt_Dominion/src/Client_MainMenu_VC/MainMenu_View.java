@@ -111,7 +111,6 @@ public class MainMenu_View extends View<GameApp_Model> {
 		
 		
 		
-		
 		mainMenuLbl = new Label(t.getString("menu.mainMenuLbl"));
 		mainMenuLbl.setId("mainMenuLbl");
 		
@@ -197,4 +196,5 @@ public class MainMenu_View extends View<GameApp_Model> {
 		selectModeLbl.setText(t.getString("menu.selectModeLbl"));
 		mainMenuLbl.setText(t.getString("menu.mainMenuLbl"));
 	}
+	
 }// end MainMenu_View

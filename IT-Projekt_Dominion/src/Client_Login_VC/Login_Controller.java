@@ -108,12 +108,11 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 		// set on action and handling for loginBtn
 		view.loginBtn.setOnAction((event) -> {
 			try {
-				if (model.sendLogin(view.nameText.getText(), view.passwordText.getText()) == "NO_CONNECTION"){
-					view.loginAlert.showAndWait(); // warning alert if login fails
-				} else {
-					model.sendLogin(view.nameText.getText(), view.passwordText.getText()); // sends Name and PW, starts main menu if correct
-					main.startMainMenu();
+				if (model.sendLogin(view.nameText.getText(), view.passwordText.getText()).equals("NoConnection")){
+					// test code -> erfolgt bei erfolgreichem login automatisch 
 					view.stop();
+				} else {
+					view.loginAlert.showAndWait(); // warning alert if login fails
 				}	
 			} catch (Exception e) {
 				e.printStackTrace();
