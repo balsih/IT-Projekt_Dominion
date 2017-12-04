@@ -94,6 +94,8 @@ public class GameApp_Model extends Model {
 	private String ipAddress;
 	private Integer port;
 
+	private String salt = getSalt();
+
 	public enum UserInput {
 		clientName,
 		ipAddress,
@@ -108,8 +110,8 @@ public class GameApp_Model extends Model {
 		super();
 		this.main = main;
 
-//		// start menusound
-//		this.startMediaPlayer("Medieval_Camelot.mp3"); // start sound 
+		//		// start menusound
+		//		this.startMediaPlayer("Medieval_Camelot.mp3"); // start sound 
 	}
 
 	/**
@@ -151,12 +153,15 @@ public class GameApp_Model extends Model {
 	 * @author Adrian
 	 * Adds salt for usage in the method encryptPassword
 	 * @return salt
-	 * @throws NoSuchAlgorithmException
 	 */
-	private String getSalt() throws NoSuchAlgorithmException {
-		SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
-		byte[] salt = new byte[16];
-		sr.nextBytes(salt);
+	private String getSalt() {
+		try {
+			SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+			byte[] salt = new byte[16];
+			sr.nextBytes(salt);
+		} catch (NoSuchAlgorithmException e){
+			e.printStackTrace();
+		}
 		return salt.toString();
 	}
 
@@ -270,7 +275,7 @@ public class GameApp_Model extends Model {
 		}
 		return socket;
 	}
-	
+
 	/**TESTED
 	 * @author Lukas (@author Adrian encryptPassword)
 	 * The client sends his encrypted password to server and will get to the MainMenu if the password is appropriate to clientName
@@ -284,25 +289,25 @@ public class GameApp_Model extends Model {
 		this.clientName = clientName;
 		Login_Message lmsg = new Login_Message();
 		lmsg.setClient(clientName);//set the clientName and encrypted password to XML
+		
 		try {
-			String salt = getSalt();
-			lmsg.setPassword(this.encryptPassword(password, salt));
+			lmsg.setPassword(this.encryptPassword(password, this.salt));
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
 
 		Message msgIn = this.processMessage(lmsg);
 		if(msgIn instanceof Commit_Message){
-//			this.main.startMainMenu();//login succeeded
+			//			this.main.startMainMenu();//login succeeded
 			System.out.println("Login suceeded");
-			
+
 		}else if(msgIn instanceof Failure_Message){
 			Failure_Message fmsg = (Failure_Message) msgIn;//login failed, clientName and/or password wrong
 			result = fmsg.getNotification();
 		}
 		return this.translate(result);
 	}
-	
+
 	/**TESTED
 	 * @author Lukas (@author Adrian encryptPassword)
 	 * The client wants to create his own profile. For this purpose the clientName has to be unique in the database.
@@ -318,8 +323,7 @@ public class GameApp_Model extends Model {
 		CreateNewPlayer_Message cnpmsg = new CreateNewPlayer_Message();
 		cnpmsg.setClient(this.clientName);//set the clientName and encrypted password to XML
 		try {
-			String salt = getSalt();
-			cnpmsg.setPassword(this.encryptPassword(password, salt));
+			cnpmsg.setPassword(this.encryptPassword(password, this.salt));
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
@@ -334,7 +338,7 @@ public class GameApp_Model extends Model {
 		}
 		return this.translate(result);
 	}
-	
+
 	/**TESTED
 	 * @author Lukas
 	 * The client sends a request to server for the top5 Highscore
@@ -352,7 +356,7 @@ public class GameApp_Model extends Model {
 		}
 		return result;
 	}
-	
+
 	/**TESTED
 	 * @author Lukas
 	 * The client sends his GameMode (Singleplayer or Multiplayer) to Server.
@@ -400,7 +404,7 @@ public class GameApp_Model extends Model {
 		}
 		return update;
 	}
-	
+
 	/**TESTED
 	 * @author Lukas
 	 * The client wants to play a chosen Card. The result depends on the validity of the move
@@ -484,7 +488,7 @@ public class GameApp_Model extends Model {
 		if(msgIn instanceof UpdateGame_Message){
 			UpdateGame_Message ugmsg = (UpdateGame_Message) msgIn;
 			update = true;
-			
+
 			//If the Interactions are committed, the changes for Cellar, Remodel1 and Mine have to be executed
 			switch(this.interaction){
 			case Cellar:
@@ -500,7 +504,7 @@ public class GameApp_Model extends Model {
 			case Remodel1:
 				this.yourHandCards.remove(this.discardCard);
 				break;
-			//The picked card with mine will come into the hand and not to discardPile. But the buyCards has to be decreased
+				//The picked card with mine will come into the hand and not to discardPile. But the buyCards has to be decreased
 			case Mine:
 				this.yourHandCards.remove(this.discardCard);
 				this.yourNewHandCards.add(ugmsg.getBuyedCard());
@@ -510,7 +514,7 @@ public class GameApp_Model extends Model {
 			}
 			this.interaction = Interaction.Skip;//defaultSetting
 			this.processUpdateGame(ugmsg);
-			
+
 		}else if(msgIn instanceof PlayerSuccess_Message){
 			this.processPlayerSuccess(msgIn);
 			update = true;
@@ -564,7 +568,7 @@ public class GameApp_Model extends Model {
 
 		//If something necessary happened in the Game, it will be provided to show
 		if(ugmsg.getLog() != null)
-		this.newLog = this.translate(ugmsg.getLog());
+			this.newLog = this.translate(ugmsg.getLog());
 
 		//If the client or opponent sent a chat, it will be provided to show
 		if(ugmsg.getChat() != null)
@@ -612,13 +616,13 @@ public class GameApp_Model extends Model {
 		if(ugmsg.getCurrentPlayer() != null){
 			if(ugmsg.getCurrentPlayer().compareTo(this.currentPlayer) != 0){
 				this.turnEnded = true;
-				
+
 				if(ugmsg.getCurrentPlayer().compareTo(this.opponent) == 0){//if it was your turn that ended
 					for(int i = 0; i < this.playedCards.size(); i++)
 						this.yourDiscardPile.add(this.playedCards.remove(i));
 					for(int j = 0; j < this.yourHandCards.size(); j++)
 						this.yourDiscardPile.add(this.yourHandCards.remove(j));
-					
+
 				}else{//if it was your opponents turn that ended
 					this.playedCards.clear();
 				}
@@ -668,7 +672,7 @@ public class GameApp_Model extends Model {
 		//If cardSelection is set, it consists a selection of the cards to chose
 		if(ugmsg.getCardSelection() != null && this.currentPlayer.compareTo(this.clientName) == 0)
 			this.cardSelection = ugmsg.getCardSelection();
-		
+
 		//just for testing
 		System.out.println("CardSelection: "+ugmsg.getCardSelection());
 		System.out.println("NewHandCards: "+ugmsg.getNewHandCards());
