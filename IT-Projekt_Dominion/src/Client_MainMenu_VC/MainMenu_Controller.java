@@ -27,6 +27,10 @@ public class MainMenu_Controller extends Controller<GameApp_Model, MainMenu_View
 		view.singlePlayerBtn.setOnAction((event) -> {
 			try {
 				model.sendGameMode(GameMode.Singleplayer);
+				
+				// if sucessfull -> back to Login screen
+				main.startLogin();
+				 view.stop();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -36,6 +40,11 @@ public class MainMenu_Controller extends Controller<GameApp_Model, MainMenu_View
 		view.multiPlayerBtn.setOnAction((event) -> {
 			try {
 				model.sendGameMode(GameMode.Multiplayer);
+				
+				// if sucessfull -> back to Login screen
+				main.startLogin();
+				 view.stop();
+				 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

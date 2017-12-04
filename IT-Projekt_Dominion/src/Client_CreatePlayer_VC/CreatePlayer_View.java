@@ -138,7 +138,6 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		root.getChildren().add(centerBox);
 		
 		
-		
 		Scene scene = new Scene(root);	
 		scene.getStylesheets().add(getClass().getResource("CreatePlayer.css").toExternalForm());
 		this.stage.setScene(scene);

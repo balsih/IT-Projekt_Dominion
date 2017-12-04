@@ -9,9 +9,11 @@ import Client_Services.Translator;
 import Server_GameLogic.Player;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -41,6 +43,8 @@ public class MainMenu_View extends View<GameApp_Model> {
 
 	protected Button startGameBtn;
 	protected Button quitBtn;
+	
+	protected Alert startGameAlert;
 
 	/**
 	 * 
@@ -87,6 +91,13 @@ public class MainMenu_View extends View<GameApp_Model> {
 		HBox singleAndMultiplayerBox = new HBox(singlePlayerBtn, multiPlayerBtn);
 		singleAndMultiplayerBox.setId("singleAndMultiplayerBox");
 		gameModeBox.getChildren().addAll(selectModeLbl, singleAndMultiplayerBox);
+		
+		// warning message, if start game (single- or multiplayer) fails
+		startGameAlert = new Alert(AlertType.WARNING);
+		startGameAlert.setTitle(t.getString("menu.startGameAlert"));
+		startGameAlert.setHeaderText(t.getString("NoConnection"));
+		// loginAlert.setContentText("do this or that");
+		
 		
 		highscoreLbl = new Label(t.getString("menu.highscoreLbl"));
 		highscoreLbl.setId("highscoreLbl");
