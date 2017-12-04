@@ -285,9 +285,8 @@ public class Player {
 		/* checks if the player has more than one cards in his hand
 		 * and if there is a interaction of the player required
 		 */
-		if (this.handCards.size() > 1 && selectedTopCard != null) {
+		if (this.handCards.size() > 1 && selectedTopCard == null) {
 			ugmsg.setInteractionType(Interaction.EndOfTurn);
-			ugmsg.setDiscardPileTopCard(selectedTopCard);
 			this.sendToOpponent(this, ugmsg);
 			interaction = true;
 		} else if (this.handCards.size() == 1 && selectedTopCard == null) {
