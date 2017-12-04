@@ -31,17 +31,23 @@
 #playerAndLanguageBox {
 	-fx-spacing: 76px;
 	-fx-background-color: rgba(0, 0, 0, 6);
+}
 
+.combo-box-popup {
+	-fx-background: rgba(0, 0, 0, 6);
+	-fx-background-color: rgba(0, 0, 0, 6);
+	 -fx-text-fill: white;
 }
 
 #languageSelectComboBox {
-	-fx-font-size: 10px;
+	-fx-font-size: 15px;
     -fx-text-fill: white;
     -fx-font-weight: bold;
+    -fx-background-color: rgba(0, 0, 0, 6);
 }
 
 	
-#highscoreBoxuuuuuuuuuuuuuuu {
+#highscoreBoxxxxxxx {
 	-fx-spacing: 2px;
 	-fx-background-color: rgba(0, 0, 0, 6);
 	-fx-border-color: white;

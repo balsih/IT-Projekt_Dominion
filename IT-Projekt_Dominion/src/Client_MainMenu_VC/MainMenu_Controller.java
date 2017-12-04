@@ -27,17 +27,14 @@ public class MainMenu_Controller extends Controller<GameApp_Model, MainMenu_View
 	 */
 	public MainMenu_Controller(Dominion_Main main, GameApp_Model model, MainMenu_View view){
 		super(model, view);
+		
 		sl = ServiceLocator.getServiceLocator();
 		
-
 		// set on action and handling for singlePlayerBtn
 		view.singlePlayerBtn.setOnAction((event) -> {
 			try {
-				model.sendGameMode(GameMode.Singleplayer);
-				
-				// if sucessfull -> back to Login screen
-				main.startLogin();
-				 view.stop();
+				view.startGameAlert.setHeaderText(model.sendGameMode(GameMode.Singleplayer));
+				view.startGameAlert.showAndWait(); // warning alert if Singleplayer start fails 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -46,12 +43,8 @@ public class MainMenu_Controller extends Controller<GameApp_Model, MainMenu_View
 		// set on action and handling for multiPlayerBtn
 		view.multiPlayerBtn.setOnAction((event) -> {
 			try {
-				model.sendGameMode(GameMode.Multiplayer);
-				
-				// if sucessfull -> back to Login screen
-				main.startLogin();
-				 view.stop();
-				 
+				view.startGameAlert.setHeaderText(model.sendGameMode(GameMode.Multiplayer));
+				view.startGameAlert.showAndWait(); // warning alert if Multiplayer start fails 				 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
