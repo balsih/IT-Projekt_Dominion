@@ -109,7 +109,7 @@ public class GameApp_Model extends Model {
 		this.main = main;
 
 		// start menusound
-		//		this.startMediaPlayer("sound.mp3"); // start sound 
+		this.startMediaPlayer("Medieval_Camelot.mp3"); // start sound 
 	}
 
 	/**
@@ -201,6 +201,16 @@ public class GameApp_Model extends Model {
 				}		
 			}
 			break;
+		case port:
+			// The port must be an integer from 1 to 65535. 
+			try {
+				int number = Integer.parseInt(userInput);
+				if (number > 0 && number <= 65535) valid = true;
+			} catch (NumberFormatException e) {
+				// input was not an integer
+				valid = false;
+			}
+			break;
 		}
 		return valid;
 	}
@@ -284,7 +294,7 @@ public class GameApp_Model extends Model {
 		Message msgIn = this.processMessage(lmsg);
 		if(msgIn instanceof Commit_Message){
 			this.main.startMainMenu();//login succeeded
-
+			
 		}else if(msgIn instanceof Failure_Message){
 			Failure_Message fmsg = (Failure_Message) msgIn;//login failed, clientName and/or password wrong
 			result = fmsg.getNotification();

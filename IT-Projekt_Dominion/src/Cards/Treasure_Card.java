@@ -13,7 +13,7 @@ public abstract class Treasure_Card extends Card {
 	protected int coinValue;
 
 	protected Treasure_Card(){
-
+		this.type = CardType.Treasure;
 	}
 	
 	

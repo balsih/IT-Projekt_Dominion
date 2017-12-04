@@ -31,7 +31,7 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 			try {
 				if (!view.ipText.getText().isEmpty() && !view.portText.getText().isEmpty()) {
 					boolean ipAdresse = model.checkUserInput(view.ipText.getText(), UserInput.ipAddress); 
-					boolean portNumber = model.checkUserInput(view.portText.getText(), UserInput.ipAddress);
+					boolean portNumber = model.checkUserInput(view.portText.getText(), UserInput.clientName); // provisorisch
 					view.connectBtn.setDisable(!(ipAdresse && portNumber));
 				} else {
 					view.connectBtn.setDisable(true);
@@ -46,8 +46,8 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 		view.portText.textProperty().addListener((change) -> {
 			try {
 				if (!view.ipText.getText().isEmpty() && !view.portText.getText().isEmpty()) {
-					boolean ipAdresse = model.checkUserInput(view.ipText.getText(), UserInput.clientName);// UserInput Type nur provisorisch
-					boolean portNumber = model.checkUserInput(view.portText.getText(), UserInput.clientName);// UserInput Type nur provisorisch
+					boolean ipAdresse = model.checkUserInput(view.ipText.getText(), UserInput.ipAddress);
+					boolean portNumber = model.checkUserInput(view.portText.getText(), UserInput.clientName); // provisorisch
 					view.connectBtn.setDisable(!(ipAdresse && portNumber));
 				} else {
 					view.connectBtn.setDisable(true);
@@ -63,6 +63,7 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 		view.connectBtn.setOnAction((event) -> {
 			try {
 				model.init(view.ipText.getText(), Integer.parseInt(view.portText.getText()));
+				//view.connectAlert.showAndWait();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -107,7 +108,13 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 		// set on action and handling for loginBtn
 		view.loginBtn.setOnAction((event) -> {
 			try {
-				model.sendLogin(view.nameText.getText(), view.passwordText.getText()); // sends Name and PW, starts main menu if correct 
+				if (model.sendLogin(view.nameText.getText(), view.passwordText.getText()) == "NO_CONNECTION"){
+					view.loginAlert.showAndWait(); // warning alert if login fails
+				} else {
+					model.sendLogin(view.nameText.getText(), view.passwordText.getText()); // sends Name and PW, starts main menu if correct
+					main.startMainMenu();
+					view.stop();
+				}	
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

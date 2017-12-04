@@ -65,8 +65,8 @@ public class Player {
 		this.playedCards = new LinkedList<Card>();
 
 		this.playerName = name;
-		startMove();
-		actualPhase = Phase.Buy;
+		this.startMove();
+		this.actualPhase = Phase.Buy;
 	}
 
 	/**
@@ -107,33 +107,34 @@ public class Player {
 		Failure_Message fmsg = new Failure_Message();
 		
 		int index = this.handCards.indexOf(selectedCard);
-		playedCards.add(this.handCards.remove(index));
 		
 		if(selectedCard.getCardName().equals(CardName.Mine) && 
 				(!(this.containsCard(this.handCards, CardName.Copper) || (this.containsCard(this.handCards, CardName.Silver)))))
 			return fmsg;
-		else if (selectedCard.getCardName().equals(CardName.Remodel) && this.handCards.size() == 0)
+		else if (selectedCard.getCardName().equals(CardName.Remodel) && this.handCards.size() == 1)
 			return fmsg;
-		else if (selectedCard.getCardName().equals(CardName.Cellar) && this.handCards.size() == 0)
+		else if (selectedCard.getCardName().equals(CardName.Cellar) && this.handCards.size() == 1)
 			return fmsg;
-			
 
 		// Executes the clicked Card, if the player has enough actions
 		if (this.getActions() > 0 && this.actualPhase == Phase.Action && this.equals(game.getCurrentPlayer())) {
 
 			ugmsg = selectedCard.executeCard(this);
+			playedCards.add(this.handCards.remove(index));
 			this.actions--;
 			ugmsg.setActions(this.actions);
+			
 
 			this.sendToOpponent(this, ugmsg);
 
-			if (this.actions == 0 || !this.containsCardType(this.handCards, CardType.Action) && ugmsg.getInteractionType() == null)
+			if (this.actions == 0 || !this.containsCardType(this.handCards, CardType.Action) && ugmsg.getInteractionType() == null){
 				ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.skipPhase(), ugmsg);
-
+			}
 			return ugmsg;
 
 		} else if (this.actualPhase == Phase.Buy && this.equals(game.getCurrentPlayer())) {
 			ugmsg = selectedCard.executeCard(this);
+			playedCards.add(this.handCards.remove(index));
 			return ugmsg;
 		}
 
@@ -379,6 +380,7 @@ public class Player {
 				game.switchPlayer();
 				ugmsg.setCurrentPlayer(game.getCurrentPlayer().getPlayerName());
 				ugmsg.setCurrentPhase(Phase.Action);
+				ugmsg.setInteractionType(Interaction.EndOfTurn);
 				break;
 
 			default:

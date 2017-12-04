@@ -15,7 +15,6 @@ public class Copper_Card extends Treasure_Card {
 	public Copper_Card(){
 		this.cardName = CardName.Copper;
 		this.cost = 0;
-		this.type = CardType.Treasure;
 		this.coinValue = 1;
 	}
 

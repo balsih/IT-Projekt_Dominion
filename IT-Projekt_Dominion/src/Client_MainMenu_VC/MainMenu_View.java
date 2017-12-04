@@ -9,9 +9,11 @@ import Client_Services.Translator;
 import Server_GameLogic.Player;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -37,14 +39,12 @@ public class MainMenu_View extends View<GameApp_Model> {
 	protected Button multiPlayerBtn;
 
 	protected Label highscoreLbl;
-	protected Label number1;
-	protected Label number2;
-	protected Label number3;
-	protected Label number4;
-	protected Label number5;
+	protected Label highscoreListLbl;
 
 	protected Button startGameBtn;
 	protected Button quitBtn;
+	
+	protected Alert startGameAlert;
 
 	/**
 	 * 
@@ -92,19 +92,34 @@ public class MainMenu_View extends View<GameApp_Model> {
 		singleAndMultiplayerBox.setId("singleAndMultiplayerBox");
 		gameModeBox.getChildren().addAll(selectModeLbl, singleAndMultiplayerBox);
 		
+		// warning message, if start game (single- or multiplayer) fails
+		startGameAlert = new Alert(AlertType.WARNING);
+		startGameAlert.setTitle(t.getString("menu.startGameAlert"));
+		startGameAlert.setHeaderText(t.getString("NoConnection"));
+		// loginAlert.setContentText("do this or that");
+		
+		
 		highscoreLbl = new Label(t.getString("menu.highscoreLbl"));
 		highscoreLbl.setId("highscoreLbl");
-		number1 = new Label("1. Chuck Norris");
-		number2 = new Label("2. Bodo Grütter");
-		number3 = new Label("3. dini Mueter");
 		
-		// model.sendHighScoreRequest() -> gibt 5x String und int zurück = muss verwendet werden um die Labels abzufüllen
+		//highscoreListLbl = new Label(model.sendHighScoreRequest()); // sets the top five as a five line String
 		
+		// test code :
+		String s = "Rene";
+		int i = 18;
+		String ss = "Rene Schwab";
+		int ii = 69;
+		String f = ""+s+ ":\t"+i+ "\n"+ss+":\t"+ii+ "\n"+"slkfajlfkdasj"+ "\n"+"slkfajlfkdasj"+ "\n"+"slkfajlfkdasj";
+		// end of testcode
 		
+		highscoreListLbl = new Label(f);
+		highscoreListLbl.setId("highscoreListLbl");
+		highscoreListLbl.setPrefSize(280, 160);
+
 		
 		
 		// nameText.setPrefSize(220.0, 30.0);
-		highscoreBox.getChildren().addAll(highscoreLbl, number1, number2, number3);
+		highscoreBox.getChildren().addAll(highscoreLbl, highscoreListLbl );
 		
 		startGameBtn = new Button(t.getString("menu.startGameBtn"));
 		startGameBtn.setId("startGameBtn");
@@ -127,17 +142,6 @@ public class MainMenu_View extends View<GameApp_Model> {
 		// buttonBox); // -> ohne Sprachauswahl
 		root.getChildren().add(centerBox);
 
-		// https://panjutorials.de/tutorials/javafx-8-gui/lektionen/audio-player-in-javafx-2/?cache-flush=1510439948.4916
-		// hier legen wir die Resource an, welche unbedingt im entsprechenden
-		// Ordner sein muss
-		final URL resource = getClass().getResource("Medieval_Camelot.mp3");
-		// wir legen das Mediaobjekt and und weisen unsere Resource zu
-		final Media media = new Media(resource.toString());
-		// wir legen den Mediaplayer an und weisen ihm das Media Objekt zu
-		final MediaPlayer mediaPlayer = new MediaPlayer(media);
-
-		mediaPlayer.play();
-		// mediaPlayer.stop();
 
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add(getClass().getResource("MainMenu.css").toExternalForm());

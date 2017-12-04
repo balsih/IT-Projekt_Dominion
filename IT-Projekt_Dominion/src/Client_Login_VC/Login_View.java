@@ -10,6 +10,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -50,6 +52,9 @@ public class Login_View extends View<GameApp_Model> {
 	
 	protected Button createNewPlayerBtn;
 	protected Button quitBtn;
+	
+	protected Alert connectAlert; 
+	protected Alert loginAlert; 
 
 
 	/**
@@ -110,10 +115,18 @@ public class Login_View extends View<GameApp_Model> {
 		ipAndConnectBox.setId("ipAndConnectBox");
 		ipBox.getChildren().addAll(ipAndPortLblBox, ipAndConnectBox);
 		
+		// warning message, if connection fails
+		connectAlert = new Alert(AlertType.WARNING);
+		connectAlert.setTitle(t.getString("login.connectAlert"));
+		connectAlert.setHeaderText(t.getString("NoConnection"));
+		//connectAlert.setContentText("do this or that");
+		
+		
 		nameLbl = new Label(t.getString("login.nameLbl"));
 		nameLbl.setId("nameLbl");
 		nameText = new TextField();
 		nameText.setId("nameText");
+		//nameText.setDisable(true); -> disable before connecting 
 		//nameText.setPrefSize(220.0, 30.0);
 		nameText.setMaxSize(220.0, 30.0);
 		nameBox.getChildren().addAll(nameLbl, nameText);
@@ -131,6 +144,12 @@ public class Login_View extends View<GameApp_Model> {
 		pwLoginBox.setId("pwLoginBox");
 		
 		passwordBox.getChildren().addAll(passwordLbl, pwLoginBox);
+		
+		// warning message, if login fails
+		loginAlert = new Alert(AlertType.WARNING);
+		loginAlert.setTitle(t.getString("login.connectAlert"));
+		loginAlert.setHeaderText(t.getString("NoConnection"));
+		// loginAlert.setContentText("do this or that");
 		
 		// buttons
 		createNewPlayerBtn = new Button(t.getString("login.createNewPlayerBtn"));

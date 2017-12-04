@@ -10,11 +10,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -42,10 +44,12 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 	protected TextField passwordText;
 	
 	protected Label languageSelectLbl;
-	protected ComboBox languageSelectComboBox;
+	protected ComboBox<String> languageSelectComboBox;
 		
 	protected Button saveBtn;
 	protected Button backBtn;
+	
+	protected Alert saveAlert;
 	
 
 	/**
@@ -99,9 +103,9 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		languageSelectLbl.setId("languageSelectLbl");
 
 		ObservableList<String> language = FXCollections.observableArrayList(t.getString("program.german"), t.getString("program.english"));
-		
-		languageSelectComboBox = new ComboBox(language);
+		languageSelectComboBox = new ComboBox<String>(language);
 		languageSelectComboBox.setValue(language.get(0)); // set default value -> German 
+		//languageSelectComboBox.setPromptText(""); -> wird angezeigt vor erster Auswahl, z.B. "Sprache wählen"
 		languageSelectComboBox.setTooltip(new Tooltip(t.getString("program.languageTip")));
 		languageSelectComboBox.setPrefSize(280.0, 30.0);
 		languageBox.getChildren().addAll(languageSelectLbl, languageSelectComboBox);
@@ -115,6 +119,12 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		HBox buttonBox = new HBox(saveBtn, backBtn);
 		buttonBox.setId("buttonBox");
 		
+		// warning message, if login fails
+		saveAlert = new Alert(AlertType.WARNING);
+		saveAlert.setTitle(t.getString("cnp.saveAlert"));
+		saveAlert.setHeaderText(t.getString("isUsed"));
+		// loginAlert.setContentText("do this or that");
+		
 		// VBox for layout and spacing 
 		VBox namePasswordLanguageBox = new VBox();
 		namePasswordLanguageBox.setId("namePasswordLanguageBox");
@@ -126,18 +136,6 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		centerBox.getChildren().addAll(createNewPlayerLbl, namePasswordLanguageBox, buttonBox);
 		// centerBox.getChildren().addAll(createNewPlayer, nameBox, passwordBox, buttonBox); // -> ohne Sprachauswahl 
 		root.getChildren().add(centerBox);
-		
-		
-//		// https://panjutorials.de/tutorials/javafx-8-gui/lektionen/audio-player-in-javafx-2/?cache-flush=1510439948.4916 
-//		// hier legen wir die Resource an, welche unbedingt im entsprechenden Ordner sein muss
-//		final URL resource = getClass().getResource("sound.mp3");
-//		// wir legen das Mediaobjekt and und weisen unsere Resource zu
-//		final Media media = new Media(resource.toString());
-//		// wir legen den Mediaplayer an und weisen ihm das Media Objekt zu
-//		final MediaPlayer mediaPlayer = new MediaPlayer(media);
-//		
-//		mediaPlayer.play();
-//		//mediaPlayer.stop();
 		
 		
 		Scene scene = new Scene(root);	

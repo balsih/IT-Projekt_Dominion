@@ -157,8 +157,6 @@ public class Game {
 			}
 		}
 
-		System.out.println(player1.getDeckPile());
-		System.out.println(player2.getDeckPile());
 		Collections.shuffle(this.player1.deckPile);
 		Collections.shuffle(this.player2.deckPile);
 		this.player1.draw(player1.NUM_OF_HANDCARDS);
@@ -283,11 +281,11 @@ public class Game {
 				gameCounter++;
 				existingGame.startGame();
 				
-				existingGame.getPlayer1().getServerThreadForClient()
-						.addWaitingMessages(existingGame.getPlayer1().getServerThreadForClient().getCG_Message(existingGame));
-				existingGame.getPlayer2().getServerThreadForClient()
-						.addWaitingMessages(existingGame.getPlayer2().getServerThreadForClient().getCG_Message(existingGame));
-				existingGame.logger.info(existingGame.player1.getPlayerName() + " started a multiplayer game versus " + existingGame.player2.getPlayerName());
+//				existingGame.getPlayer1().getServerThreadForClient()
+//						.addWaitingMessages(existingGame.getPlayer1().getServerThreadForClient().getCG_Message(existingGame));
+//				existingGame.getPlayer2().getServerThreadForClient()
+//						.addWaitingMessages(existingGame.getPlayer2().getServerThreadForClient().getCG_Message(existingGame));
+//				existingGame.logger.info(existingGame.player1.getPlayerName() + " started a multiplayer game versus " + existingGame.player2.getPlayerName());
 				
 			}
 

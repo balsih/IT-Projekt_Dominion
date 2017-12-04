@@ -1,5 +1,7 @@
 package Client_Services;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -35,6 +37,23 @@ public class Configuration {
 			}
 		}
 		localOptions = new Properties(defaultOptions);
+		
+		
+		// tries to load local language options 
+		try {
+			inStream = new FileInputStream(sl.getAPP_NAME() + "_local.cfg");
+			localOptions.load(inStream);
+		} catch (Exception e) { // from loading the properties
+			//logger.warning("Error reading local options file: " + e.toString());
+		} finally {
+			try {
+				inStream.close();
+			} catch (Exception ignore) {
+			}
+		}
+		
+		
+
 	}
 
 	/**
