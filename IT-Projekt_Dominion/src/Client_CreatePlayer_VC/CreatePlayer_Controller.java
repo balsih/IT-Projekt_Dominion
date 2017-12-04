@@ -80,19 +80,7 @@ public class CreatePlayer_Controller extends Controller<GameApp_Model, CreatePla
 //		});
 
 		
-		// set on action and handling for languageSelectComboBox
-		view.languageSelectComboBox.setOnAction((event) -> {
-			try {
-				if (view.languageSelectComboBox.getValue() == "Deutsch" || view.languageSelectComboBox.getValue() == "German") {
-					sl.setTranslator(new Translator("de"));
-				} else {
-					sl.setTranslator(new Translator("en"));
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		});
-
+	
 
 		
 		// set on action and handling for saveBtn

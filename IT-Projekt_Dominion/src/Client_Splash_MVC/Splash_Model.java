@@ -34,23 +34,23 @@ public class Splash_Model extends Model {
         protected Void call() throws Exception {
 			this.updateProgress(1, 5); // step 1 of total 5 
 			
-			Thread.sleep(500); // Wartezeit zur Kontrolle
+			Thread.sleep(200); // Wartezeit zur Kontrolle
 			
         	sl = ServiceLocator.getServiceLocator();
         	this.updateProgress(2, 5); // step 2 of total 5
         	
-        	Thread.sleep(500); // Wartezeit zur Kontrolle
+        	Thread.sleep(200); // Wartezeit zur Kontrolle
         	
         	sl.setConfiguration(new Configuration());
         	this.updateProgress(3, 5); // step 3 of total 5 
         	
-        	Thread.sleep(500); // Wartezeit zur Kontrolle
+        	Thread.sleep(200); // Wartezeit zur Kontrolle
         	
         	String language = sl.getConfiguration().getOption("Language");
         	sl.setTranslator(new Translator(language));
         	this.updateProgress(4, 5); // step 4 of total 5
         	
-        	Thread.sleep(500); // Wartezeit zur Kontrolle
+        	Thread.sleep(200); // Wartezeit zur Kontrolle
         	
         	sl.setGallery(new Gallery(language));
         	this.updateProgress(5, 5); // step 5 of total 5

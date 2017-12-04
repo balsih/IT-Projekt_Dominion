@@ -28,6 +28,19 @@
 	-fx-border-color: black;
 }
 
+#playerAndLanguageBox {
+	-fx-spacing: 76px;
+	-fx-background-color: rgba(0, 0, 0, 6);
+
+}
+
+#languageSelectComboBox {
+	-fx-font-size: 10px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+	
 #highscoreBoxuuuuuuuuuuuuuuu {
 	-fx-spacing: 2px;
 	-fx-background-color: rgba(0, 0, 0, 6);

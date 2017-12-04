@@ -33,22 +33,26 @@ public class Configuration {
 		} finally {
 			try {
 				inStream.close();
-			} catch (Exception ignore) {
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 		localOptions = new Properties(defaultOptions);
 		
 		
 		// tries to load local language options 
+		String localFileName = sl.getAPP_NAME() + "_local.cfg";
+		InputStream localInStream = sl.getAPP_CLASS().getResourceAsStream(localFileName);
 		try {
-			inStream = new FileInputStream(sl.getAPP_NAME() + "_local.cfg");
-			localOptions.load(inStream);
+			localOptions.load(localInStream);
 		} catch (Exception e) { // from loading the properties
 			//logger.warning("Error reading local options file: " + e.toString());
+			e.printStackTrace();
 		} finally {
 			try {
 				inStream.close();
-			} catch (Exception ignore) {
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 		
@@ -65,7 +69,7 @@ public class Configuration {
 	}
 
 	public void save() {
-
+		
 	}
 
 	/**

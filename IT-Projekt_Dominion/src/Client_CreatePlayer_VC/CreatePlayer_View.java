@@ -44,7 +44,7 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 	protected TextField passwordText;
 	
 	protected Label languageSelectLbl;
-	protected ComboBox<String> languageSelectComboBox;
+	
 		
 	protected Button saveBtn;
 	protected Button backBtn;
@@ -98,17 +98,7 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		passwordText.setId("passwordText");
 		passwordBox.getChildren().addAll(passwordLbl, passwordText);
 		
-		// language selection with ComboBox
-		languageSelectLbl = new Label(t.getString("cnp.languageSelectLbl"));
-		languageSelectLbl.setId("languageSelectLbl");
-
-		ObservableList<String> language = FXCollections.observableArrayList(t.getString("program.german"), t.getString("program.english"));
-		languageSelectComboBox = new ComboBox<String>(language);
-		languageSelectComboBox.setValue(language.get(0)); // set default value -> German 
-		//languageSelectComboBox.setPromptText(""); -> wird angezeigt vor erster Auswahl, z.B. "Sprache wählen"
-		languageSelectComboBox.setTooltip(new Tooltip(t.getString("program.languageTip")));
-		languageSelectComboBox.setPrefSize(280.0, 30.0);
-		languageBox.getChildren().addAll(languageSelectLbl, languageSelectComboBox);
+		
 		
 		// buttons
 		saveBtn = new Button(t.getString("cnp.saveBtn"));
