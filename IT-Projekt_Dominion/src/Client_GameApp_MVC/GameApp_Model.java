@@ -443,7 +443,7 @@ public class GameApp_Model extends Model {
 		return update;
 	}
 
-	/**
+	/**SEMI-TESTED
 	 * @author Lukas
 	 * To interact once or multiple times with the server, the specified answers of the interactions has to be set
 	 * 
