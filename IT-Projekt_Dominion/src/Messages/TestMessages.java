@@ -54,9 +54,12 @@ public class TestMessages {
 		sendGameMode(GameMode.Singleplayer, model);
 		askForChanges(model);
 		if(model.currentPlayer.compareTo(model.clientName) == 0){
-			for(Card card: model.yourNewHandCards){
-				if(card.getType() == CardType.Treasure){
-					model.sendPlayCard(card);
+			for(int i = 0; i < 2; i++){
+				for(Card card: model.yourHandCards){
+					if(card.getType() == CardType.Treasure){
+						model.sendPlayCard(card);
+						break;
+					}
 				}
 			}
 			model.sendBuyCard(CardName.Cellar);
@@ -301,7 +304,7 @@ public class TestMessages {
 			System.out.println("deckNumber: "+cgmsg.getDeckNumber().toString());
 			System.out.println("buyCards:"+cgmsg.getBuyCards().toString());
 			model.processCreateGame(msgIn);
-			
+			model.yourHandCards = model.yourNewHandCards;
 		}
 		return update;
 	}

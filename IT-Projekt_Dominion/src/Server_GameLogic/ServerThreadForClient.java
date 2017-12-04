@@ -114,7 +114,7 @@ public class ServerThreadForClient implements Runnable {
 		if(msgIn instanceof AskForChanges_Message){
 			//nothing toDo here, would be too many logs
 		}else{
-			logger.info("Message received from "+msgIn.getClient()+": "+ msgIn.getType().toString());	
+			logger.info("Message received from "+this.clientName+": "+ msgIn.getType().toString());	
 		}
 		
 		switch (MessageType.getType(msgIn)) {
@@ -283,6 +283,7 @@ public class ServerThreadForClient implements Runnable {
 	protected CreateGame_Message getCG_Message(Game game){
 		CreateGame_Message cgmsg = new CreateGame_Message();
 		cgmsg.setBuyCards(game.getBuyCards());
+		this.player.getHandCards().add(new Village_Card());
 		cgmsg.setHandCards(this.player.getHandCards());
 		cgmsg.setDeckPile(this.player.getDeckPile());
 		cgmsg.setOpponent(game.getOpponent(this.player).getPlayerName());

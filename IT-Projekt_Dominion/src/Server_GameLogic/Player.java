@@ -161,7 +161,8 @@ public class Player {
 		Failure_Message fmsg = new Failure_Message();
 		Card buyedCard = null;
 
-		if (Card.getCard(cardName).getCost() <= this.getCoins() && this.getBuys() > 0 && this.actualPhase == Phase.Buy
+		//TestMessages just for testing (Can't find the image in Gallery because of the property)
+		if (TestMessages.getCard(cardName).getCost() <= this.getCoins() && this.getBuys() > 0 && this.actualPhase == Phase.Buy
 				&& this.equals(game.getCurrentPlayer())) {
 
 			try {
