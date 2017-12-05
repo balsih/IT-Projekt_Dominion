@@ -431,7 +431,7 @@ public class Bot extends Player implements Runnable {
 	/**
 	 * Calculate the priority of each ActionCards for the buying decision.
 	 */
-	// wenn gekauft, prio herabsetzen --> Methode dringen umbauen!
+	// wenn gekauft, prio herabsetzen --> Methode dringend umbauen!
 	private void estimateBuyPriorityOfActionCards() {
 		buyPrioOneCard.put(CardName.Cellar, 58);
 		buyPrioOneCard.put(CardName.Duchy, 50);
