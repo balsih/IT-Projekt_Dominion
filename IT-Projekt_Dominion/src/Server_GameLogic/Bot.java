@@ -28,7 +28,6 @@ import Messages.UpdateGame_Message;
 // if (m instanceof UpdateGame_Message && playOneMore == false) {
 // UpdateGame_Message ugmsg = (UpdateGame_Message) m;
 // if (ugmsg.getCurrentPhase() == Phase.Action)
-// skipPhase();
 // every method which is just used once by another method --> extract method
 // reduce class variables where possible
 // UpdateGame_Message ugmsg = (UpdateGame_Message) m;
