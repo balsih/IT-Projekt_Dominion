@@ -37,22 +37,23 @@ import Messages.UpdateGame_Message;
 public class Bot extends Player implements Runnable {
 	private HashMap<CardName, Integer> buyPrioOneCard = new HashMap<CardName, Integer>();
 	private HashMap<CardName, Integer> buyPrioMoreCards = new HashMap<CardName, Integer>();
-	HashMap<CardName, Integer> prioListForPlaying = new HashMap<CardName, Integer>();
+	private HashMap<CardName, Integer> prioListForPlaying = new HashMap<CardName, Integer>();
 	private HashMap<CardName, Integer> prioListForRemodel = new HashMap<CardName, Integer>();
 	private HashMap<CardName, Integer> maxCardsOfAType = new HashMap<CardName, Integer>();
 	private ArrayList<CardName> cardNamesOfActionCards = new ArrayList<CardName>();
+	private ArrayList<String> cardNamesOfActionHandCards;
+	private static final HashMap<CardName, Integer> prioListTopDiscardPileCard = new HashMap<CardName, Integer>();
 	private static final ArrayList<String> NAMES = new ArrayList<String>();
 	private static final double SHARE_OF_TREASURE_CARDS = 0.35;
 	private static final int MIN_TIME_BEFORE_EXECUTING = 1000, MAX_TIME_BEFORE_EXECUTING = 3000;
 	private static final int MAX_TREASURE_CARDS = 7, MAX_ACTION_CARDS = 10;
 	private Message buyMessage = null;
-	private double numberOfGoldAndSilverCards = 0.0, numberOfTotalCards = 10.0;
-	private int numberOfActionCards = 0, gameStage;
 	private Card cardToPlay = null;
 	private CardName cardToBuy = null;
+	private double numberOfGoldAndSilverCards = 0.0, numberOfTotalCards = 10.0;
+	private int numberOfActionCards = 0, gameStage;
 	private boolean buyOneMore = false;
-	boolean done0 = true, done1 = true, done2 = true, done3 = true;
-	private ArrayList<String> cardNamesOfActionHandCards;
+	private boolean done0 = true, done1 = true, done2 = true, done3 = true;
 
 	public Bot(String name) {
 		super(name);
@@ -74,6 +75,21 @@ public class Bot extends Player implements Runnable {
 		cardNamesOfActionCards.add(CardName.Village);
 		cardNamesOfActionCards.add(CardName.Remodel);
 		cardNamesOfActionCards.add(CardName.Woodcutter);
+		
+		prioListTopDiscardPileCard.put(CardName.Copper, 100);
+		prioListTopDiscardPileCard.put(CardName.Cellar, 70);
+		prioListTopDiscardPileCard.put(CardName.Duchy, 90);
+		prioListTopDiscardPileCard.put(CardName.Estate, 95);
+		prioListTopDiscardPileCard.put(CardName.Gold, 75);
+		prioListTopDiscardPileCard.put(CardName.Market, 65);
+		prioListTopDiscardPileCard.put(CardName.Mine, 55);
+		prioListTopDiscardPileCard.put(CardName.Province, 85);
+		prioListTopDiscardPileCard.put(CardName.Remodel, 50);
+		prioListTopDiscardPileCard.put(CardName.Silver, 80);
+		prioListTopDiscardPileCard.put(CardName.Smithy, 64);
+		prioListTopDiscardPileCard.put(CardName.Village, 60);
+		prioListTopDiscardPileCard.put(CardName.Woodcutter, 40);
+		prioListTopDiscardPileCard.put(CardName.Workshop, 45);
 	}
 
 	/**
@@ -267,6 +283,8 @@ public class Bot extends Player implements Runnable {
 		UpdateGame_Message ugmsg = (UpdateGame_Message) buyMessage;
 		if (ugmsg.getInteractionType().equals(Interaction.EndOfTurn)) {
 			if (handCards.size() > 1) {
+				// under construction... stream verwenden?
+				// use prioListTopDiscardPileCard
 				// discardPileTopCard = // hier muss eine Karte gemäss einer neuen PrioListe
 				// ausgewählt werden
 				// ugmsg.setDiscardPileTopCard(discardPileTopCard);
