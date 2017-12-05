@@ -31,7 +31,6 @@ import Messages.UpdateGame_Message;
 // every method which is just used once by another method --> extract method
 // reduce class variables where possible
 // UpdateGame_Message ugmsg = (UpdateGame_Message) m;
-// listnames anpassen
 
 public class Bot extends Player implements Runnable {
 	private HashMap<CardName, Integer> buyPrioOneCard = new HashMap<CardName, Integer>();
@@ -41,7 +40,7 @@ public class Bot extends Player implements Runnable {
 	private HashMap<CardName, Integer> maxCardsOfAType = new HashMap<CardName, Integer>();
 	private ArrayList<CardName> cardNamesOfActionCards = new ArrayList<CardName>();
 	private ArrayList<String> cardNamesOfActionHandCards;
-	private static final HashMap<CardName, Integer> prioListTopDiscardPileCard = new HashMap<CardName, Integer>();
+	private static final HashMap<CardName, Integer> PRIOLIST_TOPDISCARDPILE_CARD = new HashMap<CardName, Integer>();
 	private static final ArrayList<String> NAMES = new ArrayList<String>();
 	private static final double SHARE_OF_TREASURE_CARDS = 0.35;
 	private static final int MIN_TIME_BEFORE_EXECUTING = 1000, MAX_TIME_BEFORE_EXECUTING = 3000;
@@ -75,20 +74,20 @@ public class Bot extends Player implements Runnable {
 		cardNamesOfActionCards.add(CardName.Remodel);
 		cardNamesOfActionCards.add(CardName.Woodcutter);
 		
-		prioListTopDiscardPileCard.put(CardName.Copper, 100);
-		prioListTopDiscardPileCard.put(CardName.Cellar, 70);
-		prioListTopDiscardPileCard.put(CardName.Duchy, 90);
-		prioListTopDiscardPileCard.put(CardName.Estate, 95);
-		prioListTopDiscardPileCard.put(CardName.Gold, 75);
-		prioListTopDiscardPileCard.put(CardName.Market, 65);
-		prioListTopDiscardPileCard.put(CardName.Mine, 55);
-		prioListTopDiscardPileCard.put(CardName.Province, 85);
-		prioListTopDiscardPileCard.put(CardName.Remodel, 50);
-		prioListTopDiscardPileCard.put(CardName.Silver, 80);
-		prioListTopDiscardPileCard.put(CardName.Smithy, 64);
-		prioListTopDiscardPileCard.put(CardName.Village, 60);
-		prioListTopDiscardPileCard.put(CardName.Woodcutter, 40);
-		prioListTopDiscardPileCard.put(CardName.Workshop, 45);
+		PRIOLIST_TOPDISCARDPILE_CARD.put(CardName.Copper, 100);
+		PRIOLIST_TOPDISCARDPILE_CARD.put(CardName.Cellar, 70);
+		PRIOLIST_TOPDISCARDPILE_CARD.put(CardName.Duchy, 90);
+		PRIOLIST_TOPDISCARDPILE_CARD.put(CardName.Estate, 95);
+		PRIOLIST_TOPDISCARDPILE_CARD.put(CardName.Gold, 75);
+		PRIOLIST_TOPDISCARDPILE_CARD.put(CardName.Market, 65);
+		PRIOLIST_TOPDISCARDPILE_CARD.put(CardName.Mine, 55);
+		PRIOLIST_TOPDISCARDPILE_CARD.put(CardName.Province, 85);
+		PRIOLIST_TOPDISCARDPILE_CARD.put(CardName.Remodel, 50);
+		PRIOLIST_TOPDISCARDPILE_CARD.put(CardName.Silver, 80);
+		PRIOLIST_TOPDISCARDPILE_CARD.put(CardName.Smithy, 64);
+		PRIOLIST_TOPDISCARDPILE_CARD.put(CardName.Village, 60);
+		PRIOLIST_TOPDISCARDPILE_CARD.put(CardName.Woodcutter, 40);
+		PRIOLIST_TOPDISCARDPILE_CARD.put(CardName.Workshop, 45);
 	}
 
 	/**
