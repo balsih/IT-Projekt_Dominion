@@ -287,6 +287,12 @@ public class Bot extends Player implements Runnable {
 				// discardPileTopCard = // hier muss eine Karte gemäss einer neuen PrioListe
 				// ausgewählt werden
 				// ugmsg.setDiscardPileTopCard(discardPileTopCard);
+				
+				List<CardName> choosedCard = PRIOLIST_TOPDISCARDPILE_CARD.keySet().stream()
+						.sorted((s1, s2) -> Integer.compare(PRIOLIST_TOPDISCARDPILE_CARD.get(s2), PRIOLIST_TOPDISCARDPILE_CARD.get(s1)))
+						.collect(Collectors.toList());
+				CardName.choosedCard.get(0);
+				
 			}
 		}
 
