@@ -56,7 +56,7 @@ public class ServerThreadForClient implements Runnable {
 	private Game game;
 	private Player player;
 	private Queue<Message> waitingMessages = new LinkedList<Message>();
-	private String clientName;
+	private String clientName = null;
 
 
 	private ServerThreadForClient(){
@@ -111,6 +111,8 @@ public class ServerThreadForClient implements Runnable {
 	 */
     private Message processMessage(Message msgIn) {
 		Message msgOut = null;
+		if(this.clientName == null)
+			this.clientName = msgIn.getClient();
 		if(msgIn instanceof AskForChanges_Message){
 			//nothing toDo here, would be too many logs
 		}else{
@@ -166,12 +168,8 @@ public class ServerThreadForClient implements Runnable {
 	 */
 	private Message processLogin(Message msgIn) {
 		Login_Message lmsg = (Login_Message) msgIn;
-		this.clientName = lmsg.getClient();
 		DB_Connector dbConnector = DB_Connector.getDB_Connector();
 		boolean success = dbConnector.checkLoginInput(this.clientName, lmsg.getPassword());
-		
-		logger.info("Client: "+this.clientName);
-		logger.info("Password: "+lmsg.getPassword());
 		
 		if(success){
 			this.logger.info(this.clientName+"'s login succeeded");
@@ -181,7 +179,7 @@ public class ServerThreadForClient implements Runnable {
 		}else{
 			this.logger.info(this.clientName+"'s login failed");
 			Failure_Message fmsg = new Failure_Message();
-			fmsg.setNotification("login failed");
+			fmsg.setNotification("#loginFailed#");
 			return fmsg;
 		}
 	}
@@ -197,14 +195,12 @@ public class ServerThreadForClient implements Runnable {
      */
 	private Message processCreateNewPlayer(Message msgIn) {
 		CreateNewPlayer_Message cnpmsg = (CreateNewPlayer_Message) msgIn;
-		this.clientName = cnpmsg.getClient();
 		String password = cnpmsg.getPassword();
 		
 		DB_Connector dbConnector = DB_Connector.getDB_Connector();
 		boolean success = dbConnector.addNewPlayer(this.clientName, password);
 		if(success){
 			this.logger.info(this.clientName+"'s storage succeeded");
-			this.logger.info("password: "+password);
 			Commit_Message cmsg = new Commit_Message();
 			return cmsg;
 			
@@ -228,7 +224,7 @@ public class ServerThreadForClient implements Runnable {
 		HighScore_Message hsmsg = new HighScore_Message();
 		String highScore = dbConnector.getHighScore();
 		if(highScore.length() == 0){
-			hsmsg.setHighScore("No player's in highscore!");
+			hsmsg.setHighScore("#noHighscroe#");
 		}else{
 			hsmsg.setHighScore(highScore);
 		}
