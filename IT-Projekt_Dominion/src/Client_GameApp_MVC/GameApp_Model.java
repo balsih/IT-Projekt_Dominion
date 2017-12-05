@@ -159,10 +159,11 @@ public class GameApp_Model extends Model {
 			SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
 			byte[] salt = new byte[16];
 			sr.nextBytes(salt);
+			return salt.toString();
 		} catch (NoSuchAlgorithmException e){
 			e.printStackTrace();
 		}
-		return salt.toString();
+		return null;
 	}
 
 	/**
