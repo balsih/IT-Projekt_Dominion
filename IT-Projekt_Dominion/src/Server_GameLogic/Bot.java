@@ -316,7 +316,7 @@ public class Bot extends Player implements Runnable {
 	}
 
 	/**
-	 * wait for a few milliseconds before executing the next step
+	 * Wait for a few milliseconds.
 	 * 
 	 * @throws InterruptedException
 	 */
