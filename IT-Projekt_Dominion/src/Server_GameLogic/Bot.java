@@ -14,24 +14,18 @@ import Cards.Cellar_Card;
 import Cards.Mine_Card;
 import Cards.Remodel_Card;
 import Cards.Workshop_Card;
+import Messages.Failure_Message;
 import Messages.Interaction;
 import Messages.Message;
+import Messages.PlayerSuccess_Message;
 import Messages.UpdateGame_Message;
 
 /**
  * @author Simon
  * @version 1.0
  * @created 15-Nov-2017 08:36:00
- * @lastEdited 25-Nov-2017 08:36:00
+ * @lastEdited 5-Dec-2017 21:52:00
  */
-
-// if (m instanceof UpdateGame_Message && playOneMore == false) {
-// UpdateGame_Message ugmsg = (UpdateGame_Message) m;
-// if (ugmsg.getCurrentPhase() == Phase.Action)
-// every method which is just used once by another method --> extract method
-// reduce class variables where possible
-// UpdateGame_Message ugmsg = (UpdateGame_Message) m;
-
 public class Bot extends Player implements Runnable {
 	private HashMap<CardName, Integer> buyPrioOneCard = new HashMap<CardName, Integer>();
 	private HashMap<CardName, Integer> buyPrioMoreCards = new HashMap<CardName, Integer>();
@@ -74,7 +68,7 @@ public class Bot extends Player implements Runnable {
 		cardNamesOfActionCards.add(CardName.Village);
 		cardNamesOfActionCards.add(CardName.Remodel);
 		cardNamesOfActionCards.add(CardName.Woodcutter);
-		
+
 		PRIOLIST_TOPDISCARDPILE_CARD.put(CardName.Copper, 100);
 		PRIOLIST_TOPDISCARDPILE_CARD.put(CardName.Cellar, 70);
 		PRIOLIST_TOPDISCARDPILE_CARD.put(CardName.Duchy, 90);
@@ -141,11 +135,9 @@ public class Bot extends Player implements Runnable {
 			}
 		}
 		makeBreak();
-		if (cardToPlay == null)
-			skipPhase();
-		else {
-			Message m = play(cardToPlay);
-			UpdateGame_Message ugmsg = (UpdateGame_Message) m;
+		Message playMessage = play(cardToPlay);
+		UpdateGame_Message ugmsg = (UpdateGame_Message) playMessage;
+		if (playMessage instanceof UpdateGame_Message) {
 			switch (cardToPlay.getCardName()) {
 			case Mine:
 				Card tempCard = null;
@@ -244,8 +236,24 @@ public class Bot extends Player implements Runnable {
 			default:
 				break;
 			}
-			cardToPlay = null;
-		}
+
+		} else if (ugmsg.getInteractionType().equals(Interaction.EndOfTurn)) {
+			List<CardName> cardToChoose = PRIOLIST_TOPDISCARDPILE_CARD.keySet().stream().sorted((s1, s2) -> Integer
+					.compare(PRIOLIST_TOPDISCARDPILE_CARD.get(s2), PRIOLIST_TOPDISCARDPILE_CARD.get(s1)))
+					.collect(Collectors.toList());
+			for (int indexCounter2 = 0; indexCounter2 < cardToChoose.size(); indexCounter2++) {
+				CardName cardname = cardToChoose.get(indexCounter2);
+				Card discardPileTopCard = Card.getCard(cardname);
+				if (handCards.contains(discardPileTopCard)) {
+					Card card = handCards.get(handCards.indexOf(discardPileTopCard));
+					cleanUp(card);
+					break;
+				}
+			}
+		} // if Failure_Message or if cardToPlay == null --> skipPhase()
+		else
+			skipPhase();
+		cardToPlay = null;
 	}
 
 	/**
@@ -266,44 +274,48 @@ public class Bot extends Player implements Runnable {
 					.collect(Collectors.toList());
 			list = list1;
 		}
-		for (int indexCounter = 0; indexCounter < list.size(); indexCounter++) {
-			cardToBuy = list.get(indexCounter);
+		for (int indexCounter1 = 0; indexCounter1 < list.size(); indexCounter1++) {
+			cardToBuy = list.get(indexCounter1);
 			buyMessage = buy(cardToBuy);
-			if (buyMessage instanceof UpdateGame_Message) {
+
+			// if PlayerSuccess_Message --> terminate buy();
+			if (buyMessage instanceof PlayerSuccess_Message)
+				break;
+			// if UpdateGame_Message --> check if Interaction == EndOfTurn;
+			else if (buyMessage instanceof UpdateGame_Message) {
 				numberOfTotalCards++;
 				if (cardToBuy.equals(CardName.Gold) || cardToBuy.equals(CardName.Silver))
 					numberOfGoldAndSilverCards++;
 				else if (Card.getCard(cardToBuy).getType().equals(CardType.Action))
 					numberOfActionCards++;
-				break;
+				UpdateGame_Message ugmsg = (UpdateGame_Message) buyMessage;
+				if (ugmsg.getInteractionType().equals(Interaction.EndOfTurn)) {
+					List<CardName> cardToChoose = PRIOLIST_TOPDISCARDPILE_CARD.keySet().stream()
+							.sorted((s1, s2) -> Integer.compare(PRIOLIST_TOPDISCARDPILE_CARD.get(s2),
+									PRIOLIST_TOPDISCARDPILE_CARD.get(s1)))
+							.collect(Collectors.toList());
+					for (int indexCounter2 = 0; indexCounter2 < cardToChoose.size(); indexCounter2++) {
+						CardName cardname = cardToChoose.get(indexCounter2);
+						Card discardPileTopCard = Card.getCard(cardname);
+						if (handCards.contains(discardPileTopCard)) {
+							Card card = handCards.get(handCards.indexOf(discardPileTopCard));
+							cleanUp(card);
+							break;
+						}
+					}
+				} else if (coins >= 2) {
+					buyOneMore = true;
+				} else {
+					buyOneMore = false;
+					if (ugmsg.getCurrentPhase().equals(Phase.Buy))
+						skipPhase();
+				}
 			}
+			// if Failure_Message --> keep searching
+			if (buyMessage instanceof Failure_Message)
+				continue;
 		}
 		cardToBuy = null;
-		UpdateGame_Message ugmsg = (UpdateGame_Message) buyMessage;
-		if (ugmsg.getInteractionType().equals(Interaction.EndOfTurn)) {
-			if (handCards.size() > 1) {
-				// under construction... stream verwenden?
-				// use prioListTopDiscardPileCard
-				// discardPileTopCard = // hier muss eine Karte gemäss einer neuen PrioListe
-				// ausgewählt werden
-				// ugmsg.setDiscardPileTopCard(discardPileTopCard);
-				
-				List<CardName> choosedCard = PRIOLIST_TOPDISCARDPILE_CARD.keySet().stream()
-						.sorted((s1, s2) -> Integer.compare(PRIOLIST_TOPDISCARDPILE_CARD.get(s2), PRIOLIST_TOPDISCARDPILE_CARD.get(s1)))
-						.collect(Collectors.toList());
-				CardName.choosedCard.get(0);
-				
-			}
-		}
-
-		// one more buy?
-		else if (coins >= 2) {
-			buyOneMore = true;
-		} else {
-			buyOneMore = false;
-			if (ugmsg.getCurrentPhase().equals(Phase.Buy))
-				skipPhase();
-		}
 	}
 
 	/**
@@ -473,8 +485,8 @@ public class Bot extends Player implements Runnable {
 					.get(cardNamesOfActionCards.get(i))) {
 				int tempValue1 = buyPrioOneCard.get(cardNamesOfActionCards.get(i));
 				int tempValue2 = buyPrioMoreCards.get(cardNamesOfActionCards.get(i));
-				tempValue1 -= 20;
-				tempValue2 -= 20;
+				tempValue1 -= 10;
+				tempValue2 -= 10;
 				buyPrioOneCard.replace(cardNamesOfActionCards.get(i), tempValue1);
 				buyPrioMoreCards.replace(cardNamesOfActionCards.get(i), tempValue2);
 			}
