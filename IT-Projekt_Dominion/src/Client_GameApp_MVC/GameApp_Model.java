@@ -110,8 +110,7 @@ public class GameApp_Model extends Model {
 		super();
 		this.main = main;
 
-		//		// start menusound
-		//		this.startMediaPlayer("Medieval_Camelot.mp3"); // start sound 
+		this.startMediaPlayer("Medieval_Camelot.mp3"); // start sound 
 	}
 
 	/**
