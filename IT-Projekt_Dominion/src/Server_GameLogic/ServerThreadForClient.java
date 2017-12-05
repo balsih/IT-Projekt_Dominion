@@ -224,7 +224,7 @@ public class ServerThreadForClient implements Runnable {
 		HighScore_Message hsmsg = new HighScore_Message();
 		String highScore = dbConnector.getHighScore();
 		if(highScore.length() == 0){
-			hsmsg.setHighScore("#noHighscroe#");
+			hsmsg.setHighScore("#noHighscore#");
 		}else{
 			hsmsg.setHighScore(highScore);
 		}
