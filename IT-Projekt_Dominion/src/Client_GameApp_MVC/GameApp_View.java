@@ -31,8 +31,8 @@ public class GameApp_View extends View<GameApp_Model> {
 
 	// Controls action cards area
 	protected Label lblActionCards;
-	protected GridPane gridpActionCards = new GridPane();
-	protected Label lblNmbrOfCellarCards = new Label();
+	protected GridPane gridpActionCards;
+	protected Label lblNmbrOfCellarCards;
 	protected Label lblNmbrOfMarketCards = new Label();
 	protected Label lblNmbrOfRemodelCards = new Label();
 	protected Label lblNmbrOfSmithyCards = new Label();
@@ -42,7 +42,7 @@ public class GameApp_View extends View<GameApp_Model> {
 	protected Label lblNmbrOfVillageCards = new Label();
 
 	protected VBox vboxActionCards = new VBox(lblActionCards, gridpActionCards);
-	protected VBox vboxCellarCards = new VBox(1, lblNmbrOfCellarCards);
+	protected VBox vboxCellarCards;
 	protected VBox vboxMarketCards = new VBox(1, lblNmbrOfMarketCards);
 	protected VBox vboxRemodelCards = new VBox(1, lblNmbrOfRemodelCards);
 	protected VBox vboxSmithyCards = new VBox(1, lblNmbrOfSmithyCards);
@@ -131,6 +131,10 @@ public class GameApp_View extends View<GameApp_Model> {
 
 	@Override
 	protected Scene create_GUI(){
+		
+		this.lblNmbrOfCellarCards = new Label();
+		this.vboxCellarCards = new VBox(1, lblNmbrOfCellarCards);
+		this.gridpActionCards  = new GridPane();
 		
 		// Translates GUI-text
 		sl = ServiceLocator.getServiceLocator();
