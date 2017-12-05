@@ -126,15 +126,14 @@ public class GameApp_Model extends Model {
 	 * @author Adrian
 	 * Encrypts a password using the secure hash algorithm (SHA-512) and returns it.
 	 * @param unencryptedPassword
-	 * @param salt
 	 * @return encryptedPassword
 	 * @throws NoSuchAlgorithmException
 	 */
-	public String encryptPassword(String unencryptedPassword, String salt) throws NoSuchAlgorithmException {
+	public String encryptPassword(String unencryptedPassword) throws NoSuchAlgorithmException {
 		String generatedPassword = null;
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-512");
-			md.update(salt.getBytes());
+			md.update(this.salt.getBytes());
 			byte[] bytes = md.digest(unencryptedPassword.getBytes());
 			StringBuilder sb = new StringBuilder();
 
@@ -293,7 +292,7 @@ public class GameApp_Model extends Model {
 		lmsg.setClient(clientName);//set the clientName and encrypted password to XML
 		
 		try {
-			lmsg.setPassword(this.encryptPassword(password, this.salt));
+			lmsg.setPassword(this.encryptPassword(password));
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
@@ -325,7 +324,7 @@ public class GameApp_Model extends Model {
 		CreateNewPlayer_Message cnpmsg = new CreateNewPlayer_Message();
 		cnpmsg.setClient(this.clientName);//set the clientName and encrypted password to XML
 		try {
-			cnpmsg.setPassword(this.encryptPassword(password, this.salt));
+			cnpmsg.setPassword(this.encryptPassword(password));
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
