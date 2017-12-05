@@ -94,7 +94,7 @@ public class GameApp_Model extends Model {
 	private String ipAddress;
 	private Integer port;
 
-	private String salt = getSalt();
+	private String salt = "[B@d8c7b51";
 
 	public enum UserInput {
 		clientName,
@@ -149,22 +149,23 @@ public class GameApp_Model extends Model {
 		return generatedPassword;
 	}
 
-	/**
-	 * @author Adrian
-	 * Adds salt for usage in the method encryptPassword
-	 * @return salt
-	 */
-	private String getSalt() {
-		try {
-			SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
-			byte[] salt = new byte[16];
-			sr.nextBytes(salt);
-			return salt.toString();
-		} catch (NoSuchAlgorithmException e){
-			e.printStackTrace();
-		}
-		return null;
-	}
+//	/**
+//	 * @author Adrian
+//	 * Adds salt for usage in the method encryptPassword
+//	 * @return salt
+//	 */
+//	private String getSalt() {
+//		try {
+//			SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+//			byte[] salt = new byte[16];
+//			sr.nextBytes(salt);
+//			return salt.toString();
+//			System.out.println(salt.toString());
+//		} catch (NoSuchAlgorithmException e){
+//			e.printStackTrace();
+//		}
+//		return null;
+//	}
 
 	/**
 	 * @author Adrian

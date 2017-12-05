@@ -444,9 +444,9 @@ public class GUI_Test extends Application {
 		// Test: add played cards & hand cards to containers
 		hboxPlayedCards.getChildren().add(img4);
 
-		hboxHandCards.getChildren().add(img3);
-		hboxHandCards.getChildren().add(img1);
-		hboxHandCards.getChildren().add(img2);
+		hboxHandCards.getChildren().add(0, img3);
+		hboxHandCards.getChildren().add(0, img1);
+		hboxHandCards.getChildren().add(0, img2);
 
 		// Implemented: Adds event handlers to the hand cards
 		for (Node child : hboxHandCards.getChildren()) {
