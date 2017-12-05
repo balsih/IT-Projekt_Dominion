@@ -113,11 +113,6 @@ public class ServerThreadForClient implements Runnable {
 		Message msgOut = null;
 		if(this.clientName == null)
 			this.clientName = msgIn.getClient();
-		if(msgIn instanceof AskForChanges_Message){
-			//nothing toDo here, would be too many logs
-		}else{
-			logger.info("Message received from "+this.clientName+": "+ msgIn.getType().toString());	
-		}
 		
 		switch (MessageType.getType(msgIn)) {
 		case AskForChanges:
@@ -242,10 +237,10 @@ public class ServerThreadForClient implements Runnable {
 	 */
 	private Message processGameMode(Message msgIn) {
 		GameMode_Message gmmsg = (GameMode_Message) msgIn;
+		GameMode gameMode = gmmsg.getMode();
 		this.player = new Player(this.clientName, this);
-		this.game = Game.getGame(gmmsg.getMode(), this.player);
+		this.game = Game.getGame(gameMode, this.player);
 		this.player.setGame(this.game);
-		this.logger.info(this.clientName+" waits for opponent");
 		Commit_Message cmsg = new Commit_Message();
 		return cmsg;
 	}
