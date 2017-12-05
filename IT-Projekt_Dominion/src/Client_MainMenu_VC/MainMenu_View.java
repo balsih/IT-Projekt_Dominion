@@ -82,8 +82,8 @@ public class MainMenu_View extends View<GameApp_Model> {
 		// labels and text fields
 		// shows the name of the actual player
 	
-		// playerLbl = new Label(player.getPlayerName());
-		playerLbl = new Label("Spieler: Bodo Grütter"); // zum testen da noch kein Playername vorhanden
+		//playerLbl = new Label("Spieler: Bodo Grütter"); // zum testen da noch kein Playername vorhanden
+		playerLbl = new Label(player.getPlayerName());
 		playerLbl.setId("playerLbl");
 		
 		// language selection with ComboBox
@@ -131,17 +131,17 @@ public class MainMenu_View extends View<GameApp_Model> {
 		highscoreLbl = new Label(/*t.getString("menu.highscoreLbl")*/);
 		highscoreLbl.setId("highscoreLbl");
 		
-		//highscoreListLbl = new Label(model.sendHighScoreRequest()); // sets the top five as a five line String
+		highscoreListLbl = new Label(model.sendHighScoreRequest()); // sets the top five as a five line String
 		
-		// test code :
-		String s = "Rene";
-		int i = 18;
-		String ss = "Rene Schwab";
-		int ii = 69;
-		String f = ""+s+ ":\t"+i+ "\n"+ss+":\t"+ii+ "\n"+"slkfajlfkdasj"+ "\n"+"slkfajlfkdasj"+ "\n"+"slkfajlfkdasj";
-		// end of testcode
+//		// test code :
+//		String s = "Rene";
+//		int i = 18;
+//		String ss = "Rene Schwab";
+//		int ii = 69;
+//		String f = ""+s+ ":\t"+i+ "\n"+ss+":\t"+ii+ "\n"+"slkfajlfkdasj"+ "\n"+"slkfajlfkdasj"+ "\n"+"slkfajlfkdasj";
+//		// end of testcode
+//		highscoreListLbl = new Label(f);
 		
-		highscoreListLbl = new Label(f);
 		highscoreListLbl.setId("highscoreListLbl");
 		highscoreListLbl.setPrefSize(280, 160);
 
