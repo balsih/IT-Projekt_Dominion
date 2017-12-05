@@ -31,8 +31,11 @@ import javafx.stage.Stage;
  */
 public class Dominion_Main extends Application {
 	
-	Splash_View splashView;
-	MainMenu_View mainMenu_View;
+	Splash_View splash_View = null;
+	MainMenu_View mainMenu_View = null;
+	Login_View login_View = null;
+	CreatePlayer_View createPlayer_View = null;
+	GameApp_View gameApp_View = null;
 	ServiceLocator sl;
 	
 	GameApp_Model model;
@@ -52,37 +55,38 @@ public class Dominion_Main extends Application {
 	@Override
 	public void start(Stage stage) throws Exception{
 		Splash_Model splashModel = new Splash_Model();
-		splashView = new Splash_View(stage, splashModel);
-		Splash_Controller splashController = new Splash_Controller(this, splashModel, splashView);
-		splashView.start();
+		splash_View = new Splash_View(stage, splashModel);
+		Splash_Controller splashController = new Splash_Controller(this, splashModel, splash_View);
+		
+		splash_View.start();
 		splashModel.initialize();
-		//this.startLogin();
-		//startMainMenu();
-		//this.startCreatePlayer(); // zur Kontrolle nicht in Reihenfolge gestartet 
-		// noch anpassen, im Moment startet create new Player zeitgleich mit Splash
 			
 	}
 	
 	
 	public void startLogin(){
-		splashView.stop(); // Hides splashscreen
+		splash_View.stop(); // Hides splashscreen
 		sl = ServiceLocator.getServiceLocator();
 		
 		if (this.model == null) {
 			this.model = new GameApp_Model(this);
 		}
-		Login_View view = new Login_View(new Stage(), this.model);
-		Login_Controller controller = new Login_Controller(this, this.model, view);
-		view.start();
+		this.login_View = new Login_View(new Stage(), this.model);
+		Login_Controller controller = new Login_Controller(this, this.model, this.login_View);
+		
+		this.login_View.start();
 	}
 	
 	
 	public void startCreatePlayer(){
-		CreatePlayer_View view = new CreatePlayer_View(new Stage(), model);
-		CreatePlayer_Controller controller = new CreatePlayer_Controller(this, model, view);
-		view.start();
+		this.createPlayer_View = new CreatePlayer_View(new Stage(), model);
+		CreatePlayer_Controller controller = new CreatePlayer_Controller(this, model, this.createPlayer_View);
+		this.createPlayer_View.start();
 
-		//view.stop();
+		if(this.login_View != null){
+			this.login_View.stop();
+			this.login_View = null;
+		}
 	}
 	
 	
@@ -90,17 +94,26 @@ public class Dominion_Main extends Application {
 		
 		mainMenu_View.stop();
 		// Create game mvc
-		GameApp_View view = new GameApp_View(new Stage(), model);
-		GameApp_Controller controller = new GameApp_Controller(model, view);
-		view.start();
+		this.gameApp_View = new GameApp_View(new Stage(), model);
+		GameApp_Controller controller = new GameApp_Controller(model, this.gameApp_View);
+		this.gameApp_View.start();
+		
+		this.mainMenu_View.stop();
 	}
 	
+	
 	public void startMainMenu(){
-		MainMenu_View view = new MainMenu_View(new Stage(), model);
-		MainMenu_Controller controller = new MainMenu_Controller(this, model, view);
-		view.start();
+		this.mainMenu_View = new MainMenu_View(new Stage(), model);
+		MainMenu_Controller controller = new MainMenu_Controller(this, model, this.mainMenu_View);
+		this.mainMenu_View.start();
 		
-		//view.stop();
+		if(this.login_View != null){
+			this.login_View.stop();
+			this.login_View = null;
+		}else if(this.createPlayer_View != null){
+			this.createPlayer_View.stop();
+			this.createPlayer_View = null;
+		}
 		
 	}
 	

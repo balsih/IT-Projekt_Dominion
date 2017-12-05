@@ -35,7 +35,6 @@ import javafx.stage.Stage;
 public class MainMenu_View extends View<GameApp_Model> {
 	
 	private ServiceLocator sl;
-	private Player player;
 	
 	// controls -> accessed by controller
 	protected Label playerLbl;
@@ -83,7 +82,7 @@ public class MainMenu_View extends View<GameApp_Model> {
 		// shows the name of the actual player
 	
 		//playerLbl = new Label("Spieler: Bodo Grütter"); // zum testen da noch kein Playername vorhanden
-		playerLbl = new Label(player.getPlayerName());
+		playerLbl = new Label(model.getClientName());
 		playerLbl.setId("playerLbl");
 		
 		// language selection with ComboBox
