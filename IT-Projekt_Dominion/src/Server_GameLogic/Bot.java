@@ -553,7 +553,7 @@ public class Bot extends Player implements Runnable {
 	 * the number as an Integer.
 	 * 
 	 * @param cardname
-	 * @return
+	 * @return specific number of cards
 	 */
 	private int getNumberOfOwnedCards(CardName cardname) {
 		int numberOfOwnedCards = 0;
