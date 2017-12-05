@@ -160,7 +160,7 @@ public class DB_Connector {
 
 			while (this.rs.next()) {
 				highScore += rs.getString("Username") + ":\t";
-				highScore += rs.getString("Score") + "\n";
+				highScore += rs.getString("Score") + "\r\n";
 			}
 
 			return highScore;
