@@ -136,8 +136,8 @@ public class Bot extends Player implements Runnable {
 		}
 		makeBreak();
 		Message playMessage = play(cardToPlay);
-		UpdateGame_Message ugmsg = (UpdateGame_Message) playMessage;
 		if (playMessage instanceof UpdateGame_Message) {
+			UpdateGame_Message ugmsg = (UpdateGame_Message) playMessage;
 			switch (cardToPlay.getCardName()) {
 			case Mine:
 				Card tempCard = null;
@@ -236,23 +236,24 @@ public class Bot extends Player implements Runnable {
 			default:
 				break;
 			}
-
-		} else if (ugmsg.getInteractionType().equals(Interaction.EndOfTurn)) {
-			List<CardName> cardToChoose = PRIOLIST_TOPDISCARDPILE_CARD.keySet().stream().sorted((s1, s2) -> Integer
-					.compare(PRIOLIST_TOPDISCARDPILE_CARD.get(s2), PRIOLIST_TOPDISCARDPILE_CARD.get(s1)))
-					.collect(Collectors.toList());
-			for (int indexCounter2 = 0; indexCounter2 < cardToChoose.size(); indexCounter2++) {
-				CardName cardname = cardToChoose.get(indexCounter2);
-				Card discardPileTopCard = Card.getCard(cardname);
-				if (handCards.contains(discardPileTopCard)) {
-					Card card = handCards.get(handCards.indexOf(discardPileTopCard));
-					cleanUp(card);
-					break;
+			if (ugmsg.getInteractionType().equals(Interaction.EndOfTurn)) {
+				List<CardName> cardToChoose = PRIOLIST_TOPDISCARDPILE_CARD.keySet().stream().sorted((s1, s2) -> Integer
+						.compare(PRIOLIST_TOPDISCARDPILE_CARD.get(s2), PRIOLIST_TOPDISCARDPILE_CARD.get(s1)))
+						.collect(Collectors.toList());
+				for (int indexCounter2 = 0; indexCounter2 < cardToChoose.size(); indexCounter2++) {
+					CardName cardname = cardToChoose.get(indexCounter2);
+					Card discardPileTopCard = Card.getCard(cardname);
+					if (handCards.contains(discardPileTopCard)) {
+						Card card = handCards.get(handCards.indexOf(discardPileTopCard));
+						cleanUp(card);
+						break;
+					}
 				}
 			}
-		} // if Failure_Message or if cardToPlay == null --> skipPhase()
-		else
+
+		} else if (playMessage instanceof Failure_Message)
 			skipPhase();
+		// if nothing applies playMessage must be a PlayerSuccess_Message --> do nothing
 		cardToPlay = null;
 	}
 
