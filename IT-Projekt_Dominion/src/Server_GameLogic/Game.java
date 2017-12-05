@@ -150,12 +150,12 @@ public class Game {
 	public void startGame() {
 		for (int i = 0; i < 10; i++) {
 			if (i < 7) {
-				this.player1.deckPile.push(this.copperPile.pop());
-				this.player2.deckPile.push(this.copperPile.pop());
+				this.player1.deckPile.push(new Copper_Card());
+				this.player2.deckPile.push(new Copper_Card());
 			}
 			if (i >= 7) {
-				this.player1.deckPile.push(this.estatePile.pop());
-				this.player2.deckPile.push(this.estatePile.pop());
+				this.player1.deckPile.push(new Estate_Card());
+				this.player2.deckPile.push(new Estate_Card());
 			}
 		}
 
