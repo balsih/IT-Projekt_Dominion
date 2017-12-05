@@ -52,6 +52,7 @@ public class Bot extends Player implements Runnable {
 	private int numberOfActionCards = 0, gameStage;
 	private boolean buyOneMore = false;
 	private boolean done0 = true, done1 = true, done2 = true, done3 = true;
+	private LinkedList<Card> discardedCardsForCellar;
 
 	public Bot(String name) {
 		super(name);
@@ -158,17 +159,17 @@ public class Bot extends Player implements Runnable {
 					numberOfGoldAndSilverCards++;
 				break;
 			case Cellar:
-				LinkedList<Card> discardedCards = null;
+				discardedCardsForCellar = null;
 				for (Card card : handCards) {
 					if (card.getType().equals(CardType.Victory))
-						discardedCards.add(card);
+						discardedCardsForCellar.add(card);
 					if (actions == 0) {
 						if (card.getType().equals(CardType.Action))
-							discardedCards.add(card);
+							discardedCardsForCellar.add(card);
 					}
 				}
 				Cellar_Card cCard = (Cellar_Card) this.getPlayedCards().get(this.getPlayedCards().size() - 1);
-				ugmsg = cCard.executeCellar(discardedCards);
+				ugmsg = cCard.executeCellar(discardedCardsForCellar);
 				break;
 			case Remodel:
 				prioListForRemodel.put(CardName.Cellar, 50);
