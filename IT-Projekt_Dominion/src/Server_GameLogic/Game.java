@@ -167,6 +167,9 @@ public class Game {
 //		this.currentPlayer = this.getStarter();
 		this.currentPlayer = this.player1;
 		this.currentPlayer.startMove();
+		
+		if(this.gameMode == GameMode.Simulation)
+			new Thread(bot).start();
 	}
 
 	/**
