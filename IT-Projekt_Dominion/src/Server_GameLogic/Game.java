@@ -60,6 +60,7 @@ public class Game {
 	private Player player2;
 	private Player currentPlayer;
 	private Bot bot;
+	private Bot bot2;
 
 	private static Game existingGame;
 	private GameMode gameMode;
@@ -193,11 +194,14 @@ public class Game {
 			if (currentPlayer.equals(this.player1)) {
 				this.currentPlayer = player2;
 
-				if(this.gameMode == GameMode.Singleplayer){
+				if(this.gameMode == GameMode.Singleplayer || this.gameMode == GameMode.Simulation)
 					new Thread(bot).start();
-				}
+				
 			} else {
 				this.currentPlayer = player1;
+				
+				if(this.gameMode == GameMode.Simulation)
+					new Thread(bot2).start();
 			}
 			
 			currentPlayer.startMove();
@@ -293,7 +297,7 @@ public class Game {
 
 			existingGame.gameMode = GameMode.Multiplayer;
 			return existingGame;
-		} else {
+		} else if (gameMode == GameMode.Singleplayer){
 			Game game = new Game();
 			game.bot = new Bot(Bot.getNameOfBot());
 			game.setPlayer1(player);
@@ -306,6 +310,18 @@ public class Game {
 			game.getPlayer1().getServerThreadForClient()
 					.addWaitingMessages(game.getPlayer1().getServerThreadForClient().getCG_Message(game));
 			game.logger.info(game.player1.getPlayerName() + " started a singleplayer game");
+			return game;
+		} else{
+			Game game = new Game();
+			game.bot = new Bot(Bot.getNameOfBot());
+			game.setPlayer1(game.bot);
+			game.bot.setGame(game);
+			
+			game.bot2 = new Bot(Bot.getNameOfBot());
+			game.setPlayer2(game.bot2);
+			game.bot2.setGame(game);
+			
+			game.gameMode = GameMode.Simulation;
 			return game;
 		}
 

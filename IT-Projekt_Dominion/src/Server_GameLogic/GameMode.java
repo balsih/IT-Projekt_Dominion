@@ -1,7 +1,7 @@
 package Server_GameLogic;
 
 public enum GameMode {
-	Singleplayer, Multiplayer;
+	Singleplayer, Multiplayer, Simulation;
 	
 	/**
 	 * @author Bradley Richards Parses the enum-Name for creating new cards on
