@@ -129,6 +129,7 @@ public class Player {
 
 			if ((this.actions == 0 || !this.containsCardType(this.handCards, CardType.Action)) && ugmsg.getInteractionType() == null)
 				ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.skipPhase(), ugmsg);
+			
 			return ugmsg;
 
 		} else if (this.actualPhase == Phase.Buy && this.equals(game.getCurrentPlayer())) {
