@@ -115,7 +115,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		this.view.getStage().setOnCloseRequest(event -> {
 			view.stop();
 			Platform.exit();
-			this.listenToServer = false;
+			this.listenToServer = false; // Stops the thread
 		});
 		
 		// Starts the thread
