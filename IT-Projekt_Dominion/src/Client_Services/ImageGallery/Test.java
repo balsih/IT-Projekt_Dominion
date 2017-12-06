@@ -39,7 +39,7 @@ public class Test extends Application{
 		/*Image image = new Image("/Gold_Card.jpg");
 	    ImageView iv = new ImageView();*/
 //	    iv.setImage(image);
-		ImageView iv = g.getImage(CardName.Village);
+		ImageView iv = g.getImage(CardName.Cellar);
 	    
 	    root.setCenter(iv);
 	    
