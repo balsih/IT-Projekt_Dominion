@@ -7,13 +7,7 @@ public class BotTester {
 		Game existingGame = new Game();
 		existingGame = Game.getGame(GameMode.Simulation, null);
 		existingGame.startGame();
-		System.out.println(existingGame.getPlayer1());
-		System.out.println(existingGame.getPlayer2());
-		System.out.println("Game started");
-		//Bot b1 = (Bot) existingGame.getPlayer1();
-		//b1.run();
 		
-
 //		Bot b = new Bot(Bot.getNameOfBot());
 //		String test = Bot.getNameOfBot();
 //		System.out.println("test");
