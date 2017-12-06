@@ -9,9 +9,12 @@ import Abstract_MVC.Model;
 import Server_GameLogic.ServerThreadForClient;
 
 /**
- * @author Bodo
+ * @author Bodo Gruetter
  * 
  * The server model allows to start the server and to open a thread for the clients.
+ * 
+ * Adapted from:
+ * Prof. Bradley Richards, Package: ch.fhnw.richards.lecture11_chatLab.v3_server, Class: Model
  */
 public class Server_Model extends Model {
 

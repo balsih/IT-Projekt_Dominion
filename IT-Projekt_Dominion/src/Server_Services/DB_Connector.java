@@ -10,17 +10,20 @@ import java.sql.Statement;
 import Server_GameLogic.Player;
 
 /**
- * @author Bodo Gruetter A database connector which builds a connection to the
- *         embedded h2 database. This class allows Select statements of relevant
- *         data and data manipulation with DML in SQL.
+ * @author Bodo Gruetter
  * 
- *         adapted from:
- *         http://openbook.rheinwerk-verlag.de/javainsel9/javainsel_24_001.htm#mja621f3b4a74c7fa576b4a58b1614041e
+ * A database connector which builds a connection to the
+ * embedded h2 database. This class allows Select statements of relevant
+ * data and data manipulation with DML in SQL.
+ * 
+ * Adapted from:
+ * http://openbook.rheinwerk-verlag.de/javainsel9/javainsel_24_001.htm#mja621f3b4a74c7fa576b4a58b1614041e
  */
 public class DB_Connector {
 
 	private static DB_Connector connector;
-	// Important objects that we use with jdbc
+	
+	// Necessary objects that we use with jdbc
 	private Connection connection;
 	private Statement stmt;
 	private PreparedStatement prepStmt;
@@ -303,7 +306,7 @@ public class DB_Connector {
 	 * @author Bodo Gruetter service method which allows to select the existing
 	 *         player_scores in database and print them out in console.
 	 */
-	private void selectPlayer_Scoring() {
+	public void selectPlayer_Scoring() {
 		String selectPlayer_Scoring = "select * from Player_Scoring";
 
 		try {
@@ -317,16 +320,4 @@ public class DB_Connector {
 			e.printStackTrace();
 		}
 	}
-
-
-	// TEST
-	public static void main(String[] args) {
-		DB_Connector connector = new DB_Connector();
-		
-
-		connector.addNewPlayer("Bodo", "Test");
-		connector.selectPlayer();
-
-	}
-
 }

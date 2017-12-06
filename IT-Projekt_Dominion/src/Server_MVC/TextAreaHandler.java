@@ -10,6 +10,7 @@ import javafx.scene.control.TextArea;
 
 /**
  * @author Bodo Grütter
+ * 
  * A log-handler that writes to a TextArea. Platform.runLater is a means
  * of putting work onto the JavaFX application thread. Anything that
  * modifies with the GUI should be on this thread. In this case, the

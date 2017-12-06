@@ -11,13 +11,12 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 /**
- * @author Bodo Grütter
- * @version 1.0
- * @created 31-Okt-2017 17:27:12
+ * @author Bodo Gruetter
+ * 
+ * Launches the Server Application.
  */
 public class Server_Main extends Application {
 
-	private Server_Controller controller;
 	private Server_Model model;
 	private Server_View view;
 
@@ -36,19 +35,9 @@ public class Server_Main extends Application {
 		// Initialize the GUI
 		this.model = new Server_Model();
 		this.view = new Server_View(stage, this.model, textAreaHandler.getTextArea());
-		this.controller = new Server_Controller(this.model, this.view);
+		new Server_Controller(this.model, this.view);
 
 		// Display the GUI
 		view.start();
-	}
-	
-	@Override
-	public void init(){
-		
-	}
-
-	@Override
-	public void stop(){
-
 	}
 }//end Server_Main

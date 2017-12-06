@@ -13,12 +13,12 @@ import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 
 /**
- * @author Bodo Grütter
- * @version 1.0
- * @created 31-Okt-2017 17:09:20
+ * @author Bodo Gruetter
+ *
+ * The Server_View creates and shows the GUI to interact with the server.
  * 
  * Adapted from:
- * https://stackoverflow.com/questions/39214586/how-to-align-a-button-right-in-javafx
+ * Prof. Bradley Richards, Package: ch.fhnw.richards.lecture11_chatLab.v3_server, Class: View
  */
 public class Server_View extends View<Server_Model>{
 
@@ -78,8 +78,7 @@ public class Server_View extends View<Server_Model>{
 
 	@Override
 	protected Scene create_GUI() {
-		// TODO Auto-generated method stub
+		// nothing to do here
 		return null;
 	}
-	
 }//end Server_View

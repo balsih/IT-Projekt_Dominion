@@ -16,7 +16,6 @@ import Messages.Failure_Message;
 import Messages.Interaction;
 import Messages.Message;
 import Messages.PlayerSuccess_Message;
-import Messages.TestMessages;
 import Messages.UpdateGame_Message;
 
 /**
@@ -157,7 +156,7 @@ public class Player {
 		Card buyedCard = null;
 
 		//TestMessages just for testing (Can't find the image in Gallery because of the property)
-		if (TestMessages.getCard(cardName).getCost() <= this.getCoins() && this.getBuys() > 0 && this.actualPhase == Phase.Buy
+		if (Card.getCard(cardName).getCost() <= this.getCoins() && this.getBuys() > 0 && this.actualPhase == Phase.Buy
 				&& this.equals(game.getCurrentPlayer())) {
 
 			try {
