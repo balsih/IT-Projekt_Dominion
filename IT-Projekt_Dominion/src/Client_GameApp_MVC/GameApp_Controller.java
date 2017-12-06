@@ -57,7 +57,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			String newMessage = view.txtfChatArea.getText();	
 
 			if (newMessage.length() > 0) {
-				success = model.sendChat(existingMessages.concat(newMessage)+"\n");
+				success = model.sendChat(existingMessages.concat(newMessage)+"\r\n");
 			}
 			if (success) {
 				view.txtaChatArea.setText(model.newChat);
@@ -116,6 +116,9 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			view.stop();
 			Platform.exit();
 		});
+		
+		// Starts the thread
+		this.initializeServerListening();
 	}
 
 	// Resizes the image to the optimal fit size
@@ -255,6 +258,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 	// Starts the ServerListening
 	public void initializeServerListening(){
 		new Thread(new ServerListening()).start();
+		this.listenToServer = true;
 	}
 
 	/**
@@ -283,14 +287,14 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 					// Updates the log
 					if(model.newLog != null){
 						String existingLog = view.txtaLog.getText();
-						view.txtaLog.setText(existingLog.concat(model.newLog)+"\n");
+						view.txtaLog.setText(existingLog.concat(model.newLog)+"\r\n");
 						model.newLog = null;
 					}
 
 					// Updates the chat
 					if(model.newChat != null){
 						String existingMessages = view.txtaChatArea.getText();
-						view.txtaChatArea.setText(existingMessages.concat(model.newChat)+"\n");
+						view.txtaChatArea.setText(existingMessages.concat(model.newChat)+"\r\n");
 						view.txtfChatArea.setText(""); // Removes the entered text
 						model.newChat = null;
 					}
