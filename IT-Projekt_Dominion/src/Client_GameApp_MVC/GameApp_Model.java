@@ -234,8 +234,8 @@ public class GameApp_Model extends Model {
 		String output = "";
 		String[] splittedInput = input.split(this.TRANSLATE_REGEX);
 		String lastPart = "";
-//		if(!m.hitEnd())
-//			lastPart = splittedInput[splittedInput.length-1];
+		if(!m.hitEnd())
+			lastPart = splittedInput[splittedInput.length-1];
 		while(m.find()){
 			int startIndex = m.start();
 			int endIndex = m.end();
@@ -658,7 +658,7 @@ public class GameApp_Model extends Model {
 		if(ugmsg.getPlayedCard() != null && this.currentPlayer.compareTo(this.clientName) == 0){
 			for(int i = 0; i < this.yourHandCards.size(); i++){
 				if(this.yourHandCards.get(i).getCardName().equals(ugmsg.getPlayedCard().getCardName())){
-					this.newPlayedCard = this.yourHandCards.remove(i);
+					this.playedCards.add(this.yourHandCards.remove(i));
 					break;
 				}
 			}
