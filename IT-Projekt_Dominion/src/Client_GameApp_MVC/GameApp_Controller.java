@@ -115,9 +115,9 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		this.view.getStage().setOnCloseRequest(event -> {
 			view.stop();
 			Platform.exit();
-			this.listenToServer = false;
+			this.listenToServer = false; // Stops the thread
 		});
-		
+
 		// Starts the thread
 		this.initializeServerListening();
 	}
@@ -378,135 +378,140 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				} else if (msgIn instanceof CreateGame_Message) {
 					model.processCreateGame(msgIn);
 
-					// Sets the current phase
-					view.lblCurrentPhase.setText(t.getString("buy.lblCurrentPhase")); // Phase: Buy
+					//Ensure the update happens on the JavaFX Application Thread, * by using Platform.runLater()
+					Platform.runLater(() -> {
 
-					// Sets the name of the current player
-					view.lblNameOfCurrentPlayer.setText(model.currentPlayer);
+						// Sets the current phase
+						view.lblCurrentPhase.setText(t.getString("buy.lblCurrentPhase")); // Phase: Buy
 
-					// Sets the number of current actions
-					view.lblNmbrOfCrntActions.setText(Integer.toString(model.actions));
+						// Sets the name of the current player
+						view.lblNameOfCurrentPlayer.setText(model.currentPlayer);
 
-					// Sets the number of current buys
-					view.lblNmbrOfCrntBuys.setText(Integer.toString(model.buys));
+						// Sets the number of current actions
+						view.lblNmbrOfCrntActions.setText(Integer.toString(model.actions));
 
-					// Sets the number of current coins
-					view.lblNmbrOfCrntCoins.setText(Integer.toString(model.coins));
+						// Sets the number of current buys
+						view.lblNmbrOfCrntBuys.setText(Integer.toString(model.buys));
 
-					// Sets the number of current hand cards
-					view.lblNmbrOfCrntHandCards.setText("5");
+						// Sets the number of current coins
+						view.lblNmbrOfCrntCoins.setText(Integer.toString(model.coins));
 
-					// Sets the number of current discard cards
-					view.lblNmbrOfCrntDiscards.setText("0");
+						// Sets the number of current hand cards
+						view.lblNmbrOfCrntHandCards.setText("5");
 
-					// Sets the number of current deck cards
-					view.lblNmbrOfCrntDeckCards.setText("5");
+						// Sets the number of current discard cards
+						view.lblNmbrOfCrntDiscards.setText("0");
 
-					// Disables chat while playing singleplayer mode
-					if(model.gameMode.equals(GameMode.Singleplayer)){
-						view.txtfChatArea.setDisable(true);
-						view.btnSendChatArea.setDisable(true);
-					}
+						// Sets the number of current deck cards
+						view.lblNmbrOfCrntDeckCards.setText("5");
 
-					// Sets the initial number of Action cards
-					view.lblNmbrOfCellarCards.setText(Integer.toString(model.buyCards.get(CardName.Cellar)));
-					view.lblNmbrOfMarketCards.setText(Integer.toString(model.buyCards.get(CardName.Market)));
-					view.lblNmbrOfRemodelCards.setText(Integer.toString(model.buyCards.get(CardName.Remodel)));
-					view.lblNmbrOfSmithyCards.setText(Integer.toString(model.buyCards.get(CardName.Smithy)));
-					view.lblNmbrOfWoodcutterCards.setText(Integer.toString(model.buyCards.get(CardName.Woodcutter)));
-					view.lblNmbrOfWorkshopCards.setText(Integer.toString(model.buyCards.get(CardName.Workshop)));
-					view.lblNmbrOfMineCards.setText(Integer.toString(model.buyCards.get(CardName.Mine)));
-					view.lblNmbrOfVillageCards.setText(Integer.toString(model.buyCards.get(CardName.Village)));
+						// Disables chat while playing singleplayer mode
+						if(model.gameMode.equals(GameMode.Singleplayer)){
+							view.txtfChatArea.setDisable(true);
+							view.btnSendChatArea.setDisable(true);
+						}
 
-					// Adds Action cards
-					Card cellarCard = Card.getCard(CardName.Cellar);
-					view.vboxCellarCards.getChildren().add(0, resizeImage(cellarCard.getImage()));
+						// Sets the initial number of Action cards
+						view.lblNmbrOfCellarCards.setText(Integer.toString(model.buyCards.get(CardName.Cellar)));
+						view.lblNmbrOfMarketCards.setText(Integer.toString(model.buyCards.get(CardName.Market)));
+						view.lblNmbrOfRemodelCards.setText(Integer.toString(model.buyCards.get(CardName.Remodel)));
+						view.lblNmbrOfSmithyCards.setText(Integer.toString(model.buyCards.get(CardName.Smithy)));
+						view.lblNmbrOfWoodcutterCards.setText(Integer.toString(model.buyCards.get(CardName.Woodcutter)));
+						view.lblNmbrOfWorkshopCards.setText(Integer.toString(model.buyCards.get(CardName.Workshop)));
+						view.lblNmbrOfMineCards.setText(Integer.toString(model.buyCards.get(CardName.Mine)));
+						view.lblNmbrOfVillageCards.setText(Integer.toString(model.buyCards.get(CardName.Village)));
 
-					Card marketCard = Card.getCard(CardName.Market);
-					view.vboxMarketCards.getChildren().add(0, resizeImage(marketCard.getImage()));
+						// Adds Action cards
+						Card cellarCard = Card.getCard(CardName.Cellar);
+						view.vboxCellarCards.getChildren().add(0, resizeImage(cellarCard.getImage()));
 
-					Card remodelCard = Card.getCard(CardName.Remodel);
-					view.vboxRemodelCards.getChildren().add(0, resizeImage(remodelCard.getImage()));
+						Card marketCard = Card.getCard(CardName.Market);
+						view.vboxMarketCards.getChildren().add(0, resizeImage(marketCard.getImage()));
 
-					Card smithyCard = Card.getCard(CardName.Smithy);
-					view.vboxSmithyCards.getChildren().add(0, resizeImage(smithyCard.getImage()));
+						Card remodelCard = Card.getCard(CardName.Remodel);
+						view.vboxRemodelCards.getChildren().add(0, resizeImage(remodelCard.getImage()));
 
-					Card woodcutterCard = Card.getCard(CardName.Woodcutter);
-					view.vboxWoodcutterCards.getChildren().add(0, resizeImage(woodcutterCard.getImage()));
+						Card smithyCard = Card.getCard(CardName.Smithy);
+						view.vboxSmithyCards.getChildren().add(0, resizeImage(smithyCard.getImage()));
 
-					Card workshopCard = Card.getCard(CardName.Workshop);
-					view.vboxWorkshopCards.getChildren().add(0, resizeImage(workshopCard.getImage()));
+						Card woodcutterCard = Card.getCard(CardName.Woodcutter);
+						view.vboxWoodcutterCards.getChildren().add(0, resizeImage(woodcutterCard.getImage()));
 
-					Card mineCard = Card.getCard(CardName.Mine);
-					view.vboxMineCards.getChildren().add(0, resizeImage(mineCard.getImage()));
+						Card workshopCard = Card.getCard(CardName.Workshop);
+						view.vboxWorkshopCards.getChildren().add(0, resizeImage(workshopCard.getImage()));
 
-					Card villageCard = Card.getCard(CardName.Village);
-					view.vboxVillageCards.getChildren().add(0, resizeImage(villageCard.getImage()));
+						Card mineCard = Card.getCard(CardName.Mine);
+						view.vboxMineCards.getChildren().add(0, resizeImage(mineCard.getImage()));
 
-					// Sets the initial number of Treasure cards
-					view.lblNmbrOfGoldCards.setText(Integer.toString(model.buyCards.get(CardName.Gold)));
-					view.lblNmbrOfSilverCards.setText(Integer.toString(model.buyCards.get(CardName.Silver)));
-					view.lblNmbrOfCopperCards.setText(Integer.toString(model.buyCards.get(CardName.Copper)));
+						Card villageCard = Card.getCard(CardName.Village);
+						view.vboxVillageCards.getChildren().add(0, resizeImage(villageCard.getImage()));
 
-					// Adds Treasure cards
-					Card goldCard = Card.getCard(CardName.Gold);
-					view.vboxGoldCards.getChildren().add(0, resizeImage(goldCard.getImage()));
+						// Sets the initial number of Treasure cards
+						view.lblNmbrOfGoldCards.setText(Integer.toString(model.buyCards.get(CardName.Gold)));
+						view.lblNmbrOfSilverCards.setText(Integer.toString(model.buyCards.get(CardName.Silver)));
+						view.lblNmbrOfCopperCards.setText(Integer.toString(model.buyCards.get(CardName.Copper)));
 
-					Card silverCard = Card.getCard(CardName.Silver);
-					view.vboxSilverCards.getChildren().add(0, resizeImage(silverCard.getImage()));
+						// Adds Treasure cards
+						Card goldCard = Card.getCard(CardName.Gold);
+						view.vboxGoldCards.getChildren().add(0, resizeImage(goldCard.getImage()));
 
-					Card copperCard = Card.getCard(CardName.Copper);
-					view.vboxCopperCards.getChildren().add(0, resizeImage(copperCard.getImage()));
+						Card silverCard = Card.getCard(CardName.Silver);
+						view.vboxSilverCards.getChildren().add(0, resizeImage(silverCard.getImage()));
 
-					// Sets the initial number of Victory cards
-					view.lblNmbrOfDuchyCards.setText(Integer.toString(model.buyCards.get(CardName.Duchy)));
-					view.lblNmbrOfEstateCards.setText(Integer.toString(model.buyCards.get(CardName.Estate)));
-					view.lblNmbrOfProvinceCards.setText(Integer.toString(model.buyCards.get(CardName.Province)));
+						Card copperCard = Card.getCard(CardName.Copper);
+						view.vboxCopperCards.getChildren().add(0, resizeImage(copperCard.getImage()));
 
-					// Adds Victory cards
-					Card duchyCard = Card.getCard(CardName.Duchy);
-					view.vboxDuchyCards.getChildren().add(0, resizeImage(duchyCard.getImage()));
+						// Sets the initial number of Victory cards
+						view.lblNmbrOfDuchyCards.setText(Integer.toString(model.buyCards.get(CardName.Duchy)));
+						view.lblNmbrOfEstateCards.setText(Integer.toString(model.buyCards.get(CardName.Estate)));
+						view.lblNmbrOfProvinceCards.setText(Integer.toString(model.buyCards.get(CardName.Province)));
 
-					Card estateCard = Card.getCard(CardName.Estate);
-					view.vboxEstateCards.getChildren().add(0, resizeImage(estateCard.getImage()));
+						// Adds Victory cards
+						Card duchyCard = Card.getCard(CardName.Duchy);
+						view.vboxDuchyCards.getChildren().add(0, resizeImage(duchyCard.getImage()));
 
-					Card provinceCard = Card.getCard(CardName.Province);
-					view.vboxProvinceCards.getChildren().add(0, resizeImage(provinceCard.getImage()));
+						Card estateCard = Card.getCard(CardName.Estate);
+						view.vboxEstateCards.getChildren().add(0, resizeImage(estateCard.getImage()));
 
-					// Adds deck flipside card
-					Card flipsideCard = Card.getCard(CardName.Flipside);
-					view.stackpDeck.getChildren().add(resizeImage(flipsideCard.getImage()));
+						Card provinceCard = Card.getCard(CardName.Province);
+						view.vboxProvinceCards.getChildren().add(0, resizeImage(provinceCard.getImage()));
 
-					// Adds hand cards
-					for(Card card : model.yourNewHandCards){
-						view.hboxHandCards.getChildren().add(resizeImage(card.getImage()));
-					}
+						// Adds deck flipside card
+						Card flipsideCard = Card.getCard(CardName.Flipside);
+						view.stackpDeck.getChildren().add(resizeImage(flipsideCard.getImage()));
 
-					// Adds event handlers to the hand cards
-					for (Node child : view.hboxHandCards.getChildren()) {
-						ImageView img = (ImageView) child;
-						setInitialHandCardsEvents(img);
-					}
+						// Adds hand cards
+						for(Card card : model.yourNewHandCards){
+							view.hboxHandCards.getChildren().add(resizeImage(card.getImage()));
+						}
 
-					// Adds event handlers to the action cards
-					setInitialActionCardsEvents((ImageView) view.vboxCellarCards.getChildren().get(0), CardName.Cellar);
-					setInitialActionCardsEvents((ImageView) view.vboxMarketCards.getChildren().get(0), CardName.Market);
-					setInitialActionCardsEvents((ImageView) view.vboxRemodelCards.getChildren().get(0), CardName.Remodel);
-					setInitialActionCardsEvents((ImageView) view.vboxSmithyCards.getChildren().get(0), CardName.Smithy);
-					setInitialActionCardsEvents((ImageView) view.vboxWoodcutterCards.getChildren().get(0), CardName.Woodcutter);
-					setInitialActionCardsEvents((ImageView) view.vboxWorkshopCards.getChildren().get(0), CardName.Workshop);
-					setInitialActionCardsEvents((ImageView) view.vboxMineCards.getChildren().get(0), CardName.Mine);
-					setInitialActionCardsEvents((ImageView) view.vboxVillageCards.getChildren().get(0), CardName.Village);
+						// Adds event handlers to the hand cards
+						for (Node child : view.hboxHandCards.getChildren()) {
+							ImageView img = (ImageView) child;
+							setInitialHandCardsEvents(img);
+						}
 
-					// Adds event handlers to the treasure cards
-					setInitialActionCardsEvents((ImageView) view.vboxGoldCards.getChildren().get(0), CardName.Gold);
-					setInitialActionCardsEvents((ImageView) view.vboxSilverCards.getChildren().get(0), CardName.Silver);
-					setInitialActionCardsEvents((ImageView) view.vboxCopperCards.getChildren().get(0), CardName.Copper);
+						// Adds event handlers to the action cards
+						setInitialActionCardsEvents((ImageView) view.vboxCellarCards.getChildren().get(0), CardName.Cellar);
+						setInitialActionCardsEvents((ImageView) view.vboxMarketCards.getChildren().get(0), CardName.Market);
+						setInitialActionCardsEvents((ImageView) view.vboxRemodelCards.getChildren().get(0), CardName.Remodel);
+						setInitialActionCardsEvents((ImageView) view.vboxSmithyCards.getChildren().get(0), CardName.Smithy);
+						setInitialActionCardsEvents((ImageView) view.vboxWoodcutterCards.getChildren().get(0), CardName.Woodcutter);
+						setInitialActionCardsEvents((ImageView) view.vboxWorkshopCards.getChildren().get(0), CardName.Workshop);
+						setInitialActionCardsEvents((ImageView) view.vboxMineCards.getChildren().get(0), CardName.Mine);
+						setInitialActionCardsEvents((ImageView) view.vboxVillageCards.getChildren().get(0), CardName.Village);
 
-					// Adds event handlers to the victory cards
-					setInitialActionCardsEvents((ImageView) view.vboxDuchyCards.getChildren().get(0), CardName.Duchy);
-					setInitialActionCardsEvents((ImageView) view.vboxEstateCards.getChildren().get(0), CardName.Estate);
-					setInitialActionCardsEvents((ImageView) view.vboxProvinceCards.getChildren().get(0), CardName.Province);
+						// Adds event handlers to the treasure cards
+						setInitialActionCardsEvents((ImageView) view.vboxGoldCards.getChildren().get(0), CardName.Gold);
+						setInitialActionCardsEvents((ImageView) view.vboxSilverCards.getChildren().get(0), CardName.Silver);
+						setInitialActionCardsEvents((ImageView) view.vboxCopperCards.getChildren().get(0), CardName.Copper);
+
+						// Adds event handlers to the victory cards
+						setInitialActionCardsEvents((ImageView) view.vboxDuchyCards.getChildren().get(0), CardName.Duchy);
+						setInitialActionCardsEvents((ImageView) view.vboxEstateCards.getChildren().get(0), CardName.Estate);
+						setInitialActionCardsEvents((ImageView) view.vboxProvinceCards.getChildren().get(0), CardName.Province);
+
+					});
 
 				} else if (msgIn instanceof PlayerSuccess_Message) {
 					PlayerSuccess_Message psmsg = (PlayerSuccess_Message) msgIn;

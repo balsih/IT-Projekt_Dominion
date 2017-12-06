@@ -47,7 +47,7 @@ import javafx.scene.media.MediaPlayer;
  */
 public class GameApp_Model extends Model {
 
-	private final String NO_CONNECTION = "NoConnection";
+	private final String NO_CONNECTION = "#NoConnection#";
 	private final String TRANSLATE_REGEX = "#[\\w\\s]*#";
 
 	private ServiceLocator sl = ServiceLocator.getServiceLocator();
@@ -110,7 +110,7 @@ public class GameApp_Model extends Model {
 		super();
 		this.main = main;
 
-		this.startMediaPlayer("Medieval_Camelot.mp3"); // start sound 
+//		this.startMediaPlayer("Medieval_Camelot.mp3"); // start sound 
 	}
 
 	/**
@@ -233,7 +233,9 @@ public class GameApp_Model extends Model {
 		int tmpIndex = 0;
 		String output = "";
 		String[] splittedInput = input.split(this.TRANSLATE_REGEX);
-		String lastPart = splittedInput[splittedInput.length-1];
+		String lastPart = "";
+//		if(!m.hitEnd())
+//			lastPart = splittedInput[splittedInput.length-1];
 		while(m.find()){
 			int startIndex = m.start();
 			int endIndex = m.end();

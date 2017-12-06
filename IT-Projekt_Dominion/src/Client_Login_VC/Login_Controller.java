@@ -7,7 +7,7 @@ import MainClasses.Dominion_Main;
 import javafx.application.Platform;
 
 /**
- * @author Lukas
+ * @author Rene
  * @version 1.0
  * @created 31-Okt-2017 17:04:51
  */
@@ -25,6 +25,14 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 	public Login_Controller(Dominion_Main main, GameApp_Model model, Login_View view){
 		super(model, view);
 		
+		// disables elements before user presses connectBtn after filled in IP and port
+		// -> ev. über change listener steuern... 
+		view.nameLbl.setDisable(true);
+		view.nameText.setDisable(true);
+		view.passwordLbl.setDisable(true);
+		view.passwordText.setDisable(true);
+		view.createNewPlayerBtn.setDisable(true);
+		view.quitBtn.setDisable(true);
 		
 		// set on action and handling for ipText
 		view.ipText.textProperty().addListener((change) -> {
@@ -36,7 +44,6 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 				} else {
 					view.connectBtn.setDisable(true);
 				}
-				// model.doSoSomethingWith setName;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -52,7 +59,6 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 				} else {
 					view.connectBtn.setDisable(true);
 				}
-				// model.doSoSomethingWith setName;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -64,6 +70,15 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 			try {
 				model.init(view.ipText.getText(), Integer.parseInt(view.portText.getText()));
 				//view.connectAlert.showAndWait(); -> keien Fehlermeldung vorgesehen
+				
+				// enables the elements again after connectBtn got clicked 
+				view.nameLbl.setDisable(false);
+				view.nameText.setDisable(false);
+				view.passwordLbl.setDisable(false);
+				view.passwordText.setDisable(false);
+				view.createNewPlayerBtn.setDisable(false);
+				view.quitBtn.setDisable(false);
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
