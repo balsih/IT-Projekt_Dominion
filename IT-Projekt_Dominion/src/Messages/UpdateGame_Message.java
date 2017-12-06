@@ -318,14 +318,14 @@ public class UpdateGame_Message extends Message {
 					this.integerElements.put(key, Integer.parseInt(element.getTextContent()));
 				} catch (Exception e) {}
 				try {
-					this.cardElements.put(key, TestMessages.getCard(CardName.parseName(element.getTextContent())));
+					this.cardElements.put(key, Card.getCard(CardName.parseName(element.getTextContent())));
 				} catch (Exception e) {}
 				try {
 					if (key == ELEMENT_NEW_HANDCARD) {
 						LinkedList<Card> newHandCards = new LinkedList<Card>();
 						for (int i = 0; i < tmpElements.getLength(); i++) {
 							Element cardElement = (Element) tmpElements.item(i);
-							newHandCards.add(TestMessages.getCard(CardName.parseName(cardElement.getTextContent())));
+							newHandCards.add(Card.getCard(CardName.parseName(cardElement.getTextContent())));
 						}
 						this.handCardListElements.put(key, newHandCards);
 					}

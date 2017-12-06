@@ -124,7 +124,7 @@ public class CreateGame_Message extends Message {
             NodeList deckElements = deckPile.getElementsByTagName(ELEMENT_DECKCARD);
             for(int i = deckElements.getLength() -1; i >= 0; i--){
             	Element deckCard = (Element) deckElements.item(i);
-            	this.deckPile.push(TestMessages.getCard(CardName.parseName(deckCard.getTextContent())));
+            	this.deckPile.push(Card.getCard(CardName.parseName(deckCard.getTextContent())));
             }
         }
         
@@ -147,7 +147,7 @@ public class CreateGame_Message extends Message {
         	NodeList handElements = handCards.getElementsByTagName(ELEMENT_HANDCARD);
         	for(int i = handElements.getLength() -1; i >= 0; i--){
         		Element handCard = (Element) handElements.item(i);
-        		this.handCards.add(TestMessages.getCard(CardName.parseName(handCard.getTextContent())));
+        		this.handCards.add(Card.getCard(CardName.parseName(handCard.getTextContent())));
         	}
         }
         
