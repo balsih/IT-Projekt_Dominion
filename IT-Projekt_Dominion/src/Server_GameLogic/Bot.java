@@ -33,7 +33,7 @@ public class Bot extends Player implements Runnable {
 	private HashMap<CardName, Integer> prioListForRemodel = new HashMap<CardName, Integer>();
 	private HashMap<CardName, Integer> maxCardsOfAType = new HashMap<CardName, Integer>();
 	private ArrayList<CardName> cardNamesOfActionCards = new ArrayList<CardName>();
-	private ArrayList<String> cardNamesOfActionHandCards;
+	private ArrayList<CardName> cardNamesOfActionHandCards = new ArrayList<CardName>();
 	private static final HashMap<CardName, Integer> PRIOLIST_TOPDISCARDPILE_CARD = new HashMap<CardName, Integer>();
 	private static final ArrayList<String> NAMES = new ArrayList<String>();
 	private static final double SHARE_OF_TREASURE_CARDS = 0.35;
@@ -50,6 +50,7 @@ public class Bot extends Player implements Runnable {
 
 	public Bot(String name) {
 		super(name);
+		System.out.println(this.playerName + " Bot erstellt");
 
 		maxCardsOfAType.put(CardName.Market, 3);
 		maxCardsOfAType.put(CardName.Smithy, 2);
@@ -89,12 +90,14 @@ public class Bot extends Player implements Runnable {
 	 * Executes the Bot with all its stages play and buy.
 	 */
 	public void run() {
+		System.out.println(this.playerName + " started run-Methode");
 		makeBreak();
 		while (actions > 0 && actualPhase == Phase.Action) {
 			estimatePlayPriorityOfActionCards();
 			playActionCards();
 		}
 
+		System.out.println(this.playerName + " playPhase abgeschlossen");
 		if (buys > 0 && actualPhase == Phase.Buy) {
 			playTreasureCards();
 			do {
@@ -453,34 +456,6 @@ public class Bot extends Player implements Runnable {
 	 */
 	// wenn gekauft, prio herabsetzen --> Methode dringend umbauen!
 	private void estimateBuyPriorityOfActionCards() {
-		buyPrioOneCard.put(CardName.Cellar, 58);
-		buyPrioOneCard.put(CardName.Duchy, 50);
-		buyPrioOneCard.put(CardName.Estate, 10);
-		buyPrioOneCard.put(CardName.Gold, 70);
-		buyPrioOneCard.put(CardName.Market, 68);
-		buyPrioOneCard.put(CardName.Mine, 62);
-		buyPrioOneCard.put(CardName.Province, 90);
-		buyPrioOneCard.put(CardName.Remodel, 60);
-		buyPrioOneCard.put(CardName.Silver, 40);
-		buyPrioOneCard.put(CardName.Smithy, 64);
-		buyPrioOneCard.put(CardName.Village, 66);
-		buyPrioOneCard.put(CardName.Woodcutter, 20);
-		buyPrioOneCard.put(CardName.Workshop, 58);
-
-		buyPrioMoreCards.put(CardName.Cellar, 10);
-		buyPrioMoreCards.put(CardName.Duchy, 40);
-		buyPrioMoreCards.put(CardName.Estate, 10);
-		buyPrioMoreCards.put(CardName.Gold, 50);
-		buyPrioMoreCards.put(CardName.Market, 76);
-		buyPrioMoreCards.put(CardName.Mine, 72);
-		buyPrioMoreCards.put(CardName.Province, 60);
-		buyPrioMoreCards.put(CardName.Remodel, 56);
-		buyPrioMoreCards.put(CardName.Silver, 70);
-		buyPrioMoreCards.put(CardName.Smithy, 74);
-		buyPrioMoreCards.put(CardName.Village, 78);
-		buyPrioMoreCards.put(CardName.Woodcutter, 20);
-		buyPrioMoreCards.put(CardName.Workshop, 58);
-
 		for (int i = 0; i < cardNamesOfActionCards.size(); i++) {
 			if (getNumberOfOwnedCards(cardNamesOfActionCards.get(i)) == maxCardsOfAType
 					.get(cardNamesOfActionCards.get(i))) {
@@ -515,7 +490,7 @@ public class Bot extends Player implements Runnable {
 		prioListForPlaying.put(CardName.Workshop, 2);
 		int numOfVictoryCards = 0;
 		int numOfPossibleMine = 0;
-		cardNamesOfActionHandCards = null;
+		//cardNamesOfActionHandCards = null;
 
 		// calculate types of handCards
 		for (Card card : handCards) {
@@ -524,23 +499,23 @@ public class Bot extends Player implements Runnable {
 			if (card.getCardName().equals(CardName.Copper) || card.getCardName().equals(CardName.Silver))
 				numOfPossibleMine++;
 			if (card.getType().equals(CardType.Action))
-				cardNamesOfActionHandCards.add(card.getCardName().toString());
+				cardNamesOfActionHandCards.add(card.getCardName());
 		}
 
 		// set priority for every owned card
-		if (numOfVictoryCards >= 1 && cardNamesOfActionHandCards.contains(CardName.Cellar.toString())) {
+		if (numOfVictoryCards >= 1 && cardNamesOfActionHandCards.contains(CardName.Cellar)) {
 			prioListForPlaying.put(CardName.Cellar, 6);
 			if (actions >= 2)
 				prioListForPlaying.put(CardName.Smithy, 7);
 		} else
 			prioListForPlaying.remove(CardName.Cellar);
 
-		if (numOfPossibleMine >= 1 && cardNamesOfActionHandCards.contains(CardName.Mine.toString()))
+		if (numOfPossibleMine >= 1 && cardNamesOfActionHandCards.contains(CardName.Mine))
 			prioListForPlaying.put(CardName.Mine, 5);
 		else
 			prioListForPlaying.remove(CardName.Mine);
 
-		if (gameStage >= 75 && cardNamesOfActionHandCards.contains(CardName.Gold.toString()))
+		if (gameStage >= 75 && cardNamesOfActionHandCards.contains(CardName.Gold))
 			prioListForPlaying.put(CardName.Woodcutter, 5);
 
 		for (int i = 0; i < handCards.size(); i++)

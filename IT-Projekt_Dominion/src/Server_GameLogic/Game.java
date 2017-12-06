@@ -70,7 +70,7 @@ public class Game {
 	/**
 	 * Constructor for the game
 	 */
-	private Game() {
+	Game() {
 		// Build treasure stacks for a new game
 		this.buildTreasureCardStacks();
 		this.buildVictoryCardStacks();
