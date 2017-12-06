@@ -28,7 +28,7 @@ public class Gallery {
 	public ImageView getImage(CardName cardName){
 		Translator t = ServiceLocator.getServiceLocator().getTranslator();
 		String localeString = t.getCurrentLocale().getLanguage();
-		String path = this.getClass().getResource("/Client_Services/ImageGallery/" + cardName.toString() + "_Card" + "_" + localeString + ".jpg").toExternalForm();
+		String path = this.getClass().getResource("/Client_Services/ImageGallery/" + cardName.toString() + "_Card_" + localeString + ".jpg").toExternalForm();
 		Image image = new Image(path);
 		return new ImageView(image);
 	}
