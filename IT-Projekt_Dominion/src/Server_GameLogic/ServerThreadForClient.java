@@ -114,6 +114,8 @@ public class ServerThreadForClient implements Runnable {
 		if(this.clientName == null)
 			this.clientName = msgIn.getClient();
 		
+		this.logger.info("Received from "+this.clientName+": "+msgIn.getType().toString());
+		
 		switch (MessageType.getType(msgIn)) {
 		case AskForChanges:
 			msgOut = this.processAskForChanges(msgIn);
