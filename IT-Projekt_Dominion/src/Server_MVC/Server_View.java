@@ -22,8 +22,6 @@ import javafx.stage.Stage;
  */
 public class Server_View extends View<Server_Model>{
 
-	private TextArea txtLog;
-
 	protected Label lblPort;
 	protected TextField txtPort;
 	protected Button btnStart;
@@ -35,7 +33,6 @@ public class Server_View extends View<Server_Model>{
 	
 		super(stage, model);
 		this.stage = stage;
-		this.txtLog = txtLog;
 		
 		this.lblPort = new Label("Port");
 		this.lblPort.getStyleClass().add("label");
@@ -83,19 +80,6 @@ public class Server_View extends View<Server_Model>{
 	protected Scene create_GUI() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-	
-	/**updates the txtLog with connected clients.
-	 *Adapted from: 
-	 * Prof. Bradley Richards
-	 * */
-	protected void updateClients(){
-		StringBuffer sb = new StringBuffer();
-		for (Client c : model.clients){
-			sb.append(c.toString());
-			sb.append("\n");
-		}
-		txtLog.setText(sb.toString());
 	}
 	
 }//end Server_View

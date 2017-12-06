@@ -7,8 +7,6 @@ import java.util.logging.Logger;
 
 import Abstract_MVC.Model;
 import Server_GameLogic.ServerThreadForClient;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
 /**
  * @author Bodo
@@ -19,9 +17,6 @@ public class Server_Model extends Model {
 
 	private ServerSocket listener;
 	private final Logger logger = Logger.getLogger("");
-	
-	//Clients?
-	protected ObservableList<Client> clients = FXCollections.observableArrayList();
 	
 	String info;
 	private volatile boolean stop = false;
@@ -66,11 +61,7 @@ public class Server_Model extends Model {
 		}
 	}
 	
-	public void stopServer(){
-		//Clients?
-		this.info = "Stop all clients";
-		this.logger.info(info);
-		
+	public void stopServer(){		
 		this.info = "Stop Server";
 		this.logger.info(info);
 		this.stop = true;
