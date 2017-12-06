@@ -9,7 +9,10 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.stage.Modality;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -28,10 +31,14 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.input.ZoomEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
 /**
@@ -55,7 +62,9 @@ public class GUI_Test extends Application {
 		brighter.setBrightness(+0.5);
 
 		image.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+
 			// do stuff here
+
 		});
 
 		image.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
@@ -63,8 +72,8 @@ public class GUI_Test extends Application {
 		});
 
 		image.addEventHandler(ZoomEvent.ZOOM, event -> {
-			image.setFitWidth(imageWidth*3);
-			image.setFitHeight(imageHeight*3);
+			image.setFitWidth(imageWidth*5);
+			image.setFitHeight(imageHeight*5);
 			image.setEffect(initial);
 		});
 
@@ -94,8 +103,8 @@ public class GUI_Test extends Application {
 		});
 
 		image.addEventHandler(ZoomEvent.ZOOM, event -> { // MouseEvent.MOUSE_ENTERED
-			image.setFitWidth(imageWidth*3);
-			image.setFitHeight(imageHeight*3);
+			image.setFitWidth(imageWidth*5);
+			image.setFitHeight(imageHeight*5);
 			image.setEffect(initial);
 		});
 
@@ -458,7 +467,21 @@ public class GUI_Test extends Application {
 		vboxMarketCards.getChildren().add(0, img8);
 		vboxRemodelCards.getChildren().add(0, img9);
 		vboxVillageCards.getChildren().add(0, img10);
-		
+
+		img10.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> { 
+			int imageHeight = (int) img10.getFitHeight()*5;
+			int imageWidth = (int) img10.getFitWidth()*5;
+
+			img10.setFitWidth(200);
+			img10.setFitHeight(200);
+
+			stage.setTitle("Popup Example");
+			final Popup popup = new Popup();
+			popup.getContent().add(img10);
+
+			popup.show(stage);
+		});
+
 		// Sets action cards on action
 		setInitialActionCardsEvents((ImageView) vboxCellarCards.getChildren().get(0));
 		setInitialActionCardsEvents((ImageView) vboxMarketCards.getChildren().get(0));

@@ -391,10 +391,6 @@ public class GameApp_View extends View<GameApp_Model> {
 
 		// Background and gaps of the root
 		root.getStyleClass().add("rootFormat");
-
-		// Prevents resizing below initial size
-		stage.setMinWidth(stage.getWidth());
-		stage.setMinHeight(stage.getHeight());
 		
 		// Scene and stage
 		Scene scene = new Scene(root, 1000, 600);
@@ -402,6 +398,10 @@ public class GameApp_View extends View<GameApp_Model> {
 		stage.setScene(scene);
 		stage.setTitle("Dominion");
 		stage.show();
+		
+		// Prevents resizing below initial size
+		stage.setMinWidth(stage.getWidth());
+		stage.setMinHeight(stage.getHeight());
 
 		return scene;
 	}
