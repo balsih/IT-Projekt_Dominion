@@ -541,10 +541,6 @@ public class Player {
 		return game;
 	}
 
-	/**
-	 * 
-	 * @param gameThread
-	 */
 	public void setGame(Game game) {
 		this.game = game;
 	}
