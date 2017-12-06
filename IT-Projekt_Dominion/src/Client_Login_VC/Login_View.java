@@ -15,6 +15,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
@@ -47,7 +48,7 @@ public class Login_View extends View<GameApp_Model> {
 	protected TextField nameText;
 	
 	protected Label passwordLbl;
-	protected TextField passwordText;
+	protected PasswordField passwordText;
 	protected Button loginBtn;
 	
 	protected Button createNewPlayerBtn;
@@ -133,7 +134,7 @@ public class Login_View extends View<GameApp_Model> {
 		
 		passwordLbl = new Label(t.getString("login.passwordLbl"));
 		passwordLbl.setId("passwordLbl");
-		passwordText = new TextField();
+		passwordText = new PasswordField();
 		passwordText.setId("passwordText");
 		passwordText.setPrefSize(220.0, 30.0);
 		loginBtn = new Button(t.getString("login.loginBtn"));
