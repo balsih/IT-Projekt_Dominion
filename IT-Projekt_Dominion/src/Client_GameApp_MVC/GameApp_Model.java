@@ -234,8 +234,8 @@ public class GameApp_Model extends Model {
 		String output = "";
 		String[] splittedInput = input.split(this.TRANSLATE_REGEX);
 		String lastPart = "";
-		if(!m.hitEnd())
-			lastPart = splittedInput[splittedInput.length-1];
+//		if(!m.hitEnd())
+//			lastPart = splittedInput[splittedInput.length-1];
 		while(m.find()){
 			int startIndex = m.start();
 			int endIndex = m.end();
