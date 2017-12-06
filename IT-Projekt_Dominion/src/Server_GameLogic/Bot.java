@@ -136,11 +136,15 @@ public class Bot extends Player implements Runnable {
 				if (tempPriority < prioListForPlaying.get(card.getCardName())) {
 					tempPriority = prioListForPlaying.get(card.getCardName());
 					cardToPlay = card;
+					System.out.println(this.playerName + " cardToPlay " + cardToPlay.toString());
 				}
 			}
 		}
 		//makeBreak();
-		System.out.println(this.playerName + " spielt " +cardToPlay.toString());
+	//	System.out.println(this.playerName + " spielt " +cardToPlay.toString());
+//		if(cardToPlay == null)
+//			skipPhase();
+//		else {
 		Message playMessage = play(cardToPlay);
 		if (playMessage instanceof UpdateGame_Message) {
 			UpdateGame_Message ugmsg = (UpdateGame_Message) playMessage;
@@ -262,6 +266,7 @@ public class Bot extends Player implements Runnable {
 		// if nothing applies playMessage must be a PlayerSuccess_Message --> do nothing
 		cardToPlay = null;
 	}
+//	}
 
 	/**
 	 * Calculates which card has to be bought and checks if a second buy would make

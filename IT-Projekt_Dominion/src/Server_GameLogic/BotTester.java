@@ -3,10 +3,9 @@ package Server_GameLogic;
 public class BotTester {
 
 	public static void main(String[] args) {
-		
-		Game existingGame = new Game();
-		existingGame = Game.getGame(GameMode.Simulation, null);
-		existingGame.startGame();
+
+		Game game = Game.getGame(GameMode.Simulation, null);
+		game.startGame();
 		
 //		Bot b = new Bot(Bot.getNameOfBot());
 //		String test = Bot.getNameOfBot();
