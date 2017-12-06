@@ -91,7 +91,7 @@ public class Bot extends Player implements Runnable {
 	 */
 	public void run() {
 		System.out.println(this.playerName + " started run-Methode");
-		makeBreak();
+		//makeBreak();
 		while (actions > 0 && actualPhase == Phase.Action) {
 			estimatePlayPriorityOfActionCards();
 			playActionCards();
@@ -105,10 +105,12 @@ public class Bot extends Player implements Runnable {
 				estimateBuyPriorityOfTreasureCards();
 				estimateBuyPriorityOfActionCards();
 				buy();
+				System.out.println(this.playerName + " buyPhase abgeschlossen");
 			} while (buys > 0 && buyOneMore == true && actualPhase == Phase.Buy);
 		}
+		System.out.println(this.playerName + " Runde abgeschlossen");
 	}
-
+	
 	/**
 	 * Plays all the available TreasureCards which are in the hands of the bot,
 	 * before buying cards.
@@ -118,7 +120,7 @@ public class Bot extends Player implements Runnable {
 			if (card.getType().equals(CardType.Treasure)) {
 				cardToPlay = card;
 				play(cardToPlay);
-				makeBreak();
+				//makeBreak();
 			}
 		}
 		cardToPlay = null;
@@ -134,10 +136,15 @@ public class Bot extends Player implements Runnable {
 				if (tempPriority < prioListForPlaying.get(card.getCardName())) {
 					tempPriority = prioListForPlaying.get(card.getCardName());
 					cardToPlay = card;
+					System.out.println(this.playerName + " cardToPlay " + cardToPlay.toString());
 				}
 			}
 		}
-		makeBreak();
+		//makeBreak();
+	//	System.out.println(this.playerName + " spielt " +cardToPlay.toString());
+//		if(cardToPlay == null)
+//			skipPhase();
+//		else {
 		Message playMessage = play(cardToPlay);
 		if (playMessage instanceof UpdateGame_Message) {
 			UpdateGame_Message ugmsg = (UpdateGame_Message) playMessage;
@@ -259,6 +266,7 @@ public class Bot extends Player implements Runnable {
 		// if nothing applies playMessage must be a PlayerSuccess_Message --> do nothing
 		cardToPlay = null;
 	}
+//	}
 
 	/**
 	 * Calculates which card has to be bought and checks if a second buy would make
