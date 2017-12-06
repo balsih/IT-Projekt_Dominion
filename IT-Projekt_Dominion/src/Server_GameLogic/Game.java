@@ -32,7 +32,7 @@ import Messages.GameSuccess;
  * 
  */
 public class Game {
-
+	// the card stacks of a game
 	private Stack<Copper_Card> copperPile;
 	private Stack<Cellar_Card> cellarPile;
 	private Stack<Duchy_Card> duchyPile;
@@ -49,6 +49,7 @@ public class Game {
 	private Stack<Workshop_Card> workshopPile;
 	private HashMap<CardName, Integer> buyCards;
 
+	// the number of cards in a stack of a card type
 	private final int NUM_OF_TREASURECARDS = 30;
 	private final int NUM_OF_VICTORYCARDS = 8;
 	private final int NUM_OF_ACTIONCARDS = 10;
@@ -56,6 +57,7 @@ public class Game {
 	private static int gameCounter = 0;
 	private boolean gameEnded;
 
+	// the players of a game
 	private Player player1;
 	private Player player2;
 	private Player currentPlayer;
@@ -149,6 +151,7 @@ public class Game {
 	 * Finally the the starter of the game will be determined.
 	 */
 	public void startGame() {
+		// fills the starter decks of the two players
 		for (int i = 0; i < 10; i++) {
 			if (i < 7) {
 				this.player1.deckPile.push(new Copper_Card());
@@ -160,6 +163,7 @@ public class Game {
 			}
 		}
 
+		// Shuffle the stacks and lets the players draw their first hand
 		Collections.shuffle(this.player1.deckPile);
 		Collections.shuffle(this.player2.deckPile);
 		this.player1.draw(player1.NUM_OF_HANDCARDS);
@@ -168,6 +172,7 @@ public class Game {
 		this.currentPlayer = this.player1;
 		this.currentPlayer.startMove();
 		
+		// starts the first bot in a simulation
 		if(this.gameMode == GameMode.Simulation)
 			new Thread(bot).start();
 	}
@@ -251,8 +256,10 @@ public class Game {
 	public boolean checkGameEnding() {
 		int counter = 0;
 
+		/* iterates through all stacks and the number of remaining cards
+		 * to count how much stacks are empty.
+		 */
 		Iterator<Integer> valueIterator = this.getBuyCards().values().iterator();
-
 		while (valueIterator.hasNext()) {
 			if (valueIterator.next() == 0)
 				counter++;
@@ -274,8 +281,10 @@ public class Game {
 	 * @return Game - an existing or a new game depending on gameMode and if a player is waiting for another.
 	 */
 	public static Game getGame(GameMode gameMode, Player player) {
+		/* checks in multiplayer mode if already a game of a waiting player exists,
+		 * and if necessary creates one, sets the two players and starts the game.
+		 */
 		if (gameMode == GameMode.Multiplayer) {
-
 			if (gameCounter % 2 == 0) {
 				Game game = new Game();
 
@@ -301,6 +310,8 @@ public class Game {
 
 			existingGame.gameMode = GameMode.Multiplayer;
 			return existingGame;
+			
+			// creates and starts in singleplayer mode a game with a player and a bot
 		} else if (gameMode == GameMode.Singleplayer){
 			Game game = new Game();
 			game.bot = new Bot(Bot.getNameOfBot());
@@ -315,6 +326,8 @@ public class Game {
 					.addWaitingMessages(game.getPlayer1().getServerThreadForClient().getCG_Message(game));
 			game.logger.info(game.player1.getPlayerName() + " started a singleplayer game");
 			return game;
+			
+			// creates in simulation mode a game between two bots, but doesn't start game directly
 		} else{
 			Game game = new Game();
 			game.bot = new Bot(Bot.getNameOfBot());

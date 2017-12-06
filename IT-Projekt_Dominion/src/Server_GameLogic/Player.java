@@ -27,7 +27,7 @@ import Messages.UpdateGame_Message;
  * 
  */
 public class Player {
-
+	// The playing cards of the player
 	protected LinkedList<Card> handCards;
 	protected LinkedList<Card> playedCards;
 	protected Stack<Card> deckPile;
@@ -36,6 +36,7 @@ public class Player {
 
 	protected final int NUM_OF_HANDCARDS = 5;
 
+	// The player values
 	protected String playerName;
 	protected int actions;
 	protected int buys;
@@ -109,6 +110,7 @@ public class Player {
 		
 		int index = this.handCards.indexOf(selectedCard);
 		
+		// checks if an card which requires some interaction is played and if the player is allowed to play them.
 		if(selectedCard.getCardName().equals(CardName.Mine) && 
 				(!(this.containsCard(this.handCards, CardName.Copper) || (this.containsCard(this.handCards, CardName.Silver)))))
 			return fmsg;
@@ -117,7 +119,7 @@ public class Player {
 		else if (selectedCard.getCardName().equals(CardName.Cellar) && this.handCards.size() == 1)
 			return fmsg;
 
-		// Executes the clicked Card, if the player has enough actions
+		// plays the selected action card which requires available action-points
 		if (this.getActions() > 0 && this.actualPhase == Phase.Action && this.equals(game.getCurrentPlayer())) {
 
 			ugmsg = selectedCard.executeCard(this);
@@ -126,11 +128,13 @@ public class Player {
 			ugmsg.setActions(this.actions);
 			this.sendToOpponent(this, ugmsg);
 
+			// if the action phase is terminated, skip to next phase
 			if ((this.actions == 0 || !this.containsCardType(this.handCards, CardType.Action)) && ugmsg.getInteractionType() == null)
 				ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.skipPhase(), ugmsg);
 			
 			return ugmsg;
 
+			// plays the selected treasure card which not requires any available action-points
 		} else if (this.actualPhase == Phase.Buy && this.equals(game.getCurrentPlayer())) {
 			ugmsg = selectedCard.executeCard(this);
 			playedCards.add(this.handCards.remove(index));
@@ -155,7 +159,7 @@ public class Player {
 		Failure_Message fmsg = new Failure_Message();
 		Card buyedCard = null;
 
-		//TestMessages just for testing (Can't find the image in Gallery because of the property)
+		// if the player is allowed to buy a card, he picks the card
 		if (Card.getCard(cardName).getCost() <= this.getCoins() && this.getBuys() > 0 && this.actualPhase == Phase.Buy
 				&& this.equals(game.getCurrentPlayer())) {
 
@@ -171,6 +175,7 @@ public class Player {
 				return fmsg;
 			}
 
+			// checks if the game is ended after buying a card and who wons it
 			if (game.checkGameEnding()) {
 				this.actualPhase = Phase.Ending;
 				game.checkWinner();
@@ -179,11 +184,7 @@ public class Player {
 				return this.getCurrentPlayerSuccessMsg();
 			}
 
-			/**
-			 * checks if the buy of the current player is valid, then actualize
-			 * the updateGame_Message. else the method returns a
-			 * failure_Message.
-			 */
+			// sets all changed attributes of the UpdateGame_Message
 			ugmsg.setLog(this.playerName + "#bought# #" + buyedCard.getCardName().toString() + "# #card#");
 			ugmsg.setCoins(this.coins);
 			ugmsg.setBuys(this.buys);
@@ -192,6 +193,7 @@ public class Player {
 			ugmsg.setBuyedCard(buyedCard);
 			this.sendToOpponent(this, ugmsg);
 
+			// if the buy phase is terminated, skip
 			if (this.buys == 0) 
 				ugmsg = UpdateGame_Message.merge((UpdateGame_Message) skipPhase(), ugmsg);
 			
@@ -209,11 +211,11 @@ public class Player {
 	 * @param cardName - the name of the picked card.
 	 * @return pickedCard - the picked card.
 	 */
-	public Card pick(CardName cardName) {
+	public Card pick(CardName selectedCard) {
 		Card pickedCard = null;
 
-		// wenn gekauft, noch buys zur verfuegung
-		switch (cardName) {
+		// switches through all cards and picks the selected card
+		switch (selectedCard) {
 		case Copper:
 			pickedCard = this.game.getCopperPile().pop();
 			break;
@@ -310,6 +312,7 @@ public class Player {
 			if(ugmsg.getDiscardPileTopCard() != this.topCard)
 					ugmsg.setDiscardPileTopCard(this.topCard);
 
+			// if the cleanUp phase is terminated, skip
 			UpdateGame_Message.merge((UpdateGame_Message) this.skipPhase(), ugmsg);
 			this.sendToOpponent(this, ugmsg);
 		}
@@ -348,6 +351,7 @@ public class Player {
 			}
 		}
 
+		// sets all changed attributes in the UpdateGame_Message
 		ugmsg.setDeckPileCardNumber(this.deckPile.size());
 		ugmsg.setDiscardPileCardNumber(this.discardPile.size());
 		ugmsg.setNewHandCards(newHandCards);
@@ -455,6 +459,15 @@ public class Player {
 		return false;
 	}
 	
+	/**
+	 * @author Bodo Gruetter
+	 * 
+	 * Checks if a list contains a specific card.
+	 * 
+	 * @param list - the list which should be checked.
+	 * @pram cardName - the name of the card that should be in the list.
+	 * @return Boolean - depending if list contains the card or not.
+	 */
 	public boolean containsCard(LinkedList<Card> list, CardName cardName){
 		Iterator<Card> iter = list.iterator();
 		while (iter.hasNext()) {
