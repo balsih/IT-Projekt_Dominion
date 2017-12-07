@@ -65,6 +65,7 @@ public class GameApp_Model extends Model {
 	public String clientName = null;
 	public String opponent = null;
 	public String currentPlayer = null;
+	public boolean failure = true;
 
 	public LinkedList<Card> yourNewHandCards = null;
 	public LinkedList<Card> yourHandCards = new LinkedList<Card>();
@@ -286,6 +287,7 @@ public class GameApp_Model extends Model {
 	 */
 	public String sendLogin(String clientName, String password){
 		String result = NO_CONNECTION;
+		this.failure = true;
 		this.clientName = clientName;
 		Login_Message lmsg = new Login_Message();
 		lmsg.setClient(clientName);//set the clientName and encrypted password to XML
@@ -298,7 +300,8 @@ public class GameApp_Model extends Model {
 
 		Message msgIn = this.processMessage(lmsg);
 		if(msgIn instanceof Commit_Message){
-			this.main.startMainMenu();//login succeeded
+			this.failure = false;//login succeeded
+			this.main.startMainMenu();
 
 		}else if(msgIn instanceof Failure_Message){
 			Failure_Message fmsg = (Failure_Message) msgIn;//login failed, clientName and/or password wrong
@@ -318,6 +321,7 @@ public class GameApp_Model extends Model {
 	 */
 	public String sendCreateNewPlayer(String clientName, String password){
 		String result = NO_CONNECTION;
+		this.failure = true;
 		this.clientName = clientName;
 		CreateNewPlayer_Message cnpmsg = new CreateNewPlayer_Message();
 		cnpmsg.setClient(this.clientName);//set the clientName and encrypted password to XML
@@ -329,7 +333,8 @@ public class GameApp_Model extends Model {
 
 		Message msgIn = this.processMessage(cnpmsg);
 		if(msgIn instanceof Commit_Message){
-			this.main.startMainMenu();//createNewPlayer succeeded
+			this.failure = false;//createNewPlayer succeeded
+			this.main.startMainMenu();
 
 		}else if(msgIn instanceof Failure_Message){
 			Failure_Message fmsg = (Failure_Message) msgIn;//createNewPlayer failed
@@ -365,6 +370,7 @@ public class GameApp_Model extends Model {
 	 */
 	public String sendGameMode(GameMode mode){
 		String result = NO_CONNECTION;
+		this.failure = true;
 		GameMode_Message gmmsg = new GameMode_Message();
 		gmmsg.setClient(this.clientName);//set the clientName and mode(SinglePlayer or MultiPlayer) to XML
 		gmmsg.setMode(mode);
@@ -372,6 +378,7 @@ public class GameApp_Model extends Model {
 
 		Message msgIn = this.processMessage(gmmsg);
 		if(msgIn instanceof Commit_Message){
+			this.failure = false;
 			this.main.startGameApp();
 		}
 		return this.translate(result);

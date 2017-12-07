@@ -57,8 +57,7 @@ public abstract class Card {
 	// Method gives a card back based on the cardName and the language
 	// and sets the corresponding image 
 	public static Card getCard(CardName cardName) {
-		Translator t = ServiceLocator.getServiceLocator().getTranslator();
-		//String name = cardName.toString();
+
 		Card card = null;
 		switch (cardName) {
 		case Copper:
@@ -106,7 +105,12 @@ public abstract class Card {
 		case Flipside:
 			card = new Flipside_Card();
 		}
-		card.setImage(ServiceLocator.getServiceLocator().getGallery().getImage(cardName));
+		
+		//To catch the server-site using of this method
+		ServiceLocator sl = ServiceLocator.getServiceLocator();
+		if(sl.getGallery() != null)
+			card.setImage(sl.getGallery().getImage(cardName));
+		
 		return card;
 	}
 
