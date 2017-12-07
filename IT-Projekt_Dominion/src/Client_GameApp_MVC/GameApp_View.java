@@ -233,7 +233,8 @@ public class GameApp_View extends View<GameApp_Model> {
 
 		this.btnSendChatArea = new Button(t.getString("chat.btnSendChatArea")); // Send
 		scrlpChatArea.setContent(txtaChatArea);
-		txtaChatArea.setDisable(true);
+		scrlpChatArea.setMaxWidth(500);
+		txtaChatArea.setEditable(false);
 		this.hboxChatArea = new HBox(txtfChatArea, btnSendChatArea);
 		this.vboxChatArea = new VBox(lblChatArea, scrlpChatArea, hboxChatArea);
 
@@ -243,7 +244,8 @@ public class GameApp_View extends View<GameApp_Model> {
 		this.txtaLog = new TextArea();
 
 		scrlpLog.setContent(txtaLog);
-		txtaLog.setDisable(true);
+		scrlpLog.setMaxWidth(500);
+		txtaLog.setEditable(false);
 		this.vboxLog = new VBox(lblLog, scrlpLog);
 
 		// Creates discard area
