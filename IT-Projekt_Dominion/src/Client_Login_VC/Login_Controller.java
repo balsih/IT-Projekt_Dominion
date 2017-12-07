@@ -118,16 +118,20 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 			}
 		});
 		
+		
 		// set on action and handling for loginBtn
 		view.loginBtn.setOnAction((event) -> {
 			try {
-				view.loginAlert.setHeaderText(model.sendLogin(view.nameText.getText(), view.passwordText.getText()));
-				view.loginAlert.showAndWait(); // warning alert if login fails
-				//main.startMainMenu(); // manueller Start zum Testen
+				String message = model.sendLogin(view.nameText.getText(), view.passwordText.getText());
+				if (model.failure) {
+					view.loginAlert.setHeaderText(message);
+					view.loginAlert.showAndWait(); // warning alert if login fails
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		});
+		
 		
 		// set on action and handling for createNewPlayerBtn
 		view.createNewPlayerBtn.setOnAction((event) -> {

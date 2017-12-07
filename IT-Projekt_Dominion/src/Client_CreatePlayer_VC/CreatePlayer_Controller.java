@@ -48,6 +48,7 @@ public class CreatePlayer_Controller extends Controller<GameApp_Model, CreatePla
 			}
 		});
 		
+		
 		// set on action and handling for passwordText
 		view.passwordText.textProperty().addListener((change) -> {
 			try {
@@ -64,14 +65,16 @@ public class CreatePlayer_Controller extends Controller<GameApp_Model, CreatePla
 				e.printStackTrace();
 			}
 		});	
-
+		
 		
 		// set on action and handling for saveBtn
 		view.saveBtn.setOnAction((event) -> {
 			try {
-				view.saveAlert.setHeaderText(model.sendCreateNewPlayer(view.nameText.getText(), view.passwordText.getText()));
-				view.saveAlert.showAndWait(); // warning alert if save fails
-				
+				String message = model.sendCreateNewPlayer(view.nameText.getText(), view.passwordText.getText());
+				if (model.failure) {
+					view.saveAlert.setHeaderText(message);
+					view.saveAlert.showAndWait(); // warning alert if save fails
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
