@@ -216,7 +216,7 @@ public class GameApp_Model extends Model {
 		return valid;
 	}
 
-	/**SEMI_TESTED
+	/**TESTED
 	 * @author Lukas
 	 * Translates any parts of a String between two #
 	 * 
@@ -228,19 +228,21 @@ public class GameApp_Model extends Model {
 		Matcher m = p.matcher(input);
 		int tmpIndex = 0;
 		String output = "";
-		String[] splittedInput = input.split(this.TRANSLATE_REGEX);
-		String lastPart = "";
-//		if(!m.hitEnd())
-//			lastPart = splittedInput[splittedInput.length-1];
+		int endIndex = 0;
+		
 		while(m.find()){
 			int startIndex = m.start();
-			int endIndex = m.end();
+			endIndex = m.end();
 			output += input.substring(tmpIndex, startIndex);
 			output += t.getString(input.substring(startIndex+1, endIndex-1));//+- to filter #
 			tmpIndex = endIndex;
 		}
+		
 		if(output.length() > 0){
-			output += lastPart;
+			//if the last match was not the end of the translation
+			if(endIndex != input.length()){
+				output += input.substring(endIndex, input.length());
+			}
 			return output;
 		}
 		return t.getString(input);

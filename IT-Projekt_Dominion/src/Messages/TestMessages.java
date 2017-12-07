@@ -48,6 +48,10 @@ public class TestMessages {
 	
 
 	public static void main(String[] args) {
+		
+	}
+	
+	public static void checkBuy(){
 		GameApp_Model model = new GameApp_Model(new Dominion_Main());
 		model.init("127.0.0.1", 8080);
 		model.sendLogin("Lukas", "Lukas");
@@ -99,7 +103,7 @@ public class TestMessages {
 				}
 			}
 			model.sendBuyCard(CardName.Cellar);
-			System.out.println("You have bought: "+model.yourBuyedCard);
+			System.out.println("You have bought: "+model.yourDiscardPile.get(model.yourDiscardPile.size()-1));
 		}else{
 			System.out.println("you're not currentPlayer, try again");
 		}
