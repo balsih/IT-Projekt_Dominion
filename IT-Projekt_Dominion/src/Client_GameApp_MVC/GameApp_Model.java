@@ -49,52 +49,50 @@ public class GameApp_Model extends Model {
 
 	private final String NO_CONNECTION = "#NoConnection#";
 	private final String TRANSLATE_REGEX = "#[\\w\\s]*#";
+	private final String SALT = "[B@d8c7b51";
 
 	private ServiceLocator sl = ServiceLocator.getServiceLocator();
 	private Translator t = sl.getTranslator();
-
-	public String clientName;
-	public String opponent;
-	public String currentPlayer;
-
-	public int actions = 1;
-	public int buys = 1;
-	public int coins = 0;
-
-	public LinkedList<Card> yourNewHandCards;
-	public LinkedList<Card> yourHandCards;
-	public int opponentNewHandCards;
-	public int opponentHandCards;
-	public LinkedList<Card> yourDeck = new LinkedList<Card>();
-	public int opponentDeck;
-	public LinkedList<Card> yourDiscardPile = new LinkedList<Card>();
-	public int opponentDiscardPile;
-	public LinkedList<Card> playedCards;
-	public Card newPlayedCard;
-	public Card yourBuyedCard;
-	public Card opponentBuyedCard;
-	public Card yourDiscardPileTopCard;
-	public String newChat;
-	public String newLog;
-	public Interaction interaction = Interaction.Skip;
-	public LinkedList<CardName> cardSelection;
-	public Card discardCard;
-	public LinkedList<Card> cellarDiscards;
-
-	protected GameSuccess success;
-	protected int victoryPoints;
-
-	public String gameMode;
-	public HashMap<CardName, Integer> buyCards;
-	public CardName buyChoice;
-	public Phase currentPhase;
-	public boolean turnEnded = false;
-
+	
 	private Dominion_Main main;
 	private String ipAddress;
 	private Integer port;
+	
+	public Integer actions = 1;
+	public Integer buys = 1;
+	public Integer coins = 0;
 
-	private String salt = "[B@d8c7b51";
+	public String clientName = null;
+	public String opponent = null;
+	public String currentPlayer = null;
+
+	public LinkedList<Card> yourNewHandCards = null;
+	public LinkedList<Card> yourHandCards = new LinkedList<Card>();
+	public Integer opponentHandCards = null;
+	public LinkedList<Card> yourDeck = new LinkedList<Card>();
+	public Integer opponentDeck = null;
+	public LinkedList<Card> yourDiscardPile = new LinkedList<Card>();
+	public Integer opponentDiscardPile = null;
+	public LinkedList<Card> playedCards = new LinkedList<Card>();
+	public Card newPlayedCard = null;
+	public Card yourBuyedCard = null;
+	public Card opponentBuyedCard = null;
+	public Card yourDiscardPileTopCard = null;
+	public String newChat = null;
+	public String newLog = null;
+	public Interaction interaction = Interaction.Skip;
+	public LinkedList<CardName> cardSelection = null;
+	public Card discardCard = null;
+	public LinkedList<Card> cellarDiscards = null;
+
+	protected GameSuccess success = null;
+	protected Integer victoryPoints = null;
+
+	public String gameMode = null;
+	public HashMap<CardName, Integer> buyCards;
+	public CardName buyChoice = null;
+	public Phase currentPhase = null;
+	public boolean turnEnded = false;
 
 	public enum UserInput {
 		clientName,
@@ -110,7 +108,7 @@ public class GameApp_Model extends Model {
 		super();
 		this.main = main;
 
-//		this.startMediaPlayer("Medieval_Camelot.mp3"); // start sound 
+		this.startMediaPlayer("Medieval_Camelot.mp3"); // start sound 
 	}
 
 	/**
@@ -132,7 +130,7 @@ public class GameApp_Model extends Model {
 		String generatedPassword = null;
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-512");
-			md.update(this.salt.getBytes());
+			md.update(this.SALT.getBytes());
 			byte[] bytes = md.digest(unencryptedPassword.getBytes());
 			StringBuilder sb = new StringBuilder();
 
@@ -489,6 +487,8 @@ public class GameApp_Model extends Model {
 		if(msgIn instanceof UpdateGame_Message){
 			UpdateGame_Message ugmsg = (UpdateGame_Message) msgIn;
 			update = true;
+			this.discardCard = null;
+			this.buyChoice = null;
 
 			//If the Interactions are committed, the changes for Cellar, Remodel1 and Mine have to be executed
 			switch(this.interaction){
@@ -511,6 +511,7 @@ public class GameApp_Model extends Model {
 				this.yourNewHandCards.add(ugmsg.getBuyedCard());
 				this.buyCards.replace(ugmsg.getBuyedCard().getCardName(), this.buyCards.get(ugmsg.getBuyedCard().getCardName())-1);
 				ugmsg.setBuyedCard(null);
+				this.discardCard = null;
 				break;
 			}
 			this.interaction = Interaction.Skip;//defaultSetting
@@ -650,7 +651,7 @@ public class GameApp_Model extends Model {
 				}
 			}
 		}else if(ugmsg.getNewHandCards() != null){//for opponent
-			this.opponentNewHandCards = ugmsg.getNewHandCards().size();
+			this.opponentHandCards = ugmsg.getNewHandCards().size();
 		}
 
 		//If a card was played, it will be provided
