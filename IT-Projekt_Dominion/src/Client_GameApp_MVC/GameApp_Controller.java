@@ -355,6 +355,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 								ImageView img = card.getImage();
 								setInitialHandCardsEvents(card, resizeImage(img));
 								view.hboxHandCards.getChildren().add(img);
+								model.yourHandCards.add(card);
 							}
 							model.yourNewHandCards = null;
 						}
@@ -369,6 +370,15 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 					// Ensures the update happens on the JavaFX Application Thread, by using Platform.runLater()
 					Platform.runLater(() -> {
+						
+						// Adds hand cards and event handlers
+						for(Card card : model.yourNewHandCards){
+							ImageView img = card.getImage();
+							setInitialHandCardsEvents(card, resizeImage(img));
+							view.hboxHandCards.getChildren().add(img);
+							model.yourHandCards.add(card);
+						}
+						model.yourNewHandCards = null;
 
 						// Displays the current phase
 						switch(model.currentPhase){
@@ -500,13 +510,6 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 						Card flipsideCard = Card.getCard(CardName.Flipside);
 						view.stackpDeck.getChildren().add(resizeImage(flipsideCard.getImage()));
 
-						// Adds hand cards and event handlers
-						for(Card card : model.yourNewHandCards){
-							ImageView img = card.getImage();
-							setInitialHandCardsEvents(card, resizeImage(img));
-							view.hboxHandCards.getChildren().add(img);
-						}
-						model.yourNewHandCards = null;
 					});
 
 				} else if (msgIn instanceof PlayerSuccess_Message) {
