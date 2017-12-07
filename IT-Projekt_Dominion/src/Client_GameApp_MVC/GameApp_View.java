@@ -190,7 +190,6 @@ public class GameApp_View extends View<GameApp_Model> {
 		gridpActionCards.add(vboxVillageCards, 3, 1);
 		
 		this.vboxActionCards = new VBox(lblActionCards, gridpActionCards);
-		this.vboxCellarCards = new VBox();
 
 		// Creates treasure cards area
 		this.lblTreasureCards = new Label(t.getString("treasures.lblTreasureCards")); // Treasure cards
