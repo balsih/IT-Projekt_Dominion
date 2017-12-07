@@ -110,17 +110,19 @@ public class Player {
 		
 		int index = this.handCards.indexOf(selectedCard);
 		
-		// checks if an card which requires some interaction is played and if the player is allowed to play them.
-		if(selectedCard.getCardName().equals(CardName.Mine) && 
-				(!(this.containsCard(this.handCards, CardName.Copper) || (this.containsCard(this.handCards, CardName.Silver)))))
-			return fmsg;
-		else if (selectedCard.getCardName().equals(CardName.Remodel) && this.handCards.size() == 1)
-			return fmsg;
-		else if (selectedCard.getCardName().equals(CardName.Cellar) && this.handCards.size() == 1)
-			return fmsg;
 
 		// plays the selected action card which requires available action-points
-		if (this.getActions() > 0 && this.actualPhase == Phase.Action && this.equals(game.getCurrentPlayer())) {
+		if (this.getActions() > 0 && this.actualPhase == Phase.Action && this.equals(game.getCurrentPlayer()) 
+				&& selectedCard.getType() == CardType.Action) {
+			
+			// checks if an card which requires some interaction is played and if the player is allowed to play them.
+			if(selectedCard.getCardName().equals(CardName.Mine) && 
+					(!(this.containsCard(this.handCards, CardName.Copper) || (this.containsCard(this.handCards, CardName.Silver)))))
+				return fmsg;
+			else if (selectedCard.getCardName().equals(CardName.Remodel) && this.handCards.size() == 1)
+				return fmsg;
+			else if (selectedCard.getCardName().equals(CardName.Cellar) && this.handCards.size() == 1)
+				return fmsg;
 
 			ugmsg = selectedCard.executeCard(this);
 			playedCards.add(this.handCards.remove(index));
@@ -135,7 +137,7 @@ public class Player {
 			return ugmsg;
 
 			// plays the selected treasure card which not requires any available action-points
-		} else if (this.actualPhase == Phase.Buy && this.equals(game.getCurrentPlayer())) {
+		} else if (this.actualPhase == Phase.Buy && this.equals(game.getCurrentPlayer()) && selectedCard.getType() == CardType.Action) {
 			ugmsg = selectedCard.executeCard(this);
 			playedCards.add(this.handCards.remove(index));
 			return ugmsg;
