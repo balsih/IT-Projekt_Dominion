@@ -29,26 +29,35 @@ public class MainMenu_Controller extends Controller<GameApp_Model, MainMenu_View
 		super(model, view);
 		
 		sl = ServiceLocator.getServiceLocator();
+			
 		
 		// set on action and handling for singlePlayerBtn
 		view.singlePlayerBtn.setOnAction((event) -> {
 			try {
-				view.startGameAlert.setHeaderText(model.sendGameMode(GameMode.Singleplayer));
-				view.startGameAlert.showAndWait(); // warning alert if Singleplayer start fails 
+				String message = model.sendGameMode(GameMode.Singleplayer);
+				if (model.failure) {
+					view.startGameAlert.setHeaderText(message);
+					view.startGameAlert.showAndWait(); // warning alert if Singleplayer start fails 
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		});
 		
+		
 		// set on action and handling for multiPlayerBtn
 		view.multiPlayerBtn.setOnAction((event) -> {
 			try {
-				view.startGameAlert.setHeaderText(model.sendGameMode(GameMode.Multiplayer));
-				view.startGameAlert.showAndWait(); // warning alert if Multiplayer start fails 				 
+				String message = model.sendGameMode(GameMode.Multiplayer);
+				if (model.failure) {
+					view.startGameAlert.setHeaderText(message);
+					view.startGameAlert.showAndWait(); // warning alert if Multiplayer start fails 
+				}				 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		});
+				
 		
 		// sets values of the combobox and updates the texts to selected language 
 		view.languageSelectComboBox.setOnAction((e) -> {
