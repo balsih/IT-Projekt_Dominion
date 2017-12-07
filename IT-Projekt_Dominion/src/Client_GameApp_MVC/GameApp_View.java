@@ -7,6 +7,7 @@ import MainClasses.Dominion_Main;
 import Messages.GameMode_Message;
 import Server_GameLogic.GameMode;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -19,6 +20,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 /**
@@ -247,12 +249,14 @@ public class GameApp_View extends View<GameApp_Model> {
 		// Creates discard area
 		this.lblDiscard = new Label(t.getString("discard.lblDiscard")); // Discard
 		this.stackpDiscard = new StackPane();
+		this.stackpDiscard.setMinHeight(120);
 
 		this.vboxDiscard = new VBox(lblDiscard, stackpDiscard);
 
 		// Creates deck area
 		this.lblDeck = new Label(t.getString("deck.lblDeck")); // Deck
 		this.stackpDeck = new StackPane();
+		this.stackpDeck.setMinHeight(120);
 
 		this.vboxDeck = new VBox(lblDeck, stackpDeck);
 
@@ -350,6 +354,7 @@ public class GameApp_View extends View<GameApp_Model> {
 
 		vboxChatArea.getStyleClass().add("vbox");
 		vboxChatArea.setPrefWidth(150);
+		txtfChatArea.setMinWidth(320);
 		hboxChatArea.getStyleClass().add("hbox");
 
 		vboxLog.getStyleClass().add("vbox");
@@ -392,16 +397,20 @@ public class GameApp_View extends View<GameApp_Model> {
 		root.getStyleClass().add("rootFormat");
 		
 		// Scene and stage
-		Scene scene = new Scene(root, 1000, 600);
+		Scene scene = new Scene(root);
 		scene.getStylesheets().add(GameApp_View.class.getResource("GameApp.css").toExternalForm());
 		stage.setScene(scene);
+		
+		// Set stage boundaries to visible bounds of the main screen
+		Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+        stage.setX(primaryScreenBounds.getMinX());
+        stage.setY(primaryScreenBounds.getMinY());
+        stage.setWidth(primaryScreenBounds.getWidth());
+        stage.setHeight(primaryScreenBounds.getHeight());
+		
 		stage.setTitle("Dominion");
 		stage.show();
 		
-		// Prevents resizing below initial size
-		stage.setMinWidth(stage.getWidth());
-		stage.setMinHeight(stage.getHeight());
-
 		return scene;
 	}
 }//end GameApp_View

@@ -79,9 +79,10 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				}
 				model.sendInteraction();
 				break;
+				// If a cellar card has been played, discard a user-defined number of hand cards and draw new hand cards
 			case Cellar:
 				if (model.interaction == Interaction.Cellar) {
-					// already done in method setInitialHandCardsEvents 
+					// CellarDiscards>=1 --> send interaction
 				}
 				model.sendInteraction();
 				break;
@@ -122,10 +123,107 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		this.initializeServerListening();
 	}
 
+	// Updates the whole GUI
+	private void updateGUI(){
+
+		// Ensures the update happens on the JavaFX Application Thread, by using Platform.runLater()
+		Platform.runLater(() -> {
+
+			// Updates the log
+			if(model.newLog != null){
+				String existingLog = view.txtaLog.getText();
+				view.txtaLog.setText(existingLog.concat(model.newLog)+"\r\n");
+				model.newLog = null;
+			}
+
+			// Updates the chat
+			if(model.newChat != null){
+				String existingMessages = view.txtaChatArea.getText();
+				view.txtaChatArea.setText(existingMessages.concat(model.newChat)+"\r\n");
+
+				view.txtfChatArea.setText(""); // Removes the entered text
+				model.newChat = null;
+			}
+
+			// Displays the current phase
+			switch(model.currentPhase){
+			case Action:
+				view.lblCurrentPhase.setText(t.getString("action.lblCurrentPhase")); // Phase: Action
+				break;
+			case Buy:
+				view.lblCurrentPhase.setText(t.getString("buy.lblCurrentPhase")); // Phase: Buy
+				break;
+			case CleanUp:
+				view.lblCurrentPhase.setText(t.getString("cleanUp.lblCurrentPhase")); // Phase: Clean up
+				break;
+			}
+
+			// If the deck is empty, the discard pile needs to be added to the deck pile. In the GUI we only remove the discard pile top card.
+			if(model.yourDeck.size() == 0){
+				view.stackpDiscard.getChildren().clear();
+			}
+
+			// Updates the name of the current player
+			view.lblNameOfCurrentPlayer.setText(model.currentPlayer);
+
+			// Updates the number of current actions
+			view.lblNmbrOfCrntActions.setText(Integer.toString(model.actions));
+
+			// Updates the number of current buys
+			view.lblNmbrOfCrntBuys.setText(Integer.toString(model.buys));
+
+			// Updates the number of current coins
+			view.lblNmbrOfCrntCoins.setText(Integer.toString(model.coins));
+
+			// Updates the number of current hand cards, discard cards and deck cards
+			if (model.currentPlayer.compareTo(model.clientName)==0) {
+				view.lblNmbrOfCrntHandCards.setText(Integer.toString(model.yourHandCards.size()));
+				view.lblNmbrOfCrntDiscards.setText(Integer.toString(model.yourDiscardPile.size()));
+				view.lblNmbrOfCrntDeckCards.setText(Integer.toString(model.yourDeck.size()));
+			} else {
+				view.lblNmbrOfCrntHandCards.setText(Integer.toString(model.opponentHandCards));
+				view.lblNmbrOfCrntDiscards.setText(Integer.toString(model.opponentDiscardPile));
+				view.lblNmbrOfCrntDeckCards.setText(Integer.toString(model.opponentDeck));
+			}
+
+			// Updates the number of action cards, treasure cards and victory cards
+			view.lblNmbrOfCellarCards.setText(Integer.toString(model.buyCards.get(CardName.Cellar)));
+			view.lblNmbrOfMarketCards.setText(Integer.toString(model.buyCards.get(CardName.Market)));
+			view.lblNmbrOfRemodelCards.setText(Integer.toString(model.buyCards.get(CardName.Remodel)));
+			view.lblNmbrOfSmithyCards.setText(Integer.toString(model.buyCards.get(CardName.Smithy)));
+			view.lblNmbrOfWoodcutterCards.setText(Integer.toString(model.buyCards.get(CardName.Woodcutter)));
+			view.lblNmbrOfWorkshopCards.setText(Integer.toString(model.buyCards.get(CardName.Workshop)));
+			view.lblNmbrOfMineCards.setText(Integer.toString(model.buyCards.get(CardName.Mine)));
+			view.lblNmbrOfVillageCards.setText(Integer.toString(model.buyCards.get(CardName.Village)));
+
+			view.lblNmbrOfGoldCards.setText(Integer.toString(model.buyCards.get(CardName.Gold)));
+			view.lblNmbrOfSilverCards.setText(Integer.toString(model.buyCards.get(CardName.Silver)));
+			view.lblNmbrOfCopperCards.setText(Integer.toString(model.buyCards.get(CardName.Copper)));
+
+			view.lblNmbrOfDuchyCards.setText(Integer.toString(model.buyCards.get(CardName.Duchy)));
+			view.lblNmbrOfEstateCards.setText(Integer.toString(model.buyCards.get(CardName.Estate)));
+			view.lblNmbrOfProvinceCards.setText(Integer.toString(model.buyCards.get(CardName.Province)));
+
+			// Adds new hand cards and event handlers
+			if (model.yourNewHandCards != null){
+				for(Card card : model.yourNewHandCards){
+					ImageView img = card.getImage();
+					setInitialHandCardsEvents(card, resizeImage(img));
+					view.hboxHandCards.getChildren().add(img);
+					model.yourHandCards.add(card);
+				}
+				model.yourNewHandCards = null;
+			}
+
+			// Updates the discard pile top card
+			view.stackpDiscard.getChildren().add(0, resizeImage(model.yourDiscardPileTopCard.getImage()));
+		});
+	}
+
 	// Resizes the image to the optimal fit size
 	private ImageView resizeImage(ImageView img){
-		img.setFitWidth(50);
-		img.setFitHeight(80);
+		img.setFitWidth(80);
+		img.setFitHeight(120);
 		return img;
 	}
 
@@ -143,43 +241,16 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 		// Here's what happens when the user clicks a hand cards
 		img.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+			// if action card
 			if (model.sendPlayCard(card)){
 				view.hboxHandCards.getChildren().remove(img);
 				view.hboxPlayedCards.getChildren().add(0, img);
-				model.playedCards.add(card);
-				model.yourHandCards.remove(card);
-
-				// If a cellar card has been played, discard a user-defined number of hand cards and draw new hand cards
-				if (card.getCardName() == CardName.Cellar){
-					// Adds new event handlers to the hand cards
-					view.hboxHandCards.getChildren().clear();
-					for(Card handCardsModel1 : model.yourHandCards){
-						ImageView img2 = handCardsModel1.getImage();
-						img2.addEventHandler(MouseEvent.MOUSE_CLICKED, cellarEvent -> {
-							if (model.sendPlayCard(handCardsModel1)){
-								view.hboxHandCards.getChildren().remove(img2);
-								model.yourHandCards.remove(handCardsModel1);
-								model.cellarDiscards.add(handCardsModel1);
-							}
-						});
-						view.hboxHandCards.getChildren().add(img2);
-					}
-					// Adds initial event handlers to the hand cards
-					view.hboxHandCards.getChildren().clear();
-					for(Card handCardsModel2 : model.yourHandCards){
-						ImageView img3 = handCardsModel2.getImage();
-						setInitialHandCardsEvents(handCardsModel2, resizeImage(img3));
-						view.hboxHandCards.getChildren().add(img3);
-					}
-					model.interaction = Interaction.Cellar;
-				} else if (card.getCardName() == CardName.Mine){
-					model.interaction = Interaction.Mine;
-				} else if (card.getCardName() == CardName.Remodel){
-					model.interaction = Interaction.Remodel1;
-				} else if (card.getCardName() == CardName.Workshop){
-					model.interaction = Interaction.Workshop;
-				} 
 			}
+
+			if (model.interaction == Interaction.Cellar){
+				// Umschichten/Rückschichten
+			}
+
 		});
 
 		// If the user enters an image, it gets brighter
@@ -218,7 +289,6 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		img.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			if (model.sendBuyCard(card.getCardName())) {
 				view.stackpDiscard.getChildren().add(0, img);
-				model.yourDiscardPile.add(card);
 			}
 		});
 
@@ -258,7 +328,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		public void run() {
 			while(listenToServer){
 				try {
-					Thread.sleep(100); // 10 requests per second if something changed in the game
+					Thread.sleep(1000); // 1 request per second if something changed in the game
 				} catch (InterruptedException e1) {
 					System.out.println(e1.toString());
 				}
@@ -270,146 +340,17 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 				} else if (msgIn instanceof UpdateGame_Message) {
 					model.processUpdateGame(msgIn);
-
-					// Ensure the update happens on the JavaFX Application Thread, by using Platform.runLater()
-					Platform.runLater(() -> {
-
-						// Updates the log
-						if(model.newLog != null){
-							String existingLog = view.txtaLog.getText();
-							view.txtaLog.setText(existingLog.concat(model.newLog)+"\r\n");
-							model.newLog = null;
-						}
-
-						// Updates the chat
-						if(model.newChat != null){
-							String existingMessages = view.txtaChatArea.getText();
-							view.txtaChatArea.setText(existingMessages.concat(model.newChat)+"\r\n");
-
-							view.txtfChatArea.setText(""); // Removes the entered text
-							model.newChat = null;
-						}
-
-						// Displays the current phase
-						switch(model.currentPhase){
-						case Action:
-							view.lblCurrentPhase.setText(t.getString("action.lblCurrentPhase")); // Phase: Action
-							break;
-						case Buy:
-							view.lblCurrentPhase.setText(t.getString("buy.lblCurrentPhase")); // Phase: Buy
-							break;
-						case CleanUp:
-							view.lblCurrentPhase.setText(t.getString("cleanUp.lblCurrentPhase")); // Phase: Clean up
-							break;
-						}
-
-						// If the deck is empty, the discard pile needs to be added to the deck pile. In the GUI we only remove the discard pile top card.
-						if(model.yourDeck.size() == 0){
-							view.stackpDiscard.getChildren().clear();
-						}
-
-						// Updates the name of the current player
-						view.lblNameOfCurrentPlayer.setText(model.currentPlayer);
-
-						// Updates the number of current actions
-						view.lblNmbrOfCrntActions.setText(Integer.toString(model.actions));
-
-						// Updates the number of current buys
-						view.lblNmbrOfCrntBuys.setText(Integer.toString(model.buys));
-
-						// Updates the number of current coins
-						view.lblNmbrOfCrntCoins.setText(Integer.toString(model.coins));
-
-						// Updates the number of current hand cards, discard cards and deck cards
-						if (model.currentPlayer.compareTo(model.clientName)==0) {
-							view.lblNmbrOfCrntHandCards.setText(Integer.toString(model.yourHandCards.size()));
-							view.lblNmbrOfCrntDiscards.setText(Integer.toString(model.yourDiscardPile.size()));
-							view.lblNmbrOfCrntDeckCards.setText(Integer.toString(model.yourDeck.size()));
-						} else {
-							view.lblNmbrOfCrntHandCards.setText(Integer.toString(model.opponentHandCards));
-							view.lblNmbrOfCrntDiscards.setText(Integer.toString(model.opponentDiscardPile));
-							view.lblNmbrOfCrntDeckCards.setText(Integer.toString(model.opponentDeck));
-						}
-
-						// Updates the number of action cards, treasure cards and victory cards
-						view.lblNmbrOfCellarCards.setText(Integer.toString(model.buyCards.get(CardName.Cellar)));
-						view.lblNmbrOfMarketCards.setText(Integer.toString(model.buyCards.get(CardName.Market)));
-						view.lblNmbrOfRemodelCards.setText(Integer.toString(model.buyCards.get(CardName.Remodel)));
-						view.lblNmbrOfSmithyCards.setText(Integer.toString(model.buyCards.get(CardName.Smithy)));
-						view.lblNmbrOfWoodcutterCards.setText(Integer.toString(model.buyCards.get(CardName.Woodcutter)));
-						view.lblNmbrOfWorkshopCards.setText(Integer.toString(model.buyCards.get(CardName.Workshop)));
-						view.lblNmbrOfMineCards.setText(Integer.toString(model.buyCards.get(CardName.Mine)));
-						view.lblNmbrOfVillageCards.setText(Integer.toString(model.buyCards.get(CardName.Village)));
-
-						view.lblNmbrOfGoldCards.setText(Integer.toString(model.buyCards.get(CardName.Gold)));
-						view.lblNmbrOfSilverCards.setText(Integer.toString(model.buyCards.get(CardName.Silver)));
-						view.lblNmbrOfCopperCards.setText(Integer.toString(model.buyCards.get(CardName.Copper)));
-
-						view.lblNmbrOfDuchyCards.setText(Integer.toString(model.buyCards.get(CardName.Duchy)));
-						view.lblNmbrOfEstateCards.setText(Integer.toString(model.buyCards.get(CardName.Estate)));
-						view.lblNmbrOfProvinceCards.setText(Integer.toString(model.buyCards.get(CardName.Province)));
-
-						// Adds new hand cards and event handlers
-						if (model.yourNewHandCards != null){
-							for(Card card : model.yourNewHandCards){
-								ImageView img = card.getImage();
-								setInitialHandCardsEvents(card, resizeImage(img));
-								view.hboxHandCards.getChildren().add(img);
-								model.yourHandCards.add(card);
-							}
-							model.yourNewHandCards = null;
-						}
-
-						// Updates the discard pile top card
-						view.stackpDiscard.getChildren().add(0, resizeImage(model.yourDiscardPileTopCard.getImage()));
-
-					});
+					
+					updateGUI();
 
 				} else if (msgIn instanceof CreateGame_Message) {
 					model.processCreateGame(msgIn);
+					
+					updateGUI();
 
 					// Ensures the update happens on the JavaFX Application Thread, by using Platform.runLater()
 					Platform.runLater(() -> {
 						
-						// Adds hand cards and event handlers
-						for(Card card : model.yourNewHandCards){
-							ImageView img = card.getImage();
-							setInitialHandCardsEvents(card, resizeImage(img));
-							view.hboxHandCards.getChildren().add(img);
-							model.yourHandCards.add(card);
-						}
-						model.yourNewHandCards = null;
-
-						// Displays the current phase
-						switch(model.currentPhase){
-						case Action:
-							view.lblCurrentPhase.setText(t.getString("action.lblCurrentPhase")); // Phase: Action
-							break;
-						case Buy:
-							view.lblCurrentPhase.setText(t.getString("buy.lblCurrentPhase")); // Phase: Buy
-							break;
-						case CleanUp:
-							view.lblCurrentPhase.setText(t.getString("cleanUp.lblCurrentPhase")); // Phase: Clean up
-							break;
-						}
-
-						// If the deck is empty, the discard pile needs to be added to the deck pile. In the GUI we only remove the discard pile top card.
-						if(model.yourDeck.size() == 0){
-							view.stackpDiscard.getChildren().clear();
-						}
-
-						// Updates the name of the current player
-						view.lblNameOfCurrentPlayer.setText(model.currentPlayer);
-
-						// Updates the number of current actions
-						view.lblNmbrOfCrntActions.setText(Integer.toString(model.actions));
-
-						// Updates the number of current buys
-						view.lblNmbrOfCrntBuys.setText(Integer.toString(model.buys));
-
-						// Updates the number of current coins
-						view.lblNmbrOfCrntCoins.setText(Integer.toString(model.coins));
-
 						// Updates the number of current hand cards, discard cards and deck cards
 						if (model.currentPlayer.compareTo(model.clientName)==0) {
 							view.lblNmbrOfCrntHandCards.setText(Integer.toString(model.yourHandCards.size()));
@@ -426,16 +367,6 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 							view.txtfChatArea.setDisable(true);
 							view.btnSendChatArea.setDisable(true);
 						}
-
-						// Sets the initial number of Action cards
-						view.lblNmbrOfCellarCards.setText(Integer.toString(model.buyCards.get(CardName.Cellar)));
-						view.lblNmbrOfMarketCards.setText(Integer.toString(model.buyCards.get(CardName.Market)));
-						view.lblNmbrOfRemodelCards.setText(Integer.toString(model.buyCards.get(CardName.Remodel)));
-						view.lblNmbrOfSmithyCards.setText(Integer.toString(model.buyCards.get(CardName.Smithy)));
-						view.lblNmbrOfWoodcutterCards.setText(Integer.toString(model.buyCards.get(CardName.Woodcutter)));
-						view.lblNmbrOfWorkshopCards.setText(Integer.toString(model.buyCards.get(CardName.Workshop)));
-						view.lblNmbrOfMineCards.setText(Integer.toString(model.buyCards.get(CardName.Mine)));
-						view.lblNmbrOfVillageCards.setText(Integer.toString(model.buyCards.get(CardName.Village)));
 
 						// Adds Action cards and event handlers
 						Card cellarCard = Card.getCard(CardName.Cellar);
@@ -470,11 +401,6 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 						view.vboxVillageCards.getChildren().add(0, resizeImage(villageCard.getImage()));
 						setInitialActionCardsEvents(villageCard, (ImageView) view.vboxVillageCards.getChildren().get(0));
 
-						// Sets the initial number of Treasure cards
-						view.lblNmbrOfGoldCards.setText(Integer.toString(model.buyCards.get(CardName.Gold)));
-						view.lblNmbrOfSilverCards.setText(Integer.toString(model.buyCards.get(CardName.Silver)));
-						view.lblNmbrOfCopperCards.setText(Integer.toString(model.buyCards.get(CardName.Copper)));
-
 						// Adds Treasure cards and event handlers
 						Card goldCard = Card.getCard(CardName.Gold);
 						view.vboxGoldCards.getChildren().add(0, resizeImage(goldCard.getImage()));
@@ -487,11 +413,6 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 						Card copperCard = Card.getCard(CardName.Copper);
 						view.vboxCopperCards.getChildren().add(0, resizeImage(copperCard.getImage()));
 						setInitialActionCardsEvents(copperCard, (ImageView) view.vboxCopperCards.getChildren().get(0));
-
-						// Sets the initial number of Victory cards
-						view.lblNmbrOfDuchyCards.setText(Integer.toString(model.buyCards.get(CardName.Duchy)));
-						view.lblNmbrOfEstateCards.setText(Integer.toString(model.buyCards.get(CardName.Estate)));
-						view.lblNmbrOfProvinceCards.setText(Integer.toString(model.buyCards.get(CardName.Province)));
 
 						// Adds Victory cards and event handlers
 						Card duchyCard = Card.getCard(CardName.Duchy);

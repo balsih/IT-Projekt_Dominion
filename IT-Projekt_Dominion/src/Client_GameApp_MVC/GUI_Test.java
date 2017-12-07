@@ -9,8 +9,10 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.stage.Modality;
 import javafx.stage.Popup;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.scene.Node;
@@ -72,8 +74,8 @@ public class GUI_Test extends Application {
 		});
 
 		image.addEventHandler(ZoomEvent.ZOOM, event -> {
-			image.setFitWidth(imageWidth*5);
-			image.setFitHeight(imageHeight*5);
+			image.setFitWidth(imageWidth*3);
+			image.setFitHeight(imageHeight*3);
 			image.setEffect(initial);
 		});
 
@@ -103,8 +105,8 @@ public class GUI_Test extends Application {
 		});
 
 		image.addEventHandler(ZoomEvent.ZOOM, event -> { // MouseEvent.MOUSE_ENTERED
-			image.setFitWidth(imageWidth*5);
-			image.setFitHeight(imageHeight*5);
+			image.setFitWidth(imageWidth*3);
+			image.setFitHeight(imageHeight*3);
 			image.setEffect(initial);
 		});
 
@@ -236,11 +238,18 @@ public class GUI_Test extends Application {
 		hboxVictoryCards.getChildren().add(2, vboxProvinceCards);
 
 		// Chat area
+		scrlpChatArea.setMaxWidth(400);
+		txtaChatArea.setMaxWidth(400);
+		scrlpChatArea.setMaxHeight(100);
+		txtaChatArea.setMaxHeight(100);
+		txtfChatArea.setMinWidth(320);
 		scrlpChatArea.setContent(txtaChatArea);
 		HBox hboxChatArea = new HBox(txtfChatArea, btnSendChatArea);
 		VBox vboxChatArea = new VBox(lblChatArea, scrlpChatArea, hboxChatArea);
 
 		// Log area
+		scrlpLog.setMaxWidth(400);
+		scrlpLog.setMaxHeight(130);
 		scrlpLog.setContent(txtaLog);
 		VBox vboxLog = new VBox(lblLog, scrlpLog);
 
@@ -304,14 +313,22 @@ public class GUI_Test extends Application {
 		root.setVgrow(vboxHandCards, Priority.ALWAYS);
 
 		// Scene and stage
-		Scene scene = new Scene(root, 1000, 600);
+		Scene scene = new Scene(root);
 		stage.setScene(scene);
+		
+        //set Stage boundaries to visible bounds of the main screen
+		Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+        stage.setX(primaryScreenBounds.getMinX());
+        stage.setY(primaryScreenBounds.getMinY());
+        stage.setWidth(primaryScreenBounds.getWidth());
+        stage.setHeight(primaryScreenBounds.getHeight());
+		
 		stage.setTitle("Dominion");
 		stage.show();
 
 		// Prevent resizing below initial size
-		stage.setMinWidth(stage.getWidth());
-		stage.setMinHeight(stage.getHeight());
+//		stage.setMinWidth(stage.getWidth());
+//		stage.setMinHeight(stage.getHeight());
 
 		// Styles the elements of the GUI
 		scene.getStylesheets().add(getClass().getResource("GUI_Test.css").toExternalForm());
@@ -329,11 +346,11 @@ public class GUI_Test extends Application {
 		hboxVictoryCards.getStyleClass().add("hbox");
 
 		vboxChatArea.getStyleClass().add("vbox");
-		vboxChatArea.setPrefWidth(150);
+		vboxChatArea.setPrefWidth(180);
 		hboxChatArea.getStyleClass().add("hbox");
 
 		vboxLog.getStyleClass().add("vbox");
-		vboxLog.setPrefWidth(150);
+		vboxLog.setPrefWidth(180);
 		vboxDiscard.getStyleClass().add("vbox");
 
 		vboxDeck.getStyleClass().add("vbox");
@@ -390,68 +407,69 @@ public class GUI_Test extends Application {
 		ImageView img17 = new ImageView(new Image(getClass().getResourceAsStream("Images/Geld_01.jpg")));
 		ImageView img18 = new ImageView(new Image(getClass().getResourceAsStream("Images/Geld_01.jpg")));
 
-		// Test: set width and height of images
-		img1.setFitWidth(50);
-		img1.setFitHeight(80);
-		img2.setFitWidth(50);
-		img2.setFitHeight(80);
-		img3.setFitWidth(50);
-		img3.setFitHeight(80);
-		img4.setFitWidth(50);
-		img4.setFitHeight(80);
-		img5.setFitWidth(50);
-		img5.setFitHeight(80);
-		img6.setFitWidth(50);
-		img6.setFitHeight(80);
-		img7.setFitWidth(50);
-		img7.setFitHeight(80);
-		img8.setFitWidth(50);
-		img8.setFitHeight(80);
-		img9.setFitWidth(50);
-		img9.setFitHeight(80);
-		img10.setFitWidth(50);
-		img10.setFitHeight(80);
-		img11.setFitWidth(50);
-		img11.setFitHeight(80);
-		img12.setFitWidth(50);
-		img12.setFitHeight(80);
-		img13.setFitWidth(50);
-		img13.setFitHeight(80);
-		img14.setFitWidth(50);
-		img14.setFitHeight(80);
-		img15.setFitWidth(50);
-		img15.setFitHeight(80);
-		img16.setFitWidth(50);
-		img16.setFitHeight(80);
-		img17.setFitWidth(50);
-		img17.setFitHeight(80);
-		img18.setFitWidth(50);
-		img18.setFitHeight(80);
+		// Test: set width and height of images	
+		img1.setFitHeight(120);
+		img1.setFitWidth(80);
+		img2.setFitWidth(80);
+		img2.setFitHeight(120);
+		img3.setFitWidth(80);
+		img3.setFitHeight(120);
+		img4.setFitWidth(80);
+		img4.setFitHeight(120);
+		img5.setFitWidth(80);
+		img5.setFitHeight(120);
+		img6.setFitWidth(80);
+		img6.setFitHeight(120);
+		img7.setFitWidth(80);
+		img7.setFitHeight(120);
+		img8.setFitWidth(80);
+		img8.setFitHeight(120);
+		img9.setFitWidth(80);
+		img9.setFitHeight(120);
+		img10.setFitWidth(80);
+		img10.setFitHeight(120);
+		img11.setFitWidth(80);
+		img11.setFitHeight(120);
+		img12.setFitWidth(80);
+		img12.setFitHeight(120);
+		img13.setFitWidth(80);
+		img13.setFitHeight(120);
+		img14.setFitWidth(80);
+		img14.setFitHeight(120);
+		img15.setFitWidth(80);
+		img15.setFitHeight(120);
+		img16.setFitWidth(80);
+		img16.setFitHeight(120);
+		img17.setFitWidth(80);
+		img17.setFitHeight(120);
+		img18.setFitWidth(80);
+		img18.setFitHeight(120);
 
 		// Test: add buy cards to the containers
-		//		vboxCellarCards.getChildren().add(0, img1);
-		//		vboxMarketCards.getChildren().add(0, img2);
-		//		vboxRemodelCards.getChildren().add(0, img3);
-		//		vboxSmithyCards.getChildren().add(0, img4);
-		//		vboxWoodcutterCards.getChildren().add(0, img5);
-		//		vboxWorkshopCards.getChildren().add(0, img6);
-		//		vboxMineCards.getChildren().add(0, img7);
-		//		vboxVillageCards.getChildren().add(0, img8);
-		//		
-		//		vboxGoldCards.getChildren().add(0, img9);
-		//		vboxSilverCards.getChildren().add(0, img10);
-		//		vboxCopperCards.getChildren().add(0, img11);
-		//		
-		//		vboxDuchyCards.getChildren().add(0, img12);
-		//		vboxEstateCards.getChildren().add(0, img13);
-		//		vboxProvinceCards.getChildren().add(0, img14);
+		vboxCellarCards.getChildren().add(0, img1);
+		vboxMarketCards.getChildren().add(0, img2);
+		vboxRemodelCards.getChildren().add(0, img3);
+		vboxSmithyCards.getChildren().add(0, img4);
+		vboxWoodcutterCards.getChildren().add(0, img5);
+		vboxWorkshopCards.getChildren().add(0, img6);
+		vboxMineCards.getChildren().add(0, img7);
+		vboxVillageCards.getChildren().add(0, img8);
+
+		vboxGoldCards.getChildren().add(0, img9);
+		vboxSilverCards.getChildren().add(0, img10);
+		vboxCopperCards.getChildren().add(0, img11);
+
+		vboxDuchyCards.getChildren().add(0, img12);
+		vboxEstateCards.getChildren().add(0, img13);
+		vboxProvinceCards.getChildren().add(0, img14);
 
 		// Test: add cards to stacks deck & discard
 		stackpDeck.getChildren().add(img6);
-		stackpDiscard.getChildren().add(img5);
+		stackpDiscard.setPrefHeight(120);
+		//stackpDiscard.getChildren().add(img5);
 
 		// Test: add played cards & hand cards to containers
-		hboxPlayedCards.getChildren().add(img4);
+		// hboxPlayedCards.getChildren().add(img4);
 
 		hboxHandCards.getChildren().add(0, img3);
 		hboxHandCards.getChildren().add(0, img1);
@@ -471,9 +489,6 @@ public class GUI_Test extends Application {
 		img10.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> { 
 			int imageHeight = (int) img10.getFitHeight()*5;
 			int imageWidth = (int) img10.getFitWidth()*5;
-
-			img10.setFitWidth(200);
-			img10.setFitHeight(200);
 
 			stage.setTitle("Popup Example");
 			final Popup popup = new Popup();
