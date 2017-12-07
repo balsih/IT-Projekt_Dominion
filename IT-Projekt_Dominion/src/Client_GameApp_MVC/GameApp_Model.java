@@ -675,10 +675,6 @@ public class GameApp_Model extends Model {
 		if(ugmsg.getCardSelection() != null && this.currentPlayer.compareTo(this.clientName) == 0)
 			this.cardSelection = ugmsg.getCardSelection();
 
-		//just for testing
-		System.out.println("CardSelection: "+ugmsg.getCardSelection());
-		System.out.println("NewHandCards: "+ugmsg.getNewHandCards());
-
 	}
 
 
