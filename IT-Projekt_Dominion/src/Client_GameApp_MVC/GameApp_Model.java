@@ -75,15 +75,13 @@ public class GameApp_Model extends Model {
 	public Integer opponentDiscardPile = null;
 	public LinkedList<Card> playedCards = new LinkedList<Card>();
 	public Card newPlayedCard = null;
-	public Card yourBuyedCard = null;
-	public Card opponentBuyedCard = null;
 	public Card yourDiscardPileTopCard = null;
 	public String newChat = null;
 	public String newLog = null;
 	public Interaction interaction = Interaction.Skip;
 	public LinkedList<CardName> cardSelection = null;
 	public Card discardCard = null;
-	public LinkedList<Card> cellarDiscards = null;
+	public LinkedList<Card> cellarDiscards = new LinkedList<Card>();
 
 	protected GameSuccess success = null;
 	protected Integer victoryPoints = null;
@@ -595,11 +593,10 @@ public class GameApp_Model extends Model {
 		//If a buy was successful. Always currentPlayer
 		//stores the buyedCard of the currentPlayer and reduces the value of the buyCards(Cards which can be bought)
 		if(ugmsg.getBuyedCard() != null && this.currentPlayer.compareTo(this.clientName) == 0){
-			this.yourBuyedCard = ugmsg.getBuyedCard();
-			this.buyCards.replace(this.yourBuyedCard.getCardName(), this.buyCards.get(this.yourBuyedCard.getCardName())-1);
+			this.yourDiscardPile.add(ugmsg.getBuyedCard());
+			this.buyCards.replace(ugmsg.getBuyedCard().getCardName(), this.buyCards.get(ugmsg.getBuyedCard().getCardName())-1);
 		}else if(ugmsg.getBuyedCard() != null){
-			this.opponentBuyedCard = ugmsg.getBuyedCard();
-			this.buyCards.replace(this.opponentBuyedCard.getCardName(), this.buyCards.get(this.opponentBuyedCard.getCardName())-1);
+			this.buyCards.replace(ugmsg.getBuyedCard().getCardName(), this.buyCards.get(ugmsg.getBuyedCard().getCardName())-1);
 		}
 
 		//Just necessary to show opponent's size of discardPile
