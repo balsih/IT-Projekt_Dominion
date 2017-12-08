@@ -190,7 +190,7 @@ public class Player {
 			}
 
 			// sets all changed attributes of the UpdateGame_Message
-			ugmsg.setLog(this.playerName + "#bought# #" + buyedCard.getCardName().toString() + "# #card#");
+			ugmsg.setLog(this.playerName + ": #bought# #" + buyedCard.getCardName().toString() + "# #card#");
 			ugmsg.setCoins(this.coins);
 			ugmsg.setBuys(this.buys);
 			ugmsg.setDiscardPileTopCard(this.discardPile.peek());
@@ -294,6 +294,7 @@ public class Player {
 		 */
 		if (this.handCards.size() > 1 && selectedTopCard == null) {
 			ugmsg.setInteractionType(Interaction.EndOfTurn);
+			ugmsg.setLog("#Choose a hand card as top card in discard pile#");
 			this.sendToOpponent(this, ugmsg);
 			interaction = true;
 		} else if (this.handCards.size() == 1 && selectedTopCard == null) {

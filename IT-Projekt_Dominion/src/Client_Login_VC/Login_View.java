@@ -102,6 +102,7 @@ public class Login_View extends View<GameApp_Model> {
 		
 		ipText = new TextField();
 		ipText.setId("ipText");
+		ipText.setText("127.0.0.1");
 		//ipText.setPrefSize(220.0, 30.0);
 		ipText.setPrefSize(150.0, 30.0);
 		portText = new TextField();

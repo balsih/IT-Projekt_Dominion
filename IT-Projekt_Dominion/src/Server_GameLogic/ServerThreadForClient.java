@@ -111,8 +111,9 @@ public class ServerThreadForClient implements Runnable {
 	 */
     private Message processMessage(Message msgIn) {
 		Message msgOut = null;
-		if(this.clientName == null)
+		if(this.clientName == null){
 			this.clientName = msgIn.getClient();
+		}
 		
 		if(!(msgIn instanceof AskForChanges_Message))
 			this.logger.info("Received from "+this.clientName+": "+msgIn.getType().toString());
@@ -148,6 +149,9 @@ public class ServerThreadForClient implements Runnable {
 		case Interaction:
 			msgOut = this.processInteraction(msgIn);
 			break;
+		case Knock:
+			msgOut = new Commit_Message();
+			break;
 		default:
 			msgOut = new Error_Message();
 		}
@@ -166,6 +170,7 @@ public class ServerThreadForClient implements Runnable {
 	 */
 	private Message processLogin(Message msgIn) {
 		Login_Message lmsg = (Login_Message) msgIn;
+		this.clientName = msgIn.getClient();
 		DB_Connector dbConnector = DB_Connector.getDB_Connector();
 		boolean success = dbConnector.checkLoginInput(this.clientName, lmsg.getPassword());
 		
@@ -193,6 +198,7 @@ public class ServerThreadForClient implements Runnable {
      */
 	private Message processCreateNewPlayer(Message msgIn) {
 		CreateNewPlayer_Message cnpmsg = (CreateNewPlayer_Message) msgIn;
+		this.clientName = cnpmsg.getClient();
 		String password = cnpmsg.getPassword();
 		
 		DB_Connector dbConnector = DB_Connector.getDB_Connector();
