@@ -148,6 +148,9 @@ public class ServerThreadForClient implements Runnable {
 		case Interaction:
 			msgOut = this.processInteraction(msgIn);
 			break;
+		case Knock:
+			msgOut = new Commit_Message();
+			break;
 		default:
 			msgOut = new Error_Message();
 		}

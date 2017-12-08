@@ -21,7 +21,8 @@ public enum MessageType {
 	Failure,
 	Error,
 	GiveUp,
-	Interaction;
+	Interaction,
+	Knock;
 
 	/**
 	 * Converts a String into enum MessageType if it exists
