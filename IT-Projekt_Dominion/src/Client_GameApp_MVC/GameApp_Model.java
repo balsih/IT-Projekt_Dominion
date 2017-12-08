@@ -268,6 +268,7 @@ public class GameApp_Model extends Model {
 		
 		boolean result = false;
 		Knock_Message kmsg = new Knock_Message();
+		kmsg.setClient("unknown client");
 		Message msgIn = this.processMessage(kmsg);
 		if(msgIn instanceof Commit_Message)
 			result = true;

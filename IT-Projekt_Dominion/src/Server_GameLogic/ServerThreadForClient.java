@@ -51,13 +51,12 @@ public class ServerThreadForClient implements Runnable {
 	private static HashMap<InetAddress, ServerThreadForClient> connections = new HashMap<InetAddress, ServerThreadForClient>();
 	
 	private final Logger logger = Logger.getLogger("");
-	private final String UNKNOWN_CLIENT = "unknown client";
 
 	private Socket clientSocket;
 	private Game game;
 	private Player player;
 	private Queue<Message> waitingMessages = new LinkedList<Message>();
-	private String clientName = UNKNOWN_CLIENT;
+	private String clientName = null;
 
 
 	private ServerThreadForClient(){
@@ -112,7 +111,7 @@ public class ServerThreadForClient implements Runnable {
 	 */
     private Message processMessage(Message msgIn) {
 		Message msgOut = null;
-		if(this.clientName == UNKNOWN_CLIENT){
+		if(this.clientName == null){
 			this.clientName = msgIn.getClient();
 		}
 		
@@ -171,6 +170,7 @@ public class ServerThreadForClient implements Runnable {
 	 */
 	private Message processLogin(Message msgIn) {
 		Login_Message lmsg = (Login_Message) msgIn;
+		this.clientName = msgIn.getClient();
 		DB_Connector dbConnector = DB_Connector.getDB_Connector();
 		boolean success = dbConnector.checkLoginInput(this.clientName, lmsg.getPassword());
 		
@@ -198,6 +198,7 @@ public class ServerThreadForClient implements Runnable {
      */
 	private Message processCreateNewPlayer(Message msgIn) {
 		CreateNewPlayer_Message cnpmsg = (CreateNewPlayer_Message) msgIn;
+		this.clientName = cnpmsg.getClient();
 		String password = cnpmsg.getPassword();
 		
 		DB_Connector dbConnector = DB_Connector.getDB_Connector();
