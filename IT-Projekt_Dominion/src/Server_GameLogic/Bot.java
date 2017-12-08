@@ -52,6 +52,35 @@ public class Bot extends Player implements Runnable {
 		super(name);
 		System.out.println(this.playerName + " Bot erstellt");
 
+		buyPrioOneCard.put(CardName.Cellar, 32);
+		buyPrioOneCard.put(CardName.Duchy, 10);
+		buyPrioOneCard.put(CardName.Estate, 5);
+		buyPrioOneCard.put(CardName.Gold, 50);
+		buyPrioOneCard.put(CardName.Market, 68);
+		buyPrioOneCard.put(CardName.Mine, 24);
+		buyPrioOneCard.put(CardName.Province, 100);
+		buyPrioOneCard.put(CardName.Remodel, 22);
+		buyPrioOneCard.put(CardName.Silver, 40);
+		buyPrioOneCard.put(CardName.Smithy, 26);
+		buyPrioOneCard.put(CardName.Village, 66);
+		buyPrioOneCard.put(CardName.Woodcutter, 28);
+		buyPrioOneCard.put(CardName.Workshop, 30);
+
+		// change priorities!!!!!!!
+		buyPrioMoreCards.put(CardName.Cellar, 32);
+		buyPrioMoreCards.put(CardName.Duchy, 10);
+		buyPrioMoreCards.put(CardName.Estate, 5);
+		buyPrioMoreCards.put(CardName.Gold, 50);
+		buyPrioMoreCards.put(CardName.Market, 68);
+		buyPrioMoreCards.put(CardName.Mine, 24);
+		buyPrioMoreCards.put(CardName.Province, 100);
+		buyPrioMoreCards.put(CardName.Remodel, 22);
+		buyPrioMoreCards.put(CardName.Silver, 40);
+		buyPrioMoreCards.put(CardName.Smithy, 26);
+		buyPrioMoreCards.put(CardName.Village, 66);
+		buyPrioMoreCards.put(CardName.Woodcutter, 28);
+		buyPrioMoreCards.put(CardName.Workshop, 30);
+
 		maxCardsOfAType.put(CardName.Market, 3);
 		maxCardsOfAType.put(CardName.Smithy, 2);
 		maxCardsOfAType.put(CardName.Village, 3);
@@ -90,37 +119,39 @@ public class Bot extends Player implements Runnable {
 	 * Executes the Bot with all its stages play and buy.
 	 */
 	public void run() {
-		System.out.println(this.playerName + " started run-Methode");
-		//makeBreak();
+		System.out.println(this.playerName + " started round " + counter);
+		// makeBreak();
 		while (actions > 0 && actualPhase == Phase.Action) {
 			estimatePlayPriorityOfActionCards();
 			playActionCards();
+			System.out.println(this.playerName + " Action_Phase finished");
 		}
 
-		System.out.println(this.playerName + " playPhase abgeschlossen");
 		if (buys > 0 && actualPhase == Phase.Buy) {
 			playTreasureCards();
+			System.out.println(this.playerName + " TreasureCards played");
 			do {
 				estimateBuyPriorityOfVictoryCards();
 				estimateBuyPriorityOfTreasureCards();
 				estimateBuyPriorityOfActionCards();
 				buy();
-				System.out.println(this.playerName + " buyPhase abgeschlossen");
+				System.out.println(this.playerName + " buyPhase finished");
 			} while (buys > 0 && buyOneMore == true && actualPhase == Phase.Buy);
 		}
-		System.out.println(this.playerName + " Runde abgeschlossen");
+		System.out.println(this.playerName + " round " + counter + " finished");
 	}
-	
+
 	/**
 	 * Plays all the available TreasureCards which are in the hands of the bot,
 	 * before buying cards.
 	 */
 	private void playTreasureCards() {
-		for (Card card : handCards) {
-			if (card.getType().equals(CardType.Treasure)) {
-				cardToPlay = card;
+		for (int index = 0; index < handCards.size(); index++) {
+			if (handCards.get(index).getType().equals(CardType.Treasure)) {
+				cardToPlay = handCards.get(index);
 				play(cardToPlay);
-				//makeBreak();
+				index = 0;
+				System.out.println(this.playerName + " played " + cardToPlay.toString());
 			}
 		}
 		cardToPlay = null;
@@ -140,140 +171,142 @@ public class Bot extends Player implements Runnable {
 				}
 			}
 		}
-		//makeBreak();
-	//	System.out.println(this.playerName + " spielt " +cardToPlay.toString());
-//		if(cardToPlay == null)
-//			skipPhase();
-//		else {
-		Message playMessage = play(cardToPlay);
-		if (playMessage instanceof UpdateGame_Message) {
-			UpdateGame_Message ugmsg = (UpdateGame_Message) playMessage;
-			switch (cardToPlay.getCardName()) {
-			case Mine:
-				Card tempCard = null;
-				for (Card card : handCards) {
-					if (card.getCardName().equals(CardName.Copper))
-						tempCard = card;
-				}
-				Mine_Card mCard = (Mine_Card) this.getPlayedCards().get(this.getPlayedCards().size() - 1);
-				ugmsg = (UpdateGame_Message) mCard.executeMine(tempCard);
-				if (tempCard.getCardName().equals(CardName.Copper))
-					numberOfGoldAndSilverCards++;
-				break;
-			case Cellar:
-				discardedCardsForCellar = null;
-				for (Card card : handCards) {
-					if (card.getType().equals(CardType.Victory))
-						discardedCardsForCellar.add(card);
-					if (actions == 0) {
-						if (card.getType().equals(CardType.Action))
-							discardedCardsForCellar.add(card);
+		// makeBreak();
+		// System.out.println(this.playerName + " spielt " +cardToPlay.toString());
+		if (cardToPlay == null)
+			skipPhase();
+		else {
+			Message playMessage = play(cardToPlay);
+			System.out.println(this.playerName + " played " + cardToPlay.toString());
+			if (playMessage instanceof UpdateGame_Message) {
+				UpdateGame_Message ugmsg = (UpdateGame_Message) playMessage;
+				switch (cardToPlay.getCardName()) {
+				case Mine:
+					Card tempCard = null;
+					for (Card card : handCards) {
+						if (card.getCardName().equals(CardName.Copper))
+							tempCard = card;
 					}
+					Mine_Card mCard = (Mine_Card) this.getPlayedCards().get(this.getPlayedCards().size() - 1);
+					ugmsg = (UpdateGame_Message) mCard.executeMine(tempCard);
+					if (tempCard.getCardName().equals(CardName.Copper))
+						numberOfGoldAndSilverCards++;
+					break;
+				case Cellar:
+					discardedCardsForCellar = null;
+					for (Card card : handCards) {
+						if (card.getType().equals(CardType.Victory))
+							discardedCardsForCellar.add(card);
+						if (actions == 0) {
+							if (card.getType().equals(CardType.Action))
+								discardedCardsForCellar.add(card);
+						}
+					}
+					Cellar_Card cCard = (Cellar_Card) this.getPlayedCards().get(this.getPlayedCards().size() - 1);
+					ugmsg = cCard.executeCellar(discardedCardsForCellar);
+					break;
+				case Remodel:
+					prioListForRemodel.put(CardName.Cellar, 50);
+					prioListForRemodel.put(CardName.Copper, 48);
+					prioListForRemodel.put(CardName.Estate, 46);
+					prioListForRemodel.put(CardName.Gold, 10);
+					prioListForRemodel.put(CardName.Mine, 30);
+					prioListForRemodel.put(CardName.Remodel, 94);
+					prioListForRemodel.put(CardName.Silver, 20);
+					prioListForRemodel.put(CardName.Smithy, 85);
+					prioListForRemodel.put(CardName.Woodcutter, 89);
+					prioListForRemodel.put(CardName.Workshop, 87);
+
+					if (gameStage >= 75)
+						prioListForRemodel.replace(CardName.Gold, 98);
+					prioListForRemodel.replace(CardName.Silver, 96);
+					if (getNumberOfOwnedCards(CardName.Gold) >= 3)
+						prioListForRemodel.replace(CardName.Mine, 94);
+
+					// executeRemodel1
+					Card discardedCard1 = null;
+					int tempValue = 0;
+					for (Card card : handCards) {
+						if (prioListForRemodel.containsKey(card.getCardName())) {
+							if (tempValue <= prioListForRemodel.get(card.getCardName())) {
+								tempValue = prioListForRemodel.get(card.getCardName());
+								discardedCard1 = card;
+							}
+						}
+					}
+					Remodel_Card rCard1 = (Remodel_Card) this.getPlayedCards().get(this.getPlayedCards().size() - 1);
+					ugmsg = rCard1.executeRemodel1(discardedCard1);
+
+					// executeRemodel2
+					LinkedList<CardName> takeChoices1 = ugmsg.getCardSelection();
+					List<CardName> prioList1 = this.buyPrioOneCard.keySet().stream().sorted(
+							(s1, s2) -> Integer.compare(this.buyPrioOneCard.get(s2), this.buyPrioOneCard.get(s1)))
+							.collect(Collectors.toList());
+					for (CardName discardedCard2 : prioList1) {
+						if (takeChoices1.contains(discardedCard2)) {
+							Remodel_Card rCard2 = (Remodel_Card) this.getPlayedCards()
+									.get(this.getPlayedCards().size() - 1);
+							ugmsg = rCard2.executeRemodel2(discardedCard2);
+							numberOfTotalCards++;
+							if (Card.getCard(cardToBuy).getType().equals(CardType.Action))
+								numberOfActionCards++;
+							else if (discardedCard2.equals(CardName.Silver) || discardedCard2.equals(CardName.Gold))
+								numberOfGoldAndSilverCards++;
+						}
+						break;
+					}
+					break;
+				case Workshop:
+					LinkedList<CardName> takeChoices2 = ugmsg.getCardSelection();
+					List<CardName> prioList2 = this.buyPrioOneCard.keySet().stream().sorted(
+							(s1, s2) -> Integer.compare(this.buyPrioOneCard.get(s2), this.buyPrioOneCard.get(s1)))
+							.collect(Collectors.toList());
+					for (CardName newCard : prioList2) {
+						if (takeChoices2.contains(newCard)) {
+							Workshop_Card wCard = (Workshop_Card) this.getPlayedCards()
+									.get(this.getPlayedCards().size() - 1);
+							ugmsg = wCard.executeWorkshop(newCard);
+							numberOfTotalCards++;
+							if (Card.getCard(cardToBuy).getType().equals(CardType.Action))
+								numberOfActionCards++;
+							else if (newCard.equals(CardName.Silver) || newCard.equals(CardName.Gold))
+								numberOfGoldAndSilverCards++;
+							break;
+						}
+					}
+					break;
+				default:
+					break;
 				}
-				Cellar_Card cCard = (Cellar_Card) this.getPlayedCards().get(this.getPlayedCards().size() - 1);
-				ugmsg = cCard.executeCellar(discardedCardsForCellar);
-				break;
-			case Remodel:
-				prioListForRemodel.put(CardName.Cellar, 50);
-				prioListForRemodel.put(CardName.Copper, 48);
-				prioListForRemodel.put(CardName.Estate, 46);
-				prioListForRemodel.put(CardName.Gold, 10);
-				prioListForRemodel.put(CardName.Mine, 30);
-				prioListForRemodel.put(CardName.Remodel, 94);
-				prioListForRemodel.put(CardName.Silver, 20);
-				prioListForRemodel.put(CardName.Smithy, 85);
-				prioListForRemodel.put(CardName.Woodcutter, 89);
-				prioListForRemodel.put(CardName.Workshop, 87);
-
-				if (gameStage >= 75)
-					prioListForRemodel.replace(CardName.Gold, 98);
-				prioListForRemodel.replace(CardName.Silver, 96);
-				if (getNumberOfOwnedCards(CardName.Gold) >= 3)
-					prioListForRemodel.replace(CardName.Mine, 94);
-
-				// executeRemodel1
-				Card discardedCard1 = null;
-				int tempValue = 0;
-				for (Card card : handCards) {
-					if (prioListForRemodel.containsKey(card.getCardName())) {
-						if (tempValue <= prioListForRemodel.get(card.getCardName())) {
-							tempValue = prioListForRemodel.get(card.getCardName());
-							discardedCard1 = card;
+				if (ugmsg.getInteractionType().equals(Interaction.EndOfTurn)) {
+					List<CardName> cardToChoose = PRIOLIST_TOPDISCARDPILE_CARD.keySet().stream()
+							.sorted((s1, s2) -> Integer.compare(PRIOLIST_TOPDISCARDPILE_CARD.get(s2),
+									PRIOLIST_TOPDISCARDPILE_CARD.get(s1)))
+							.collect(Collectors.toList());
+					for (int indexCounter2 = 0; indexCounter2 < cardToChoose.size(); indexCounter2++) {
+						CardName cardname = cardToChoose.get(indexCounter2);
+						Card discardPileTopCard = Card.getCard(cardname);
+						if (handCards.contains(discardPileTopCard)) {
+							Card card = handCards.get(handCards.indexOf(discardPileTopCard));
+							cleanUp(card);
+							break;
 						}
 					}
 				}
-				Remodel_Card rCard1 = (Remodel_Card) this.getPlayedCards().get(this.getPlayedCards().size() - 1);
-				ugmsg = rCard1.executeRemodel1(discardedCard1);
 
-				// executeRemodel2
-				LinkedList<CardName> takeChoices1 = ugmsg.getCardSelection();
-				List<CardName> prioList1 = this.buyPrioOneCard.keySet().stream()
-						.sorted((s1, s2) -> Integer.compare(this.buyPrioOneCard.get(s2), this.buyPrioOneCard.get(s1)))
-						.collect(Collectors.toList());
-				for (CardName discardedCard2 : prioList1) {
-					if (takeChoices1.contains(discardedCard2)) {
-						Remodel_Card rCard2 = (Remodel_Card) this.getPlayedCards()
-								.get(this.getPlayedCards().size() - 1);
-						ugmsg = rCard2.executeRemodel2(discardedCard2);
-						numberOfTotalCards++;
-						if (Card.getCard(cardToBuy).getType().equals(CardType.Action))
-							numberOfActionCards++;
-						else if (discardedCard2.equals(CardName.Silver) || discardedCard2.equals(CardName.Gold))
-							numberOfGoldAndSilverCards++;
-					}
-					break;
-				}
-				break;
-			case Workshop:
-				LinkedList<CardName> takeChoices2 = ugmsg.getCardSelection();
-				List<CardName> prioList2 = this.buyPrioOneCard.keySet().stream()
-						.sorted((s1, s2) -> Integer.compare(this.buyPrioOneCard.get(s2), this.buyPrioOneCard.get(s1)))
-						.collect(Collectors.toList());
-				for (CardName newCard : prioList2) {
-					if (takeChoices2.contains(newCard)) {
-						Workshop_Card wCard = (Workshop_Card) this.getPlayedCards()
-								.get(this.getPlayedCards().size() - 1);
-						ugmsg = wCard.executeWorkshop(newCard);
-						numberOfTotalCards++;
-						if (Card.getCard(cardToBuy).getType().equals(CardType.Action))
-							numberOfActionCards++;
-						else if (newCard.equals(CardName.Silver) || newCard.equals(CardName.Gold))
-							numberOfGoldAndSilverCards++;
-						break;
-					}
-				}
-				break;
-			default:
-				break;
-			}
-			if (ugmsg.getInteractionType().equals(Interaction.EndOfTurn)) {
-				List<CardName> cardToChoose = PRIOLIST_TOPDISCARDPILE_CARD.keySet().stream().sorted((s1, s2) -> Integer
-						.compare(PRIOLIST_TOPDISCARDPILE_CARD.get(s2), PRIOLIST_TOPDISCARDPILE_CARD.get(s1)))
-						.collect(Collectors.toList());
-				for (int indexCounter2 = 0; indexCounter2 < cardToChoose.size(); indexCounter2++) {
-					CardName cardname = cardToChoose.get(indexCounter2);
-					Card discardPileTopCard = Card.getCard(cardname);
-					if (handCards.contains(discardPileTopCard)) {
-						Card card = handCards.get(handCards.indexOf(discardPileTopCard));
-						cleanUp(card);
-						break;
-					}
-				}
-			}
-
-		} else if (playMessage instanceof Failure_Message)
-			skipPhase();
-		// if nothing applies playMessage must be a PlayerSuccess_Message --> do nothing
-		cardToPlay = null;
+			} else if (playMessage instanceof Failure_Message)
+				skipPhase();
+			// if nothing applies playMessage must be a PlayerSuccess_Message --> do nothing
+			cardToPlay = null;
+		}
 	}
-//	}
 
 	/**
 	 * Calculates which card has to be bought and checks if a second buy would make
 	 * sense.
 	 */
 	private void buy() {
-		makeBreak();
+		// makeBreak();
 		List<CardName> list;
 		if (buys > 2 && gameStage <= 75) {
 			List<CardName> list2 = buyPrioMoreCards.keySet().stream()
@@ -289,19 +322,21 @@ public class Bot extends Player implements Runnable {
 		for (int indexCounter1 = 0; indexCounter1 < list.size(); indexCounter1++) {
 			cardToBuy = list.get(indexCounter1);
 			buyMessage = buy(cardToBuy);
-
 			// if PlayerSuccess_Message --> terminate buy();
 			if (buyMessage instanceof PlayerSuccess_Message)
 				break;
 			// if UpdateGame_Message --> check if Interaction == EndOfTurn;
 			else if (buyMessage instanceof UpdateGame_Message) {
+				System.out.println(this.playerName + " bought " + cardToBuy.toString());
 				numberOfTotalCards++;
 				if (cardToBuy.equals(CardName.Gold) || cardToBuy.equals(CardName.Silver))
 					numberOfGoldAndSilverCards++;
 				else if (Card.getCard(cardToBuy).getType().equals(CardType.Action))
 					numberOfActionCards++;
 				UpdateGame_Message ugmsg = (UpdateGame_Message) buyMessage;
-				if (ugmsg.getInteractionType().equals(Interaction.EndOfTurn)) {
+				if(ugmsg.getCurrentPhase().equals(Phase.CleanUp))
+					break;
+				else if (ugmsg.getInteractionType().equals(Interaction.EndOfTurn)) {
 					List<CardName> cardToChoose = PRIOLIST_TOPDISCARDPILE_CARD.keySet().stream()
 							.sorted((s1, s2) -> Integer.compare(PRIOLIST_TOPDISCARDPILE_CARD.get(s2),
 									PRIOLIST_TOPDISCARDPILE_CARD.get(s1)))
@@ -498,7 +533,7 @@ public class Bot extends Player implements Runnable {
 		prioListForPlaying.put(CardName.Workshop, 2);
 		int numOfVictoryCards = 0;
 		int numOfPossibleMine = 0;
-		//cardNamesOfActionHandCards = null;
+		// cardNamesOfActionHandCards = null;
 
 		// calculate types of handCards
 		for (Card card : handCards) {
