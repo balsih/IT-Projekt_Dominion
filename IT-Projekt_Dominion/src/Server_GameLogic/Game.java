@@ -215,9 +215,6 @@ public class Game {
 			}
 			
 			currentPlayer.startMove();
-			
-			if(!currentPlayer.containsCardType(currentPlayer.handCards, CardType.Action))
-				currentPlayer.setActualPhase(Phase.Buy);
 	}
 
 	/**
