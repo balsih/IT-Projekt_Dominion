@@ -195,7 +195,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			view.lblNmbrOfProvinceCards.setText(Integer.toString(model.buyCards.get(CardName.Province)));
 
 			// Adds new hand cards and event handlers
-			if (model.yourNewHandCards.isEmpty()) {
+			if (!model.yourNewHandCards.isEmpty()) {
 				for (Card card : model.yourNewHandCards) {
 					ImageView img = card.getImage();
 					setInitialHandCardsEvents(card, resizeImage(img));
