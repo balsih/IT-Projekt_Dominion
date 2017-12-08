@@ -330,6 +330,8 @@ public class Player {
 
 		ugmsg.setDiscardPileCardNumber(this.discardPile.size());
 		
+		ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.skipPhase(), ugmsg);
+		
 		ugmsg = UpdateGame_Message.merge(this.draw(this.NUM_OF_HANDCARDS), ugmsg);
 
 		// if the cleanUp phase is terminated, skip
