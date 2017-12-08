@@ -67,10 +67,11 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 		
 		// set on action and handling for connectBtn
 		view.connectBtn.setOnAction((event) -> {
-			try {
+			try {	
+				model.startBtnClickSound();
 				if(model.init(view.ipText.getText(), Integer.parseInt(view.portText.getText()))){
 					//view.connectAlert.showAndWait(); -> keien Fehlermeldung vorgesehen
-					
+	
 					// enables the elements again after connectBtn got clicked 
 					view.nameLbl.setDisable(false);
 					view.nameText.setDisable(false);
@@ -78,12 +79,40 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 					view.passwordText.setDisable(false);
 					view.createNewPlayerBtn.setDisable(false);
 					view.quitBtn.setDisable(false);
-				}
-				
+				} else {
+					//view.loginAlert.setHeaderText(message);
+					view.loginAlert.showAndWait(); // warning alert if login fails
+				}				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		});
+		
+		
+//		// set on action and handling for connectBtn
+//		view.connectBtn.setOnAction((event) -> {
+//			try {
+//				model.startBtnClickSound();
+//				String message = model.init(view.ipText.getText(), Integer.parseInt(view.portText.getText()));
+//				if (model.failure) {
+//					view.loginAlert.setHeaderText(message);
+//					view.loginAlert.showAndWait(); // warning alert if login fails
+//					view.connectAlert.showAndWait();
+//				} else {
+//					// enables the elements again after connectBtn got clicked
+//					view.nameLbl.setDisable(false);
+//					view.nameText.setDisable(false);
+//					view.passwordLbl.setDisable(false);
+//					view.passwordText.setDisable(false);
+//					view.createNewPlayerBtn.setDisable(false);
+//					view.quitBtn.setDisable(false);
+//				}
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		});
+
+		
 		
 		// set on action and handling for nameText
 		view.nameText.textProperty().addListener((change) -> {
@@ -123,6 +152,7 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 		// set on action and handling for loginBtn
 		view.loginBtn.setOnAction((event) -> {
 			try {
+				model.startBtnClickSound();
 				String message = model.sendLogin(view.nameText.getText(), view.passwordText.getText());
 				if (model.failure) {
 					view.loginAlert.setHeaderText(message);
@@ -137,6 +167,7 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 		// set on action and handling for createNewPlayerBtn
 		view.createNewPlayerBtn.setOnAction((event) -> {
 			try {
+				model.startBtnClickSound();
 				main.startCreatePlayer();
 				view.stop();
 			} catch (Exception e) {
@@ -146,6 +177,7 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 		
 		// set on action and handling for quitBtn
 		view.quitBtn.setOnAction((event) -> {
+			model.startBtnClickSound();
 			view.stop();
 		});
 		

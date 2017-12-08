@@ -102,11 +102,12 @@ public class Login_View extends View<GameApp_Model> {
 		
 		ipText = new TextField();
 		ipText.setId("ipText");
-		ipText.setText("127.0.0.1");
+		ipText.setText("127.0.0.1"); // IP nur zu Testzwecken
 		//ipText.setPrefSize(220.0, 30.0);
 		ipText.setPrefSize(150.0, 30.0);
 		portText = new TextField();
 		portText.setId("portText");
+		portText.setText("8080"); // Port nur zu Testzwecken
 		portText.setPrefSize(60.0, 30.0);
 		
 		connectBtn = new Button(t.getString("login.connectBtn"));
