@@ -381,19 +381,19 @@ public class Player {
 			switch (this.actualPhase) {
 			case Action:
 				this.actualPhase = Phase.Buy;
-				ugmsg.setCurrentPhase(Phase.Buy);
+				ugmsg.setCurrentPhase(this.actualPhase);
 				break;
 
 			case Buy:
 				this.actualPhase = Phase.CleanUp;
-				ugmsg.setCurrentPhase(Phase.CleanUp);
+				ugmsg.setCurrentPhase(this.actualPhase);
 				break;
 
 			case CleanUp:
 				this.moves++;
 				game.switchPlayer();
 				ugmsg.setCurrentPlayer(game.getCurrentPlayer().getPlayerName());
-				ugmsg.setCurrentPhase(Phase.Action);
+				ugmsg.setCurrentPhase(this.actualPhase);
 				ugmsg.setInteractionType(Interaction.EndOfTurn);
 				break;
 
