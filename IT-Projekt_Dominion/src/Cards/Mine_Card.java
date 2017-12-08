@@ -34,7 +34,7 @@ public class Mine_Card extends Card {
 		
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 				
-		ugmsg.setLog(player.getPlayerName()+": #played# "+this.cardName.toString()+"# #card#");
+		ugmsg.setLog(player.getPlayerName()+": #played# #"+this.cardName.toString()+"# #card#");
 		
 		// update game Messages -> XML 
 		ugmsg.setInteractionType(Interaction.Mine);

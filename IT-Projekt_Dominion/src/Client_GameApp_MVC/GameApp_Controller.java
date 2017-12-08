@@ -222,8 +222,10 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 		// Describes what happens when the user clicks a hand card
 		img.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-			if (model.interaction == Interaction.Skip || model.interaction == Interaction.Cellar
-					|| model.interaction == Interaction.Remodel1 || model.interaction == Interaction.Mine) {
+			if ((model.interaction == Interaction.Skip || model.interaction == Interaction.Cellar
+					|| model.interaction == Interaction.Remodel1 || model.interaction == Interaction.Mine
+					|| model.interaction == Interaction.EndOfTurn) 
+					&& model.currentPlayer.compareTo(model.clientName) == 0) {
 
 				if (model.interaction == Interaction.Skip && card.getType() != CardType.Victory
 						&& model.sendPlayCard(card)) {
@@ -255,6 +257,16 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 					model.discardCard = card;
 					if (model.sendInteraction()) {
 						view.hboxHandCards.getChildren().remove(img);
+						updateGUI();
+					}
+				}
+				
+				if(model.interaction == Interaction.EndOfTurn){
+					model.discardCard = card;
+					if(model.sendInteraction()){
+						view.hboxHandCards.getChildren().clear();
+						view.hboxPlayedCards.getChildren().clear();
+						view.stackpDiscard.getChildren().add(img);
 						updateGUI();
 					}
 				}
@@ -308,7 +320,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 					newImg.setFitHeight(imageHeight);
 					newImg.setEffect(initial);
 				});
-				view.stackpDiscard.getChildren().add(0, newImg);
+				view.stackpDiscard.getChildren().add(newImg);
 				updateGUI();
 			}
 		});
@@ -442,6 +454,11 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 						// Adds deck flipside card
 						Card flipsideCard = Card.getCard(CardName.Flipside);
 						view.stackpDeck.getChildren().add(resizeImage(flipsideCard.getImage()));
+						
+						//initialize opponent's variables
+						model.opponentDeck = model.yourDeck.size();
+						model.opponentDiscardPile = model.yourDiscardPile.size();
+						model.opponentHandCards = model.yourHandCards.size();
 
 					});
 
