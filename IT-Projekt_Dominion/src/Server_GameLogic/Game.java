@@ -304,11 +304,11 @@ public class Game {
 				gameCounter++;
 				existingGame.startGame();
 				
-				existingGame.getPlayer1().getServerThreadForClient()
-						.addWaitingMessages(existingGame.getPlayer1().getServerThreadForClient().getCG_Message(existingGame));
-				existingGame.getPlayer2().getServerThreadForClient()
-						.addWaitingMessages(existingGame.getPlayer2().getServerThreadForClient().getCG_Message(existingGame));
-				existingGame.logger.info(existingGame.player1.getPlayerName() + " started a multiplayer game versus " + existingGame.player2.getPlayerName());
+//				existingGame.getPlayer1().getServerThreadForClient()
+//						.addWaitingMessages(existingGame.getPlayer1().getServerThreadForClient().getCG_Message(existingGame));
+//				existingGame.getPlayer2().getServerThreadForClient()
+//						.addWaitingMessages(existingGame.getPlayer2().getServerThreadForClient().getCG_Message(existingGame));
+//				existingGame.logger.info(existingGame.player1.getPlayerName() + " started a multiplayer game versus " + existingGame.player2.getPlayerName());
 				
 			}
 
