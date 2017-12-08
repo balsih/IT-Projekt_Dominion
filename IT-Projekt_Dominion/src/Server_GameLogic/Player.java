@@ -92,11 +92,10 @@ public class Player {
 		this.buys = 1;
 		this.coins = 0;
 		this.counter = 0;
+		this.actualPhase = Phase.Action;
 		
 		if(!this.containsCardType(this.handCards, CardType.Action))
-			this.setActualPhase(Phase.Buy);
-		else
-			this.actualPhase = Phase.Action;
+			this.setActualPhase(Phase.Buy);	
 	}
 
 	/**
