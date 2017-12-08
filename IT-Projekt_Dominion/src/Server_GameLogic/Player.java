@@ -140,7 +140,7 @@ public class Player {
 			return ugmsg;
 
 			// plays the selected treasure card which not requires any available action-points
-		} else if (this.actualPhase == Phase.Buy && this.equals(game.getCurrentPlayer()) && selectedCard.getType() == CardType.Action) {
+		} else if (this.actualPhase == Phase.Buy && this.equals(game.getCurrentPlayer()) && selectedCard.getType() == CardType.Treasure) {
 			ugmsg = selectedCard.executeCard(this);
 			playedCards.add(this.handCards.remove(index));
 			return ugmsg;
