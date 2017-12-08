@@ -107,7 +107,7 @@ public class Login_View extends View<GameApp_Model> {
 		ipText.setPrefSize(150.0, 30.0);
 		portText = new TextField();
 		portText.setId("portText");
-		portText.setText("8080"); // Port nur zu Testzwecken
+		//portText.setText("8080"); // Port nur zu Testzwecken
 		portText.setPrefSize(60.0, 30.0);
 		
 		connectBtn = new Button(t.getString("login.connectBtn"));
@@ -181,6 +181,7 @@ public class Login_View extends View<GameApp_Model> {
 		scene.getStylesheets().add(getClass().getResource("Login.css").toExternalForm());
 		this.stage.setScene(scene);
 		//stage.setFullScreen(true); // set Full Screen
+		//stage.setFullScreenExitHint(""); // set full screen message -> shows nothing
 		
 		return scene;
 	}

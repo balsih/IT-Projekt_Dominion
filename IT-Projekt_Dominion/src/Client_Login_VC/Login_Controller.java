@@ -26,7 +26,7 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 		super(model, view);
 		
 		// disables elements before user presses connectBtn after filled in IP and port
-		// -> ev. Ã¼ber change listener steuern... 
+		// -> ev. über change listener steuern... 
 		view.nameLbl.setDisable(true);
 		view.nameText.setDisable(true);
 		view.passwordLbl.setDisable(true);
@@ -65,11 +65,12 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 		});
 		
 		
-		// set on action and handling for connectBtn
+		// set on action and handling for connectBtn -> Methode nur noch aktuell bis init() angepasst wurde -> String return und ABfrage von boolean failure
 		view.connectBtn.setOnAction((event) -> {
 			try {	
 				model.startBtnClickSound();
-				if(model.init(view.ipText.getText(), Integer.parseInt(view.portText.getText()))){
+				model.init(view.ipText.getText(), Integer.parseInt(view.portText.getText()));
+				//if(model.init(view.ipText.getText(), Integer.parseInt(view.portText.getText()))){
 					//view.connectAlert.showAndWait(); -> keien Fehlermeldung vorgesehen
 	
 					// enables the elements again after connectBtn got clicked 
@@ -79,14 +80,16 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 					view.passwordText.setDisable(false);
 					view.createNewPlayerBtn.setDisable(false);
 					view.quitBtn.setDisable(false);
-				} else {
+				//} else {
 					//view.loginAlert.setHeaderText(message);
-					view.loginAlert.showAndWait(); // warning alert if login fails
-				}				
+				//	view.loginAlert.showAndWait(); // warning alert if login fails
+				//}				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		});
+		
+		// adapted/new method below:
 		
 		
 //		// set on action and handling for connectBtn
