@@ -29,6 +29,7 @@ import Messages.GameMode_Message;
 import Messages.HighScore_Message;
 import Messages.Interaction;
 import Messages.Interaction_Message;
+import Messages.Knock_Message;
 import Messages.Login_Message;
 import Messages.Message;
 import Messages.MessageType;
@@ -252,13 +253,24 @@ public class GameApp_Model extends Model {
 
 	/**
 	 * @author Lukas Gehrig
-	 * The IP will be set here
+	 * The IP and port will be set here
+	 * It knocks to server if the port with the given IP is open
 	 * 
-	 * @param ipAdress
+	 * @param ipAddress
+	 * @param port
+	 * @return result, true if the port with the given IP is open
 	 */
-	public void init(String ipAddress, Integer port){
+	public boolean init(String ipAddress, Integer port){
 		this.ipAddress = ipAddress;
 		this.port = port;
+		
+		boolean result = false;
+		Knock_Message kmsg = new Knock_Message();
+		Message msgIn = this.processMessage(kmsg);
+		if(msgIn instanceof Commit_Message)
+			result = true;
+		
+		return result;
 	}
 
 	/**
@@ -358,7 +370,7 @@ public class GameApp_Model extends Model {
 			HighScore_Message nhsmsg = (HighScore_Message) msgIn;
 			result = nhsmsg.getHighScore();
 		}
-		return result;
+		return this.translate(result);
 	}
 
 	/**TESTED

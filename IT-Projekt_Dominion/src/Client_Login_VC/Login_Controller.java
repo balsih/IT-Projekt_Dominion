@@ -68,16 +68,17 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 		// set on action and handling for connectBtn
 		view.connectBtn.setOnAction((event) -> {
 			try {
-				model.init(view.ipText.getText(), Integer.parseInt(view.portText.getText()));
-				//view.connectAlert.showAndWait(); -> keien Fehlermeldung vorgesehen
-				
-				// enables the elements again after connectBtn got clicked 
-				view.nameLbl.setDisable(false);
-				view.nameText.setDisable(false);
-				view.passwordLbl.setDisable(false);
-				view.passwordText.setDisable(false);
-				view.createNewPlayerBtn.setDisable(false);
-				view.quitBtn.setDisable(false);
+				if(model.init(view.ipText.getText(), Integer.parseInt(view.portText.getText()))){
+					//view.connectAlert.showAndWait(); -> keien Fehlermeldung vorgesehen
+					
+					// enables the elements again after connectBtn got clicked 
+					view.nameLbl.setDisable(false);
+					view.nameText.setDisable(false);
+					view.passwordLbl.setDisable(false);
+					view.passwordText.setDisable(false);
+					view.createNewPlayerBtn.setDisable(false);
+					view.quitBtn.setDisable(false);
+				}
 				
 			} catch (Exception e) {
 				e.printStackTrace();

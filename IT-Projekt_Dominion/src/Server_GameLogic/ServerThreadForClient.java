@@ -51,12 +51,13 @@ public class ServerThreadForClient implements Runnable {
 	private static HashMap<InetAddress, ServerThreadForClient> connections = new HashMap<InetAddress, ServerThreadForClient>();
 	
 	private final Logger logger = Logger.getLogger("");
+	private final String UNKNOWN_CLIENT = "unknown client";
 
 	private Socket clientSocket;
 	private Game game;
 	private Player player;
 	private Queue<Message> waitingMessages = new LinkedList<Message>();
-	private String clientName = null;
+	private String clientName = UNKNOWN_CLIENT;
 
 
 	private ServerThreadForClient(){
@@ -111,8 +112,9 @@ public class ServerThreadForClient implements Runnable {
 	 */
     private Message processMessage(Message msgIn) {
 		Message msgOut = null;
-		if(this.clientName == null)
+		if(this.clientName == UNKNOWN_CLIENT){
 			this.clientName = msgIn.getClient();
+		}
 		
 		if(!(msgIn instanceof AskForChanges_Message))
 			this.logger.info("Received from "+this.clientName+": "+msgIn.getType().toString());
