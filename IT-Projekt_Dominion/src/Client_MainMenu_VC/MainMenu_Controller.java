@@ -35,6 +35,7 @@ public class MainMenu_Controller extends Controller<GameApp_Model, MainMenu_View
 		view.singlePlayerBtn.setOnAction((event) -> {
 			try {
 				String message = model.sendGameMode(GameMode.Singleplayer);
+				model.gameMode = GameMode.Singleplayer;
 				if (model.failure) {
 					view.startGameAlert.setHeaderText(message);
 					view.startGameAlert.showAndWait(); // warning alert if Singleplayer start fails 
@@ -49,6 +50,7 @@ public class MainMenu_Controller extends Controller<GameApp_Model, MainMenu_View
 		view.multiPlayerBtn.setOnAction((event) -> {
 			try {
 				String message = model.sendGameMode(GameMode.Multiplayer);
+				model.gameMode = GameMode.Multiplayer;
 				if (model.failure) {
 					view.startGameAlert.setHeaderText(message);
 					view.startGameAlert.showAndWait(); // warning alert if Multiplayer start fails 
