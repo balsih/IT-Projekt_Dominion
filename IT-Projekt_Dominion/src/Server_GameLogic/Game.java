@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import Cards.Copper_Card;
 import Cards.CardName;
+import Cards.CardType;
 import Cards.Cellar_Card;
 import Cards.Duchy_Card;
 import Cards.Estate_Card;
@@ -214,6 +215,9 @@ public class Game {
 			}
 			
 			currentPlayer.startMove();
+			
+			if(!currentPlayer.containsCardType(currentPlayer.handCards, CardType.Action))
+				currentPlayer.setActualPhase(Phase.Buy);
 	}
 
 	/**

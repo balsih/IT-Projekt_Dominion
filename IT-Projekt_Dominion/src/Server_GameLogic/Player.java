@@ -108,8 +108,8 @@ public class Player {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		Failure_Message fmsg = new Failure_Message();
 		
+		// get the index of the selected card in handCards
 		int index = this.handCards.indexOf(selectedCard);
-		
 
 		// plays the selected action card which requires available action-points
 		if (this.getActions() > 0 && this.actualPhase == Phase.Action && this.equals(game.getCurrentPlayer()) 
