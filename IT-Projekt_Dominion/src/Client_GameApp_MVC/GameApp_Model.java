@@ -40,6 +40,7 @@ import Server_GameLogic.GameMode;
 import Server_GameLogic.Phase;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
 
 /**
  * @author Adrian & Lukas
@@ -102,6 +103,7 @@ public class GameApp_Model extends Model {
 	}
 
 	private MediaPlayer mediaPlayer; // sound
+	private MediaPlayer mediaPlayerBtn; // Button sound
 
 
 	public GameApp_Model(Dominion_Main main){
@@ -730,18 +732,33 @@ public class GameApp_Model extends Model {
 	 * Media media = new Media(resource.toString()); // wir legen den Mediaplayer an und weisen
 	 * ihm das Media Objekt zu mediaPlayer = new MediaPlayer(media);
 	 */
-
+	
 	public void startMediaPlayer(String soundFileName) {
-		// mediaplayer: new music
+		// Mediaplayer: new music
 		if (mediaPlayer != null) {
 			mediaPlayer.stop();
 		}
 		URL resource = getClass().getResource(soundFileName);
-		Media media = new Media(resource.toString());
-		mediaPlayer = new MediaPlayer(media);
+		mediaPlayer = new MediaPlayer(new Media(resource.toString()));
+		mediaPlayer.setOnEndOfMedia(new Runnable() {
+			public void run() {
+				mediaPlayer.seek(Duration.ZERO);
+			}
+		});
 		mediaPlayer.play();
 	}
-
+	
+	
+	// Button click sound
+	public void startBtnClickSound() {
+		if (mediaPlayerBtn != null) {
+			mediaPlayerBtn.stop();
+		}
+		URL resource = getClass().getResource("button_click_sound.mp3");
+		mediaPlayerBtn = new MediaPlayer(new Media(resource.toString()));
+		mediaPlayerBtn.play();
+	}
+	
 
 	public String getClientName(){
 		return this.clientName;
