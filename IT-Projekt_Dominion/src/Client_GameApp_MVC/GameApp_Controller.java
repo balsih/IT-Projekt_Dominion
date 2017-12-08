@@ -94,6 +94,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				model.sendInteraction();
 				break;
 			}
+			this.updateGUI();
 		});
 
 		// Handles window-closing event
@@ -200,7 +201,8 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			}
 
 			// Updates the discard pile top card
-			view.stackpDiscard.getChildren().add(0, resizeImage(model.yourDiscardPileTopCard.getImage()));
+			if(model.yourDiscardPileTopCard != null)
+				view.stackpDiscard.getChildren().add(0, resizeImage(model.yourDiscardPileTopCard.getImage()));
 		});
 	}
 
