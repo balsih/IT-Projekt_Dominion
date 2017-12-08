@@ -1,16 +1,21 @@
-.button{
-	-fx-background-color: #a9a9a9;
+.btnCommit{
+	-fx-background-color: limegreen;
 	-fx-text-fill: white;
-	-fx-spacing: 10px;
+}
+
+.btnGiveUp{
+	-fx-background-color: red;
+	-fx-text-fill: white;
 }
 
 .button:hover{
-	-fx-background-color: #d3d3d3;
+	-fx-background-color: white;
 	-fx-text-fill: black;
 }
 
 Label {
 	-fx-text-fill: white;
+	-fx-font-weight: bold;
 }
 
 .lblCurrentPlayer {
@@ -28,6 +33,10 @@ Label {
 
 .vboxCurrentPlayer{
 	-fx-spacing: 10px;	
+}
+
+.vboxCurrentPlayerButtons{
+	-fx-spacing: 30px;
 }
 
 .gridpCurrentPlayer{

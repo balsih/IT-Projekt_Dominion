@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -140,10 +141,12 @@ public class GameApp_View extends View<GameApp_Model> {
 	protected Label lblNmbrOfCrntCoins;
 
 	protected Button btnCommit;
+	protected Button btnGiveUp;
 	
 	protected HBox hboxCurrentPlayer;
 	protected HBox hboxContentCurrentPlayer;
 	protected VBox vboxCurrentPlayer;
+	protected VBox vboxCurrentPlayerButtons;
 	
 	// Root
 	protected GridPane root;
@@ -287,6 +290,7 @@ public class GameApp_View extends View<GameApp_Model> {
 		this.lblCrntBuys = new Label(t.getString("current.lblCrntBuys")); // Buys
 		this.lblCrntCoins = new Label(t.getString("current.lblCrntCoins")); // Coins
 		this.btnCommit = new Button(t.getString("current.btnCommit")); // Commit
+		this.btnGiveUp = new Button(t.getString("current.btnGiveUp")); // Give up
 		
 		this.lblNameOfCurrentPlayer = new Label();
 		this.lblCurrentPhase = new Label();
@@ -312,8 +316,9 @@ public class GameApp_View extends View<GameApp_Model> {
 		gridpCurrentPlayer.add(lblNmbrOfCrntCoins, 1, 5);
 
 		this.hboxCurrentPlayer = new HBox(lblCurrentPlayer, lblNameOfCurrentPlayer, lblCurrentPhase);
-		this.hboxContentCurrentPlayer = new HBox (gridpCurrentPlayer, btnCommit);
-		hboxContentCurrentPlayer.setAlignment(Pos.BOTTOM_LEFT);
+		this.vboxCurrentPlayerButtons = new VBox (btnGiveUp, btnCommit);
+		this.hboxContentCurrentPlayer = new HBox (gridpCurrentPlayer, vboxCurrentPlayerButtons);
+		vboxCurrentPlayerButtons.setAlignment(Pos.BOTTOM_LEFT);
 		this.vboxCurrentPlayer = new VBox(hboxCurrentPlayer, hboxContentCurrentPlayer);
 
 		// Root
@@ -381,6 +386,9 @@ public class GameApp_View extends View<GameApp_Model> {
 		hboxCurrentPlayer.getStyleClass().add("hbox");
 		hboxContentCurrentPlayer.getStyleClass().add("hbox");
 		vboxCurrentPlayer.getStyleClass().add("vboxCurrentPlayer");
+		vboxCurrentPlayerButtons.getStyleClass().add("vboxCurrentPlayerButtons");
+		btnGiveUp.getStyleClass().add("btnGiveUp");
+		btnCommit.getStyleClass().add("btnCommit");
 		gridpCurrentPlayer.getStyleClass().add("gridpCurrentPlayer");
 		lblCrntHandCards.getStyleClass().add("lblCurrentPlayer");
 		lblNmbrOfCrntHandCards.getStyleClass().add("lblCurrentPlayer");

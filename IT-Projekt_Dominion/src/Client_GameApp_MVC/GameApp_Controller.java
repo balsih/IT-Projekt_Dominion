@@ -102,6 +102,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			view.stop();
 			Platform.exit();
 			this.listenToServer = false; // Stops the thread
+			// model.sendGiveUp_Message();
 		});
 
 		// Starts the thread
@@ -111,8 +112,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 	// Updates the whole GUI
 	private void updateGUI() {
 
-		// Ensures the update happens on the JavaFX Application Thread, by using
-		// Platform.runLater()
+		// Ensures the update happens on the JavaFX Application Thread, by using Platform.runLater()
 		Platform.runLater(() -> {
 
 			// Updates the log
@@ -135,21 +135,20 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			switch (model.currentPhase) {
 			case Action:
 				view.lblCurrentPhase.setText(t.getString("action.lblCurrentPhase")); // Phase:
-																						// Action
+				// Action
 				break;
 			case Buy:
 				view.lblCurrentPhase.setText(t.getString("buy.lblCurrentPhase")); // Phase:
-																					// Buy
+				// Buy
 				break;
 			case CleanUp:
 				view.lblCurrentPhase.setText(t.getString("cleanUp.lblCurrentPhase")); // Phase:
-																						// Clean
-																						// up
+				// Clean
+				// up
 				break;
 			}
 
-			// If the deck is empty, the discard pile needs to be added to the
-			// deck pile. In the GUI we only remove the discard pile top card.
+			// If the deck is empty, the discard pile needs to be added to the deck pile. In the GUI we only remove the discard pile top card.
 			if (model.yourDeck.isEmpty()) {
 				view.stackpDiscard.getChildren().clear();
 			}
@@ -166,8 +165,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			// Updates the number of current coins
 			view.lblNmbrOfCrntCoins.setText(Integer.toString(model.coins));
 
-			// Updates the number of current hand cards, discard cards and deck
-			// cards
+			// Updates the number of current hand cards, discard cards and deck cards
 			if (model.currentPlayer.compareTo(model.clientName) == 0) {
 				view.lblNmbrOfCrntHandCards.setText(Integer.toString(model.yourHandCards.size()));
 				view.lblNmbrOfCrntDiscards.setText(Integer.toString(model.yourDiscardPile.size()));
@@ -178,8 +176,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				view.lblNmbrOfCrntDeckCards.setText(Integer.toString(model.opponentDeck));
 			}
 
-			// Updates the number of action cards, treasure cards and victory
-			// cards
+			// Updates the number of action cards, treasure cards and victory cards
 			view.lblNmbrOfCellarCards.setText(Integer.toString(model.buyCards.get(CardName.Cellar)));
 			view.lblNmbrOfMarketCards.setText(Integer.toString(model.buyCards.get(CardName.Market)));
 			view.lblNmbrOfRemodelCards.setText(Integer.toString(model.buyCards.get(CardName.Remodel)));
@@ -198,19 +195,15 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			view.lblNmbrOfProvinceCards.setText(Integer.toString(model.buyCards.get(CardName.Province)));
 
 			// Adds new hand cards and event handlers
-			if (model.yourNewHandCards != null) {
+			if (!model.yourNewHandCards.isEmpty()) {
 				for (Card card : model.yourNewHandCards) {
 					ImageView img = card.getImage();
 					setInitialHandCardsEvents(card, resizeImage(img));
 					view.hboxHandCards.getChildren().add(img);
 					model.yourHandCards.add(card);
 				}
-				model.yourNewHandCards = null;
+				model.yourNewHandCards.clear();
 			}
-
-			// Updates the discard pile top card
-			if (model.yourDiscardPileTopCard != null)
-				view.stackpDiscard.getChildren().add(0, resizeImage(model.yourDiscardPileTopCard.getImage()));
 		});
 	}
 
@@ -281,16 +274,14 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			img.setEffect(brighter);
 		});
 
-		// If the user zooms an image, it gets bigger and gets back its original
-		// brightness
+		// If the user zooms an image, it gets bigger and gets back its original brightness
 		img.addEventHandler(ZoomEvent.ZOOM, event -> {
 			img.setFitWidth(imageWidth * 3);
 			img.setFitHeight(imageHeight * 3);
 			img.setEffect(initial);
 		});
 
-		// If the user exits an image, it changes back to its original size and
-		// brightness
+		// If the user exits an image, it changes back to its original size and brightness
 		img.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
 			img.setFitWidth(imageWidth);
 			img.setFitHeight(imageHeight);
@@ -310,8 +301,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		ColorAdjust brighter = new ColorAdjust();
 		brighter.setBrightness(+0.5);
 
-		// If the user clicks a card, he wants to buy it. This handler sends a
-		// message with the chosen card.
+		// If the user clicks a card, he wants to buy it. This handler sends a message with the chosen card.
 		img.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			Card newCard = Card.getCard(card.getCardName());
 			if (model.sendBuyCard(newCard.getCardName())) {
@@ -336,16 +326,14 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			img.setEffect(brighter);
 		});
 
-		// If the user zooms an image, it gets bigger and gets back its original
-		// brightness
+		// If the user zooms an image, it gets bigger and gets back its original brightness
 		img.addEventHandler(ZoomEvent.ZOOM, event -> {
 			img.setFitWidth(imageWidth * 3);
 			img.setFitHeight(imageHeight * 3);
 			img.setEffect(initial);
 		});
 
-		// If the user exits an image, it changes back to its original size and
-		// brightness
+		// If the user exits an image, it changes back to its original size and brightness
 		img.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
 			img.setFitWidth(imageWidth);
 			img.setFitHeight(imageHeight);
@@ -360,8 +348,8 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 	}
 
 	/**
-	 * @author Adrian Depending on which message was received, this class
-	 *         updates the contents of the components of the GUI
+	 * @author Adrian 
+	 * Depending on which message was received, this class updates the contents of the components of the GUI
 	 */
 	public class ServerListening implements Runnable {
 
@@ -370,7 +358,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			while (listenToServer) {
 				try {
 					Thread.sleep(1000); // 1 request per second if something
-										// changed in the game
+					// changed in the game
 				} catch (InterruptedException e1) {
 					System.out.println(e1.toString());
 				}
@@ -390,21 +378,8 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 					updateGUI();
 
-					// Ensures the update happens on the JavaFX Application
-					// Thread, by using Platform.runLater()
+					// Ensures the update happens on the JavaFX Application Thread, by using Platform.runLater()
 					Platform.runLater(() -> {
-
-						// Updates the number of current hand cards, discard
-						// cards and deck cards
-						if (model.currentPlayer.compareTo(model.clientName) == 0) {
-							view.lblNmbrOfCrntHandCards.setText(Integer.toString(model.yourHandCards.size()));
-							view.lblNmbrOfCrntDiscards.setText(Integer.toString(model.yourDiscardPile.size()));
-							view.lblNmbrOfCrntDeckCards.setText(Integer.toString(model.yourDeck.size()));
-						} else {
-							view.lblNmbrOfCrntHandCards.setText(Integer.toString(model.opponentHandCards));
-							view.lblNmbrOfCrntDiscards.setText(Integer.toString(model.opponentDiscardPile));
-							view.lblNmbrOfCrntDeckCards.setText(Integer.toString(model.opponentDeck));
-						}
 
 						// Disables chat while playing singleplayer mode
 						if (model.gameMode.equals(GameMode.Singleplayer)) {
