@@ -338,7 +338,9 @@ public class ServerThreadForClient implements Runnable {
 		Interaction_Message imsg = (Interaction_Message) msgIn;
 		switch(imsg.getInteractionType()){
 		case Skip:
-			return this.player.skipPhase();
+			Message msg = this.player.skipPhase();
+			this.player.sendToOpponent(this.player, msg);
+			return msg;
 		case EndOfTurn:
 			for(Card card: this.player.handCards){
 				if(imsg.getDiscardCard().getCardName().equals(card.getCardName())){

@@ -372,8 +372,11 @@ public class UpdateGame_Message extends Message {
 			first.discardPileCardNumber = second.discardPileCardNumber;
 		if (first.discardPileTopCard == null)
 			first.discardPileTopCard = second.discardPileTopCard;
-		if (first.log == null)
+		if (first.log != null && second.log != null){
+			first.log += "\r\n"+second.log;
+		}else if (first.log == null){
 			first.log = second.log;
+		}
 		if (first.interactionType == null)
 			first.interactionType = second.interactionType;
 		if (first.getNewHandCards() == null)
