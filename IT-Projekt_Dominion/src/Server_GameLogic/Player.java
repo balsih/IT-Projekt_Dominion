@@ -190,7 +190,7 @@ public class Player {
 			}
 
 			// sets all changed attributes of the UpdateGame_Message
-			ugmsg.setLog(this.playerName + " #bought# #" + buyedCard.getCardName().toString() + "# #card#");
+			ugmsg.setLog(this.playerName + ": #bought# #" + buyedCard.getCardName().toString() + "# #card#");
 			ugmsg.setCoins(this.coins);
 			ugmsg.setBuys(this.buys);
 			ugmsg.setDiscardPileTopCard(this.discardPile.peek());
