@@ -21,9 +21,9 @@ import Messages.UpdateGame_Message;
 /**
  * @author Bodo Gruetter
  * 
- * The player class represents a player with his/her card stacks and hand.
- * It allows him/her to interact with the game and
- * play through the three phases 'Action', 'Buy' and 'Clean up'.
+ *         The player class represents a player with his/her card stacks and
+ *         hand. It allows him/her to interact with the game and play through
+ *         the three phases 'Action', 'Buy' and 'Clean up'.
  * 
  */
 public class Player {
@@ -58,7 +58,8 @@ public class Player {
 	/**
 	 * Constructor for the Bot
 	 * 
-	 * @param name - the name of the player.
+	 * @param name
+	 *            - the name of the player.
 	 */
 	public Player(String name) {
 		this.deckPile = new Stack<Card>();
@@ -74,7 +75,8 @@ public class Player {
 	/**
 	 * Constructor for a Player
 	 * 
-	 * @param name - the name of the player
+	 * @param name
+	 *            - the name of the player
 	 * @param serverThreadForClient
 	 */
 	public Player(String name, ServerThreadForClient serverThreadForClient) {
@@ -85,7 +87,7 @@ public class Player {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 * Initializes the player to start a move.
+	 *         Initializes the player to start a move.
 	 */
 	public void startMove() {
 		this.actions = 1;
@@ -93,34 +95,39 @@ public class Player {
 		this.coins = 0;
 		this.counter = 0;
 		this.actualPhase = Phase.Action;
-		
-		if(!this.containsCardType(this.handCards, CardType.Action))
-			this.setActualPhase(Phase.Buy);	
+
+		if (!this.containsCardType(this.handCards, CardType.Action))
+			this.setActualPhase(Phase.Buy);
 	}
 
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 * Plays an action or a treasure card and executes it, if the conditions to play a card applies. 
+	 *         Plays an action or a treasure card and executes it, if the
+	 *         conditions to play a card applies.
 	 *
-	 * @param selectedCard - the card the player selected to play.
-	 * @return UpdateGame_Message - the message that updates the play process, if all conditions applies.
+	 * @param selectedCard
+	 *            - the card the player selected to play.
+	 * @return UpdateGame_Message - the message that updates the play process,
+	 *         if all conditions applies.
 	 * @return Failure_Message - if no condition applies.
 	 */
 	public Message play(Card selectedCard) {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		Failure_Message fmsg = new Failure_Message();
-		
+
 		// get the index of the selected card in handCards
 		int index = this.handCards.indexOf(selectedCard);
 
 		// plays the selected action card which requires available action-points
-		if (this.getActions() > 0 && this.actualPhase == Phase.Action && this.equals(game.getCurrentPlayer()) 
+		if (this.getActions() > 0 && this.actualPhase == Phase.Action && this.equals(game.getCurrentPlayer())
 				&& selectedCard.getType() == CardType.Action) {
-			
-			// checks if an card which requires some interaction is played and if the player is allowed to play them.
-			if(selectedCard.getCardName().equals(CardName.Mine) && 
-					(!(this.containsCard(this.handCards, CardName.Copper) || (this.containsCard(this.handCards, CardName.Silver)))))
+
+			// checks if an card which requires some interaction is played and
+			// if the player is allowed to play them.
+			if (selectedCard.getCardName().equals(CardName.Mine)
+					&& (!(this.containsCard(this.handCards, CardName.Copper)
+							|| (this.containsCard(this.handCards, CardName.Silver)))))
 				return fmsg;
 			else if (selectedCard.getCardName().equals(CardName.Remodel) && this.handCards.size() == 1)
 				return fmsg;
@@ -134,13 +141,16 @@ public class Player {
 			this.sendToOpponent(this, ugmsg);
 
 			// if the action phase is terminated, skip to next phase
-			if ((this.actions == 0 || !this.containsCardType(this.handCards, CardType.Action)) && ugmsg.getInteractionType() == null)
+			if ((this.actions == 0 || !this.containsCardType(this.handCards, CardType.Action))
+					&& ugmsg.getInteractionType() == null)
 				ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.skipPhase(), ugmsg);
-			
+
 			return ugmsg;
 
-			// plays the selected treasure card which not requires any available action-points
-		} else if (this.actualPhase == Phase.Buy && this.equals(game.getCurrentPlayer()) && selectedCard.getType() == CardType.Treasure) {
+			// plays the selected treasure card which not requires any available
+			// action-points
+		} else if (this.actualPhase == Phase.Buy && this.equals(game.getCurrentPlayer())
+				&& selectedCard.getType() == CardType.Treasure) {
 			ugmsg = selectedCard.executeCard(this);
 			playedCards.add(this.handCards.remove(index));
 			return ugmsg;
@@ -152,11 +162,15 @@ public class Player {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 * Buys a Card if all condtions applies. Checks if the game is finished and then who the winner is.
+	 *         Buys a Card if all condtions applies. Checks if the game is
+	 *         finished and then who the winner is.
 	 * 
-	 * @param cardName - the name of the Card which should been buyed.
-	 * @return UpdateGame_Message - the message that updates the buy process, if all conditions applies.
-	 * @return PlayerSuccess_Message - the message who wons and lost a game, if the game is finished.
+	 * @param cardName
+	 *            - the name of the Card which should been buyed.
+	 * @return UpdateGame_Message - the message that updates the buy process, if
+	 *         all conditions applies.
+	 * @return PlayerSuccess_Message - the message who wons and lost a game, if
+	 *         the game is finished.
 	 * @return Failure_Message - if no condition applies.
 	 */
 	public Message buy(CardName cardName) {
@@ -174,7 +188,7 @@ public class Player {
 
 				this.coins -= buyedCard.getCost();
 				this.buys--;
-				
+
 			} catch (EmptyStackException e) {
 				this.logger.severe("The buy card stack is empty!");
 				return fmsg;
@@ -199,9 +213,9 @@ public class Player {
 			this.sendToOpponent(this, ugmsg);
 
 			// if the buy phase is terminated, skip
-			if (this.buys == 0) 
+			if (this.buys == 0)
 				ugmsg = UpdateGame_Message.merge((UpdateGame_Message) skipPhase(), ugmsg);
-			
+
 			return ugmsg;
 		}
 
@@ -211,9 +225,10 @@ public class Player {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 * Picks a card from a card stack.
+	 *         Picks a card from a card stack.
 	 * 
-	 * @param cardName - the name of the picked card.
+	 * @param cardName
+	 *            - the name of the picked card.
 	 * @return pickedCard - the picked card.
 	 */
 	public Card pick(CardName selectedCard) {
@@ -273,55 +288,53 @@ public class Player {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 * Cleans up the playing field and draws five cards in the hand.
-	 * If the player has more than one card in his hand he chooses the card that should be on the top of his discardPile.
+	 *         Cleans up the playing field and draws five cards in the hand. If
+	 *         the player has more than one card in his hand he chooses the card
+	 *         that should be on the top of his discardPile.
 	 * 
-	 * @param selectedTopCard - the card on the top of the discard pile. It is null if the top card is already known.
+	 * @param selectedTopCard
+	 *            - the card on the top of the discard pile. It is null if the
+	 *            top card is already known.
 	 * @return UpdateGame_Message - the message that updates the clean process.
 	 */
 	public UpdateGame_Message cleanUp(Card selectedTopCard) {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
-		boolean interaction = false;
 		this.topCard = selectedTopCard;
-		
+
 		// lays played cards down on the discard pile
 		while (!playedCards.isEmpty()) {
 			this.discardPile.push(playedCards.remove());
 		}
 
-		/* checks if the player has more than one cards in his hand
-		 * and if there is a interaction of the player required
+		/*
+		 * checks if the player has more than one cards in his hand and if there
+		 * is a interaction of the player required
 		 */
-		if (this.handCards.size() > 1 && selectedTopCard == null) {
-			ugmsg.setInteractionType(Interaction.EndOfTurn);
-			ugmsg.setLog("#Choose a hand card as top card in discard pile#");
-			this.sendToOpponent(this, ugmsg);
-			interaction = true;
+		if (this.handCards.size() > 1) {
+			ugmsg.setDiscardPileTopCard(selectedTopCard);
+			
 		} else if (this.handCards.size() == 1 && selectedTopCard == null) {
 			ugmsg.setDiscardPileTopCard(this.handCards.element());
-			ugmsg.setDiscardPileCardNumber(this.discardPile.size());
-		} else if (this.handCards.size() == 0 && selectedTopCard == null){
+
+		} else if (this.handCards.size() == 0 && selectedTopCard == null) {
 			ugmsg.setDiscardPileTopCard(this.discardPile.peek());
 		}
 
-		/* If no more Interaction, the player lays his handcards
-		 * down on the discardPile and draw five new cards of his
-		 * deckPile.
+		/*
+		 * the player lays his handcards down on the
+		 * discardPile and draw five new cards of his deckPile.
 		 */
-		if (!interaction) {
-			while (!handCards.isEmpty()) {
-				this.discardPile.push(handCards.remove());
-			}
-
-			this.draw(this.NUM_OF_HANDCARDS);
-			
-			if(ugmsg.getDiscardPileTopCard() != this.topCard)
-					ugmsg.setDiscardPileTopCard(this.topCard);
-
-			// if the cleanUp phase is terminated, skip
-			UpdateGame_Message.merge((UpdateGame_Message) this.skipPhase(), ugmsg);
-			this.sendToOpponent(this, ugmsg);
+		while (!handCards.isEmpty()) {
+			this.discardPile.push(handCards.remove());
 		}
+
+		ugmsg.setDiscardPileCardNumber(this.discardPile.size());
+		
+		ugmsg = UpdateGame_Message.merge(this.draw(this.NUM_OF_HANDCARDS), ugmsg);
+
+		// if the cleanUp phase is terminated, skip
+		ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.skipPhase(), ugmsg);
+		this.sendToOpponent(this, ugmsg);
 
 		return ugmsg;
 	}
@@ -329,9 +342,10 @@ public class Player {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 * Draws a variable number of cards in the hand.
+	 *         Draws a variable number of cards in the hand.
 	 * 
-	 * @param numOfCards - the number of cards which should be drawn.
+	 * @param numOfCards
+	 *            - the number of cards which should be drawn.
 	 * @return UpdateGame_Message - the message that updates the draw process.
 	 */
 	public UpdateGame_Message draw(int numOfCards) {
@@ -371,7 +385,7 @@ public class Player {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 * Skips actual phase and goes to the next phase.
+	 *         Skips actual phase and goes to the next phase.
 	 * 
 	 * @return UpdateGame_Message - the message that updates the skip process.
 	 * @return Failure_Message - if no condition applies.
@@ -391,6 +405,12 @@ public class Player {
 			case Buy:
 				this.actualPhase = Phase.CleanUp;
 				ugmsg.setCurrentPhase(this.actualPhase);
+
+				if (this.handCards.size() > 1) {
+					ugmsg.setInteractionType(Interaction.EndOfTurn);
+					ugmsg.setLog("#Choose a hand card as top card in discard pile#");
+				} else
+					this.cleanUp(null);
 				break;
 
 			case CleanUp:
@@ -398,7 +418,6 @@ public class Player {
 				game.switchPlayer();
 				ugmsg.setCurrentPlayer(game.getCurrentPlayer().getPlayerName());
 				ugmsg.setCurrentPhase(this.actualPhase);
-				ugmsg.setInteractionType(Interaction.EndOfTurn);
 				break;
 
 			default:
@@ -414,7 +433,7 @@ public class Player {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 * Counts the victory points.
+	 *         Counts the victory points.
 	 */
 	public void countVictoryPoints() {
 		// Puts all left cards in the deckpile
@@ -436,22 +455,25 @@ public class Player {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 * Sends an waiting message to the opponent
+	 *         Sends an waiting message to the opponent
 	 * 
-	 * @param source - the sending player
-	 * @param msg - the message which should be send
+	 * @param source
+	 *            - the sending player
+	 * @param msg
+	 *            - the message which should be send
 	 */
 	public void sendToOpponent(Player source, Message msg) {
-		if(game.getGameMode().equals(GameMode.Multiplayer))
+		if (game.getGameMode().equals(GameMode.Multiplayer))
 			source.getServerThreadForClient().addWaitingMessages(msg);
 	}
-	
+
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 * Checks if a list contains a specific card type.
+	 *         Checks if a list contains a specific card type.
 	 * 
-	 * @param list - the list which should be checked.
+	 * @param list
+	 *            - the list which should be checked.
 	 * @pram cardType - the type that should be in the list.
 	 * @return Boolean - depending if list contains the card type or not.
 	 */
@@ -464,17 +486,18 @@ public class Player {
 
 		return false;
 	}
-	
+
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 * Checks if a list contains a specific card.
+	 *         Checks if a list contains a specific card.
 	 * 
-	 * @param list - the list which should be checked.
+	 * @param list
+	 *            - the list which should be checked.
 	 * @pram cardName - the name of the card that should be in the list.
 	 * @return Boolean - depending if list contains the card or not.
 	 */
-	public boolean containsCard(LinkedList<Card> list, CardName cardName){
+	public boolean containsCard(LinkedList<Card> list, CardName cardName) {
 		Iterator<Card> iter = list.iterator();
 		while (iter.hasNext()) {
 			if (iter.next().getCardName() == cardName)
@@ -487,9 +510,10 @@ public class Player {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 * Sets the status of current player.
+	 *         Sets the status of current player.
 	 * 
-	 * @return PlayerSuccess_Message - the message with the status and the number of victory points.
+	 * @return PlayerSuccess_Message - the message with the status and the
+	 *         number of victory points.
 	 */
 	private PlayerSuccess_Message getCurrentPlayerSuccessMsg() {
 		PlayerSuccess_Message psmsg = new PlayerSuccess_Message();
@@ -503,9 +527,10 @@ public class Player {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 * Sets the status of opponent.
+	 *         Sets the status of opponent.
 	 * 
-	 * @return PlayerSuccess_Message - the message with the status and the number of victory points.
+	 * @return PlayerSuccess_Message - the message with the status and the
+	 *         number of victory points.
 	 */
 	private PlayerSuccess_Message getOpponentSuccessMsg() {
 		PlayerSuccess_Message psmsg = new PlayerSuccess_Message();
