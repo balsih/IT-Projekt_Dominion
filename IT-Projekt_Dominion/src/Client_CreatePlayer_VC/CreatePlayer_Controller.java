@@ -70,6 +70,7 @@ public class CreatePlayer_Controller extends Controller<GameApp_Model, CreatePla
 		// set on action and handling for saveBtn
 		view.saveBtn.setOnAction((event) -> {
 			try {
+				model.startBtnClickSound();
 				String message = model.sendCreateNewPlayer(view.nameText.getText(), view.passwordText.getText());
 				if (model.failure) {
 					view.saveAlert.setHeaderText(message);
@@ -84,6 +85,7 @@ public class CreatePlayer_Controller extends Controller<GameApp_Model, CreatePla
 		// set on action and handling for backBtn
 		view.backBtn.setOnAction((event) -> {
 			try {
+				model.startBtnClickSound();
 				 main.startLogin();
 				 view.stop();
 			} catch (Exception e) {

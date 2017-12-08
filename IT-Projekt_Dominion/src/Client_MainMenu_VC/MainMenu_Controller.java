@@ -34,6 +34,7 @@ public class MainMenu_Controller extends Controller<GameApp_Model, MainMenu_View
 		// set on action and handling for singlePlayerBtn
 		view.singlePlayerBtn.setOnAction((event) -> {
 			try {
+				model.startBtnClickSound();
 				String message = model.sendGameMode(GameMode.Singleplayer);
 				model.gameMode = GameMode.Singleplayer;
 				if (model.failure) {
@@ -49,6 +50,7 @@ public class MainMenu_Controller extends Controller<GameApp_Model, MainMenu_View
 		// set on action and handling for multiPlayerBtn
 		view.multiPlayerBtn.setOnAction((event) -> {
 			try {
+				model.startBtnClickSound();
 				String message = model.sendGameMode(GameMode.Multiplayer);
 				model.gameMode = GameMode.Multiplayer;
 				if (model.failure) {
@@ -71,6 +73,7 @@ public class MainMenu_Controller extends Controller<GameApp_Model, MainMenu_View
 		
 		// set on action and handling for quitBtn
 		view.quitBtn.setOnAction((event) -> {
+			model.startBtnClickSound();
 			view.stop();
 		});
 		
