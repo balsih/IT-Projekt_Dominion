@@ -37,7 +37,7 @@ import javafx.scene.input.ZoomEvent;
 import javafx.scene.layout.VBox;
 
 /**
- * @author Adrian 
+ * @author Adrian
  */
 public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> {
 
@@ -54,13 +54,13 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		view.btnSendChatArea.setOnAction(event -> {
 			boolean success = false;
 			String existingMessages = view.txtaChatArea.getText();
-			String newMessage = view.txtfChatArea.getText();	
+			String newMessage = view.txtfChatArea.getText();
 
 			if (newMessage.length() > 0) {
-				success = model.sendChat(newMessage+"\r\n");
+				success = model.sendChat(newMessage + "\r\n");
 			}
 			if (success) {
-				view.txtaChatArea.setText(existingMessages.concat(model.newChat)+"\r\n");
+				view.txtaChatArea.setText(existingMessages.concat(model.newChat) + "\r\n");
 				view.txtfChatArea.setText("");
 				model.newChat = null;
 			}
@@ -68,7 +68,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 		// Defines what happens after clicking the button "commit"
 		view.btnCommit.setOnAction(event -> {
-			switch(model.interaction){
+			switch (model.interaction) {
 			case Skip:
 				model.sendInteraction();
 				break;
@@ -94,7 +94,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				model.sendInteraction();
 				break;
 			}
-			this.updateGUI();
+			updateGUI();
 		});
 
 		// Handles window-closing event
@@ -109,42 +109,48 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 	}
 
 	// Updates the whole GUI
-	private void updateGUI(){
+	private void updateGUI() {
 
-		// Ensures the update happens on the JavaFX Application Thread, by using Platform.runLater()
+		// Ensures the update happens on the JavaFX Application Thread, by using
+		// Platform.runLater()
 		Platform.runLater(() -> {
 
 			// Updates the log
-			if(model.newLog != null){
+			if (model.newLog != null) {
 				String existingLog = view.txtaLog.getText();
-				view.txtaLog.setText(existingLog.concat(model.newLog)+"\r\n");
+				view.txtaLog.setText(existingLog.concat(model.newLog) + "\r\n");
 				model.newLog = null;
 			}
 
 			// Updates the chat
-			if(model.newChat != null){
+			if (model.newChat != null) {
 				String existingMessages = view.txtaChatArea.getText();
-				view.txtaChatArea.setText(existingMessages.concat(model.newChat)+"\r\n");
+				view.txtaChatArea.setText(existingMessages.concat(model.newChat) + "\r\n");
 
 				view.txtfChatArea.setText(""); // Removes the entered text
 				model.newChat = null;
 			}
 
 			// Displays the current phase
-			switch(model.currentPhase){
+			switch (model.currentPhase) {
 			case Action:
-				view.lblCurrentPhase.setText(t.getString("action.lblCurrentPhase")); // Phase: Action
+				view.lblCurrentPhase.setText(t.getString("action.lblCurrentPhase")); // Phase:
+																						// Action
 				break;
 			case Buy:
-				view.lblCurrentPhase.setText(t.getString("buy.lblCurrentPhase")); // Phase: Buy
+				view.lblCurrentPhase.setText(t.getString("buy.lblCurrentPhase")); // Phase:
+																					// Buy
 				break;
 			case CleanUp:
-				view.lblCurrentPhase.setText(t.getString("cleanUp.lblCurrentPhase")); // Phase: Clean up
+				view.lblCurrentPhase.setText(t.getString("cleanUp.lblCurrentPhase")); // Phase:
+																						// Clean
+																						// up
 				break;
 			}
 
-			// If the deck is empty, the discard pile needs to be added to the deck pile. In the GUI we only remove the discard pile top card.
-			if(model.yourDeck.isEmpty()){
+			// If the deck is empty, the discard pile needs to be added to the
+			// deck pile. In the GUI we only remove the discard pile top card.
+			if (model.yourDeck.isEmpty()) {
 				view.stackpDiscard.getChildren().clear();
 			}
 
@@ -160,8 +166,9 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			// Updates the number of current coins
 			view.lblNmbrOfCrntCoins.setText(Integer.toString(model.coins));
 
-			// Updates the number of current hand cards, discard cards and deck cards
-			if (model.currentPlayer.compareTo(model.clientName)==0) {
+			// Updates the number of current hand cards, discard cards and deck
+			// cards
+			if (model.currentPlayer.compareTo(model.clientName) == 0) {
 				view.lblNmbrOfCrntHandCards.setText(Integer.toString(model.yourHandCards.size()));
 				view.lblNmbrOfCrntDiscards.setText(Integer.toString(model.yourDiscardPile.size()));
 				view.lblNmbrOfCrntDeckCards.setText(Integer.toString(model.yourDeck.size()));
@@ -171,7 +178,8 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				view.lblNmbrOfCrntDeckCards.setText(Integer.toString(model.opponentDeck));
 			}
 
-			// Updates the number of action cards, treasure cards and victory cards
+			// Updates the number of action cards, treasure cards and victory
+			// cards
 			view.lblNmbrOfCellarCards.setText(Integer.toString(model.buyCards.get(CardName.Cellar)));
 			view.lblNmbrOfMarketCards.setText(Integer.toString(model.buyCards.get(CardName.Market)));
 			view.lblNmbrOfRemodelCards.setText(Integer.toString(model.buyCards.get(CardName.Remodel)));
@@ -190,8 +198,8 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			view.lblNmbrOfProvinceCards.setText(Integer.toString(model.buyCards.get(CardName.Province)));
 
 			// Adds new hand cards and event handlers
-			if (model.yourNewHandCards != null){
-				for(Card card : model.yourNewHandCards){
+			if (model.yourNewHandCards != null) {
+				for (Card card : model.yourNewHandCards) {
 					ImageView img = card.getImage();
 					setInitialHandCardsEvents(card, resizeImage(img));
 					view.hboxHandCards.getChildren().add(img);
@@ -201,20 +209,20 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			}
 
 			// Updates the discard pile top card
-			if(model.yourDiscardPileTopCard != null)
+			if (model.yourDiscardPileTopCard != null)
 				view.stackpDiscard.getChildren().add(0, resizeImage(model.yourDiscardPileTopCard.getImage()));
 		});
 	}
 
 	// Resizes the image to the optimal fit size
-	private ImageView resizeImage(ImageView img){
+	private ImageView resizeImage(ImageView img) {
 		img.setFitWidth(80);
 		img.setFitHeight(120);
 		return img;
 	}
 
 	// Sets events on hand cards when the game starts
-	private void setInitialHandCardsEvents(Card card, ImageView img){
+	private void setInitialHandCardsEvents(Card card, ImageView img) {
 		// Stores the image height and width
 		int imageHeight = (int) img.getFitHeight();
 		int imageWidth = (int) img.getFitWidth();
@@ -224,59 +232,46 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		initial.setBrightness(0);
 		ColorAdjust brighter = new ColorAdjust();
 		brighter.setBrightness(+0.5);
+		ColorAdjust darker = new ColorAdjust();
+		darker.setBrightness(-0.5);
 
 		// Describes what happens when the user clicks a hand card
 		img.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-			if (card.getType() == CardType.Action){
-				if (model.sendPlayCard(card)){
+			if (model.interaction == Interaction.Skip || model.interaction == Interaction.Cellar
+					|| model.interaction == Interaction.Remodel1 || model.interaction == Interaction.Mine) {
+
+				if (model.interaction == Interaction.Skip && card.getType() != CardType.Victory
+						&& model.sendPlayCard(card)) {
 					view.hboxHandCards.getChildren().remove(img);
 					view.hboxPlayedCards.getChildren().add(0, img);
 					updateGUI();
 				}
-				if (model.interaction == Interaction.Cellar){
-					// Discard any number of hand cards
-					// model.cellarDiscards.add(e);
-					updateGUI();
-				}
-				if (model.interaction == Interaction.Workshop){
-					// Gain a card costing up to 4 coins
-					// model.buyChoice = cardName;
-					updateGUI();
-				}
-				if (model.interaction == Interaction.Remodel1){
-					// Dispose one hand card
-					// model.discardCard = e;
-					updateGUI();
-				}
-				if (model.interaction == Interaction.Remodel2){
-					// Gain a card costing up to 2 coins more than the disposed card (see Remodel1)
-					// model.buyChoice = cardName;
-					updateGUI();
-				}
-				if (model.interaction == Interaction.Mine){
-					// Dispose one treasure card from the hand
 
-					// Adds new hand cards and event handlers
-//					view.hboxHandCards.getChildren().clear();
-//					for(Card card2 : model.yourHandCards){
-//						ImageView img2 = card2.getImage();
-//						resizeImage(img2);
-//						img2.addEventHandler(MouseEvent.MOUSE_CLICKED, MineEvent -> {
-//							if (card2.getType() == CardType.Treasure){
-//								model.discardCard = card2;
-//								view.hboxHandCards.getChildren().remove(img2);
-//
-//								for(Card card3 : model.yourHandCards){
-//									ImageView img3 = card3.getImage();
-//									setInitialHandCardsEvents(card3, resizeImage(img3));
-//									view.hboxHandCards.getChildren().add(img3);
-//								}
-//							}
-//						});
-//						view.hboxHandCards.getChildren().add(img2);
-//					}
-					// model.discardCard = e;
-					updateGUI();
+				if (model.interaction == Interaction.Cellar) {
+					if (model.cellarDiscards.contains(card)) {
+						model.cellarDiscards.remove(card);
+						img.setEffect(initial);
+					} else {
+						model.cellarDiscards.add(card);
+						img.setEffect(darker);
+					}
+				}
+
+				if (model.interaction == Interaction.Remodel1) {
+					model.discardCard = card;
+					if (model.sendInteraction()) {
+						view.hboxHandCards.getChildren().remove(img);
+						updateGUI();
+					}
+				}
+
+				if (model.interaction == Interaction.Mine
+						&& (card.getCardName() == CardName.Copper || card.getCardName() == CardName.Silver)) {
+					model.discardCard = card;
+					if (model.sendInteraction()) {
+						view.hboxHandCards.getChildren().remove(img);
+						updateGUI();
+					}
 				}
 			}
 		});
@@ -286,14 +281,16 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			img.setEffect(brighter);
 		});
 
-		// If the user zooms an image, it gets bigger and gets back its original brightness
+		// If the user zooms an image, it gets bigger and gets back its original
+		// brightness
 		img.addEventHandler(ZoomEvent.ZOOM, event -> {
-			img.setFitWidth(imageWidth*3);
-			img.setFitHeight(imageHeight*3);
+			img.setFitWidth(imageWidth * 3);
+			img.setFitHeight(imageHeight * 3);
 			img.setEffect(initial);
 		});
 
-		// If the user exits an image, it changes back to its original size and brightness
+		// If the user exits an image, it changes back to its original size and
+		// brightness
 		img.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
 			img.setFitWidth(imageWidth);
 			img.setFitHeight(imageHeight);
@@ -302,7 +299,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 	}
 
 	// Sets events on action, treasure and victory cards when the game starts
-	private void setInitialATVCardEvents(Card card, ImageView img){
+	private void setInitialATVCardEvents(Card card, ImageView img) {
 		// Stores the image height and width
 		int imageHeight = (int) img.getFitHeight();
 		int imageWidth = (int) img.getFitWidth();
@@ -313,7 +310,8 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		ColorAdjust brighter = new ColorAdjust();
 		brighter.setBrightness(+0.5);
 
-		// If the user clicks a card, he wants to buy it. This handler sends a message with the chosen card.
+		// If the user clicks a card, he wants to buy it. This handler sends a
+		// message with the chosen card.
 		img.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 			if (model.sendBuyCard(card.getCardName())) {
 				view.stackpDiscard.getChildren().add(0, img);
@@ -326,14 +324,16 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			img.setEffect(brighter);
 		});
 
-		// If the user zooms an image, it gets bigger and gets back its original brightness
+		// If the user zooms an image, it gets bigger and gets back its original
+		// brightness
 		img.addEventHandler(ZoomEvent.ZOOM, event -> {
-			img.setFitWidth(imageWidth*3);
-			img.setFitHeight(imageHeight*3);
+			img.setFitWidth(imageWidth * 3);
+			img.setFitHeight(imageHeight * 3);
 			img.setEffect(initial);
 		});
 
-		// If the user exits an image, it changes back to its original size and brightness
+		// If the user exits an image, it changes back to its original size and
+		// brightness
 		img.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
 			img.setFitWidth(imageWidth);
 			img.setFitHeight(imageHeight);
@@ -342,22 +342,23 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 	}
 
 	// Starts the ServerListening
-	public void initializeServerListening(){
+	public void initializeServerListening() {
 		new Thread(new ServerListening()).start();
 		this.listenToServer = true;
 	}
 
 	/**
-	 * @author Adrian
-	 * Depending on which message was received, this class updates the contents of the components of the GUI
+	 * @author Adrian Depending on which message was received, this class
+	 *         updates the contents of the components of the GUI
 	 */
-	public class ServerListening implements Runnable{
+	public class ServerListening implements Runnable {
 
 		@Override
 		public void run() {
-			while(listenToServer){
+			while (listenToServer) {
 				try {
-					Thread.sleep(1000); // 1 request per second if something changed in the game
+					Thread.sleep(1000); // 1 request per second if something
+										// changed in the game
 				} catch (InterruptedException e1) {
 					System.out.println(e1.toString());
 				}
@@ -377,11 +378,13 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 					updateGUI();
 
-					// Ensures the update happens on the JavaFX Application Thread, by using Platform.runLater()
+					// Ensures the update happens on the JavaFX Application
+					// Thread, by using Platform.runLater()
 					Platform.runLater(() -> {
 
-						// Updates the number of current hand cards, discard cards and deck cards
-						if (model.currentPlayer.compareTo(model.clientName)==0) {
+						// Updates the number of current hand cards, discard
+						// cards and deck cards
+						if (model.currentPlayer.compareTo(model.clientName) == 0) {
 							view.lblNmbrOfCrntHandCards.setText(Integer.toString(model.yourHandCards.size()));
 							view.lblNmbrOfCrntDiscards.setText(Integer.toString(model.yourDiscardPile.size()));
 							view.lblNmbrOfCrntDeckCards.setText(Integer.toString(model.yourDeck.size()));
@@ -392,7 +395,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 						}
 
 						// Disables chat while playing singleplayer mode
-						if(model.gameMode.equals(GameMode.Singleplayer)){
+						if (model.gameMode.equals(GameMode.Singleplayer)) {
 							view.txtfChatArea.setDisable(true);
 							view.btnSendChatArea.setDisable(true);
 						}
@@ -416,7 +419,8 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 						Card woodcutterCard = Card.getCard(CardName.Woodcutter);
 						view.vboxWoodcutterCards.getChildren().add(0, resizeImage(woodcutterCard.getImage()));
-						setInitialATVCardEvents(woodcutterCard, (ImageView) view.vboxWoodcutterCards.getChildren().get(0));
+						setInitialATVCardEvents(woodcutterCard,
+								(ImageView) view.vboxWoodcutterCards.getChildren().get(0));
 
 						Card workshopCard = Card.getCard(CardName.Workshop);
 						view.vboxWorkshopCards.getChildren().add(0, resizeImage(workshopCard.getImage()));
@@ -465,12 +469,14 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				} else if (msgIn instanceof PlayerSuccess_Message) {
 					PlayerSuccess_Message psmsg = (PlayerSuccess_Message) msgIn;
 
-					// Ensure the update happens on the JavaFX Application Thread, by using Platform.runLater()
+					// Ensure the update happens on the JavaFX Application
+					// Thread, by using Platform.runLater()
 					Platform.runLater(() -> {
 
 						// main.startSuccess(psmsg.getSuccess());
 						psmsg.getSuccess(); // won/lost
-						// Spieler hat gewonnen: z. B. in Log anzeigen oder Bild anzeigen
+						// Spieler hat gewonnen: z. B. in Log anzeigen oder Bild
+						// anzeigen
 						listenToServer = false;
 
 					});

@@ -87,7 +87,7 @@ public class GameApp_Model extends Model {
 	protected GameSuccess success = null;
 	protected Integer victoryPoints = null;
 
-	public String gameMode = null;
+	public GameMode gameMode = null;
 	public HashMap<CardName, Integer> buyCards;
 	public CardName buyChoice = null;
 	public Phase currentPhase = null;
@@ -374,7 +374,7 @@ public class GameApp_Model extends Model {
 		GameMode_Message gmmsg = new GameMode_Message();
 		gmmsg.setClient(this.clientName);//set the clientName and mode(SinglePlayer or MultiPlayer) to XML
 		gmmsg.setMode(mode);
-		this.gameMode = mode.toString();
+		this.gameMode = mode;
 
 		Message msgIn = this.processMessage(gmmsg);
 		if(msgIn instanceof Commit_Message){
@@ -423,12 +423,14 @@ public class GameApp_Model extends Model {
 		pcmsg.setCard(card);
 		boolean update = false;
 
-		Message msgIn = this.processMessage(pcmsg);
-		if(msgIn instanceof UpdateGame_Message){
-			this.processUpdateGame(msgIn);
-			update = true;
-		}else if(msgIn instanceof Failure_Message){
-			//nothing toDo here
+		if(this.yourHandCards.contains(card));{
+			Message msgIn = this.processMessage(pcmsg);
+			if(msgIn instanceof UpdateGame_Message){
+				this.processUpdateGame(msgIn);
+				update = true;
+			}else if(msgIn instanceof Failure_Message){
+				//nothing toDo here
+			}
 		}
 		return update;
 	}
@@ -518,10 +520,11 @@ public class GameApp_Model extends Model {
 				this.yourNewHandCards.add(ugmsg.getBuyedCard());
 				this.buyCards.replace(ugmsg.getBuyedCard().getCardName(), this.buyCards.get(ugmsg.getBuyedCard().getCardName())-1);
 				ugmsg.setBuyedCard(null);
-				this.discardCard = null;
 				break;
 			}
 			this.interaction = Interaction.Skip;//defaultSetting
+			this.cellarDiscards.clear();
+			this.discardCard = null;
 			this.processUpdateGame(ugmsg);
 
 		}else if(msgIn instanceof PlayerSuccess_Message){
@@ -730,10 +733,6 @@ public class GameApp_Model extends Model {
 
 	public String getClientName(){
 		return this.clientName;
-	}
-
-	public void setGameMode(String gameMode){
-
 	}
 
 	public void setIP(String ipAddress){
