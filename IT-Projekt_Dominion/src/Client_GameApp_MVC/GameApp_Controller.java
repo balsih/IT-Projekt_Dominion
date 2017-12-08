@@ -313,8 +313,20 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		// If the user clicks a card, he wants to buy it. This handler sends a
 		// message with the chosen card.
 		img.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-			if (model.sendBuyCard(card.getCardName())) {
-				view.stackpDiscard.getChildren().add(0, img);
+			Card newCard = Card.getCard(card.getCardName());
+			if (model.sendBuyCard(newCard.getCardName())) {
+				ImageView newImg = resizeImage(newCard.getImage());
+				newImg.addEventHandler(ZoomEvent.ZOOM, zoomEvent -> {
+					newImg.setFitWidth(imageWidth * 3);
+					newImg.setFitHeight(imageHeight * 3);
+					newImg.setEffect(initial);
+				});
+				newImg.addEventHandler(MouseEvent.MOUSE_EXITED, exitEvent -> {
+					newImg.setFitWidth(imageWidth);
+					newImg.setFitHeight(imageHeight);
+					newImg.setEffect(initial);
+				});
+				view.stackpDiscard.getChildren().add(0, newImg);
 				updateGUI();
 			}
 		});

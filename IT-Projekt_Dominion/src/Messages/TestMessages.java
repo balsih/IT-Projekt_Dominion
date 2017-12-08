@@ -161,7 +161,7 @@ public class TestMessages {
 		GameMode_Message gmmsg = new GameMode_Message();
 		gmmsg.setClient(model.clientName);//set the clientName and mode(SinglePlayer or MultiPlayer) to XML
 		gmmsg.setMode(mode);
-		model.gameMode = mode.toString();
+		model.gameMode = mode;
 
 		Message msgIn = processMessage(gmmsg);
 		if(msgIn instanceof Commit_Message){
