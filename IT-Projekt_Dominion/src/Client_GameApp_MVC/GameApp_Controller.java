@@ -42,6 +42,7 @@ import javafx.scene.layout.VBox;
 public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> {
 
 	private boolean listenToServer;
+	private Dominion_Main main;
 
 	// Translates GUI-text
 	private ServiceLocator sl = ServiceLocator.getServiceLocator();
@@ -50,6 +51,13 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 	public GameApp_Controller(GameApp_Model model, GameApp_View view) {
 		super(model, view);
 
+		// If a player gives up, get back to the main menu
+		view.btnGiveUp.setOnAction(event -> {
+			this.main.startMainMenu();
+			// this.listenToServer = false; // Stops the thread
+			// model.sendGiveUp_Message();
+		});
+		
 		// Sends a chat message to the server and sets text into the GUI
 		view.btnSendChatArea.setOnAction(event -> {
 			boolean success = false;
@@ -72,26 +80,10 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			case Skip:
 				model.sendInteraction();
 				break;
-			case EndOfTurn:
-				updateGUI();
-				model.sendInteraction();
-				break;
 			case Cellar:
 				if (model.cellarDiscards.size() >= 1) {
 					model.sendInteraction();
 				}
-				break;
-			case Workshop:
-				model.sendInteraction();
-				break;
-			case Remodel1:
-				model.sendInteraction();
-				break;
-			case Remodel2:
-				model.sendInteraction();
-				break;
-			case Mine:
-				model.sendInteraction();
 				break;
 			}
 			updateGUI();
