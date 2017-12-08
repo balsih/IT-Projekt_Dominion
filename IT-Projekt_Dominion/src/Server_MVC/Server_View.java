@@ -66,6 +66,7 @@ public class Server_View extends View<Server_Model>{
 		
 		root.setTop(boxTop);
 		root.setCenter(txtLog);
+		txtLog.setEditable(false);;
 		
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add(getClass().getResource("Server.css").toExternalForm());

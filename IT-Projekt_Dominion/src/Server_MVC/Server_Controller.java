@@ -38,6 +38,7 @@ public class Server_Controller extends Controller<Server_Model, Server_View> {
 			try {
 				view.btnStart.setDisable(true);
 				view.btnStop.setDisable(false);
+				view.txtPort.setEditable(false);
 				model.startServerSocket(Integer.parseInt(view.txtPort.getText()));
 			} catch (NumberFormatException | IOException e) {
 				// TODO Auto-generated catch block
@@ -48,6 +49,7 @@ public class Server_Controller extends Controller<Server_Model, Server_View> {
 		view.btnStop.setOnAction((event) -> {
 			view.btnStart.setDisable(false);
 			view.btnStop.setDisable(true);
+			view.txtPort.setEditable(true);
 			model.stopServer();
 		});
 		
