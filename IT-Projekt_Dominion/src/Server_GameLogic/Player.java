@@ -294,6 +294,7 @@ public class Player {
 		 */
 		if (this.handCards.size() > 1 && selectedTopCard == null) {
 			ugmsg.setInteractionType(Interaction.EndOfTurn);
+			ugmsg.setLog("#Choose a hand card as top card in discard pile#");
 			this.sendToOpponent(this, ugmsg);
 			interaction = true;
 		} else if (this.handCards.size() == 1 && selectedTopCard == null) {

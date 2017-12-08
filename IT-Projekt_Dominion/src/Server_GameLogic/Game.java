@@ -173,6 +173,9 @@ public class Game {
 		this.currentPlayer = this.player1;
 		this.currentPlayer.startMove();
 		
+		// FOR TESTS
+		this.currentPlayer.setActualPhase(Phase.Action);
+		
 		// starts the first bot in a simulation
 		if(this.gameMode == GameMode.Simulation)
 			new Thread(bot).start();
