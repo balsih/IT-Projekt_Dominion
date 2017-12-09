@@ -342,12 +342,10 @@ public class ServerThreadForClient implements Runnable {
 			this.player.sendToOpponent(this.player, msg);
 			return msg;
 		case EndOfTurn:
-			for(Card card: this.player.handCards){
-				if(imsg.getDiscardCard().getCardName().equals(card.getCardName())){
-					return this.player.cleanUp(card);
-				}
-			}
-			break;
+			Card EOTCard = this.getRealHandCard(imsg.getDiscardCard());
+			if(EOTCard != null)
+				return this.player.cleanUp(EOTCard);
+			return new Failure_Message();
 		case Cellar:
 			Cellar_Card cCard = (Cellar_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
 			return cCard.executeCellar(imsg.getCellarDiscardCards());
@@ -356,15 +354,35 @@ public class ServerThreadForClient implements Runnable {
 			return wCard.executeWorkshop(imsg.getWorkshopChoice());
 		case Remodel1:
 			Remodel_Card r1Card = (Remodel_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
-			return r1Card.executeRemodel1(imsg.getDisposeRemodelCard());
+			Card remodel1Card = this.getRealHandCard(imsg.getDisposeRemodelCard());
+			if(remodel1Card != null)
+				return r1Card.executeRemodel1(remodel1Card);
+			return new Failure_Message();
 		case Remodel2:
 			Remodel_Card r2Card = (Remodel_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
 			return r2Card.executeRemodel2(imsg.getRemodelChoice());
 		case Mine:
 			Mine_Card mCard = (Mine_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
-			return mCard.executeMine(imsg.getDisposedMineCard());
+			Card mineCard = this.getRealHandCard(imsg.getDisposedMineCard());
+			if(mineCard != null)
+				return mCard.executeMine(mineCard);
+			return new Failure_Message();
 		default:
 			return null;
+		}
+	}
+	
+	/**
+	 * @author Lukas
+	 * 
+	 * @param card
+	 * @return handCard, the real object to use for methods
+	 * 			null if there is no object in the hand
+	 */
+	private Card getRealHandCard(Card card){
+		for(Card handCard: this.player.handCards){
+			if(card.getCardName().equals(handCard.getCardName()));
+			return handCard;
 		}
 		return null;
 	}
