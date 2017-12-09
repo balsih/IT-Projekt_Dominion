@@ -343,8 +343,11 @@ public class ServerThreadForClient implements Runnable {
 			return msg;
 		case EndOfTurn:
 			Card EOTCard = this.getRealHandCard(imsg.getDiscardCard());
-			if(EOTCard != null)
-				return this.player.cleanUp(EOTCard);
+			if(EOTCard != null){
+				Message EOTmsg = this.player.cleanUp(EOTCard);
+				this.player.sendToOpponent(this.player, EOTmsg);
+				return EOTmsg;
+			}
 			this.logger.info("Interaction "+Interaction.EndOfTurn.toString()+" failed");
 			return new Failure_Message();
 		case Cellar:

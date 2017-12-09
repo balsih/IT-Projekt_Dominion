@@ -354,16 +354,39 @@ public class UpdateGame_Message extends Message {
 	 * @return the first message with the merged content
 	 */
 	public static UpdateGame_Message merge(UpdateGame_Message first, UpdateGame_Message second) {
-		if (first.actions == null)
-			first.actions = second.actions;
-		if (first.buys == null)
-			first.buys = second.buys;
-		if (first.coins == null)
-			first.coins = second.coins;
+		
+		//If there was a change of currentPlayer, the states of the UpdateGame_Message has to be the reseted states
+		if (first.actions != null && second.actions != null){
+			if (first.currentPlayer == null)
+				first.actions = second.actions;
+		}
+		if (first.buys != null && second.buys != null){
+			if (first.currentPlayer == null)
+				first.buys = second.buys;
+		}
+		if (first.coins != null && second.coins != null){
+			if (first.currentPlayer == null)
+				first.coins = second.coins;
+		}
+		
+		//If the phase skipped twice automatically, the Phase.CleanUp will not be the correct phase
+		if(first.currentPhase != null && second.currentPhase != null){
+			if(Phase.parsePhase(first.currentPhase) == Phase.CleanUp){
+				first.currentPhase = second.currentPhase;
+			}
+		}else if (first.currentPhase == null){
+			first.currentPhase = second.currentPhase;
+		}	
+		
+		//Concat the logs if there are multiple logs
+		if (first.log != null && second.log != null){
+			first.log += "\\r\\n"+second.log;
+		} else if (first.log == null){
+			first.log = second.log;
+		}
+		
 		if (first.chat == null)
 			first.chat = second.chat;
-		if (first.currentPhase == null)
-			first.currentPhase = second.currentPhase;
 		if (first.currentPlayer == null)
 			first.currentPlayer = second.currentPlayer;
 		if (first.deckPileCardNumber == null)
@@ -372,11 +395,6 @@ public class UpdateGame_Message extends Message {
 			first.discardPileCardNumber = second.discardPileCardNumber;
 		if (first.discardPileTopCard == null)
 			first.discardPileTopCard = second.discardPileTopCard;
-		if (first.log != null && second.log != null){
-			first.log += "\r\n"+second.log;
-		}else if (first.log == null){
-			first.log = second.log;
-		}
 		if (first.interactionType == null)
 			first.interactionType = second.interactionType;
 		if (first.getNewHandCards() == null)
