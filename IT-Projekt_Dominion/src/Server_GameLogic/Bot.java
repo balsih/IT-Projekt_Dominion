@@ -308,7 +308,7 @@ public class Bot extends Player implements Runnable {
 	 */
 	private void buy() {
 		// makeBreak();
-		
+
 		// choose list for buying process
 		List<CardName> list;
 		if (buys > 2 && gameStage <= 75) {
@@ -322,7 +322,7 @@ public class Bot extends Player implements Runnable {
 					.collect(Collectors.toList());
 			list = list1;
 		}
-		
+
 		// try to buy a card
 		for (int indexCounter1 = 0; indexCounter1 < list.size(); indexCounter1++) {
 			cardToBuy = list.get(indexCounter1);
@@ -332,7 +332,7 @@ public class Bot extends Player implements Runnable {
 			if (buyMessage instanceof PlayerSuccess_Message)
 				break;
 
-			// if UpdateGame_Message --> check if Interaction == EndOfTurn;
+			// if UpdateGame_Message
 			else if (buyMessage instanceof UpdateGame_Message) {
 				System.out.println(this.playerName + " bought " + cardToBuy.toString());
 				numberOfTotalCards++;
@@ -341,39 +341,44 @@ public class Bot extends Player implements Runnable {
 				else if (Card.getCard(cardToBuy).getType().equals(CardType.Action))
 					numberOfActionCards++;
 
-				// test if cleanUp is necessary
-				UpdateGame_Message ugmsg = (UpdateGame_Message) buyMessage;
-				if (ugmsg.getInteractionType().equals(Interaction.EndOfTurn)) {
-					List<CardName> cardToChoose = PRIOLIST_TOPDISCARDPILE_CARD.keySet().stream()
-							.sorted((s1, s2) -> Integer.compare(PRIOLIST_TOPDISCARDPILE_CARD.get(s2),
-									PRIOLIST_TOPDISCARDPILE_CARD.get(s1)))
-							.collect(Collectors.toList());
-					
-					// choose card for cleanUp method
-					for (int indexCounter2 = 0; indexCounter2 < cardToChoose.size(); indexCounter2++) {
-						CardName cardname = cardToChoose.get(indexCounter2);
-						Card discardPileTopCard = Card.getCard(cardname);
-						if (handCards.contains(discardPileTopCard)) {
-							Card card = handCards.get(handCards.indexOf(discardPileTopCard));
-							cleanUp(card);
-							break;
+				if (buys == 0) {
+					// test if cleanUp is necessary
+					UpdateGame_Message ugmsg = (UpdateGame_Message) buyMessage;
+					if (ugmsg.getInteractionType().equals(Interaction.EndOfTurn)) {
+						List<CardName> cardToChoose = PRIOLIST_TOPDISCARDPILE_CARD.keySet().stream()
+								.sorted((s1, s2) -> Integer.compare(PRIOLIST_TOPDISCARDPILE_CARD.get(s2),
+										PRIOLIST_TOPDISCARDPILE_CARD.get(s1)))
+								.collect(Collectors.toList());
+
+						// choose card for cleanUp method
+						for (int indexCounter2 = 0; indexCounter2 < cardToChoose.size(); indexCounter2++) {
+							CardName cardname = cardToChoose.get(indexCounter2);
+							Card discardPileTopCard = Card.getCard(cardname);
+							if (handCards.contains(discardPileTopCard)) {
+								Card card = handCards.get(handCards.indexOf(discardPileTopCard));
+								cleanUp(card);
+								break;
+							}
 						}
 					}
 					// if buys still higher than 1 --> choose if another card can be bought
-				} else if (coins >= 2) {
-					buyOneMore = true;
-				} else {
-					buyOneMore = false;
-					if (ugmsg.getCurrentPhase().equals(Phase.Buy)) {
+				}
+
+				else {
+					if (coins >= 2) {
+						buyOneMore = true;
+					} else {
+						buyOneMore = false;
 						skipPhase();
+						this.sendToOpponent(this, ugsmg);
 					}
 				}
 			}
+
 			// if Failure_Message --> keep searching
 			else if (buyMessage instanceof Failure_Message)
 				continue;
 		}
-		cardToBuy = null;
 	}
 
 	/**
