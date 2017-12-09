@@ -50,7 +50,7 @@ public class Bot extends Player implements Runnable {
 
 	public Bot(String name) {
 		super(name);
-		System.out.println(this.playerName + " Bot erstellt");
+		System.out.println(this.playerName + " created");
 		counter = 1;
 		
 		buyPrioOneCard.put(CardName.Cellar, 32);
@@ -384,11 +384,11 @@ public class Bot extends Player implements Runnable {
 	 * Fills a name-list with entries, chooses one and gives it back.
 	 */
 	public static String getNameOfBot() {
-		NAMES.add("AI - \"Bodo\"");
-		NAMES.add("AI - \"Lukas\"");
-		NAMES.add("AI - \"Simon\"");
-		NAMES.add("AI - \"Adrian\"");
-		NAMES.add("AI - \"René\"");
+		NAMES.add("AI-\"Bodo\"");
+		NAMES.add("AI-\"Lukas\"");
+		NAMES.add("AI-\"Simon\"");
+		NAMES.add("AI-\"Adrian\"");
+		NAMES.add("AI-\"René\"");
 		Random rand = new Random();
 		String nameOfBot = NAMES.get(rand.nextInt(5));
 		return nameOfBot;
