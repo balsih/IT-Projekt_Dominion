@@ -42,7 +42,6 @@ import javafx.scene.layout.VBox;
 public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> {
 
 	private boolean listenToServer;
-	private ImageView flipsideCardView;
 	private Dominion_Main main;
 
 	// Translates GUI-text
@@ -52,7 +51,6 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 	public GameApp_Controller(GameApp_Model model, GameApp_View view) {
 		super(model, view);
 		
-		flipsideCardView = resizeImage(Card.getCard(CardName.Flipside).getImage());
 
 		// If a player gives up, get back to the main menu
 		view.btnGiveUp.setOnAction(event -> {
@@ -153,7 +151,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				view.stackpDeck.getChildren().clear();
 			} else {
 				if (view.stackpDeck.getChildren().isEmpty())
-					view.stackpDeck.getChildren().add(flipsideCardView);
+					view.stackpDeck.getChildren().add(resizeImage(Card.getCard(CardName.Flipside).getImage()));
 			}
 
 			// Updates the name of the current player
@@ -461,9 +459,6 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 						Card provinceCard = Card.getCard(CardName.Province);
 						view.vboxProvinceCards.getChildren().add(0, resizeImage(provinceCard.getImage()));
 						setInitialATVCardEvents(provinceCard, (ImageView) view.vboxProvinceCards.getChildren().get(0));
-
-						// Adds deck flipside card
-						view.stackpDeck.getChildren().add(flipsideCardView);
 						
 						//initialize opponent's variables
 						model.opponentDeck = model.yourDeck.size();
