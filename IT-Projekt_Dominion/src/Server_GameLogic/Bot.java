@@ -367,7 +367,6 @@ public class Bot extends Player implements Runnable {
 					if (ugmsg.getCurrentPhase().equals(Phase.Buy)) {
 						skipPhase();
 					}
-
 				}
 			}
 			// if Failure_Message --> keep searching
