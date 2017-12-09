@@ -202,7 +202,8 @@ public class Player {
 				this.sendToOpponent(this, this.getOpponentSuccessMsg());
 				return this.getCurrentPlayerSuccessMsg();
 			}
-
+			System.out.println(buyedCard.toString());
+			System.out.println(this.buys);
 			// sets all changed attributes of the UpdateGame_Message
 			ugmsg.setLog(this.playerName + ": #bought# #" + buyedCard.getCardName().toString() + "# #card#");
 			ugmsg.setCoins(this.coins);
@@ -213,8 +214,10 @@ public class Player {
 			this.sendToOpponent(this, ugmsg);
 
 			// if the buy phase is terminated, skip
-			if (this.buys == 0)
+			if (this.buys == 0){
 				ugmsg = UpdateGame_Message.merge((UpdateGame_Message) skipPhase(), ugmsg);
+				System.out.println("Skip");
+			}
 
 			return ugmsg;
 		}
@@ -336,6 +339,10 @@ public class Player {
 
 		// if the cleanUp phase is terminated, skip
 		ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.skipPhase(), ugmsg);
+		
+		System.out.println("CleanUp");
+		System.out.println(this.buys);
+		
 		this.sendToOpponent(this, ugmsg);
 
 		return ugmsg;

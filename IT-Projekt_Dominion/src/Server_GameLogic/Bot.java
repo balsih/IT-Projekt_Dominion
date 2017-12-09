@@ -151,7 +151,6 @@ public class Bot extends Player implements Runnable {
 			if (handCards.get(index).getType().equals(CardType.Treasure)) {
 				cardToPlay = handCards.get(index);
 				play(cardToPlay);
-				index = 0;
 				System.out.println(this.playerName + " played " + cardToPlay.toString());
 			}
 		}
