@@ -677,6 +677,8 @@ public class GameApp_Model extends Model {
 				}
 			}
 			this.currentPlayer = ugmsg.getCurrentPlayer();
+		}else{
+			this.turnEnded = false;
 		}
 
 		//The new handCards just drawn. Always currentPlayer

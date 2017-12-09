@@ -140,6 +140,13 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				// up
 				break;
 			}
+			
+			// ADD NEW COMMENT ADRIAN
+			if (model.turnEnded){
+				view.hboxHandCards.getChildren().clear();
+				view.hboxPlayedCards.getChildren().clear();
+				view.stackpDiscard.getChildren().add(resizeImage(model.yourDiscardPileTopCard.getImage()));
+			}
 
 			// RECOMMENT PLZ ADRIAN
 			if (model.yourDiscardPile.isEmpty()) {
@@ -273,9 +280,6 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				if(model.interaction == Interaction.EndOfTurn){
 					model.discardCard = card;
 					if(model.sendInteraction()){
-						view.hboxHandCards.getChildren().clear();
-						view.hboxPlayedCards.getChildren().clear();
-						view.stackpDiscard.getChildren().add(img);
 						updateGUI();
 					}
 				}
