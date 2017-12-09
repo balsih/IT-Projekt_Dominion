@@ -204,7 +204,7 @@ public class Game {
 	 * In multiplayer the current player will be initialized.
 	 */
 	public void switchPlayer() {
-//		currentPlayer.resetStates();
+		currentPlayer.resetStates();
 		if (currentPlayer.equals(this.player1)) {
 			this.currentPlayer = player2;
 
