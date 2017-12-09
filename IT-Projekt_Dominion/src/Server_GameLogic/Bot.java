@@ -46,6 +46,7 @@ public class Bot extends Player implements Runnable {
 	private int numberOfActionCards = 0, gameStage;
 	private boolean done0 = true, done1 = true, done2 = true, done3 = true;
 	private LinkedList<Card> discardedCardsForCellar;
+	private int counter;
 
 	public Bot(String name) {
 		super(name);
@@ -66,7 +67,7 @@ public class Bot extends Player implements Runnable {
 		buyPrioOneCard.put(CardName.Woodcutter, 28);
 		buyPrioOneCard.put(CardName.Workshop, 30);
 
-		// change priorities!!!
+		// change priorities!!
 		buyPrioMoreCards.put(CardName.Cellar, 32);
 		buyPrioMoreCards.put(CardName.Duchy, 10);
 		buyPrioMoreCards.put(CardName.Estate, 5);
