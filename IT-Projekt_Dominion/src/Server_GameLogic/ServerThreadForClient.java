@@ -12,6 +12,8 @@ import java.util.logging.Logger;
 import Cards.Card;
 import Cards.CardName;
 import Cards.Cellar_Card;
+import Cards.Gold_Card;
+import Cards.Market_Card;
 import Cards.Mine_Card;
 import Cards.Remodel_Card;
 import Cards.Village_Card;
@@ -283,7 +285,9 @@ public class ServerThreadForClient implements Runnable {
 	protected CreateGame_Message getCG_Message(Game game){
 		CreateGame_Message cgmsg = new CreateGame_Message();
 		cgmsg.setBuyCards(game.getBuyCards());
-		this.player.getHandCards().add(new Mine_Card());
+		this.player.getHandCards().add(new Gold_Card());
+		this.player.getHandCards().add(new Gold_Card());
+		this.player.getHandCards().add(new Market_Card());
 		cgmsg.setHandCards(this.player.getHandCards());
 		cgmsg.setDeckPile(this.player.getDeckPile());
 		cgmsg.setOpponent(game.getOpponent(this.player).getPlayerName());

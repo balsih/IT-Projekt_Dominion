@@ -346,7 +346,7 @@ public class UpdateGame_Message extends Message {
 	}
 
 	/**
-	 * @author Bodo Gruetter merges two UpdateGame_Messages together
+	 * @author Bodo Gruetter & Lukas merges two UpdateGame_Messages together
 	 * 
 	 * @param first
 	 * @param second
@@ -357,16 +357,25 @@ public class UpdateGame_Message extends Message {
 		
 		//If there was a change of currentPlayer, the states of the UpdateGame_Message has to be the reseted states
 		if (first.actions != null && second.actions != null){
-			if (first.currentPlayer == null)
+			if (first.currentPlayer == null){
 				first.actions = second.actions;
+			}	
+		} else if (first.actions == null) {
+			first.actions = second.actions;
 		}
 		if (first.buys != null && second.buys != null){
-			if (first.currentPlayer == null)
+			if (first.currentPlayer == null){
 				first.buys = second.buys;
+			}	
+		} else if (first.buys == null) {
+			first.buys = second.buys;
 		}
 		if (first.coins != null && second.coins != null){
-			if (first.currentPlayer == null)
+			if (first.currentPlayer == null){
 				first.coins = second.coins;
+			}	
+		} else if (first.coins == null) {
+			first.coins = second.coins;
 		}
 		
 		//If the phase skipped twice automatically, the Phase.CleanUp will not be the correct phase

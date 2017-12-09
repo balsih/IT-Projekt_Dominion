@@ -135,12 +135,13 @@ public class Player {
 			playedCards.add(this.handCards.remove(index));
 			this.actions--;
 			ugmsg.setActions(this.actions);
-			this.sendToOpponent(this, ugmsg);
 
 			// if the action phase is terminated, skip to next phase
 			if ((this.actions == 0 || !this.containsCardType(this.handCards, CardType.Action))
 					&& ugmsg.getInteractionType() == null)
 				ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.skipPhase(), ugmsg);
+			
+			this.sendToOpponent(this, ugmsg);
 
 			return ugmsg;
 
@@ -150,6 +151,9 @@ public class Player {
 				&& selectedCard.getType() == CardType.Treasure) {
 			ugmsg = selectedCard.executeCard(this);
 			playedCards.add(this.handCards.remove(index));
+			
+			this.sendToOpponent(this, ugmsg);
+			
 			return ugmsg;
 		}
 
