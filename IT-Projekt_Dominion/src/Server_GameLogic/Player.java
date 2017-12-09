@@ -410,7 +410,7 @@ public class Player {
 					ugmsg.setInteractionType(Interaction.EndOfTurn);
 					ugmsg.setLog("#Choose a hand card as top card in discard pile#");
 				} else
-					this.cleanUp(null);
+					ugmsg = UpdateGame_Message.merge(this.cleanUp(null), ugmsg);
 				break;
 
 			case CleanUp:
