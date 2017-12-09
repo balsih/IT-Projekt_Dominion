@@ -44,7 +44,6 @@ public class Bot extends Player implements Runnable {
 	private CardName cardToBuy = null;
 	private double numberOfGoldAndSilverCards = 0.0, numberOfTotalCards = 10.0;
 	private int numberOfActionCards = 0, gameStage;
-	private boolean buyOneMore = false;
 	private boolean done0 = true, done1 = true, done2 = true, done3 = true;
 	private LinkedList<Card> discardedCardsForCellar;
 
@@ -136,7 +135,7 @@ public class Bot extends Player implements Runnable {
 				estimateBuyPriorityOfActionCards();
 				buy();
 				System.out.println(this.playerName + " buyPhase finished");
-			} while (buys > 0 && buyOneMore == true && actualPhase == Phase.Buy);
+			} while (buys > 0 && actualPhase == Phase.Buy);
 		}
 		System.out.println(this.playerName + " round " + counter + " finished");
 		game.switchPlayer();
@@ -341,36 +340,21 @@ public class Bot extends Player implements Runnable {
 				else if (Card.getCard(cardToBuy).getType().equals(CardType.Action))
 					numberOfActionCards++;
 
+				UpdateGame_Message ugmsg = (UpdateGame_Message) buyMessage;
 				if (buys == 0) {
 					// test if cleanUp is necessary
-					UpdateGame_Message ugmsg = (UpdateGame_Message) buyMessage;
 					if (ugmsg.getInteractionType().equals(Interaction.EndOfTurn)) {
-						List<CardName> cardToChoose = PRIOLIST_TOPDISCARDPILE_CARD.keySet().stream()
-								.sorted((s1, s2) -> Integer.compare(PRIOLIST_TOPDISCARDPILE_CARD.get(s2),
-										PRIOLIST_TOPDISCARDPILE_CARD.get(s1)))
-								.collect(Collectors.toList());
-
-						// choose card for cleanUp method
-						for (int indexCounter2 = 0; indexCounter2 < cardToChoose.size(); indexCounter2++) {
-							CardName cardname = cardToChoose.get(indexCounter2);
-							Card discardPileTopCard = Card.getCard(cardname);
-							if (handCards.contains(discardPileTopCard)) {
-								Card card = handCards.get(handCards.indexOf(discardPileTopCard));
-								cleanUp(card);
-								break;
-							}
-						}
+						chooseDiscardPileTopCard();
 					}
-					// if buys still higher than 1 --> choose if another card can be bought
 				}
 
+				// if there are still left some buys and less than 2 coins --> skipPhase, else buy another card
 				else {
-					if (coins >= 2) {
-						buyOneMore = true;
-					} else {
-						buyOneMore = false;
+					if (coins <= 2) {
 						skipPhase();
-						this.sendToOpponent(this, ugsmg);
+						this.sendToOpponent(this, ugmsg);
+						if (handCards.size() > 1)
+							chooseDiscardPileTopCard();
 					}
 				}
 			}
@@ -379,6 +363,24 @@ public class Bot extends Player implements Runnable {
 			else if (buyMessage instanceof Failure_Message)
 				continue;
 		}
+	}
+
+	private void chooseDiscardPileTopCard() {
+		List<CardName> cardToChoose = PRIOLIST_TOPDISCARDPILE_CARD.keySet().stream().sorted(
+				(s1, s2) -> Integer.compare(PRIOLIST_TOPDISCARDPILE_CARD.get(s2), PRIOLIST_TOPDISCARDPILE_CARD.get(s1)))
+				.collect(Collectors.toList());
+
+		// choose card for cleanUp method
+		for (int indexCounter2 = 0; indexCounter2 < cardToChoose.size(); indexCounter2++) {
+			CardName cardname = cardToChoose.get(indexCounter2);
+			Card discardPileTopCard = Card.getCard(cardname);
+			if (handCards.contains(discardPileTopCard)) {
+				Card card = handCards.get(handCards.indexOf(discardPileTopCard));
+				cleanUp(card);
+				break;
+			}
+		}
+
 	}
 
 	/**
