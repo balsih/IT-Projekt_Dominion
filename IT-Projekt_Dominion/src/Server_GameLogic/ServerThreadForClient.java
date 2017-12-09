@@ -27,6 +27,7 @@ import Messages.Failure_Message;
 import Messages.GameMode_Message;
 import Messages.HighScore_Message;
 import Messages.Interaction_Message;
+import Messages.Knock_Message;
 import Messages.Login_Message;
 import Messages.Message;
 import Messages.GameSuccess;
@@ -111,7 +112,7 @@ public class ServerThreadForClient implements Runnable {
 	 */
     private Message processMessage(Message msgIn) {
 		Message msgOut = null;
-		if(this.clientName == null){
+		if(msgIn instanceof Knock_Message || msgIn instanceof Login_Message || msgIn instanceof CreateGame_Message){
 			this.clientName = msgIn.getClient();
 		}
 		
@@ -170,7 +171,6 @@ public class ServerThreadForClient implements Runnable {
 	 */
 	private Message processLogin(Message msgIn) {
 		Login_Message lmsg = (Login_Message) msgIn;
-		this.clientName = msgIn.getClient();
 		DB_Connector dbConnector = DB_Connector.getDB_Connector();
 		boolean success = dbConnector.checkLoginInput(this.clientName, lmsg.getPassword());
 		
@@ -198,7 +198,6 @@ public class ServerThreadForClient implements Runnable {
      */
 	private Message processCreateNewPlayer(Message msgIn) {
 		CreateNewPlayer_Message cnpmsg = (CreateNewPlayer_Message) msgIn;
-		this.clientName = cnpmsg.getClient();
 		String password = cnpmsg.getPassword();
 		
 		DB_Connector dbConnector = DB_Connector.getDB_Connector();
