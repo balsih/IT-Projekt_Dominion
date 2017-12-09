@@ -2,6 +2,7 @@ package Cards;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.logging.Logger;
 
 import Messages.Failure_Message;
 import Messages.Interaction;
@@ -53,6 +54,7 @@ public class Mine_Card extends Card {
 		if((discardedCard.getCardName() == CardName.Copper) || (discardedCard.getCardName() == CardName.Silver)){
 			UpdateGame_Message ugmsg = new UpdateGame_Message();
 			Game game = player.getGame();
+			
 			player.getHandCards().remove(discardedCard); // removes the selected card
 			
 			// add a treasure card with a higher value than the removed one
