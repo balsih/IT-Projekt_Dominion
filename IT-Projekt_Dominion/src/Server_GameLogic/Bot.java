@@ -50,7 +50,8 @@ public class Bot extends Player implements Runnable {
 	public Bot(String name) {
 		super(name);
 		System.out.println(this.playerName + " Bot erstellt");
-
+		counter = 1;
+		
 		buyPrioOneCard.put(CardName.Cellar, 32);
 		buyPrioOneCard.put(CardName.Duchy, 10);
 		buyPrioOneCard.put(CardName.Estate, 5);
@@ -137,8 +138,7 @@ public class Bot extends Player implements Runnable {
 				System.out.println(this.playerName + " buyPhase finished");
 			} while (buys > 0 && actualPhase == Phase.Buy);
 		}
-		System.out.println(this.playerName + " round " + counter + " finished");
-		game.switchPlayer();
+		System.out.println(this.playerName + " round " + counter++ + " finished");
 	}
 
 	/**
