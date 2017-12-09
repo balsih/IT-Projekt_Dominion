@@ -26,6 +26,7 @@ import Messages.Error_Message;
 import Messages.Failure_Message;
 import Messages.GameMode_Message;
 import Messages.HighScore_Message;
+import Messages.Interaction;
 import Messages.Interaction_Message;
 import Messages.Knock_Message;
 import Messages.Login_Message;
@@ -344,27 +345,31 @@ public class ServerThreadForClient implements Runnable {
 			Card EOTCard = this.getRealHandCard(imsg.getDiscardCard());
 			if(EOTCard != null)
 				return this.player.cleanUp(EOTCard);
+			this.logger.info("Interaction "+Interaction.EndOfTurn.toString()+" failed");
 			return new Failure_Message();
 		case Cellar:
-			Cellar_Card cCard = (Cellar_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
-			return cCard.executeCellar(imsg.getCellarDiscardCards());
+			Cellar_Card cellarCard = (Cellar_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
+			return cellarCard.executeCellar(imsg.getCellarDiscardCards());
 		case Workshop:
-			Workshop_Card wCard = (Workshop_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
-			return wCard.executeWorkshop(imsg.getWorkshopChoice());
+			Workshop_Card workshopCard = (Workshop_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
+			return workshopCard.executeWorkshop(imsg.getWorkshopChoice());
 		case Remodel1:
-			Remodel_Card r1Card = (Remodel_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
-			Card remodel1Card = this.getRealHandCard(imsg.getDisposeRemodelCard());
-			if(remodel1Card != null)
-				return r1Card.executeRemodel1(remodel1Card);
+			Remodel_Card remodel1Card = (Remodel_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
+			Card disposeRemodelCard = this.getRealHandCard(imsg.getDisposeRemodelCard());
+			if(disposeRemodelCard != null)
+				return remodel1Card.executeRemodel1(disposeRemodelCard);
+			this.logger.info("Interaction "+Interaction.Remodel1.toString()+" failed");
 			return new Failure_Message();
 		case Remodel2:
-			Remodel_Card r2Card = (Remodel_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
-			return r2Card.executeRemodel2(imsg.getRemodelChoice());
+			Remodel_Card remodel2Card = (Remodel_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
+			return remodel2Card.executeRemodel2(imsg.getRemodelChoice());
 		case Mine:
-			Mine_Card mCard = (Mine_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
-			Card mineCard = this.getRealHandCard(imsg.getDisposedMineCard());
-			if(mineCard != null)
-				return mCard.executeMine(mineCard);
+			Mine_Card mineCard = (Mine_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
+			Card disposedMineCard = this.getRealHandCard(imsg.getDisposedMineCard());
+			this.logger.info("The disposedCard serversite is (369): "+imsg.getDisposedMineCard());
+			if(disposedMineCard != null)
+				return mineCard.executeMine(disposedMineCard);
+			this.logger.info("Interaction "+Interaction.Mine.toString()+" failed");
 			return new Failure_Message();
 		default:
 			return null;
@@ -380,8 +385,8 @@ public class ServerThreadForClient implements Runnable {
 	 */
 	private Card getRealHandCard(Card card){
 		for(Card handCard: this.player.handCards){
-			if(card.getCardName().equals(handCard.getCardName()));
-			return handCard;
+			if(card.getCardName().equals(handCard.getCardName()))
+				return handCard;
 		}
 		return null;
 	}
