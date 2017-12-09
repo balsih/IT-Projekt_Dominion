@@ -207,7 +207,7 @@ public class Game {
 			if (currentPlayer.equals(this.player1)) {
 				this.currentPlayer = player2;
 
-				if(this.gameMode == GameMode.Singleplayer)
+				if(this.gameMode == GameMode.Singleplayer || this.gameMode == GameMode.Singleplayer)
 					new Thread(bot).start();
 				
 			} else {
