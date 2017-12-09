@@ -277,24 +277,13 @@ public class Bot extends Player implements Runnable {
 				default:
 					break;
 				}
-				if (ugmsg.getInteractionType().equals(Interaction.EndOfTurn)) {
-					List<CardName> cardToChoose = PRIOLIST_TOPDISCARDPILE_CARD.keySet().stream()
-							.sorted((s1, s2) -> Integer.compare(PRIOLIST_TOPDISCARDPILE_CARD.get(s2),
-									PRIOLIST_TOPDISCARDPILE_CARD.get(s1)))
-							.collect(Collectors.toList());
-					for (int indexCounter2 = 0; indexCounter2 < cardToChoose.size(); indexCounter2++) {
-						CardName cardname = cardToChoose.get(indexCounter2);
-						Card discardPileTopCard = Card.getCard(cardname);
-						if (handCards.contains(discardPileTopCard)) {
-							Card card = handCards.get(handCards.indexOf(discardPileTopCard));
-							cleanUp(card);
-							break;
-						}
-					}
-				}
+				if (ugmsg.getInteractionType().equals(Interaction.EndOfTurn))
+					chooseDiscardPileTopCard();
 
+				// if Bot couldn't buy card --> skipPhase
 			} else if (playMessage instanceof Failure_Message)
 				skipPhase();
+
 			// if nothing applies playMessage must be a PlayerSuccess_Message --> do nothing
 			cardToPlay = null;
 		}
@@ -347,7 +336,8 @@ public class Bot extends Player implements Runnable {
 					}
 				}
 
-				// if there are still left some buys and less than 2 coins --> skipPhase, else buy another card
+				// if there are still left some buys and less than 2 coins --> skipPhase, else
+				// buy another card
 				else {
 					if (coins <= 2) {
 						skipPhase();
@@ -375,27 +365,28 @@ public class Bot extends Player implements Runnable {
 		// choose a card for the cleanUp method
 		for (int indexCounter2 = 0; indexCounter2 < cardToChoose.size(); indexCounter2++) {
 			CardName cardname = cardToChoose.get(indexCounter2);
-			if(this.containsCard(handCards, cardname)) {
-				for(Card card : handCards) {
-					if(card.getCardName().equals(cardname)){
+			if (this.containsCard(handCards, cardname)) {
+				for (Card card : handCards) {
+					if (card.getCardName().equals(cardname)) {
 						Card discardTopPileCard = card;
 						cleanUp(discardTopPileCard);
 						break;
 					}
 				}
+				break;
 			}
 		}
 	}
 
 	/**
-	 * Fills a name-list with entries, chooses one and gives it back. public static
+	 * Fills a name-list with entries, chooses one and gives it back.
 	 */
 	public static String getNameOfBot() {
-		NAMES.add("Bodo");
-		NAMES.add("Lukas");
-		NAMES.add("Simon");
-		NAMES.add("Adrian");
-		NAMES.add("René");
+		NAMES.add("AI - \"Bodo\"");
+		NAMES.add("AI - \"Lukas\"");
+		NAMES.add("AI - \"Simon\"");
+		NAMES.add("AI - \"Adrian\"");
+		NAMES.add("AI - \"René\"");
 		Random rand = new Random();
 		String nameOfBot = NAMES.get(rand.nextInt(5));
 		return nameOfBot;
@@ -555,7 +546,6 @@ public class Bot extends Player implements Runnable {
 		prioListForPlaying.put(CardName.Workshop, 2);
 		int numOfVictoryCards = 0;
 		int numOfPossibleMine = 0;
-		// cardNamesOfActionHandCards = null;
 
 		// calculate types of handCards
 		for (Card card : handCards) {
