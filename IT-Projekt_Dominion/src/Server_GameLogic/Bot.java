@@ -60,7 +60,7 @@ public class Bot extends Player implements Runnable {
 		buyPrioOneCard.put(CardName.Mine, 24);
 		buyPrioOneCard.put(CardName.Province, 100);
 		buyPrioOneCard.put(CardName.Remodel, 22);
-		buyPrioOneCard.put(CardName.Silver, 40);
+		buyPrioOneCard.put(CardName.Silver, 70);
 		buyPrioOneCard.put(CardName.Smithy, 26);
 		buyPrioOneCard.put(CardName.Village, 66);
 		buyPrioOneCard.put(CardName.Woodcutter, 28);
@@ -139,6 +139,7 @@ public class Bot extends Player implements Runnable {
 			} while (buys > 0 && buyOneMore == true && actualPhase == Phase.Buy);
 		}
 		System.out.println(this.playerName + " round " + counter + " finished");
+		game.switchPlayer();
 	}
 
 	/**
@@ -173,8 +174,10 @@ public class Bot extends Player implements Runnable {
 		}
 		// makeBreak();
 		// System.out.println(this.playerName + " spielt " +cardToPlay.toString());
-		if (cardToPlay == null)
+		if (cardToPlay == null) {
+			actions = 0;
 			skipPhase();
+		}
 		else {
 			Message playMessage = play(cardToPlay);
 			System.out.println(this.playerName + " played " + cardToPlay.toString());
@@ -334,7 +337,7 @@ public class Bot extends Player implements Runnable {
 				else if (Card.getCard(cardToBuy).getType().equals(CardType.Action))
 					numberOfActionCards++;
 				UpdateGame_Message ugmsg = (UpdateGame_Message) buyMessage;
-				if(ugmsg.getCurrentPhase().equals(Phase.CleanUp))
+				if (ugmsg.getCurrentPhase().equals(Phase.CleanUp))
 					break;
 				else if (ugmsg.getInteractionType().equals(Interaction.EndOfTurn)) {
 					List<CardName> cardToChoose = PRIOLIST_TOPDISCARDPILE_CARD.keySet().stream()
@@ -359,7 +362,7 @@ public class Bot extends Player implements Runnable {
 				}
 			}
 			// if Failure_Message --> keep searching
-			if (buyMessage instanceof Failure_Message)
+			else if (buyMessage instanceof Failure_Message)
 				continue;
 		}
 		cardToBuy = null;
