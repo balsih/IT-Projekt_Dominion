@@ -24,6 +24,7 @@ import Messages.BuyCard_Message;
 import Messages.Chat_Message;
 import Messages.Commit_Message;
 import Messages.GameSuccess;
+import Messages.GiveUp_Message;
 import Messages.CreateGame_Message;
 import Messages.CreateNewPlayer_Message;
 import Messages.Failure_Message;
@@ -546,6 +547,24 @@ public class GameApp_Model extends Model {
 			this.processUpdateGame(ugmsg);
 
 		}else if(msgIn instanceof PlayerSuccess_Message){
+			this.processPlayerSuccess(msgIn);
+			update = true;
+		}
+		return update;
+	}
+	
+	/**
+	 * @author Lukas
+	 * Sends a GiveUp_Message to Server
+	 * 
+	 * @return update, if communication to server was successful
+	 */
+	public boolean sendGiveUp(){
+		GiveUp_Message gumsg = new GiveUp_Message();
+		boolean update = false;
+
+		Message msgIn = this.processMessage(gumsg);
+		if(msgIn instanceof PlayerSuccess_Message){
 			this.processPlayerSuccess(msgIn);
 			update = true;
 		}
