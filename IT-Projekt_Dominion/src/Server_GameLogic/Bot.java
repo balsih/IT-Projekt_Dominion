@@ -171,7 +171,6 @@ public class Bot extends Player implements Runnable {
 			}
 		}
 		// makeBreak();
-		// System.out.println(this.playerName + " spielt " +cardToPlay.toString());
 		if (cardToPlay == null) {
 			actions = 0;
 			skipPhase();
@@ -365,22 +364,27 @@ public class Bot extends Player implements Runnable {
 		}
 	}
 
+	/**
+	 * Chooses a card as the TopCard of the DiscardPile.
+	 */
 	private void chooseDiscardPileTopCard() {
 		List<CardName> cardToChoose = PRIOLIST_TOPDISCARDPILE_CARD.keySet().stream().sorted(
 				(s1, s2) -> Integer.compare(PRIOLIST_TOPDISCARDPILE_CARD.get(s2), PRIOLIST_TOPDISCARDPILE_CARD.get(s1)))
 				.collect(Collectors.toList());
 
-		// choose card for cleanUp method
+		// choose a card for the cleanUp method
 		for (int indexCounter2 = 0; indexCounter2 < cardToChoose.size(); indexCounter2++) {
 			CardName cardname = cardToChoose.get(indexCounter2);
-			Card discardPileTopCard = Card.getCard(cardname);
-			if (handCards.contains(discardPileTopCard)) {
-				Card card = handCards.get(handCards.indexOf(discardPileTopCard));
-				cleanUp(card);
-				break;
+			if(this.containsCard(handCards, cardname)) {
+				for(Card card : handCards) {
+					if(card.getCardName().equals(cardname)){
+						Card discardTopPileCard = card;
+						cleanUp(discardTopPileCard);
+						break;
+					}
+				}
 			}
 		}
-
 	}
 
 	/**
