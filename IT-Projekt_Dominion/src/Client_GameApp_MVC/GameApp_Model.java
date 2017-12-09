@@ -8,6 +8,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -565,7 +566,8 @@ public class GameApp_Model extends Model {
 		this.opponentHandCards = cgmsg.getHandNumber();
 		this.currentPlayer = cgmsg.getStartingPlayer();
 		this.currentPhase = cgmsg.getPhase();
-		for(int i = 0; i < cgmsg.getDeckPile().size(); i++){
+		Stack<Card> deckPile = cgmsg.getDeckPile();
+		while(!deckPile.isEmpty()){
 			this.yourDeck.add(cgmsg.getDeckPile().pop());
 		}
 	}
