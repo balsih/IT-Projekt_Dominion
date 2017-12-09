@@ -204,18 +204,18 @@ public class Game {
 	 * In multiplayer the current player will be initialized.
 	 */
 	public void switchPlayer() {
-		currentPlayer.resetStates();
+//		currentPlayer.resetStates();
 		if (currentPlayer.equals(this.player1)) {
 			this.currentPlayer = player2;
 
-			if(this.gameMode == GameMode.Singleplayer || this.gameMode == GameMode.Singleplayer)
-				new Thread(bot).start();
+			if(this.gameMode == GameMode.Singleplayer || this.gameMode == GameMode.Simulation)
+				new Thread(bot2).start();
 				
 		} else {
 			this.currentPlayer = player1;
 				
 			if(this.gameMode == GameMode.Simulation)
-				new Thread(bot2).start();
+				new Thread(bot).start();
 		}
 	}
 

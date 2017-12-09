@@ -334,6 +334,8 @@ public class Player {
 		ugmsg.setDiscardPileCardNumber(this.discardPile.size());
 		
 		ugmsg = UpdateGame_Message.merge(this.draw(this.NUM_OF_HANDCARDS), ugmsg);
+		
+		System.out.println(game.getCurrentPlayer().getPlayerName());
 
 		// if the cleanUp phase is terminated, skip
 		ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.skipPhase(), ugmsg);
@@ -401,6 +403,8 @@ public class Player {
 
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		Failure_Message fmsg = new Failure_Message();
+		
+		System.out.println(game.getCurrentPlayer().getPlayerName());
 
 		if (this.equals(game.getCurrentPlayer())) {
 			switch (this.actualPhase) {
