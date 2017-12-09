@@ -48,8 +48,6 @@ public class Player {
 	protected Game game;
 	protected Phase actualPhase;
 
-	protected int counter;
-
 	protected Socket clientSocket;
 	private ServerThreadForClient serverThreadForClient;
 
@@ -93,7 +91,6 @@ public class Player {
 		this.actions = 1;
 		this.buys = 1;
 		this.coins = 0;
-		this.counter = 0;
 		this.actualPhase = Phase.Action;
 
 		if (!this.containsCardType(this.handCards, CardType.Action))
@@ -202,8 +199,7 @@ public class Player {
 				this.sendToOpponent(this, this.getOpponentSuccessMsg());
 				return this.getCurrentPlayerSuccessMsg();
 			}
-			System.out.println(buyedCard.toString());
-			System.out.println(this.buys);
+
 			// sets all changed attributes of the UpdateGame_Message
 			ugmsg.setLog(this.playerName + ": #bought# #" + buyedCard.getCardName().toString() + "# #card#");
 			ugmsg.setCoins(this.coins);
@@ -215,7 +211,6 @@ public class Player {
 			// if the buy phase is terminated, skip
 			if (this.buys == 0){
 				ugmsg = UpdateGame_Message.merge((UpdateGame_Message) skipPhase(), ugmsg);
-				System.out.println("Skip");
 			}
 			
 			this.sendToOpponent(this, ugmsg);
@@ -334,14 +329,9 @@ public class Player {
 		ugmsg.setDiscardPileCardNumber(this.discardPile.size());
 		
 		ugmsg = UpdateGame_Message.merge(this.draw(this.NUM_OF_HANDCARDS), ugmsg);
-		
-		System.out.println(game.getCurrentPlayer().getPlayerName());
 
 		// if the cleanUp phase is terminated, skip
 		ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.skipPhase(), ugmsg);
-		
-		System.out.println("CleanUp");
-		System.out.println(this.buys);
 		
 		this.sendToOpponent(this, ugmsg);
 
@@ -404,7 +394,6 @@ public class Player {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		Failure_Message fmsg = new Failure_Message();
 		
-		System.out.println(game.getCurrentPlayer().getPlayerName());
 
 		if (this.equals(game.getCurrentPlayer())) {
 			switch (this.actualPhase) {
