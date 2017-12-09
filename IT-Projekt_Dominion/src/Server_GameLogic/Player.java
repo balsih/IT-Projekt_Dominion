@@ -332,8 +332,6 @@ public class Player {
 
 		// if the cleanUp phase is terminated, skip
 		ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.skipPhase(), ugmsg);
-		
-		this.sendToOpponent(this, ugmsg);
 
 		return ugmsg;
 	}
