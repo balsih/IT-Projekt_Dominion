@@ -68,7 +68,7 @@ public class Player {
 		this.playedCards = new LinkedList<Card>();
 
 		this.playerName = name;
-		this.startMove();
+		this.resetStates();
 		this.actualPhase = Phase.Buy;
 	}
 
@@ -89,7 +89,7 @@ public class Player {
 	 * 
 	 *         Initializes the player to start a move.
 	 */
-	public void startMove() {
+	public void resetStates() {
 		this.actions = 1;
 		this.buys = 1;
 		this.coins = 0;
@@ -211,13 +211,14 @@ public class Player {
 			ugmsg.setDiscardPileTopCard(this.discardPile.peek());
 			ugmsg.setDiscardPileCardNumber(this.discardPile.size());
 			ugmsg.setBuyedCard(buyedCard);
-			this.sendToOpponent(this, ugmsg);
 
 			// if the buy phase is terminated, skip
 			if (this.buys == 0){
 				ugmsg = UpdateGame_Message.merge((UpdateGame_Message) skipPhase(), ugmsg);
 				System.out.println("Skip");
 			}
+			
+			this.sendToOpponent(this, ugmsg);
 
 			return ugmsg;
 		}
@@ -302,7 +303,6 @@ public class Player {
 	 */
 	public UpdateGame_Message cleanUp(Card selectedTopCard) {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
-		this.topCard = selectedTopCard;
 
 		// lays played cards down on the discard pile
 		while (!playedCards.isEmpty()) {
@@ -332,8 +332,6 @@ public class Player {
 		}
 
 		ugmsg.setDiscardPileCardNumber(this.discardPile.size());
-		
-//		ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.skipPhase(), ugmsg);
 		
 		ugmsg = UpdateGame_Message.merge(this.draw(this.NUM_OF_HANDCARDS), ugmsg);
 

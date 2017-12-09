@@ -171,7 +171,7 @@ public class Game {
 		this.player2.draw(player2.NUM_OF_HANDCARDS);
 //		this.currentPlayer = this.getStarter();
 		this.currentPlayer = this.player1;
-		this.currentPlayer.startMove();
+		this.currentPlayer.resetStates();
 		
 		// FOR TESTS
 		this.currentPlayer.setActualPhase(Phase.Action);
@@ -204,20 +204,19 @@ public class Game {
 	 * In multiplayer the current player will be initialized.
 	 */
 	public void switchPlayer() {
-			if (currentPlayer.equals(this.player1)) {
-				this.currentPlayer = player2;
+		currentPlayer.resetStates();
+		if (currentPlayer.equals(this.player1)) {
+			this.currentPlayer = player2;
 
-				if(this.gameMode == GameMode.Singleplayer || this.gameMode == GameMode.Singleplayer)
-					new Thread(bot).start();
+			if(this.gameMode == GameMode.Singleplayer || this.gameMode == GameMode.Singleplayer)
+				new Thread(bot).start();
 				
-			} else {
-				this.currentPlayer = player1;
+		} else {
+			this.currentPlayer = player1;
 				
-				if(this.gameMode == GameMode.Simulation)
-					new Thread(bot2).start();
-			}
-			
-			currentPlayer.startMove();
+			if(this.gameMode == GameMode.Simulation)
+				new Thread(bot2).start();
+		}
 	}
 
 	/**
