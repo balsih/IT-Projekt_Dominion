@@ -416,6 +416,9 @@ public class Player {
 				game.switchPlayer();
 				ugmsg.setCurrentPlayer(game.getCurrentPlayer().getPlayerName());
 				ugmsg.setCurrentPhase(this.actualPhase);
+				ugmsg.setActions(this.actions);
+				ugmsg.setBuys(this.buys);
+				ugmsg.setCoins(this.coins);
 				break;
 
 			default:
