@@ -264,18 +264,19 @@ public class GameApp_Model extends Model {
 	 * @param port
 	 * @return result, true if the port with the given IP is open
 	 */
-	public boolean init(String ipAddress, Integer port){
+	public String init(String ipAddress, Integer port){
 		this.ipAddress = ipAddress;
 		this.port = port;
 		
-		boolean result = false;
+		String result = NO_CONNECTION;
+		this.failure = true;
 		Knock_Message kmsg = new Knock_Message();
 		kmsg.setClient("unknown client");
 		Message msgIn = this.processMessage(kmsg);
 		if(msgIn instanceof Commit_Message)
-			result = true;
+			this.failure = false;
 		
-		return result;
+		return this.translate(result);
 	}
 
 	/**
@@ -766,6 +767,10 @@ public class GameApp_Model extends Model {
 
 	public String getClientName(){
 		return this.clientName;
+	}
+	
+	public boolean getFailure(){
+		return this.failure;
 	}
 
 	public void setIP(String ipAddress){

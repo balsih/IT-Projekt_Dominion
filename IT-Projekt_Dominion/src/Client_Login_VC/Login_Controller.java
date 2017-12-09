@@ -26,7 +26,7 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 		super(model, view);
 		
 		// disables elements before user presses connectBtn after filled in IP and port
-		// -> ev. über change listener steuern... 
+		// -> ev. ï¿½ber change listener steuern... 
 		view.nameLbl.setDisable(true);
 		view.nameText.setDisable(true);
 		view.passwordLbl.setDisable(true);
@@ -69,8 +69,8 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 		view.connectBtn.setOnAction((event) -> {
 			try {	
 				model.startBtnClickSound();
-				model.init(view.ipText.getText(), Integer.parseInt(view.portText.getText()));
-				//if(model.init(view.ipText.getText(), Integer.parseInt(view.portText.getText()))){
+				String message = model.init(view.ipText.getText(), Integer.parseInt(view.portText.getText()));
+				if(!model.getFailure()){
 					//view.connectAlert.showAndWait(); -> keien Fehlermeldung vorgesehen
 	
 					// enables the elements again after connectBtn got clicked 
@@ -80,10 +80,10 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 					view.passwordText.setDisable(false);
 					view.createNewPlayerBtn.setDisable(false);
 					view.quitBtn.setDisable(false);
-				//} else {
-					//view.loginAlert.setHeaderText(message);
-				//	view.loginAlert.showAndWait(); // warning alert if login fails
-				//}				
+				} else {
+					view.loginAlert.setHeaderText(message);
+					view.loginAlert.showAndWait(); // warning alert if login fails
+				}				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -97,7 +97,7 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 //			try {
 //				model.startBtnClickSound();
 //				String message = model.init(view.ipText.getText(), Integer.parseInt(view.portText.getText()));
-//				if (model.failure) {
+//				if (model.getFailure()) {
 //					view.loginAlert.setHeaderText(message);
 //					view.loginAlert.showAndWait(); // warning alert if login fails
 //					view.connectAlert.showAndWait();
@@ -157,7 +157,7 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 			try {
 				model.startBtnClickSound();
 				String message = model.sendLogin(view.nameText.getText(), view.passwordText.getText());
-				if (model.failure) {
+				if (model.getFailure()) {
 					view.loginAlert.setHeaderText(message);
 					view.loginAlert.showAndWait(); // warning alert if login fails
 				}
