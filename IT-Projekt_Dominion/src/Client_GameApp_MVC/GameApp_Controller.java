@@ -146,6 +146,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 			// Adds the discard pile top card to the GUI
 			if(model.yourDiscardPileTopCard != null){
+				view.stackpDiscard.getChildren().clear();
 				view.stackpDiscard.getChildren().add(resizeImage(model.yourDiscardPileTopCard.getImage()));
 			}
 

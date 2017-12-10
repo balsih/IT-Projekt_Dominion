@@ -383,7 +383,7 @@ public class UpdateGame_Message extends Message {
 			if(Phase.parsePhase(first.currentPhase) == Phase.CleanUp){
 				first.currentPhase = second.currentPhase;
 			}
-		}else if (first.currentPhase == null){
+		} else if (first.currentPhase == null){
 			first.currentPhase = second.currentPhase;
 		}	
 		
@@ -392,6 +392,19 @@ public class UpdateGame_Message extends Message {
 			first.log += "=="+second.log;
 		} else if (first.log == null){
 			first.log = second.log;
+		}
+		
+		//Deletes old data if new cards were drawn
+		if (first.getNewHandCards() != null){//first message has priority
+			if (first.getDiscardPileCardNumber() == 0){
+				second.discardPileTopCard = null;
+				second.discardPileCardNumber = null;
+			}
+		} else if(second.getNewHandCards() != null){//second message has priority
+			if (second.getDiscardPileCardNumber() == 0){
+				first.discardPileTopCard = null;
+				first.discardPileCardNumber = null;
+			}
 		}
 		
 		if (first.chat == null)
@@ -404,14 +417,14 @@ public class UpdateGame_Message extends Message {
 			first.discardPileCardNumber = second.discardPileCardNumber;
 		if (first.discardPileTopCard == null)
 			first.discardPileTopCard = second.discardPileTopCard;
-		if (first.interactionType == null)
-			first.interactionType = second.interactionType;
 		if (first.getNewHandCards() == null)
 			first.setNewHandCards(second.getNewHandCards());
 		if (first.playedCard == null)
 			first.playedCard = second.playedCard;
 		if (first.buyedCard == null)
 			first.buyedCard = second.buyedCard;
+		if (first.interactionType == null)
+			first.interactionType = second.interactionType;
 		if (first.interactionType == null)
 			first.interactionType = second.interactionType;
 		if (first.getCardSelection() == null)
