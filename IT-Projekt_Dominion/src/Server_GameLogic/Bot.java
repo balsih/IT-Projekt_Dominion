@@ -45,7 +45,7 @@ public class Bot extends Player implements Runnable {
 	private double numberOfGoldAndSilverCards = 0.0, numberOfTotalCards = 10.0;
 	private int numberOfActionCards = 0, gameStage;
 	private boolean done0 = true, done1 = true, done2 = true, done3 = true;
-	private LinkedList<Card> discardedCardsForCellar;
+	private LinkedList<Card> discardedCardsForCellar = new LinkedList<Card>();
 	private int counter;
 
 	public Bot(String name) {
@@ -121,7 +121,7 @@ public class Bot extends Player implements Runnable {
 	 */
 	public void run() {
 		System.out.println(this.playerName + " started round " + counter);
-		// makeBreak();
+		makeBreak();
 		while (actions > 0 && actualPhase == Phase.Action) {
 			estimatePlayPriorityOfActionCards();
 			playActionCards();
@@ -172,7 +172,7 @@ public class Bot extends Player implements Runnable {
 				}
 			}
 		}
-		// makeBreak();
+		makeBreak();
 		if (cardToPlay == null) {
 			actions = 0;
 			skipPhase();
@@ -194,7 +194,6 @@ public class Bot extends Player implements Runnable {
 						numberOfGoldAndSilverCards++;
 					break;
 				case Cellar:
-					discardedCardsForCellar = null;
 					for (Card card : handCards) {
 						if (card.getType().equals(CardType.Victory))
 							discardedCardsForCellar.add(card);
@@ -279,8 +278,6 @@ public class Bot extends Player implements Runnable {
 				default:
 					break;
 				}
-				if (ugmsg.getInteractionType().equals(Interaction.EndOfTurn))
-					chooseDiscardPileTopCard();
 
 				// if Bot couldn't buy card --> skipPhase
 			} else if (playMessage instanceof Failure_Message)
@@ -296,7 +293,7 @@ public class Bot extends Player implements Runnable {
 	 * sense.
 	 */
 	private void buy() {
-		// makeBreak();
+		makeBreak();
 
 		// choose list for buying process
 		List<CardName> list;
@@ -371,7 +368,8 @@ public class Bot extends Player implements Runnable {
 				for (Card card : handCards) {
 					if (card.getCardName().equals(cardname)) {
 						Card discardTopPileCard = card;
-						cleanUp(discardTopPileCard);
+						UpdateGame_Message ugmsg = cleanUp(discardTopPileCard);
+						this.sendToOpponent(this, ugmsg);
 						break;
 					}
 				}
