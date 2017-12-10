@@ -19,6 +19,7 @@ import Messages.Interaction;
 import Messages.Message;
 import Messages.PlayerSuccess_Message;
 import Messages.UpdateGame_Message;
+import javafx.scene.Scene;
 
 /**
  * @author Simon
