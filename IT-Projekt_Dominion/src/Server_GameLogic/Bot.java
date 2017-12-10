@@ -132,7 +132,7 @@ public class Bot extends Player implements Runnable {
 			playActionCards();
 		}
 		System.out.println(this.playerName + " Action_Phase finished");
-		if (buys > 0 && actualPhase == Phase.Buy) {
+		if (buys > 0 && actualPhase == Phase.Buy && game.getCurrentPlayer() == this) {
 			playTreasureCards();
 			System.out.println(this.playerName + " TreasureCards played");
 			do {
@@ -346,7 +346,7 @@ public class Bot extends Player implements Runnable {
 		}
 
 		// try to buy a card
-		Message buyMessage;
+		Message buyMessage = null;
 		for (int index = 0; index < buyList.size(); index++) {
 			cardToBuy = buyList.get(index);
 			buyMessage = buy(cardToBuy);
