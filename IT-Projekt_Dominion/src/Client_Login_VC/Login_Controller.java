@@ -26,7 +26,7 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 		super(model, view);
 		
 		// disables elements before user presses connectBtn after filled in IP and port
-		// -> ev. �ber change listener steuern... 
+		// -> ev. mit change listener steuern... 
 		view.nameLbl.setDisable(true);
 		view.nameText.setDisable(true);
 		view.passwordLbl.setDisable(true);

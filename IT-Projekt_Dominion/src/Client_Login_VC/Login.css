@@ -6,11 +6,21 @@
     -fx-border-color: black;
 }
 
+
+#structureBox {
+	-fx-background-color: rgba(0, 0, 0, 0.5);
+	-fx-background-radius: 10;
+}
+
+
 #centerBox {
 	-fx-border-width: 10 2 3 4;
 	-fx-padding: 25px;
 	-fx-spacing: 40px;
-	-fx-background-color: rgba(0, 0, 0, 0.5);
+}
+
+#typingBox {
+	-fx-spacing: 235px;
 }
 
 #ipNamePasswordBox {
@@ -19,14 +29,12 @@
 }
 
 #ipAndPortLblBox {
-	-fx-spacing: 135px;
-
+	-fx-spacing: 140px;
 }
 
 
 #ipAndConnectBox {
 	-fx-spacing: 10px;
-
 }
 
 #nameBox {
@@ -47,6 +55,11 @@
 	-fx-hgap: 60px;
 	-fx-vgap: 60px;
 }
+
+#logoLbl {
+	
+	}
+
 
 #loginLbl {
 	-fx-font-size: 25px;
@@ -89,6 +102,22 @@
 .button:hover{
 	-fx-background-color: #6699CC;
 	-fx-text-fill: #000000;
+}
+
+.dialog-pane {
+    -fx-background-color: black;
+    -fx-border-color: black;
+}
+
+.dialog-pane .label {
+    -fx-text-fill: white;
+}
+.dialog-pane:header .header-panel {
+    -fx-background-color: black;
+}
+
+.dialog-pane:header .header-panel .label {
+    -fx-font-size: 20px;
 }
 
 
