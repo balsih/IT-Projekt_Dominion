@@ -272,7 +272,7 @@ public class GameApp_Model extends Model {
 				output += this.translate(lines[i])+System.lineSeparator();
 			}
 		}else{
-			output = input;
+			output = this.translate(input);
 		}
 		return output;
 	}
@@ -626,6 +626,41 @@ public class GameApp_Model extends Model {
 		this.success = psmsg.getSuccess();
 		this.victoryPoints = psmsg.getVictoryPoints();
 	}
+	
+	/**
+	 * @author Lukas
+	 * Draws the cards from yourDeck. The sequence of the XML (draws) doesn't matter
+	 * 
+	 * @param drawCards
+	 */
+	private void draw(LinkedList<Card> drawCards){
+		LinkedList<Card> cardsNotInDeck = new LinkedList<Card>();
+		for(int i = 0; i < drawCards.size(); i++){
+			
+			//Mandatory if the DeckPile is empty, the DiscardPile has to be added to the DeckPile
+			if(this.yourDeck.size() == 0){
+				for(int j = 0; j < this.yourDiscardPile.size(); j++){
+					this.yourDeck.add(this.yourDiscardPile.remove());
+				}
+			}
+			
+			//Removes the card out of yourDeck
+			for(int k = 0; k < this.yourDeck.size(); k++){
+				if(drawCards.get(i).getCardName().equals(this.yourDeck.get(k).getCardName())){
+					this.yourNewHandCards.add(this.yourDeck.remove(k));
+					break;
+					
+					//probleme mit kartenziehen, noch anpassen
+				} else if(!(drawCards.get(i).getCardName().equals(this.yourDeck.get(k).getCardName())) && k == this.yourDeck.size()){
+					cardsNotInDeck.add(drawCards.get(i));
+				}
+			}
+		}
+		if(!cardsNotInDeck.isEmpty()){
+			System.out.println("Deck: "+this.yourDeck.toString());
+			this.draw(cardsNotInDeck);
+		}
+	}
 
 
 	/**MOSTLY TESTED
@@ -708,20 +743,7 @@ public class GameApp_Model extends Model {
 		//Move the drawn cards from the deck into yourNewHandCards
 		if(ugmsg.getNewHandCards() != null && 
 				((this.currentPlayer.compareTo(this.clientName) == 0) || (this.opponent.compareTo(ugmsg.getCurrentPlayer()) == 0))){
-			LinkedList<Card> newHandCards = ugmsg.getNewHandCards();
-			for(int i = 0; i < newHandCards.size(); i++){
-				if(this.yourDeck.size() == 0){//Mandatory if the DeckPile is empty, the DiscardPile has to be added to the DeckPile
-					for(int j = 0; j < this.yourDiscardPile.size(); j++){
-						this.yourDeck.add(this.yourDiscardPile.remove());
-					}
-				}
-				for(int k = 0; k < this.yourDeck.size(); k++){
-					if(newHandCards.get(i).getCardName().equals(this.yourDeck.get(k).getCardName())){
-						this.yourNewHandCards.add(this.yourDeck.remove(k));
-						break;
-					}
-				}
-			}
+			this.draw(ugmsg.getNewHandCards());
 		}else if(ugmsg.getNewHandCards() != null){//for opponent
 			this.opponentHandCards = ugmsg.getNewHandCards().size();
 		}
