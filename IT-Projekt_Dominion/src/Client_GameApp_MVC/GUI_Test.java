@@ -1,10 +1,12 @@
 package Client_GameApp_MVC;
 
 import java.util.LinkedList;
+import java.util.Optional;
 
 import Cards.Card;
 import Cards.CardName;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Insets;
@@ -17,8 +19,11 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBase;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
@@ -76,9 +81,9 @@ public class GUI_Test extends Application {
 		});
 
 		image.addEventHandler(ZoomEvent.ZOOM, event -> {
-			image.setFitWidth(imageWidth*3);
-			image.setFitHeight(imageHeight*3);
-			image.setEffect(initial);
+			//			image.setFitWidth(imageWidth*3);
+			//			image.setFitHeight(imageHeight*3);
+			//			image.setEffect(initial);
 		});
 
 		image.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
@@ -317,20 +322,20 @@ public class GUI_Test extends Application {
 		// Scene and stage
 		Scene scene = new Scene(root);
 		stage.setScene(scene);
-		
-        //set Stage boundaries to visible bounds of the main screen
+
+		//set Stage boundaries to visible bounds of the main screen
 		Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
-        stage.setX(primaryScreenBounds.getMinX());
-        stage.setY(primaryScreenBounds.getMinY());
-        stage.setWidth(primaryScreenBounds.getWidth());
-        stage.setHeight(primaryScreenBounds.getHeight());
-		
+		stage.setX(primaryScreenBounds.getMinX());
+		stage.setY(primaryScreenBounds.getMinY());
+		stage.setWidth(primaryScreenBounds.getWidth());
+		stage.setHeight(primaryScreenBounds.getHeight());
+
 		stage.setTitle("Dominion");
 		stage.show();
 
 		// Prevent resizing below initial size
-//		stage.setMinWidth(stage.getWidth());
-//		stage.setMinHeight(stage.getHeight());
+		//		stage.setMinWidth(stage.getWidth());
+		//		stage.setMinHeight(stage.getHeight());
 
 		// Styles the elements of the GUI
 		scene.getStylesheets().add(getClass().getResource("GUI_Test.css").toExternalForm());
@@ -477,10 +482,22 @@ public class GUI_Test extends Application {
 		hboxHandCards.getChildren().add(0, img1);
 		hboxHandCards.getChildren().add(0, img2);
 
-		// Implemented: Adds event handlers to the hand cards
+		// To implement: Zooming an image
 		for (Node child : hboxHandCards.getChildren()) {
 			ImageView img = (ImageView) child;
-			setInitialHandCardsEvents(img);
+			// setInitialHandCardsEvents(img);
+
+			Popup popup = new Popup();
+
+			img.addEventHandler(ZoomEvent.ZOOM, event -> {
+				ImageView popupImage = new ImageView(img.getImage());
+				popupImage.setFitHeight(500);
+				popupImage.setFitWidth(300);
+				popup.getContent().add(popupImage);
+				popup.centerOnScreen();
+				popup.show(stage);
+				popup.setAutoHide(true);
+			});
 		}
 
 		vboxCellarCards.getChildren().add(0, img7);
@@ -506,49 +523,87 @@ public class GUI_Test extends Application {
 		setInitialActionCardsEvents((ImageView) vboxVillageCards.getChildren().get(0));
 
 		// Already implemented: Sends a chat message to the server 
-		btnSendChatArea.setOnAction(event -> {
-			String existingMessages = txtaChatArea.getText();
-			String newMessage = txtfChatArea.getText();
-
-			if (newMessage.length() > 0)
-				txtaChatArea.setText(existingMessages.concat(newMessage)+"\n");
-			txtfChatArea.setText("");
-		});
-
-		// Set mouse click on action
-		//		img1.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-		//			txtaChatArea.setText("You've clicked the image");
-		//			//event.consume();
-		//	     });
-
-		//		vboxPlayedCards.setOnDragOver(event -> {
-		//			vboxPlayedCards.setStyle("-fx-border-color: red;");
-		//		});
-		//		
-		//		vboxPlayedCards.setOnDragExited(event -> {
-		//			vboxPlayedCards.setStyle("-fx-border-color: white;");
-		//			event.consume();
-		//		});
-		//		
-		//		vboxPlayedCards.setOnDragDropped(event -> {
-		//			hboxPlayedCards.getChildren().add(img1);
-		//		});
-		//		
-		//		// Test Drag and drop of images
-		//		img1.setOnDragDetected(event -> {
-		//			Dragboard db = img1.startDragAndDrop(TransferMode.ANY);
+		//		btnSendChatArea.setOnAction(event -> {
+		//			String existingMessages = txtaChatArea.getText();
+		//			String newMessage = txtfChatArea.getText();
 		//
-		//			ClipboardContent content = new ClipboardContent();
-		//			content.putImage(img1.getImage());
-		//			db.setContent(content);
-		//	        
-		//	        event.consume();
-		//		});
-		//		
-		//		img1.setOnDragDone(event -> {
-		//			// hboxPlayedCards.getChildren().add(img1);
-		//			hboxTreasureCards.getChildren().remove(img1);
+		//			if (newMessage.length() > 0)
+		//				txtaChatArea.setText(existingMessages.concat(newMessage)+"\n");
+		//			txtfChatArea.setText("");
 		//		});
 
-	}
+		// Test: button click to open popup
+		btnSendChatArea.setOnAction(event3 -> {
+//			Popup popup = new Popup();
+//			
+//			Button btnYes = new Button("Yes");
+//			Button btnNo = new Button("No");
+//			Text text = new Text();
+//			text.setText("Do you really want to leave the game and give up?");
+//			
+//			HBox hbox = new HBox(btnYes, btnNo);
+//			VBox vbox = new VBox(text, hbox);
+//			vbox.setStyle("-fx-spacing: 20px");
+//			hbox.setStyle("-fx-spacing: 20px");
+//			vbox.setStyle("-fx-background-color: white;");
+//			vbox.setAlignment(Pos.BOTTOM_LEFT);
+//			hbox.setAlignment(Pos.BOTTOM_RIGHT);
+//			
+//			popup.setWidth(200);
+//			popup.setHeight(100);
+//			
+//			popup.getContent().add(vbox);
+//			popup.centerOnScreen();
+//			popup.show(stage);
+//			popup.setAutoHide(true);
+			
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("Are you sure?");
+			alert.setHeaderText("If you click ok, you'll lose.");
+			alert.setContentText("Do you really want to leave this game?");
+
+			Optional<ButtonType> result = alert.showAndWait();
+			if (result.get() == ButtonType.OK){
+			   Platform.exit();
+			} else {
+			    alert.hide();
+			}
+	});
+
+	// Set mouse click on action
+	//		img1.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+	//			txtaChatArea.setText("You've clicked the image");
+	//			//event.consume();
+	//	     });
+
+	//		vboxPlayedCards.setOnDragOver(event -> {
+	//			vboxPlayedCards.setStyle("-fx-border-color: red;");
+	//		});
+	//		
+	//		vboxPlayedCards.setOnDragExited(event -> {
+	//			vboxPlayedCards.setStyle("-fx-border-color: white;");
+	//			event.consume();
+	//		});
+	//		
+	//		vboxPlayedCards.setOnDragDropped(event -> {
+	//			hboxPlayedCards.getChildren().add(img1);
+	//		});
+	//		
+	//		// Test Drag and drop of images
+	//		img1.setOnDragDetected(event -> {
+	//			Dragboard db = img1.startDragAndDrop(TransferMode.ANY);
+	//
+	//			ClipboardContent content = new ClipboardContent();
+	//			content.putImage(img1.getImage());
+	//			db.setContent(content);
+	//	        
+	//	        event.consume();
+	//		});
+	//		
+	//		img1.setOnDragDone(event -> {
+	//			// hboxPlayedCards.getChildren().add(img1);
+	//			hboxTreasureCards.getChildren().remove(img1);
+	//		});
+
+}
 }
