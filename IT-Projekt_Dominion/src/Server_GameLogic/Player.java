@@ -134,8 +134,6 @@ public class Player {
 				ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.skipPhase(), ugmsg);
 			
 			this.sendToOpponent(this, ugmsg);
-
-			ugmsg = (UpdateGame_Message) game.getOpponent(game.getCurrentPlayer()).getWaitingMsg().element();
 			
 			return ugmsg;
 
@@ -147,8 +145,6 @@ public class Player {
 			playedCards.add(this.handCards.remove(index));
 			
 			this.sendToOpponent(this, ugmsg);
-			
-			ugmsg = (UpdateGame_Message) game.getOpponent(game.getCurrentPlayer()).getWaitingMsg().element();
 			
 			return ugmsg;
 		}
@@ -464,7 +460,7 @@ public class Player {
 	 *            - the message which should be send
 	 */
 	public void sendToOpponent(Player source, Message msg) {
-		if (game.getGameMode().equals(GameMode.Multiplayer))
+//		if (game.getGameMode().equals(GameMode.Multiplayer))
 			source.getServerThreadForClient().addWaitingMessages(msg);
 	}
 
