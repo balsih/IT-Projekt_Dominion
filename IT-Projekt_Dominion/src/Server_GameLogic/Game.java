@@ -1,5 +1,6 @@
 package Server_GameLogic;
 
+import java.net.Socket;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -207,7 +208,9 @@ public class Game {
 		if (currentPlayer.equals(this.player1)) {
 			this.currentPlayer = player2;
 
-			if(this.gameMode == GameMode.Singleplayer || this.gameMode == GameMode.Simulation)
+			if(this.gameMode == GameMode.Singleplayer)
+				new Thread(bot).start();
+			else if(this.gameMode == GameMode.Simulation)
 				new Thread(bot2).start();
 				
 		} else {
@@ -318,7 +321,7 @@ public class Game {
 			// creates and starts in singleplayer mode a game with a player and a bot
 		} else if (gameMode == GameMode.Singleplayer){
 			Game game = new Game();
-			game.bot = new Bot(Bot.getNameOfBot());
+			game.bot = new Bot(Bot.getNameOfBot(), player.getServerThreadForClient());
 			game.setPlayer1(player);
 			game.player1.setGame(game);
 			game.setPlayer2(game.bot);
@@ -334,11 +337,12 @@ public class Game {
 			// creates in simulation mode for testing a game between two bots, but doesn't start game directly
 		} else{
 			Game game = new Game();
-			game.bot = new Bot(Bot.getNameOfBot());
+			Player dummyPlayer = new Player("hallo", ServerThreadForClient.getServerThreadForClient(new Socket()));
+			game.bot = new Bot(Bot.getNameOfBot(), dummyPlayer.getServerThreadForClient());
 			game.setPlayer1(game.bot);
 			game.bot.setGame(game);
 			
-			game.bot2 = new Bot(Bot.getNameOfBot());
+			game.bot2 = new Bot(Bot.getNameOfBot(), dummyPlayer.getServerThreadForClient());
 			game.setPlayer2(game.bot2);
 			game.bot2.setGame(game);
 			

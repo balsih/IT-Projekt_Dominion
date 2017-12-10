@@ -49,6 +49,22 @@ public class TestMessages {
 
 	public static void main(String[] args) {
 		
+		String input = "hallo welt,wie gehts?";
+		System.out.println(lineSeparator(input));
+		
+	}
+	
+	private static String lineSeparator(String input){
+		String[] lines = input.split("==");
+		String output = "";
+		if(lines.length > 1){
+			for(int i = 0; i < lines.length; i++){
+				output += lines[i]+System.lineSeparator();
+			}
+		}else{
+			output = input;
+		}
+		return output;
 	}
 	
 	public static void checkBuy(){

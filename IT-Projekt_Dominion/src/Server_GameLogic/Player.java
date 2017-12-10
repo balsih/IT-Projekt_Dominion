@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.EmptyStackException;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Stack;
 import java.util.logging.Logger;
 
@@ -53,22 +54,6 @@ public class Player {
 
 	private final Logger logger = Logger.getLogger("");
 
-	/**
-	 * Constructor for the Bot
-	 * 
-	 * @param name
-	 *            - the name of the player.
-	 */
-	public Player(String name) {
-		this.deckPile = new Stack<Card>();
-		this.discardPile = new Stack<Card>();
-		this.handCards = new LinkedList<Card>();
-		this.playedCards = new LinkedList<Card>();
-
-		this.playerName = name;
-		this.resetStates();
-		this.actualPhase = Phase.Buy;
-	}
 
 	/**
 	 * Constructor for a Player
@@ -78,7 +63,14 @@ public class Player {
 	 * @param serverThreadForClient
 	 */
 	public Player(String name, ServerThreadForClient serverThreadForClient) {
-		this(name);
+		this.deckPile = new Stack<Card>();
+		this.discardPile = new Stack<Card>();
+		this.handCards = new LinkedList<Card>();
+		this.playedCards = new LinkedList<Card>();
+
+		this.playerName = name;
+		this.resetStates();
+		this.actualPhase = Phase.Buy;
 		this.serverThreadForClient = serverThreadForClient;
 	}
 
@@ -142,7 +134,7 @@ public class Player {
 				ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.skipPhase(), ugmsg);
 			
 			this.sendToOpponent(this, ugmsg);
-
+			
 			return ugmsg;
 
 			// plays the selected treasure card which not requires any available
@@ -468,7 +460,7 @@ public class Player {
 	 *            - the message which should be send
 	 */
 	public void sendToOpponent(Player source, Message msg) {
-		if (game.getGameMode().equals(GameMode.Multiplayer))
+//		if (game.getGameMode().equals(GameMode.Multiplayer))
 			source.getServerThreadForClient().addWaitingMessages(msg);
 	}
 
@@ -544,6 +536,10 @@ public class Player {
 		psmsg.setVictoryPoints(this.victoryPoints);
 
 		return psmsg;
+	}
+	
+	public Queue<Message> getWaitingMsg(){
+		return this.serverThreadForClient.waitingMessages;
 	}
 
 	public int getActions() {
