@@ -1,5 +1,6 @@
 package Server_GameLogic;
 
+import java.net.Socket;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -336,11 +337,12 @@ public class Game {
 			// creates in simulation mode for testing a game between two bots, but doesn't start game directly
 		} else{
 			Game game = new Game();
-			game.bot = new Bot(Bot.getNameOfBot(), player.getServerThreadForClient());
+			Player dummyPlayer = new Player("hallo", ServerThreadForClient.getServerThreadForClient(new Socket()));
+			game.bot = new Bot(Bot.getNameOfBot(), dummyPlayer.getServerThreadForClient());
 			game.setPlayer1(game.bot);
 			game.bot.setGame(game);
 			
-			game.bot2 = new Bot(Bot.getNameOfBot(), player.getServerThreadForClient());
+			game.bot2 = new Bot(Bot.getNameOfBot(), dummyPlayer.getServerThreadForClient());
 			game.setPlayer2(game.bot2);
 			game.bot2.setGame(game);
 			
