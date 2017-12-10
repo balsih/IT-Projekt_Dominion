@@ -163,7 +163,7 @@ public class DB_Connector {
 
 			while (this.rs.next()) {
 				highScore += rs.getString("Username") + ":\t";
-				highScore += rs.getString("Score") + "\r\n";
+				highScore += rs.getString("Score") + "==";
 			}
 
 			return highScore;
@@ -319,5 +319,9 @@ public class DB_Connector {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static void main(String[] args){
+		DB_Connector connector = new DB_Connector();
 	}
 }

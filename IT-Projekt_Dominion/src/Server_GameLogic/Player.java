@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.EmptyStackException;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Stack;
 import java.util.logging.Logger;
 
@@ -143,6 +144,8 @@ public class Player {
 			
 			this.sendToOpponent(this, ugmsg);
 
+			ugmsg = (UpdateGame_Message) game.getOpponent(game.getCurrentPlayer()).getWaitingMsg().element();
+			
 			return ugmsg;
 
 			// plays the selected treasure card which not requires any available
@@ -153,6 +156,8 @@ public class Player {
 			playedCards.add(this.handCards.remove(index));
 			
 			this.sendToOpponent(this, ugmsg);
+			
+			ugmsg = (UpdateGame_Message) game.getOpponent(game.getCurrentPlayer()).getWaitingMsg().element();
 			
 			return ugmsg;
 		}
@@ -544,6 +549,10 @@ public class Player {
 		psmsg.setVictoryPoints(this.victoryPoints);
 
 		return psmsg;
+	}
+	
+	public Queue<Message> getWaitingMsg(){
+		return this.serverThreadForClient.waitingMessages;
 	}
 
 	public int getActions() {
