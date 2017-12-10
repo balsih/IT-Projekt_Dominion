@@ -66,7 +66,7 @@ public class Bot extends Player implements Runnable {
 		buyPrioOneCard.put(CardName.Woodcutter, 28);
 		buyPrioOneCard.put(CardName.Workshop, 30);
 
-		// change priorities!!
+		// change priorities!
 		buyPrioMoreCards.put(CardName.Cellar, 0);
 		buyPrioMoreCards.put(CardName.Duchy, 10);
 		buyPrioMoreCards.put(CardName.Estate, 5);
