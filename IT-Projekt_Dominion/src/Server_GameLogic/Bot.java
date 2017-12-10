@@ -150,6 +150,8 @@ public class Bot extends Player implements Runnable {
 			if (handCards.get(index).getType().equals(CardType.Treasure)) {
 				cardToPlay = handCards.get(index);
 				play(cardToPlay);
+				if(index != handCards.size() -1)
+					index--;
 				System.out.println(this.playerName + " played " + cardToPlay.toString());
 			}
 		}
@@ -160,7 +162,7 @@ public class Bot extends Player implements Runnable {
 	 * Calculates which ActionCard is best to play.
 	 */
 	private void playActionCards() {
-		int tempPriority = 1;
+		int tempPriority = 0;
 		for (Card card : handCards) {
 			if (card.getType().equals(CardType.Action) && (prioListForPlaying.containsKey(card.getCardName()))) {
 				if (tempPriority < prioListForPlaying.get(card.getCardName())) {
