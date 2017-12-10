@@ -48,7 +48,7 @@ public class Bot extends Player implements Runnable {
 
 	public Bot(String name, ServerThreadForClient thread) {
 		super(name, thread);
-		
+
 		System.out.println(this.playerName + " created");
 		counter = 1;
 
@@ -186,9 +186,16 @@ public class Bot extends Player implements Runnable {
 				case Mine:
 					Card tempCard = null;
 					for (Card card : handCards) {
-						if (card.getCardName().equals(CardName.Copper) || card.getCardName().equals(CardName.Silver))
+						if (card.getCardName().equals(CardName.Copper))
 							tempCard = card;
 					}
+					if (tempCard == null) {
+						for (Card card : handCards) {
+							if (card.getCardName().equals(CardName.Silver))
+								tempCard = card;
+						}
+					}
+
 					Mine_Card mCard = (Mine_Card) this.getPlayedCards().get(this.getPlayedCards().size() - 1);
 					ugmsg = (UpdateGame_Message) mCard.executeMine(tempCard);
 					if (tempCard.getCardName().equals(CardName.Copper))
@@ -228,19 +235,19 @@ public class Bot extends Player implements Runnable {
 						prioListForRemodel.replace(CardName.Mine, 94);
 
 					// executeRemodel1
-					Card discardedCard1 = null;
+					Card discardedCard = null;
 					int tempValue = 0;
 					for (Card card : handCards) {
 						if (prioListForRemodel.containsKey(card.getCardName())) {
 							if (tempValue <= prioListForRemodel.get(card.getCardName())) {
 								tempValue = prioListForRemodel.get(card.getCardName());
-								discardedCard1 = card;
+								discardedCard = card;
 							}
 						}
 					}
 					Remodel_Card rCard1 = (Remodel_Card) this.getPlayedCards().get(this.getPlayedCards().size() - 1);
-					ugmsg = rCard1.executeRemodel1(discardedCard1);
-					System.out.println(this.playerName + " discarded " + discardedCard1.toString());
+					ugmsg = rCard1.executeRemodel1(discardedCard);
+					System.out.println(this.playerName + " discarded " + discardedCard.toString());
 
 					// executeRemodel2
 					LinkedList<CardName> takeChoices1 = ugmsg.getCardSelection();
@@ -303,23 +310,23 @@ public class Bot extends Player implements Runnable {
 	 */
 	private void buy() {
 		// choose list for buying process
-		List<CardName> list;
+		List<CardName> buyList;
 		if (buys > 2 && gameStage <= 75) {
 			List<CardName> list2 = buyPrioMoreCards.keySet().stream()
 					.sorted((s1, s2) -> Integer.compare(buyPrioOneCard.get(s2), buyPrioOneCard.get(s1)))
 					.collect(Collectors.toList());
-			list = list2;
+			buyList = list2;
 		} else {
 			List<CardName> list1 = buyPrioOneCard.keySet().stream()
 					.sorted((s1, s2) -> Integer.compare(buyPrioOneCard.get(s2), buyPrioOneCard.get(s1)))
 					.collect(Collectors.toList());
-			list = list1;
+			buyList = list1;
 		}
 
 		// try to buy a card
 		Message buyMessage;
-		for (int indexCounter1 = 0; indexCounter1 < list.size(); indexCounter1++) {
-			cardToBuy = list.get(indexCounter1);
+		for (int index = 0; index < buyList.size(); index++) {
+			cardToBuy = buyList.get(index);
 			buyMessage = buy(cardToBuy);
 
 			// if PlayerSuccess_Message --> terminate buy();
@@ -363,7 +370,7 @@ public class Bot extends Player implements Runnable {
 
 			// if Failure_Message --> keep searching
 			else if (buyMessage instanceof Failure_Message)
-				if (indexCounter1 < list.size())
+				if (index < buyList.size())
 					continue;
 				else {
 					UpdateGame_Message ugmsg = (UpdateGame_Message) skipPhase();
@@ -382,17 +389,16 @@ public class Bot extends Player implements Runnable {
 	 */
 	private void chooseDiscardPileTopCard() {
 		List<CardName> cardToChoose = PRIOLIST_TOPDISCARDPILE_CARD.keySet().stream().sorted(
-				(s1, s2) -> Integer.compare(PRIOLIST_TOPDISCARDPILE_CARD.get(s2), PRIOLIST_TOPDISCARDPILE_CARD.get(s1)))
+				(c1, c2) -> Integer.compare(PRIOLIST_TOPDISCARDPILE_CARD.get(c2), PRIOLIST_TOPDISCARDPILE_CARD.get(c1)))
 				.collect(Collectors.toList());
 
 		// choose a card for the cleanUp method
-		for (int indexCounter2 = 0; indexCounter2 < cardToChoose.size(); indexCounter2++) {
-			CardName cardname = cardToChoose.get(indexCounter2);
+		for (int index = 0; index < cardToChoose.size(); index++) {
+			CardName cardname = cardToChoose.get(index);
 			if (this.containsCard(handCards, cardname)) {
 				for (Card card : handCards) {
 					if (card.getCardName().equals(cardname)) {
-						Card discardTopPileCard = card; // delete this one
-						UpdateGame_Message ugmsg = cleanUp(discardTopPileCard);
+						UpdateGame_Message ugmsg = cleanUp(card);
 						this.sendToOpponent(this, ugmsg);
 						break;
 					}
