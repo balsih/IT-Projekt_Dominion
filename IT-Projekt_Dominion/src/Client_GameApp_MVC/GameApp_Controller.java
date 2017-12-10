@@ -141,11 +141,15 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				break;
 			}
 			
+			//ADD NEW COMMENT ADRIAN
+			if(model.yourDiscardPileTopCard != null){
+				view.stackpDiscard.getChildren().add(resizeImage(model.yourDiscardPileTopCard.getImage()));
+			}
+			
 			// ADD NEW COMMENT ADRIAN
 			if (model.turnEnded){
 				view.hboxHandCards.getChildren().clear();
 				view.hboxPlayedCards.getChildren().clear();
-				view.stackpDiscard.getChildren().add(resizeImage(model.yourDiscardPileTopCard.getImage()));
 			}
 
 			// RECOMMENT PLZ ADRIAN
@@ -238,10 +242,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 		// Describes what happens when the user clicks a hand card
 		img.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-			if ((model.interaction == Interaction.Skip || model.interaction == Interaction.Cellar
-					|| model.interaction == Interaction.Remodel1 || model.interaction == Interaction.Mine
-					|| model.interaction == Interaction.EndOfTurn) 
-					&& model.currentPlayer.compareTo(model.clientName) == 0) {
+			if (model.currentPlayer.compareTo(model.clientName) == 0) {
 
 				if (model.interaction == Interaction.Skip && card.getType() != CardType.Victory
 						&& model.sendPlayCard(card)) {
@@ -308,6 +309,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 	// Sets events on action, treasure and victory cards when the game starts
 	private void setInitialATVCardEvents(Card card, ImageView img) {
+		
 		// Stores the image height and width
 		int imageHeight = (int) img.getFitHeight();
 		int imageWidth = (int) img.getFitWidth();
@@ -317,24 +319,33 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		initial.setBrightness(0);
 		ColorAdjust brighter = new ColorAdjust();
 		brighter.setBrightness(+0.5);
+		
+		
 
 		// If the user clicks a card, he wants to buy it. This handler sends a message with the chosen card.
 		img.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-			Card newCard = Card.getCard(card.getCardName());
-			if (model.sendBuyCard(newCard.getCardName())) {
-				ImageView newImg = resizeImage(newCard.getImage());
-				newImg.addEventHandler(ZoomEvent.ZOOM, zoomEvent -> {
-					newImg.setFitWidth(imageWidth * 3);
-					newImg.setFitHeight(imageHeight * 3);
-					newImg.setEffect(initial);
-				});
-				newImg.addEventHandler(MouseEvent.MOUSE_EXITED, exitEvent -> {
-					newImg.setFitWidth(imageWidth);
-					newImg.setFitHeight(imageHeight);
-					newImg.setEffect(initial);
-				});
-				view.stackpDiscard.getChildren().add(newImg);
-				updateGUI();
+			
+			if (model.currentPlayer.compareTo(model.clientName) == 0) {
+		
+				//ADD NEW COMMENT ADRIAN
+				if (model.interaction == Interaction.Skip && model.currentPhase == Phase.Buy) {
+					
+					if (model.sendBuyCard(card.getCardName()))
+						updateGUI();
+				}
+				
+				//ADD NEW COMMENT ADRIAN
+				else if ((model.interaction == Interaction.Remodel2 || model.interaction == Interaction.Workshop)
+						&& model.currentPhase == Phase.Action) {
+					
+					if (model.cardSelection != null && model.cardSelection.contains(card.getCardName())){
+						model.buyChoice = card.getCardName();
+						if (model.sendInteraction()){
+							updateGUI();
+							model.cardSelection = null;
+						}
+					}
+				}			
 			}
 		});
 

@@ -34,7 +34,7 @@ public class Workshop_Card extends Card {
 	@Override
 	public UpdateGame_Message executeCard(Player player){
 		
-		// noch fehlender Code bzw. Funktionalität 
+		this.player = player;
 		
 		Game game = player.getGame();
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
@@ -62,6 +62,8 @@ public class Workshop_Card extends Card {
 		Card selectedCard = this.player.pick(selectedNameCard);
 		this.player.getDiscardPile().add(selectedCard);
 		
+		ugmsg.setBuyedCard(selectedCard);
+		ugmsg.setDiscardPileTopCard(selectedCard);
 		ugmsg.setLog(player.getPlayerName()+": #picked# #"+selectedNameCard.toString()+"# #card#");
 		
 		// update game Messages -> XML 

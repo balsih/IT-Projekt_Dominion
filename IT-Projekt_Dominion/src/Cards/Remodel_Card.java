@@ -34,6 +34,8 @@ public class Remodel_Card extends Card {
 		
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
+		this.player = player;
+		
 		//#DisposeCard# Chose a card to get rid of
 		ugmsg.setLog(player.getPlayerName()+": #played# #"+this.cardName.toString()+"# #card#. #DisposeCard#");
 		
@@ -80,6 +82,7 @@ public class Remodel_Card extends Card {
 		LinkedList<Card> newHandCard = new LinkedList<Card>();
 		newHandCard.add(pickedCard);
 		ugmsg.setBuyedCard(pickedCard);
+		ugmsg.setDiscardPileTopCard(pickedCard);
 		if (this.player.getActions() == 0 || !this.player.containsCardType(this.player.getHandCards(), CardType.Action))
 			ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.player.skipPhase(), ugmsg);
 		

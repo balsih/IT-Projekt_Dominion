@@ -363,9 +363,7 @@ public class ServerThreadForClient implements Runnable {
 			return workshopCard.executeWorkshop(imsg.getWorkshopChoice());
 		case Remodel1:
 			Remodel_Card remodel1Card = (Remodel_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
-			this.logger.info("disposeRemodelCard from Message: "+imsg.getDisposeRemodelCard());
 			Card disposeRemodelCard = this.getRealHandCard(imsg.getDisposeRemodelCard());
-			this.logger.info("disposeRemodelCard: "+disposeRemodelCard);
 			if(disposeRemodelCard != null)
 				return remodel1Card.executeRemodel1(disposeRemodelCard);
 			this.logger.info("Interaction "+Interaction.Remodel1.toString()+" failed");
