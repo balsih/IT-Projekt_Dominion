@@ -54,22 +54,6 @@ public class Player {
 
 	private final Logger logger = Logger.getLogger("");
 
-	/**
-	 * Constructor for the Bot
-	 * 
-	 * @param name
-	 *            - the name of the player.
-	 */
-	public Player(String name) {
-		this.deckPile = new Stack<Card>();
-		this.discardPile = new Stack<Card>();
-		this.handCards = new LinkedList<Card>();
-		this.playedCards = new LinkedList<Card>();
-
-		this.playerName = name;
-		this.resetStates();
-		this.actualPhase = Phase.Buy;
-	}
 
 	/**
 	 * Constructor for a Player
@@ -79,7 +63,14 @@ public class Player {
 	 * @param serverThreadForClient
 	 */
 	public Player(String name, ServerThreadForClient serverThreadForClient) {
-		this(name);
+		this.deckPile = new Stack<Card>();
+		this.discardPile = new Stack<Card>();
+		this.handCards = new LinkedList<Card>();
+		this.playedCards = new LinkedList<Card>();
+
+		this.playerName = name;
+		this.resetStates();
+		this.actualPhase = Phase.Buy;
 		this.serverThreadForClient = serverThreadForClient;
 	}
 
