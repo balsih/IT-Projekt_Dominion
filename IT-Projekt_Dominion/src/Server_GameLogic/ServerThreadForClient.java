@@ -60,7 +60,7 @@ public class ServerThreadForClient implements Runnable {
 	private Socket clientSocket;
 	private Game game;
 	private Player player;
-	private Queue<Message> waitingMessages = new LinkedList<Message>();
+	public Queue<Message> waitingMessages = new LinkedList<Message>();
 	private String clientName = null;
 
 
