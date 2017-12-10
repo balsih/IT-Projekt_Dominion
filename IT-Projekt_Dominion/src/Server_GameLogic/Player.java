@@ -367,6 +367,7 @@ public class Player {
 		// sets all changed attributes in the UpdateGame_Message
 		ugmsg.setDeckPileCardNumber(this.deckPile.size());
 		ugmsg.setDiscardPileCardNumber(this.discardPile.size());
+		ugmsg.setDiscardPileTopCard(null);
 		ugmsg.setNewHandCards(newHandCards);
 
 		this.handCards.addAll(newHandCards);
