@@ -315,7 +315,7 @@ public class ServerThreadForClient implements Runnable {
 		chat = this.player.getPlayerName()+": "+chat;
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		ugmsg.setChat(chat);
-		this.player.sendToOpponent(ugmsg);
+		this.player.sendToOpponent(this.player, ugmsg);
 		this.logger.info(cmsg.getClient()+" has sent chat to "+this.game.getOpponent(this.player).getPlayerName()+": "+cmsg.getChat());
 		return ugmsg;
 	}
@@ -345,13 +345,13 @@ public class ServerThreadForClient implements Runnable {
 		switch(imsg.getInteractionType()){
 		case Skip:
 			Message msg = this.player.skipPhase();
-			this.player.sendToOpponent(msg);
+			this.player.sendToOpponent(this.player, msg);
 			return msg;
 		case EndOfTurn:
 			Card EOTCard = this.getRealHandCard(imsg.getDiscardCard());
 			if(EOTCard != null){
 				Message EOTmsg = this.player.cleanUp(EOTCard);
-				this.player.sendToOpponent(EOTmsg);
+				this.player.sendToOpponent(this.player, EOTmsg);
 				return EOTmsg;
 			}
 			this.logger.info("Interaction "+Interaction.EndOfTurn.toString()+" failed");
@@ -430,7 +430,7 @@ public class ServerThreadForClient implements Runnable {
     	psmsgOpponent.setSuccess(GameSuccess.Won);
     	opponent.countVictoryPoints();
     	psmsgOpponent.setVictoryPoints(opponent.getVictoryPoints());
-    	this.player.sendToOpponent(psmsgOpponent);
+    	this.player.sendToOpponent(this.player, psmsgOpponent);
     	
     	PlayerSuccess_Message psmsgSelf = new PlayerSuccess_Message();
     	psmsgSelf.setSuccess(GameSuccess.Lost);

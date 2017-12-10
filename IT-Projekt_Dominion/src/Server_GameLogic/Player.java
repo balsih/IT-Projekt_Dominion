@@ -133,7 +133,7 @@ public class Player {
 					&& ugmsg.getInteractionType() == null)
 				ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.skipPhase(), ugmsg);
 			
-			this.sendToOpponent(ugmsg);
+			this.sendToOpponent(this, ugmsg);
 			
 			return ugmsg;
 
@@ -144,7 +144,7 @@ public class Player {
 			ugmsg = selectedCard.executeCard(this);
 			playedCards.add(this.handCards.remove(index));
 			
-			this.sendToOpponent(ugmsg);
+			this.sendToOpponent(this, ugmsg);
 			
 			return ugmsg;
 		}
@@ -192,7 +192,7 @@ public class Player {
 				this.actualPhase = Phase.Ending;
 				game.checkWinner();
 
-				this.sendToOpponent(this.getOpponentSuccessMsg());
+				this.sendToOpponent(this, this.getOpponentSuccessMsg());
 				return this.getCurrentPlayerSuccessMsg();
 			}
 
@@ -209,7 +209,7 @@ public class Player {
 				ugmsg = UpdateGame_Message.merge((UpdateGame_Message) skipPhase(), ugmsg);
 			}
 			
-			this.sendToOpponent(ugmsg);
+			this.sendToOpponent(this, ugmsg);
 
 			return ugmsg;
 		}
@@ -459,8 +459,12 @@ public class Player {
 	 * @param msg
 	 *            - the message which should be send
 	 */
-	public void sendToOpponent(Message msg) {
-		game.getOpponent(this).getServerThreadForClient().addWaitingMessages(msg);
+	public void sendToOpponent(Player source, Message msg) {
+		if (source instanceof Bot)
+			this.serverThreadForClient.addWaitingMessages(msg);
+		else if (!(source instanceof Bot) && this.getGame().getGameMode() == GameMode.Multiplayer){
+			this.game.getOpponent(this).getServerThreadForClient().addWaitingMessages(msg);
+		}
 	}
 
 	/**
