@@ -37,8 +37,8 @@ public class Bot extends Player implements Runnable {
 	private static final HashMap<CardName, Integer> PRIOLIST_TOPDISCARDPILE_CARD = new HashMap<CardName, Integer>();
 	private static final ArrayList<String> NAMES = new ArrayList<String>();
 	private static final double SHARE_OF_TREASURE_CARDS = 0.35;
-	private static final int MIN_TIME_BEFORE_EXECUTING = 1000, MAX_TIME_BEFORE_EXECUTING = 3000;
-	private static final int MAX_TREASURE_CARDS = 7, MAX_ACTION_CARDS = 10;
+	private static final int MIN_TIME_BEFORE_EXECUTING = 100, MAX_TIME_BEFORE_EXECUTING = 300;
+	private static final int MAX_TREASURE_CARDS = 12, MAX_ACTION_CARDS = 10;
 	private Card cardToPlay = null;
 	private CardName cardToBuy = null;
 	private double numberOfGoldAndSilverCards = 0.0, numberOfTotalCards = 10.0;
@@ -50,7 +50,6 @@ public class Bot extends Player implements Runnable {
 	public Bot(String name, ServerThreadForClient thread) {
 		super(name, thread);
 
-		System.out.println(this.playerName + " created");
 		counter = 1;
 
 		buyPrioOneCard.put(CardName.Cellar, 0);
@@ -121,6 +120,12 @@ public class Bot extends Player implements Runnable {
 	 */
 	public void run() {
 		System.out.println(this.playerName + " started round " + counter);
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		makeBreak();
 		while (actions > 0 && actualPhase == Phase.Action) {
 			estimatePlayPriorityOfActionCards();
@@ -140,6 +145,19 @@ public class Bot extends Player implements Runnable {
 		}
 		System.out.println(this.playerName + " round " + counter + " finished");
 		counter++;
+		System.out.println("");
+		System.out.println("***************************");
+		System.out.println(this.playerName + " " + handCards.toString() + "\t\t" + numberOfGoldAndSilverCards + "\t"
+				+ numberOfActionCards);
+		System.out.println(game.isGameEnded());
+		System.out.println(game.checkGameEnding());
+		System.out.println(game.getProvincePile().toString());
+		System.out.println(this.victoryPoints);
+		System.out.println(this.getStatus());
+		System.out.println(this.buyPrioMoreCards.toString() + "\n" + this.buyPrioOneCard.toString() + "\n"
+				+ this.prioListForPlaying.toString());
+		System.out.println("***************************");
+		System.out.println("");
 	}
 
 	/**
@@ -180,6 +198,8 @@ public class Bot extends Player implements Runnable {
 			Message playMessage = play(cardToPlay);
 			makeBreak();
 			System.out.println(this.playerName + " played " + cardToPlay.toString());
+			
+			// the card could be bought
 			if (playMessage instanceof UpdateGame_Message) {
 				UpdateGame_Message ugmsg = (UpdateGame_Message) playMessage;
 
@@ -296,9 +316,10 @@ public class Bot extends Player implements Runnable {
 				}
 
 				// if Bot couldn't buy card --> skipPhase
-			} else if (playMessage instanceof Failure_Message)
+			} else if (playMessage instanceof Failure_Message) {
 				System.out.println("That should never happen!");
-			skipPhase();
+				skipPhase();
+			}
 
 			// if nothing applies playMessage must be a PlayerSuccess_Message --> do nothing
 			cardToPlay = null;
@@ -384,7 +405,7 @@ public class Bot extends Player implements Runnable {
 					}
 				}
 		}
-
+		cardToBuy = null;
 	}
 
 	/**
@@ -610,9 +631,13 @@ public class Bot extends Player implements Runnable {
 		if (gameStage >= 75 && cardNamesOfActionHandCards.contains(CardName.Gold))
 			prioListForPlaying.put(CardName.Woodcutter, 5);
 
-		for (int i = 0; i < handCards.size(); i++)
-			if (!prioListForRemodel.containsKey(handCards.get(i).getCardName()))
-				prioListForPlaying.remove(CardName.Remodel);
+		boolean b = false;
+		for (int i = 0; i < handCards.size(); i++) {
+			if (prioListForRemodel.containsKey(handCards.get(i).getCardName()))
+				b = true;
+		}
+		if (b == false)
+			prioListForPlaying.remove(CardName.Remodel);
 	}
 
 	/**
