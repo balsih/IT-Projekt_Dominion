@@ -52,7 +52,7 @@ public class Bot extends Player implements Runnable {
 		System.out.println(this.playerName + " created");
 		counter = 1;
 
-		buyPrioOneCard.put(CardName.Cellar, 32);
+		buyPrioOneCard.put(CardName.Cellar, 0);// alt 32
 		buyPrioOneCard.put(CardName.Duchy, 10);
 		buyPrioOneCard.put(CardName.Estate, 5);
 		buyPrioOneCard.put(CardName.Gold, 80);
@@ -67,7 +67,7 @@ public class Bot extends Player implements Runnable {
 		buyPrioOneCard.put(CardName.Workshop, 30);
 
 		// change priorities!!
-		buyPrioMoreCards.put(CardName.Cellar, 32);
+		buyPrioMoreCards.put(CardName.Cellar, 0); // alt 32
 		buyPrioMoreCards.put(CardName.Duchy, 10);
 		buyPrioMoreCards.put(CardName.Estate, 5);
 		buyPrioMoreCards.put(CardName.Gold, 50);
@@ -120,23 +120,22 @@ public class Bot extends Player implements Runnable {
 	 */
 	public void run() {
 		System.out.println(this.playerName + " started round " + counter);
-		makeBreak();
+		//makeBreak();
 		while (actions > 0 && actualPhase == Phase.Action) {
 			estimatePlayPriorityOfActionCards();
-			playActionCards();
-			System.out.println(this.playerName + " Action_Phase finished");
+			playActionCards();		
 		}
-
+		System.out.println(this.playerName + " Action_Phase finished");
 		if (buys > 0 && actualPhase == Phase.Buy) {
 			playTreasureCards();
-			// System.out.println(this.playerName + " TreasureCards played");
+			System.out.println(this.playerName + " TreasureCards played");
 			do {
 				estimateBuyPriorityOfVictoryCards();
 				estimateBuyPriorityOfTreasureCards();
 				estimateBuyPriorityOfActionCards();
 				buy();
-				System.out.println(this.playerName + " Buy_Phase finished");
 			} while (buys > 0 && actualPhase == Phase.Buy);
+			System.out.println(this.playerName + " Buy_Phase finished");
 		}
 		System.out.println(this.playerName + " round " + counter + " finished");
 		counter++;
@@ -176,7 +175,7 @@ public class Bot extends Player implements Runnable {
 			skipPhase();
 		} else {
 			Message playMessage = play(cardToPlay);
-			makeBreak();
+			//makeBreak();
 			System.out.println(this.playerName + " played " + cardToPlay.toString());
 			if (playMessage instanceof UpdateGame_Message) {
 				UpdateGame_Message ugmsg = (UpdateGame_Message) playMessage;
@@ -320,7 +319,7 @@ public class Bot extends Player implements Runnable {
 		for (int indexCounter1 = 0; indexCounter1 < list.size(); indexCounter1++) {
 			cardToBuy = list.get(indexCounter1);
 			buyMessage = buy(cardToBuy);
-			makeBreak();
+			//makeBreak();
 
 			// if PlayerSuccess_Message --> terminate buy();
 			if (buyMessage instanceof PlayerSuccess_Message) {
@@ -341,6 +340,7 @@ public class Bot extends Player implements Runnable {
 				UpdateGame_Message ugmsg = (UpdateGame_Message) buyMessage;
 				if (buys == 0) {
 					if (ugmsg.getInteractionType().equals(Interaction.EndOfTurn)) {
+						System.out.println(this.playerName + " choosedDiscardPileTopCard");
 						chooseDiscardPileTopCard();
 					}
 				}
@@ -348,6 +348,7 @@ public class Bot extends Player implements Runnable {
 				// if there are still left some buys and less than 2 coins --> skipPhase, else
 				// buy another card
 				else {
+					System.out.println(this.playerName + " stop buyPhase");
 					if (coins <= 2) {
 						skipPhase();
 						this.sendToOpponent(this, ugmsg);
