@@ -250,7 +250,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 					updateGUI();
 				}
 
-				if (model.interaction == Interaction.Cellar) {
+				else if (model.interaction == Interaction.Cellar) {
 					if (model.cellarDiscards.contains(card)) {
 						model.cellarDiscards.remove(card);
 						img.setEffect(initial);
@@ -260,7 +260,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 					}
 				}
 
-				if (model.interaction == Interaction.Remodel1) {
+				else if (model.interaction == Interaction.Remodel1) {
 					model.discardCard = card;
 					if (model.sendInteraction()) {
 						view.hboxHandCards.getChildren().remove(img);
@@ -268,7 +268,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 					}
 				}
 
-				if (model.interaction == Interaction.Mine
+				else if (model.interaction == Interaction.Mine
 						&& (card.getCardName() == CardName.Copper || card.getCardName() == CardName.Silver)) {
 					model.discardCard = card;
 					if (model.sendInteraction()) {
@@ -277,7 +277,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 					}
 				}
 				
-				if(model.interaction == Interaction.EndOfTurn){
+				else if(model.interaction == Interaction.EndOfTurn){
 					model.discardCard = card;
 					if(model.sendInteraction()){
 						updateGUI();
