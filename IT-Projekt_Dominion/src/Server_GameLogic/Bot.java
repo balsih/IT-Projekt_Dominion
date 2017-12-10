@@ -132,7 +132,7 @@ public class Bot extends Player implements Runnable {
 			playActionCards();
 		}
 		System.out.println(this.playerName + " Action_Phase finished");
-		if (buys > 0 && actualPhase == Phase.Buy && game.getCurrentPlayer() == this) {
+		if (buys > 0 && actualPhase == Phase.Buy) {
 			playTreasureCards();
 			System.out.println(this.playerName + " TreasureCards played");
 			do {
@@ -140,7 +140,7 @@ public class Bot extends Player implements Runnable {
 				estimateBuyPriorityOfTreasureCards();
 				estimateBuyPriorityOfActionCards();
 				buy();
-			} while (buys > 0 && actualPhase == Phase.Buy);
+			} while (buys > 0 && actualPhase == Phase.Buy && game.getCurrentPlayer() == this);
 			System.out.println(this.playerName + " Buy_Phase finished");
 		}
 		System.out.println(this.playerName + " round " + counter + " finished");
