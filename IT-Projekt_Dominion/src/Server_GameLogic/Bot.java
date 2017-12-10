@@ -137,6 +137,7 @@ public class Bot extends Player implements Runnable {
 			} while (buys > 0 && actualPhase == Phase.Buy);
 			System.out.println(this.playerName + " Buy_Phase finished");
 		}
+		makeBreak();
 		System.out.println(this.playerName + " round " + counter + " finished");
 		counter++;
 	}
