@@ -367,6 +367,7 @@ public class Player {
 		// sets all changed attributes in the UpdateGame_Message
 		ugmsg.setDeckPileCardNumber(this.deckPile.size());
 		ugmsg.setDiscardPileCardNumber(this.discardPile.size());
+		ugmsg.setDiscardPileTopCard(null);
 		ugmsg.setNewHandCards(newHandCards);
 
 		this.handCards.addAll(newHandCards);
@@ -460,8 +461,11 @@ public class Player {
 	 *            - the message which should be send
 	 */
 	public void sendToOpponent(Player source, Message msg) {
-		if (game.getGameMode().equals(GameMode.Multiplayer))
-			source.getServerThreadForClient().addWaitingMessages(msg);
+		if (source instanceof Bot)
+			this.serverThreadForClient.addWaitingMessages(msg);
+		else if (!(source instanceof Bot) && this.getGame().getGameMode() == GameMode.Multiplayer){
+			this.game.getOpponent(this).getServerThreadForClient().addWaitingMessages(msg);
+		}
 	}
 
 	/**

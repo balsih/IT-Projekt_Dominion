@@ -9,6 +9,7 @@ import Client_Services.Translator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -18,11 +19,15 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 /**
@@ -37,6 +42,10 @@ public class Login_View extends View<GameApp_Model> {
 	
 	
 	// controls -> accessed by controller 
+	
+	protected Label logoLbl;
+	protected Label keepTypingLbl;
+	
 	protected Label loginLbl;
 	protected Label ipLbl;
 	protected Label portLbl;
@@ -54,7 +63,6 @@ public class Login_View extends View<GameApp_Model> {
 	protected Button createNewPlayerBtn;
 	protected Button quitBtn;
 	
-	protected Alert connectAlert; 
 	protected Alert loginAlert; 
 
 
@@ -88,8 +96,44 @@ public class Login_View extends View<GameApp_Model> {
 		passwordBox.setId("passwordBox");
 		
 		
+		VBox structureBox = new VBox();
+		structureBox.setId("structureBox");
+		
 		
 		// labels and text fields
+		logoLbl = new Label();
+		logoLbl.setId("logoLbl");
+		logoLbl.setPrefSize(410.0, 150.0);
+		logoLbl.setMinSize(380.0, 0.0);
+		logoLbl.setAlignment(Pos.CENTER);
+	
+		Image image = new Image(getClass().getResourceAsStream("Logo.png"));
+		ImageView imageView = new ImageView(image);
+		logoLbl.setGraphic(imageView);
+
+		imageView.setScaleX(1.1);
+		imageView.setScaleY(1.1);
+
+		// Keep Typing Label
+		keepTypingLbl = new Label();
+		keepTypingLbl.setId("keepTypingLbl");
+		keepTypingLbl.setPrefSize(40.0, 20.0);
+		keepTypingLbl.setMinSize(40.0, 20.0);
+		//keepTypingLbl.setAlignment(Pos.CENTER_RIGHT);
+		keepTypingLbl.setAlignment(Pos.CENTER_LEFT);
+	
+		Image image2 = new Image(getClass().getResourceAsStream("KeepTyping.png"));
+		ImageView imageView2 = new ImageView(image2);
+		keepTypingLbl.setGraphic(imageView2);
+		
+		Label space = new Label();
+		HBox typingBox = new HBox();
+		typingBox.setId("typingBox");
+		typingBox.getChildren().addAll(space, keepTypingLbl);
+
+//		imageView2.setScaleX(1.1);
+//		imageView2.setScaleY(1.1);
+		
 		loginLbl = new Label(t.getString("login.loginLbl"));
 		loginLbl.setId("loginLbl");
 		
@@ -118,19 +162,13 @@ public class Login_View extends View<GameApp_Model> {
 		ipAndConnectBox.setId("ipAndConnectBox");
 		ipBox.getChildren().addAll(ipAndPortLblBox, ipAndConnectBox);
 		
-//		// warning message, if connection fails
-//		connectAlert = new Alert(AlertType.WARNING);
-//		connectAlert.setTitle(t.getString("login.connectAlert"));
-//		connectAlert.setHeaderText(t.getString("NoConnection"));
-//		//connectAlert.setContentText("do this or that");
-		
 		
 		nameLbl = new Label(t.getString("login.nameLbl"));
 		nameLbl.setId("nameLbl");
 		nameText = new TextField();
 		nameText.setId("nameText");
 		//nameText.setDisable(true); -> disable before connecting 
-		//nameText.setPrefSize(220.0, 30.0);
+		nameText.setPrefSize(220.0, 30.0);
 		nameText.setMaxSize(220.0, 30.0);
 		nameBox.getChildren().addAll(nameLbl, nameText);
 		
@@ -148,11 +186,10 @@ public class Login_View extends View<GameApp_Model> {
 		
 		passwordBox.getChildren().addAll(passwordLbl, pwLoginBox);
 		
-		// warning message, if login fails
+		// warning message, if connect or login fails
 		loginAlert = new Alert(AlertType.WARNING);
 		loginAlert.setTitle(t.getString("login.connectAlert"));
-		//loginAlert.setHeaderText(t.getString("NoConnection"));
-		// loginAlert.setContentText("do this or that");
+
 		
 		// buttons
 		createNewPlayerBtn = new Button(t.getString("login.createNewPlayerBtn"));
@@ -174,14 +211,28 @@ public class Login_View extends View<GameApp_Model> {
 		root.setAlignment(Pos.CENTER);
 		centerBox.getChildren().addAll(loginLbl, ipNamePasswordBox, buttonBox);
 		// centerBox.getChildren().addAll(createNewPlayer, nameBox, passwordBox, buttonBox); // -> ohne Sprachauswahl 
-		root.getChildren().add(centerBox);
+		
+		structureBox.getChildren().addAll(logoLbl, typingBox, centerBox);
+		
+		//root.getChildren().add(centerBox);
+		root.getChildren().add(structureBox);
 		
 		
 		Scene scene = new Scene(root);	
 		scene.getStylesheets().add(getClass().getResource("Login.css").toExternalForm());
 		this.stage.setScene(scene);
-		//stage.setFullScreen(true); // set Full Screen
-		//stage.setFullScreenExitHint(""); // set full screen message -> shows nothing
+		stage.setFullScreen(true); // set Full Screen
+		stage.setFullScreenExitHint(""); // set full screen message -> shows nothing
+		
+		loginAlert.initOwner(stage); // focus stays on full screen when alert message appears
+		
+		
+//		// Set stage boundaries to visible bounds of the main screen
+//		Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+//		stage.setX(primaryScreenBounds.getMinX());
+//		stage.setY(primaryScreenBounds.getMinY());
+//		stage.setWidth(primaryScreenBounds.getWidth());
+//		stage.setHeight(primaryScreenBounds.getHeight());
 		
 		return scene;
 	}

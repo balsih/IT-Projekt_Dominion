@@ -653,13 +653,14 @@ public class GameApp_Model extends Model {
 					//probleme mit kartenziehen, noch anpassen
 				} else if(!(drawCards.get(i).getCardName().equals(this.yourDeck.get(k).getCardName())) && k == this.yourDeck.size()){
 					cardsNotInDeck.add(drawCards.get(i));
+					System.out.println("Not in Deck: "+cardsNotInDeck );
 				}
 			}
 		}
-		if(!cardsNotInDeck.isEmpty()){
-			System.out.println("Deck: "+this.yourDeck.toString());
-			this.draw(cardsNotInDeck);
-		}
+//		if(!cardsNotInDeck.isEmpty()){
+//			System.out.println("Deck: "+this.yourDeck.toString());
+//			this.draw(cardsNotInDeck);
+//		}
 	}
 
 
@@ -742,7 +743,8 @@ public class GameApp_Model extends Model {
 		//The new handCards just drawn. Always currentPlayer
 		//Move the drawn cards from the deck into yourNewHandCards
 		if(ugmsg.getNewHandCards() != null && 
-				((this.currentPlayer.compareTo(this.clientName) == 0) || (this.opponent.compareTo(ugmsg.getCurrentPlayer()) == 0))){
+				((this.currentPlayer.compareTo(this.clientName) == 0 && ugmsg.getCurrentPlayer() == null)
+				|| (this.currentPlayer.compareTo(this.clientName) != 0 && ugmsg.getCurrentPlayer() != null))){
 			this.draw(ugmsg.getNewHandCards());
 		}else if(ugmsg.getNewHandCards() != null){//for opponent
 			this.opponentHandCards = ugmsg.getNewHandCards().size();

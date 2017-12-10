@@ -132,6 +132,13 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				view.lblNameOfCurrentPhase.setText(t.getString("cleanUp.lblNameOfCurrentPhase")); // Clean up
 				break;
 			}
+			
+			// Clears the played cards and if it was the client's turn the hand cards after a player's turn ended
+			if (model.turnEnded){
+				view.hboxPlayedCards.getChildren().clear();
+				if (model.clientName.compareTo(model.currentPlayer) != 0)
+					view.hboxHandCards.getChildren().clear();
+			}
 
 			// Adds new hand cards with event handlers
 			if (!model.yourNewHandCards.isEmpty()) {
@@ -145,14 +152,11 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			}
 
 			// Adds the discard pile top card to the GUI
-			if(model.yourDiscardPileTopCard != null){
+			if (model.yourDiscardPile.isEmpty()){
+				view.stackpDiscard.getChildren().clear();
+			} else 	if (model.yourDiscardPileTopCard != null){
+				view.stackpDiscard.getChildren().clear();
 				view.stackpDiscard.getChildren().add(resizeImage(model.yourDiscardPileTopCard.getImage()));
-			}
-
-			// Clears the hand cards and played cards after the player's turn ended
-			if (model.turnEnded){
-				view.hboxHandCards.getChildren().clear();
-				view.hboxPlayedCards.getChildren().clear();
 			}
 
 			// Clears the discard pile when it is empty
