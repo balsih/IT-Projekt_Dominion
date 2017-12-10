@@ -142,8 +142,10 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			}
 			
 			//ADD NEW COMMENT ADRIAN
-			if(model.yourDiscardPileTopCard != null){
+			if(model.yourDiscardPileTopCard != null && !model.yourDiscardPile.isEmpty()){
 				view.stackpDiscard.getChildren().add(resizeImage(model.yourDiscardPileTopCard.getImage()));
+			} else if (model.yourDiscardPile.isEmpty()){
+				view.stackpDiscard.getChildren().clear();
 			}
 			
 			// ADD NEW COMMENT ADRIAN
