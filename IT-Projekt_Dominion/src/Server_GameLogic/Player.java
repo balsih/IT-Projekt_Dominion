@@ -460,7 +460,7 @@ public class Player {
 	 *            - the message which should be send
 	 */
 	public void sendToOpponent(Player source, Message msg) {
-//		if (game.getGameMode().equals(GameMode.Multiplayer))
+		if (game.getGameMode().equals(GameMode.Multiplayer))
 			source.getServerThreadForClient().addWaitingMessages(msg);
 	}
 

@@ -15,6 +15,7 @@ import Cards.Mine_Card;
 import Cards.Remodel_Card;
 import Cards.Workshop_Card;
 import Messages.Failure_Message;
+import Messages.Interaction;
 import Messages.Message;
 import Messages.PlayerSuccess_Message;
 import Messages.UpdateGame_Message;
@@ -36,7 +37,7 @@ public class Bot extends Player implements Runnable {
 	private static final HashMap<CardName, Integer> PRIOLIST_TOPDISCARDPILE_CARD = new HashMap<CardName, Integer>();
 	private static final ArrayList<String> NAMES = new ArrayList<String>();
 	private static final double SHARE_OF_TREASURE_CARDS = 0.35;
-	private static final int MIN_TIME_BEFORE_EXECUTING = 100, MAX_TIME_BEFORE_EXECUTING = 300;
+	private static final int MIN_TIME_BEFORE_EXECUTING = 1000, MAX_TIME_BEFORE_EXECUTING = 3000;
 	private static final int MAX_TREASURE_CARDS = 7, MAX_ACTION_CARDS = 10;
 	private Card cardToPlay = null;
 	private CardName cardToBuy = null;
@@ -52,7 +53,7 @@ public class Bot extends Player implements Runnable {
 		System.out.println(this.playerName + " created");
 		counter = 1;
 
-		buyPrioOneCard.put(CardName.Cellar, 0);// alt 32
+		buyPrioOneCard.put(CardName.Cellar, 0);
 		buyPrioOneCard.put(CardName.Duchy, 10);
 		buyPrioOneCard.put(CardName.Estate, 5);
 		buyPrioOneCard.put(CardName.Gold, 80);
@@ -67,7 +68,7 @@ public class Bot extends Player implements Runnable {
 		buyPrioOneCard.put(CardName.Workshop, 30);
 
 		// change priorities!!
-		buyPrioMoreCards.put(CardName.Cellar, 0); // alt 32
+		buyPrioMoreCards.put(CardName.Cellar, 0);
 		buyPrioMoreCards.put(CardName.Duchy, 10);
 		buyPrioMoreCards.put(CardName.Estate, 5);
 		buyPrioMoreCards.put(CardName.Gold, 50);
@@ -337,7 +338,6 @@ public class Bot extends Player implements Runnable {
 
 			// if UpdateGame_Message
 			else if (buyMessage instanceof UpdateGame_Message) {
-				makeBreak();
 				System.out.println(this.playerName + " bought " + cardToBuy.toString());
 				numberOfTotalCards++;
 				if (cardToBuy.equals(CardName.Gold) || cardToBuy.equals(CardName.Silver))
@@ -346,7 +346,8 @@ public class Bot extends Player implements Runnable {
 					numberOfActionCards++;
 
 				// test if manual cleanUp is necessary
-				if (buys == 0) {
+				UpdateGame_Message ugmsg = (UpdateGame_Message) buyMessage;
+				if (ugmsg.getInteractionType() == Interaction.EndOfTurn) {
 					System.out.println(this.playerName + " choosedDiscardPileTopCard");
 					chooseDiscardPileTopCard();
 					break;
@@ -355,14 +356,15 @@ public class Bot extends Player implements Runnable {
 				// if there are still left some buys and less than 2 coins --> skipPhase, else
 				// buy another card
 				else {
-					System.out.println(this.playerName + " stop buyPhase");
-					if (coins <= 2) {
-						skipPhase();
-						UpdateGame_Message ugmsg = (UpdateGame_Message) buyMessage;
-						this.sendToOpponent(this, ugmsg);
-						if (handCards.size() > 1) {
-							chooseDiscardPileTopCard();
-							break;
+					if (ugmsg.getCurrentPhase() == null) {
+						System.out.println(this.playerName + " stop buyPhase");
+						if (coins <= 2) {
+							skipPhase();
+							this.sendToOpponent(this, ugmsg);
+							if (handCards.size() > 1) {
+								chooseDiscardPileTopCard();
+								break;
+							}
 						}
 					}
 				}
@@ -382,6 +384,7 @@ public class Bot extends Player implements Runnable {
 					}
 				}
 		}
+
 	}
 
 	/**
