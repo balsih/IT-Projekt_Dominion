@@ -15,7 +15,6 @@ import Cards.Mine_Card;
 import Cards.Remodel_Card;
 import Cards.Workshop_Card;
 import Messages.Failure_Message;
-import Messages.Interaction;
 import Messages.Message;
 import Messages.PlayerSuccess_Message;
 import Messages.UpdateGame_Message;
@@ -123,7 +122,7 @@ public class Bot extends Player implements Runnable {
 		makeBreak();
 		while (actions > 0 && actualPhase == Phase.Action) {
 			estimatePlayPriorityOfActionCards();
-			playActionCards();		
+			playActionCards();
 		}
 		System.out.println(this.playerName + " Action_Phase finished");
 		if (buys > 0 && actualPhase == Phase.Buy) {
@@ -137,7 +136,6 @@ public class Bot extends Player implements Runnable {
 			} while (buys > 0 && actualPhase == Phase.Buy);
 			System.out.println(this.playerName + " Buy_Phase finished");
 		}
-		makeBreak();
 		System.out.println(this.playerName + " round " + counter + " finished");
 		counter++;
 	}
@@ -151,7 +149,7 @@ public class Bot extends Player implements Runnable {
 			if (handCards.get(index).getType().equals(CardType.Treasure)) {
 				cardToPlay = handCards.get(index);
 				play(cardToPlay);
-				if(index != handCards.size() -1)
+				if (index != handCards.size() - 1)
 					index--;
 				System.out.println(this.playerName + " played " + cardToPlay.toString());
 			}
@@ -340,12 +338,10 @@ public class Bot extends Player implements Runnable {
 					numberOfActionCards++;
 
 				// test if manual cleanUp is necessary
-				UpdateGame_Message ugmsg = (UpdateGame_Message) buyMessage;
 				if (buys == 0) {
-					if (ugmsg.getInteractionType() == Interaction.EndOfTurn) {
-						System.out.println(this.playerName + " choosedDiscardPileTopCard");
-						chooseDiscardPileTopCard();
-					}
+					System.out.println(this.playerName + " choosedDiscardPileTopCard");
+					chooseDiscardPileTopCard();
+					break;
 				}
 
 				// if there are still left some buys and less than 2 coins --> skipPhase, else
@@ -354,9 +350,12 @@ public class Bot extends Player implements Runnable {
 					System.out.println(this.playerName + " stop buyPhase");
 					if (coins <= 2) {
 						skipPhase();
+						UpdateGame_Message ugmsg = (UpdateGame_Message) buyMessage;
 						this.sendToOpponent(this, ugmsg);
-						if (handCards.size() > 1)
+						if (handCards.size() > 1) {
 							chooseDiscardPileTopCard();
+							break;
+						}
 					}
 				}
 			}
@@ -366,10 +365,13 @@ public class Bot extends Player implements Runnable {
 				if (indexCounter1 < list.size())
 					continue;
 				else {
-					skipPhase();
-					if (handCards.size() > 1)
+					UpdateGame_Message ugmsg = (UpdateGame_Message) skipPhase();
+					this.sendToOpponent(this, ugmsg);
+					makeBreak();
+					if (handCards.size() > 1) {
 						chooseDiscardPileTopCard();
-					break;
+						break;
+					}
 				}
 		}
 	}
@@ -388,7 +390,7 @@ public class Bot extends Player implements Runnable {
 			if (this.containsCard(handCards, cardname)) {
 				for (Card card : handCards) {
 					if (card.getCardName().equals(cardname)) {
-						Card discardTopPileCard = card;
+						Card discardTopPileCard = card; // delete this one
 						UpdateGame_Message ugmsg = cleanUp(discardTopPileCard);
 						this.sendToOpponent(this, ugmsg);
 						break;
