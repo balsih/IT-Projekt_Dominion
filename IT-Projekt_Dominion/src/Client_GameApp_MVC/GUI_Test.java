@@ -62,6 +62,8 @@ public class GUI_Test extends Application {
 		initial.setBrightness(0);
 		ColorAdjust brighter = new ColorAdjust();
 		brighter.setBrightness(+0.5);
+		ColorAdjust darker = new ColorAdjust();
+		darker.setBrightness(-0.5);
 
 		image.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 
@@ -70,7 +72,7 @@ public class GUI_Test extends Application {
 		});
 
 		image.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
-			image.setEffect(brighter);
+			image.setEffect(darker);
 		});
 
 		image.addEventHandler(ZoomEvent.ZOOM, event -> {

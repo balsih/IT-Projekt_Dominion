@@ -41,7 +41,7 @@ Label {
 }
 
 .vboxCurrentPlayer{
-	-fx-spacing: 10px;	
+	-fx-spacing: 5px;
 }
 
 .vboxCurrentPlayerButtons{
@@ -50,7 +50,7 @@ Label {
 
 .gridpCurrentPlayer{
 	-fx-hgap: 20px;
-	-fx-background-color: oldlace;
+	-fx-background-color: white;
 }
 
 .cardGaps{

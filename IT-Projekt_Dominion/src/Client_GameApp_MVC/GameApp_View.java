@@ -127,6 +127,7 @@ public class GameApp_View extends View<GameApp_Model> {
 	protected Label lblCurrentPlayer;
 	protected Label lblNameOfCurrentPlayer;
 	protected Label lblCurrentPhase;
+	protected Label lblNameOfCurrentPhase;
 	protected Label lblCrntHandCards;
 	protected Label lblNmbrOfCrntHandCards;
 	protected Label lblCrntDeckCards;
@@ -144,6 +145,7 @@ public class GameApp_View extends View<GameApp_Model> {
 	protected Button btnGiveUp;
 	
 	protected HBox hboxCurrentPlayer;
+	protected HBox hboxCurrentPhase;
 	protected HBox hboxContentCurrentPlayer;
 	protected VBox vboxCurrentPlayer;
 	protected VBox vboxCurrentPlayerButtons;
@@ -207,9 +209,9 @@ public class GameApp_View extends View<GameApp_Model> {
 		this.vboxSilverCards = new VBox(1, lblNmbrOfSilverCards);
 		this.vboxCopperCards = new VBox(1, lblNmbrOfCopperCards);
 
-		hboxTreasureCards.getChildren().add(0, vboxGoldCards);
+		hboxTreasureCards.getChildren().add(0, vboxCopperCards);
 		hboxTreasureCards.getChildren().add(1, vboxSilverCards);
-		hboxTreasureCards.getChildren().add(2, vboxCopperCards);
+		hboxTreasureCards.getChildren().add(2, vboxGoldCards);
 		this.vboxTreasureCards = new VBox(lblTreasureCards, hboxTreasureCards);
 
 		// Creates victory cards area
@@ -223,8 +225,8 @@ public class GameApp_View extends View<GameApp_Model> {
 		this.vboxEstateCards = new VBox(1, lblNmbrOfEstateCards);
 		this.vboxProvinceCards = new VBox(1, lblNmbrOfProvinceCards);
 
-		hboxVictoryCards.getChildren().add(0, vboxDuchyCards);
-		hboxVictoryCards.getChildren().add(1, vboxEstateCards);
+		hboxVictoryCards.getChildren().add(0, vboxEstateCards);
+		hboxVictoryCards.getChildren().add(1, vboxDuchyCards);
 		hboxVictoryCards.getChildren().add(2, vboxProvinceCards);
 		this.vboxVictoryCards = new VBox(lblVictoryCards, hboxVictoryCards);
 
@@ -283,6 +285,7 @@ public class GameApp_View extends View<GameApp_Model> {
 
 		// Creates current player area
 		this.lblCurrentPlayer = new Label(t.getString("current.lblCurrentPlayer")); // Current player:
+		this.lblCurrentPhase = new Label(t.getString("current.lblCurrentPhase")); // Current phase:
 		this.lblCrntHandCards = new Label(t.getString("current.lblCrntHandCards")); // Hand cards
 		this.lblCrntDeckCards = new Label(t.getString("current.lblCrntDeckCards")); // Deck cards
 		this.lblCrntDiscardCards = new Label (t.getString("current.lblCrntDiscardCards")); // Discard cards
@@ -293,7 +296,7 @@ public class GameApp_View extends View<GameApp_Model> {
 		this.btnGiveUp = new Button(t.getString("current.btnGiveUp")); // Give up
 		
 		this.lblNameOfCurrentPlayer = new Label();
-		this.lblCurrentPhase = new Label();
+		this.lblNameOfCurrentPhase = new Label();
 		this.lblNmbrOfCrntHandCards = new Label();
 		this.lblNmbrOfCrntDeckCards = new Label();
 		this.lblNmbrOfCrntDiscards = new Label();
@@ -315,11 +318,12 @@ public class GameApp_View extends View<GameApp_Model> {
 		gridpCurrentPlayer.add(lblCrntCoins, 0, 5);
 		gridpCurrentPlayer.add(lblNmbrOfCrntCoins, 1, 5);
 
-		this.hboxCurrentPlayer = new HBox(lblCurrentPlayer, lblNameOfCurrentPlayer, lblCurrentPhase);
+		this.hboxCurrentPlayer = new HBox(lblCurrentPlayer, lblNameOfCurrentPlayer);
+		this.hboxCurrentPhase = new HBox(lblCurrentPhase, lblNameOfCurrentPhase);
 		this.vboxCurrentPlayerButtons = new VBox (btnGiveUp, btnCommit);
 		this.hboxContentCurrentPlayer = new HBox (gridpCurrentPlayer, vboxCurrentPlayerButtons);
 		vboxCurrentPlayerButtons.setAlignment(Pos.BOTTOM_LEFT);
-		this.vboxCurrentPlayer = new VBox(hboxCurrentPlayer, hboxContentCurrentPlayer);
+		this.vboxCurrentPlayer = new VBox(hboxCurrentPlayer, hboxCurrentPhase, hboxContentCurrentPlayer);
 
 		// Root
 		this.root = new GridPane();
@@ -384,6 +388,7 @@ public class GameApp_View extends View<GameApp_Model> {
 
 		// Adds special styling to the current player area
 		hboxCurrentPlayer.getStyleClass().add("hbox");
+		hboxCurrentPhase.getStyleClass().add("hbox");
 		hboxContentCurrentPlayer.getStyleClass().add("hbox");
 		vboxCurrentPlayer.getStyleClass().add("vboxCurrentPlayer");
 		vboxCurrentPlayerButtons.getStyleClass().add("vboxCurrentPlayerButtons");
