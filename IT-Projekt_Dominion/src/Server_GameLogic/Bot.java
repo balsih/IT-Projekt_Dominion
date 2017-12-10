@@ -46,8 +46,9 @@ public class Bot extends Player implements Runnable {
 	private LinkedList<Card> discardedCardsForCellar = new LinkedList<Card>();
 	private int counter;
 
-	public Bot(String name) {
-		super(name);
+	public Bot(String name, ServerThreadForClient thread) {
+		super(name, thread);
+		
 		System.out.println(this.playerName + " created");
 		counter = 1;
 
@@ -185,7 +186,7 @@ public class Bot extends Player implements Runnable {
 				case Mine:
 					Card tempCard = null;
 					for (Card card : handCards) {
-						if (card.getCardName().equals(CardName.Copper))
+						if (card.getCardName().equals(CardName.Copper) || card.getCardName().equals(CardName.Silver))
 							tempCard = card;
 					}
 					Mine_Card mCard = (Mine_Card) this.getPlayedCards().get(this.getPlayedCards().size() - 1);
@@ -320,7 +321,6 @@ public class Bot extends Player implements Runnable {
 		for (int indexCounter1 = 0; indexCounter1 < list.size(); indexCounter1++) {
 			cardToBuy = list.get(indexCounter1);
 			buyMessage = buy(cardToBuy);
-			makeBreak();
 
 			// if PlayerSuccess_Message --> terminate buy();
 			if (buyMessage instanceof PlayerSuccess_Message) {
@@ -330,6 +330,7 @@ public class Bot extends Player implements Runnable {
 
 			// if UpdateGame_Message
 			else if (buyMessage instanceof UpdateGame_Message) {
+				makeBreak();
 				System.out.println(this.playerName + " bought " + cardToBuy.toString());
 				numberOfTotalCards++;
 				if (cardToBuy.equals(CardName.Gold) || cardToBuy.equals(CardName.Silver))
