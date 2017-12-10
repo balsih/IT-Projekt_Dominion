@@ -389,7 +389,7 @@ public class UpdateGame_Message extends Message {
 		
 		//Concat the logs if there are multiple logs
 		if (first.log != null && second.log != null){
-			first.log += "\\r\\n"+second.log;
+			first.log += "=="+second.log;
 		} else if (first.log == null){
 			first.log = second.log;
 		}

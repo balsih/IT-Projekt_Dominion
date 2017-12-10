@@ -54,6 +54,7 @@ public class GameApp_Model extends Model {
 
 	private final String NO_CONNECTION = "#NoConnection#";
 	private final String TRANSLATE_REGEX = "#[\\w\\s]*#";
+	private final String LINE_SEPARATOR_REGEX = "==";
 	private final String SALT = "[B@d8c7b51";
 
 	private ServiceLocator sl = ServiceLocator.getServiceLocator();
@@ -253,6 +254,27 @@ public class GameApp_Model extends Model {
 			return output;
 		}
 		return t.getString(input);
+	}
+	
+	/**
+	 * @author Lukas
+	 * Separates server-site line-separators client-site. Regex is "=="
+	 * Translation inclusive
+	 * 
+	 * @param input
+	 * @return output, one String with system-specific separators
+	 */
+	private String lineSeparator(String input){
+		String[] lines = input.split(LINE_SEPARATOR_REGEX);
+		String output = "";
+		if(lines.length > 1){
+			for(int i = 0; i < lines.length; i++){
+				output += this.translate(lines[i])+System.lineSeparator();
+			}
+		}else{
+			output = input;
+		}
+		return output;
 	}
 
 
@@ -617,8 +639,9 @@ public class GameApp_Model extends Model {
 		UpdateGame_Message ugmsg = (UpdateGame_Message) msgIn;
 
 		//If something necessary happened in the Game, it will be provided to show
-		if(ugmsg.getLog() != null)
-			this.newLog = this.translate(ugmsg.getLog());
+		if(ugmsg.getLog() != null){
+			this.newLog = this.lineSeparator(ugmsg.getLog());
+		}
 
 		//If the client or opponent sent a chat, it will be provided to show
 		if(ugmsg.getChat() != null)
