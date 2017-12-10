@@ -37,7 +37,7 @@ public class Bot extends Player implements Runnable {
 	private static final HashMap<CardName, Integer> PRIOLIST_TOPDISCARDPILE_CARD = new HashMap<CardName, Integer>();
 	private static final ArrayList<String> NAMES = new ArrayList<String>();
 	private static final double SHARE_OF_TREASURE_CARDS = 0.35;
-	private static final int MIN_TIME_BEFORE_EXECUTING = 1000, MAX_TIME_BEFORE_EXECUTING = 3000;
+	private static final int MIN_TIME_BEFORE_EXECUTING = 100, MAX_TIME_BEFORE_EXECUTING = 300;
 	private static final int MAX_TREASURE_CARDS = 7, MAX_ACTION_CARDS = 10;
 	private Card cardToPlay = null;
 	private CardName cardToBuy = null;
@@ -120,7 +120,7 @@ public class Bot extends Player implements Runnable {
 	 */
 	public void run() {
 		System.out.println(this.playerName + " started round " + counter);
-		//makeBreak();
+		makeBreak();
 		while (actions > 0 && actualPhase == Phase.Action) {
 			estimatePlayPriorityOfActionCards();
 			playActionCards();		
@@ -177,7 +177,7 @@ public class Bot extends Player implements Runnable {
 			skipPhase();
 		} else {
 			Message playMessage = play(cardToPlay);
-			//makeBreak();
+			makeBreak();
 			System.out.println(this.playerName + " played " + cardToPlay.toString());
 			if (playMessage instanceof UpdateGame_Message) {
 				UpdateGame_Message ugmsg = (UpdateGame_Message) playMessage;
@@ -321,7 +321,7 @@ public class Bot extends Player implements Runnable {
 		for (int indexCounter1 = 0; indexCounter1 < list.size(); indexCounter1++) {
 			cardToBuy = list.get(indexCounter1);
 			buyMessage = buy(cardToBuy);
-			//makeBreak();
+			makeBreak();
 
 			// if PlayerSuccess_Message --> terminate buy();
 			if (buyMessage instanceof PlayerSuccess_Message) {
@@ -341,7 +341,7 @@ public class Bot extends Player implements Runnable {
 				// test if manual cleanUp is necessary
 				UpdateGame_Message ugmsg = (UpdateGame_Message) buyMessage;
 				if (buys == 0) {
-					if (ugmsg.getInteractionType().equals(Interaction.EndOfTurn)) {
+					if (ugmsg.getInteractionType() == Interaction.EndOfTurn) {
 						System.out.println(this.playerName + " choosedDiscardPileTopCard");
 						chooseDiscardPileTopCard();
 					}
