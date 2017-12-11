@@ -47,6 +47,8 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 	private ColorAdjust initial = new ColorAdjust();
 	private ColorAdjust brighter = new ColorAdjust();
 	private ColorAdjust darker = new ColorAdjust();
+	
+	private LinkedList<ImageView> tmpViews = new LinkedList<ImageView>();
 
 	// Translates GUI-text
 	private ServiceLocator sl = ServiceLocator.getServiceLocator();
@@ -79,7 +81,10 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				break;
 			case Cellar:
 				if (model.cellarDiscards.size() >= 1) {
-					model.sendInteraction();
+					if(model.sendInteraction()){
+						view.hboxHandCards.getChildren().removeAll(tmpViews);
+						tmpViews.clear();
+					}
 				}
 				break;
 			}
@@ -240,7 +245,8 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 		// If the user enters an image, it gets brighter
 		img.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
-			img.setEffect(brighter);
+			if ((model.interaction != Interaction.Cellar) || (model.interaction == Interaction.Cellar && !tmpViews.contains(img)))
+				img.setEffect(brighter);
 		});
 
 		// If the user zooms an image, it gets bigger and gets back its original brightness
@@ -254,7 +260,8 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		img.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
 			img.setFitWidth(imageWidth);
 			img.setFitHeight(imageHeight);
-			img.setEffect(initial);
+			if ((model.interaction != Interaction.Cellar) || (model.interaction == Interaction.Cellar && !tmpViews.contains(img)))
+				img.setEffect(initial);
 		});
 	}
 
@@ -281,12 +288,13 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				else if (model.interaction == Interaction.Cellar) {
 					if (model.cellarDiscards.contains(card)) {
 						model.cellarDiscards.remove(card);
+						tmpViews.remove(img);
 						img.setEffect(initial);
 					} else {
 						model.cellarDiscards.add(card);
+						tmpViews.add(img);
 						img.setEffect(darker);
 					}
-					updateGUI();
 				}
 
 				// During the remodel1 interaction, the clicked card gets discarded
