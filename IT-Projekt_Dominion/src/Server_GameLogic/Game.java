@@ -222,6 +222,9 @@ public class Game {
 			if(this.gameMode == GameMode.Simulation)
 				new Thread(bot).start();
 		}
+		
+		if (!this.currentPlayer.containsCardType(this.currentPlayer.handCards, CardType.Action))
+			this.currentPlayer.setActualPhase(Phase.Buy);
 	}
 
 	/**
