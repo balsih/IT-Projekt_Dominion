@@ -513,7 +513,7 @@ public class Bot extends Player implements Runnable {
 		int sizeDuchyPile = game.getDuchyPile().size();
 
 		if (sizeProvincePile <= 2 && sizeDuchyPile <= 2)
-			points += 10;
+			points += 20;
 		else {
 			if (sizeProvincePile < 3 || sizeDuchyPile < 4)
 				points += 7;
