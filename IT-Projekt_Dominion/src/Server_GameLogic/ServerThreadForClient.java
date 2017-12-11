@@ -18,6 +18,7 @@ import Cards.Mine_Card;
 import Cards.Remodel_Card;
 import Cards.Smithy_Card;
 import Cards.Village_Card;
+import Cards.Woodcutter_Card;
 import Cards.Workshop_Card;
 import Messages.AskForChanges_Message;
 import Messages.BuyCard_Message;
@@ -116,7 +117,7 @@ public class ServerThreadForClient implements Runnable {
 	 */
     private Message processMessage(Message msgIn) {
 		Message msgOut = null;
-		if(msgIn instanceof Knock_Message || msgIn instanceof Login_Message || msgIn instanceof CreateGame_Message){
+		if(msgIn instanceof Knock_Message || msgIn instanceof Login_Message || msgIn instanceof CreateNewPlayer_Message){
 			this.clientName = msgIn.getClient();
 		}
 		
@@ -288,8 +289,8 @@ public class ServerThreadForClient implements Runnable {
 		cgmsg.setBuyCards(game.getBuyCards());
 		this.player.getHandCards().add(new Gold_Card());
 		this.player.getHandCards().add(new Gold_Card());
-		this.player.getHandCards().add(new Smithy_Card());
-		this.player.getHandCards().add(new Village_Card());
+		this.player.getHandCards().add(new Woodcutter_Card());
+		this.player.getHandCards().add(new Workshop_Card());
 		cgmsg.setHandCards(this.player.getHandCards());
 		cgmsg.setDeckPile(this.player.getDeckPile());
 		cgmsg.setOpponent(game.getOpponent(this.player).getPlayerName());

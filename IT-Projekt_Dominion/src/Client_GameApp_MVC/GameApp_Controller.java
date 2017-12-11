@@ -181,7 +181,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 			// Updates the number of current hand cards, discard cards and deck cards
 			if (model.currentPlayer.compareTo(model.clientName) == 0) {
-				view.lblNmbrOfCrntHandCards.setText(Integer.toString(view.vboxHandCards.getChildren().size()));
+				view.lblNmbrOfCrntHandCards.setText(Integer.toString(view.hboxHandCards.getChildren().size()));
 				view.lblNmbrOfCrntDiscards.setText(Integer.toString(model.yourDiscardPile));
 				view.lblNmbrOfCrntDeckCards.setText(Integer.toString(model.yourDeck));
 			} else {
