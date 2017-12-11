@@ -176,7 +176,8 @@ public class Game {
 		this.currentPlayer.resetStates();
 		
 		// FOR TESTS
-		this.currentPlayer.setActualPhase(Phase.Action);
+		this.player1.setActualPhase(Phase.Action);
+		this.player2.setActualPhase(Phase.Action);
 		
 		// starts the first bot in a simulation
 		if (this.gameMode == GameMode.Simulation)
