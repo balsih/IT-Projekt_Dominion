@@ -64,39 +64,39 @@ public class GameApp_Model extends Model {
 	private String ipAddress;
 	private Integer port;
 	
-	public Integer actions = 1;
-	public Integer buys = 1;
-	public Integer coins = 0;
+	protected Integer actions = 1;
+	protected Integer buys = 1;
+	protected Integer coins = 0;
 
-	public String clientName = null;
-	public String opponent = null;
-	public String currentPlayer = null;
-	public boolean failure = true;
+	protected String clientName = null;
+	protected String opponent = null;
+	protected String currentPlayer = null;
+	protected boolean failure = true;
 
-	public LinkedList<Card> yourNewHandCards = null;
-	public Integer opponentHandCards = null;
-	public Integer yourDeck = null;
-	public Integer opponentDeck = null;
-	public Integer yourDiscardPile = 0;
-	public Integer opponentDiscardPile = null;
-	public Card newPlayedCard = null;
-	public Card yourDiscardPileTopCard = null;
-	public String newChat = null;
-	public String newLog = null;
+	protected LinkedList<Card> yourNewHandCards = null;
+	protected Integer opponentHandCards = null;
+	protected Integer yourDeck = null;
+	protected Integer opponentDeck = null;
+	protected Integer yourDiscardPile = 0;
+	protected Integer opponentDiscardPile = null;
+	protected Card newPlayedCard = null;
+	protected Card yourDiscardPileTopCard = null;
+	protected String newChat = null;
+	protected String newLog = null;
 	
-	public Interaction interaction = Interaction.Skip;
-	public LinkedList<CardName> cardSelection = null;
-	public Card discardCard = null;
-	public LinkedList<Card> cellarDiscards = new LinkedList<Card>();
+	protected Interaction interaction = Interaction.Skip;
+	protected LinkedList<CardName> cardSelection = null;
+	protected Card discardCard = null;
+	protected LinkedList<Card> cellarDiscards = new LinkedList<Card>();
 
 	protected GameSuccess success = null;
 	protected Integer victoryPoints = null;
 
-	public GameMode gameMode = null;
-	public HashMap<CardName, Integer> buyCards;
-	public CardName buyChoice = null;
-	public Phase currentPhase = null;
-	public boolean turnEnded = false;
+	protected GameMode gameMode = null;
+	protected HashMap<CardName, Integer> buyCards;
+	protected CardName buyChoice = null;
+	protected Phase currentPhase = null;
+	protected boolean turnEnded = false;
 
 	public enum UserInput {
 		clientName,
@@ -117,21 +117,13 @@ public class GameApp_Model extends Model {
 	}
 
 	/**
-	 * 
-	 * @param moveType
-	 */
-	public boolean checkMoveValidity(String moveType){
-		return false;
-	}
-
-	/**
 	 * @author Adrian
 	 * Encrypts a password using the secure hash algorithm (SHA-512) and returns it.
 	 * @param unencryptedPassword
 	 * @return encryptedPassword
 	 * @throws NoSuchAlgorithmException
 	 */
-	public String encryptPassword(String unencryptedPassword) throws NoSuchAlgorithmException {
+	private String encryptPassword(String unencryptedPassword) throws NoSuchAlgorithmException {
 		String generatedPassword = null;
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-512");
@@ -431,7 +423,7 @@ public class GameApp_Model extends Model {
 	 * @param cardName
 	 * @return update, tells the controller if the game has to be updated
 	 */
-	public boolean sendBuyCard(CardName cardName){
+	protected boolean sendBuyCard(CardName cardName){
 		BuyCard_Message bcmsg = new BuyCard_Message();
 		bcmsg.setCard(cardName);
 		boolean update = false;
@@ -458,7 +450,7 @@ public class GameApp_Model extends Model {
 	 * @param card
 	 * @return update, tells the controller if the game has to be updated
 	 */
-	public boolean sendPlayCard(Card card){
+	protected boolean sendPlayCard(Card card){
 		PlayCard_Message pcmsg = new PlayCard_Message();
 		pcmsg.setCard(card);
 		boolean update = false;
@@ -480,7 +472,7 @@ public class GameApp_Model extends Model {
 	 * @param chat
 	 * @return update, tells the controller if the game has to be updated
 	 */
-	public boolean sendChat(String chat){
+	protected boolean sendChat(String chat){
 		Chat_Message cmsg = new Chat_Message();
 		cmsg.setChat(chat);
 		boolean update = false;
@@ -499,7 +491,7 @@ public class GameApp_Model extends Model {
 	 * 
 	 * @return update, tells the controller if the game has to be updated
 	 */
-	public boolean sendInteraction(){
+	protected boolean sendInteraction(){
 		Interaction_Message imsg = new Interaction_Message();
 		boolean update = false;
 		imsg.setInteractionType(this.interaction);
@@ -562,7 +554,7 @@ public class GameApp_Model extends Model {
 	 * 
 	 * @return update, if communication to server was successful
 	 */
-	public boolean sendGiveUp(){
+	protected boolean sendGiveUp(){
 		GiveUp_Message gumsg = new GiveUp_Message();
 		boolean update = false;
 
@@ -581,7 +573,7 @@ public class GameApp_Model extends Model {
 	 * 
 	 * @param msgIn
 	 */
-	public void processCreateGame(Message msgIn) {		
+	protected void processCreateGame(Message msgIn) {		
 		CreateGame_Message cgmsg = (CreateGame_Message) msgIn;
 		this.yourNewHandCards = cgmsg.getHandCards();
 		this.buyCards = cgmsg.getBuyCards();
@@ -782,6 +774,10 @@ public class GameApp_Model extends Model {
 	
 	public boolean getFailure(){
 		return this.failure;
+	}
+	
+	public void setGameMode(GameMode gameMode){
+		this.gameMode = gameMode;
 	}
 
 	public void setIP(String ipAddress){
