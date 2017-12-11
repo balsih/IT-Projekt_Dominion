@@ -12,6 +12,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -167,12 +168,43 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		centerBox.getChildren().addAll(createNewPlayerLbl, namePasswordLanguageBox, buttonBox);
 		// centerBox.getChildren().addAll(createNewPlayer, nameBox, passwordBox, buttonBox); // -> ohne Sprachauswahl 
 		
-		structureBox.getChildren().addAll(logoLbl, typingBox, centerBox);
 		
+		//////////////////
+		// text field to show password as unmasked
+	    TextField textField = new TextField();
+	    // Set initial state
+	    textField.setManaged(false);
+	    textField.setVisible(false);
+
+	    // Actual password field
+	    PasswordField passwordField = new PasswordField();
+
+	    CheckBox checkBox = new CheckBox("Show/Hide password");
+
+	    // Bind properties. Toggle textField and passwordField
+	    // visibility and managability properties mutually when checkbox's state is changed.
+	    // Because we want to display only one component (textField or passwordField)
+	    // on the scene at a time.
+	    textField.managedProperty().bind(checkBox.selectedProperty());
+	    textField.visibleProperty().bind(checkBox.selectedProperty());
+
+	    passwordField.managedProperty().bind(checkBox.selectedProperty().not());
+	    passwordField.visibleProperty().bind(checkBox.selectedProperty().not());
+
+	    // Bind the textField and passwordField text values bidirectionally.
+	    textField.textProperty().bindBidirectional(passwordField.textProperty());
+	    
+	    //////////////////////////
+		
+		
+		
+		
+		//structureBox.getChildren().addAll(logoLbl, typingBox, centerBox, passwordField, textField, checkBox);
+	    
+	    structureBox.getChildren().addAll(logoLbl, typingBox, centerBox);
 		
 		root.getChildren().add(structureBox);
-		
-		
+
 		Scene scene = new Scene(root);	
 		scene.getStylesheets().add(getClass().getResource("CreatePlayer.css").toExternalForm());
 		this.stage.setScene(scene);

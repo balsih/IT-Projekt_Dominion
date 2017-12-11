@@ -92,13 +92,13 @@ public class Dominion_Main extends Application {
 	
 	public void startGameApp(){
 		
-		mainMenu_View.stop();
+		//mainMenu_View.stop();
 		// Create game mvc
 		this.gameApp_View = new GameApp_View(new Stage(), model);
 		GameApp_Controller controller = new GameApp_Controller(model, this.gameApp_View);
 		this.gameApp_View.start();
-		
 		this.mainMenu_View.stop();
+		model.startMediaPlayer("Morgen.mp3"); // starts new sound for GameApp 
 	}
 	
 	
