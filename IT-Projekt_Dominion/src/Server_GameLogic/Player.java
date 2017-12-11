@@ -440,10 +440,9 @@ public class Player {
 			this.deckPile.push(discardPile.pop());
 
 		// Counts the number of victory points
-		Iterator<Card> iter = deckPile.iterator();
-		while (iter.hasNext())
-			if (iter.next().getType().equals(CardType.Victory)) {
-				iter.next().executeCard(this);
+		for (Card card : this.deckPile)
+			if (card.getType().equals(CardType.Victory)) {
+				card.executeCard(this);
 			}
 	}
 
