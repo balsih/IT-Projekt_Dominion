@@ -256,14 +256,17 @@ public class GameApp_Model extends Model {
 	 * @return output, one String with system-specific separators
 	 */
 	private String lineSeparator(String input){
-		String[] lines = input.split(LINE_SEPARATOR_REGEX);
+		System.out.println("Input: "+input);
+		String translatedInput = this.translate(input);
+		System.out.println("TranslatedInput: "+translatedInput);
+		String[] lines = translatedInput.split(LINE_SEPARATOR_REGEX);
 		String output = "";
 		if(lines.length > 1){
 			for(int i = 0; i < lines.length; i++){
-				output += this.translate(lines[i])+System.lineSeparator();
+				output += lines[i]+System.lineSeparator();
 			}
 		}else{
-			output = this.translate(input);
+			output = translatedInput;;
 		}
 		return output;
 	}
