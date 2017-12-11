@@ -74,17 +74,16 @@ public class GameApp_Model extends Model {
 	public boolean failure = true;
 
 	public LinkedList<Card> yourNewHandCards = null;
-	public LinkedList<Card> yourHandCards = new LinkedList<Card>();
 	public Integer opponentHandCards = null;
-	public LinkedList<Card> yourDeck = new LinkedList<Card>();
+	public Integer yourDeck = null;
 	public Integer opponentDeck = null;
-	public LinkedList<Card> yourDiscardPile = new LinkedList<Card>();
+	public Integer yourDiscardPile = 0;
 	public Integer opponentDiscardPile = null;
-	public LinkedList<Card> playedCards = new LinkedList<Card>();
 	public Card newPlayedCard = null;
 	public Card yourDiscardPileTopCard = null;
 	public String newChat = null;
 	public String newLog = null;
+	
 	public Interaction interaction = Interaction.Skip;
 	public LinkedList<CardName> cardSelection = null;
 	public Card discardCard = null;
@@ -464,14 +463,12 @@ public class GameApp_Model extends Model {
 		pcmsg.setCard(card);
 		boolean update = false;
 
-		if(this.yourHandCards.contains(card));{
-			Message msgIn = this.processMessage(pcmsg);
-			if(msgIn instanceof UpdateGame_Message){
-				this.processUpdateGame(msgIn);
-				update = true;
-			}else if(msgIn instanceof Failure_Message){
-				//nothing toDo here
-			}
+		Message msgIn = this.processMessage(pcmsg);
+		if(msgIn instanceof UpdateGame_Message){
+			this.processUpdateGame(msgIn);
+			update = true;
+		}else if(msgIn instanceof Failure_Message){
+			//nothing toDo here
 		}
 		return update;
 	}
@@ -540,32 +537,16 @@ public class GameApp_Model extends Model {
 			this.discardCard = null;
 			this.buyChoice = null;
 
-			//If the Interactions are committed, the changes for Cellar, Remodel1 and Mine have to be executed
-			switch(this.interaction){
-			case Cellar:
-				for(int i = 0; i < this.cellarDiscards.size(); i++){
-					for(int j = 0; j < this.yourHandCards.size(); j++){
-						if(this.cellarDiscards.get(i) == this.yourHandCards.get(j)){
-							this.yourDiscardPile.add(this.yourHandCards.remove(j));
-							break;
-						}
-					}
-				}
-				break;
-			case Remodel1:
-				this.yourHandCards.remove(this.discardCard);
-				break;
+			switch(this.interaction){//nothing toDo with the missing Interactions
+			
 				//The picked card with mine will come into the hand and not to discardPile. But the buyCards has to be decreased
 			case Mine:
-				this.yourHandCards.remove(this.discardCard);
 				this.yourNewHandCards.add(ugmsg.getBuyedCard());
 				this.buyCards.replace(ugmsg.getBuyedCard().getCardName(), this.buyCards.get(ugmsg.getBuyedCard().getCardName())-1);
 				ugmsg.setBuyedCard(null);
 				break;
 			}
 			this.interaction = Interaction.Skip;//defaultSetting
-			this.cellarDiscards.clear();
-			this.discardCard = null;
 			this.processUpdateGame(ugmsg);
 
 		}else if(msgIn instanceof PlayerSuccess_Message){
@@ -609,10 +590,7 @@ public class GameApp_Model extends Model {
 		this.opponentHandCards = cgmsg.getHandNumber();
 		this.currentPlayer = cgmsg.getStartingPlayer();
 		this.currentPhase = cgmsg.getPhase();
-		Stack<Card> deckPile = cgmsg.getDeckPile();
-		while(!deckPile.isEmpty()){
-			this.yourDeck.add(cgmsg.getDeckPile().pop());
-		}
+		this.yourDeck = cgmsg.getDeckPile().size();
 	}
 
 	/**
@@ -626,42 +604,6 @@ public class GameApp_Model extends Model {
 		this.success = psmsg.getSuccess();
 		this.victoryPoints = psmsg.getVictoryPoints();
 	}
-	
-	/**
-	 * @author Lukas
-	 * Draws the cards from yourDeck. The sequence of the XML (draws) doesn't matter
-	 * 
-	 * @param drawCards
-	 */
-	private void draw(LinkedList<Card> drawCards){
-		LinkedList<Card> cardsNotInDeck = new LinkedList<Card>();
-		for(int i = 0; i < drawCards.size(); i++){
-			
-			//Mandatory if the DeckPile is empty, the DiscardPile has to be added to the DeckPile
-			if(this.yourDeck.size() == 0){
-				for(int j = 0; j < this.yourDiscardPile.size(); j++){
-					this.yourDeck.add(this.yourDiscardPile.remove());
-				}
-			}
-			
-			//Removes the card out of yourDeck
-			for(int k = 0; k < this.yourDeck.size(); k++){
-				if(drawCards.get(i).getCardName().equals(this.yourDeck.get(k).getCardName())){
-					this.yourNewHandCards.add(this.yourDeck.remove(k));
-					break;
-					
-					//probleme mit kartenziehen, noch anpassen
-				} else if(!(drawCards.get(i).getCardName().equals(this.yourDeck.get(k).getCardName())) && k == this.yourDeck.size()){
-					cardsNotInDeck.add(drawCards.get(i));
-					System.out.println("Not in Deck: "+cardsNotInDeck );
-				}
-			}
-		}
-//		if(!cardsNotInDeck.isEmpty()){
-//			System.out.println("Deck: "+this.yourDeck.toString());
-//			this.draw(cardsNotInDeck);
-//		}
-	}
 
 
 	/**MOSTLY TESTED
@@ -673,6 +615,16 @@ public class GameApp_Model extends Model {
 
 	protected void processUpdateGame(Message msgIn) {	
 		UpdateGame_Message ugmsg = (UpdateGame_Message) msgIn;
+		
+		//If currentPlayer is set, the currentPlayer's turn ends
+		if(ugmsg.getCurrentPlayer() != null && ugmsg.getCurrentPlayer().compareTo(this.currentPlayer) != 0){
+			if(this.currentPlayer.compareTo(this.opponent) == 0)
+				this.opponentHandCards = 0;
+			this.turnEnded = true;
+			this.currentPlayer = ugmsg.getCurrentPlayer();
+		}else{
+			this.turnEnded = false;
+		}
 
 		//If something necessary happened in the Game, it will be provided to show
 		if(ugmsg.getLog() != null){
@@ -701,43 +653,35 @@ public class GameApp_Model extends Model {
 
 		//If a buy was successful. Always currentPlayer
 		//stores the buyedCard of the currentPlayer and reduces the value of the buyCards(Cards which can be bought)
-		if(ugmsg.getBuyedCard() != null && this.currentPlayer.compareTo(this.clientName) == 0){
-			this.yourDiscardPile.add(ugmsg.getBuyedCard());
+		if(ugmsg.getBuyedCard() != null)
 			this.buyCards.replace(ugmsg.getBuyedCard().getCardName(), this.buyCards.get(ugmsg.getBuyedCard().getCardName())-1);
-		}else if(ugmsg.getBuyedCard() != null){
-			this.buyCards.replace(ugmsg.getBuyedCard().getCardName(), this.buyCards.get(ugmsg.getBuyedCard().getCardName())-1);
-		}
+		
 
 		//Just necessary to show opponent's size of discardPile
-		if(ugmsg.getDeckPileCardNumber() != null && this.currentPlayer.compareTo(this.opponent) == 0)
-			this.opponentDiscardPile = ugmsg.getDeckPileCardNumber();
+		if(ugmsg.getDeckPileCardNumber() != null && 
+				((this.currentPlayer.compareTo(this.clientName) == 0 && ugmsg.getCurrentPlayer() == null)
+				|| (this.currentPlayer.compareTo(this.clientName) != 0 && ugmsg.getCurrentPlayer() != null))){
+			this.yourDeck = ugmsg.getDeckPileCardNumber();
+		}else if(ugmsg.getDeckPileCardNumber() != null){
+			this.opponentDeck = ugmsg.getDeckPileCardNumber();
+		}
 
 		//Just necessary to show opponent's size of deckPile
-		if(ugmsg.getDiscardPileCardNumber() != null && this.currentPlayer.compareTo(this.opponent) == 0)
-			this.opponentDeck = ugmsg.getDiscardPileCardNumber();
+		if(ugmsg.getDiscardPileCardNumber() != null && 
+				((this.currentPlayer.compareTo(this.clientName) == 0 && ugmsg.getCurrentPlayer() == null)
+				|| (this.currentPlayer.compareTo(this.clientName) != 0 && ugmsg.getCurrentPlayer() != null))){
+			this.yourDiscardPile = ugmsg.getDiscardPileCardNumber();
+			System.out.println("yourDiscardPile: "+ugmsg.getDiscardPileCardNumber());
+		}else if(ugmsg.getDiscardPileCardNumber() != null){
+			this.opponentDiscardPile = ugmsg.getDiscardPileCardNumber();
+			System.out.println("opponentDiscardPile: "+ugmsg.getDiscardPileCardNumber());
+		}
 
 		//Always client's topCard
-		if(ugmsg.getDiscardPileTopCard() != null && this.currentPlayer.compareTo(this.clientName) == 0)
+		if(ugmsg.getDiscardPileTopCard() != null && 
+				((this.currentPlayer.compareTo(this.clientName) == 0 && ugmsg.getCurrentPlayer() == null)
+				|| (this.currentPlayer.compareTo(this.clientName) != 0 && ugmsg.getCurrentPlayer() != null))){
 			this.yourDiscardPileTopCard = ugmsg.getDiscardPileTopCard();
-
-		//If currentPlayer is set, the currentPlayer's turn ends
-		if(ugmsg.getCurrentPlayer() != null){
-			if(ugmsg.getCurrentPlayer().compareTo(this.currentPlayer) != 0){
-				this.turnEnded = true;
-
-				if(ugmsg.getCurrentPlayer().compareTo(this.opponent) == 0){//if it was your turn that ended
-					for(int i = 0; i < this.playedCards.size(); i++)
-						this.yourDiscardPile.add(this.playedCards.remove(i));
-					for(int j = 0; j < this.yourHandCards.size(); j++)
-						this.yourDiscardPile.add(this.yourHandCards.remove(j));
-
-				}else{//if it was your opponents turn that ended
-					this.playedCards.clear();
-				}
-			}
-			this.currentPlayer = ugmsg.getCurrentPlayer();
-		}else{
-			this.turnEnded = false;
 		}
 
 		//The new handCards just drawn. Always currentPlayer
@@ -745,31 +689,30 @@ public class GameApp_Model extends Model {
 		if(ugmsg.getNewHandCards() != null && 
 				((this.currentPlayer.compareTo(this.clientName) == 0 && ugmsg.getCurrentPlayer() == null)
 				|| (this.currentPlayer.compareTo(this.clientName) != 0 && ugmsg.getCurrentPlayer() != null))){
-			this.draw(ugmsg.getNewHandCards());
+			this.yourNewHandCards = ugmsg.getNewHandCards();
 		}else if(ugmsg.getNewHandCards() != null){//for opponent
-			this.opponentHandCards = ugmsg.getNewHandCards().size();
+			this.opponentHandCards += ugmsg.getNewHandCards().size();
 		}
 
 		//If a card was played, it will be provided
 		//Move the played Card from the hand into newPlayedCard
-		if(ugmsg.getPlayedCard() != null && this.currentPlayer.compareTo(this.clientName) == 0){
-			for(int i = 0; i < this.yourHandCards.size(); i++){
-				if(this.yourHandCards.get(i).getCardName().equals(ugmsg.getPlayedCard().getCardName())){
-					this.playedCards.add(this.yourHandCards.remove(i));
-					break;
-				}
-			}
-		}else if(ugmsg.getPlayedCard() != null){//for opponent
+		if(ugmsg.getPlayedCard() != null){
 			this.newPlayedCard = ugmsg.getPlayedCard();
 		}
 
 		//If interaction is set, the Type of Interaction can be checked (i.e. meaning of the commit_Button)
-		if(ugmsg.getInteractionType() != null && this.currentPlayer.compareTo(this.clientName) == 0)
+		if(ugmsg.getInteractionType() != null &&
+				((this.currentPlayer.compareTo(this.clientName) == 0 && ugmsg.getCurrentPlayer() == null)
+				|| (this.currentPlayer.compareTo(this.clientName) != 0 && ugmsg.getCurrentPlayer() != null))){
 			this.interaction = ugmsg.getInteractionType();
+		}
 
 		//If cardSelection is set, it consists a selection of the cards to chose
-		if(ugmsg.getCardSelection() != null && this.currentPlayer.compareTo(this.clientName) == 0)
+		if(ugmsg.getCardSelection() != null &&
+				((this.currentPlayer.compareTo(this.clientName) == 0 && ugmsg.getCurrentPlayer() == null)
+				|| (this.currentPlayer.compareTo(this.clientName) != 0 && ugmsg.getCurrentPlayer() != null))){
 			this.cardSelection = ugmsg.getCardSelection();
+		}
 
 	}
 

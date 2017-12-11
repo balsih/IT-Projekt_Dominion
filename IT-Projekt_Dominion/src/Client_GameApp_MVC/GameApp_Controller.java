@@ -146,26 +146,20 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 					ImageView img = card.getImage();
 					setInitialHandCardsEvents(card, resizeImage(img));
 					view.hboxHandCards.getChildren().add(img);
-					model.yourHandCards.add(card);
 				}
 				model.yourNewHandCards.clear();
 			}
 
 			// Adds the discard pile top card to the GUI
-			if (model.yourDiscardPile.isEmpty()){
+			if (model.yourDiscardPile == 0){
 				view.stackpDiscard.getChildren().clear();
 			} else 	if (model.yourDiscardPileTopCard != null){
 				view.stackpDiscard.getChildren().clear();
 				view.stackpDiscard.getChildren().add(resizeImage(model.yourDiscardPileTopCard.getImage()));
 			}
 
-			// Clears the discard pile when it is empty
-			if (model.yourDiscardPile.isEmpty()) {
-				view.stackpDiscard.getChildren().clear();
-			}
-
 			// Clears the deck pile when it is empty
-			if (model.yourDeck.isEmpty()){
+			if (model.yourDeck == 0){
 				view.stackpDeck.getChildren().clear();
 			} else {
 				// Adds a flipside card to the deck pile when it is empty to simulate the presence of deck cards
@@ -187,9 +181,9 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 			// Updates the number of current hand cards, discard cards and deck cards
 			if (model.currentPlayer.compareTo(model.clientName) == 0) {
-				view.lblNmbrOfCrntHandCards.setText(Integer.toString(model.yourHandCards.size()));
-				view.lblNmbrOfCrntDiscards.setText(Integer.toString(model.yourDiscardPile.size()));
-				view.lblNmbrOfCrntDeckCards.setText(Integer.toString(model.yourDeck.size()));
+				view.lblNmbrOfCrntHandCards.setText(Integer.toString(view.vboxHandCards.getChildren().size()));
+				view.lblNmbrOfCrntDiscards.setText(Integer.toString(model.yourDiscardPile));
+				view.lblNmbrOfCrntDeckCards.setText(Integer.toString(model.yourDeck));
 			} else {
 				view.lblNmbrOfCrntHandCards.setText(Integer.toString(model.opponentHandCards));
 				view.lblNmbrOfCrntDiscards.setText(Integer.toString(model.opponentDiscardPile));
@@ -454,9 +448,9 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 						setInitialATVCardEvents(provinceCard, (ImageView) view.vboxProvinceCards.getChildren().get(0));
 
 						// Initializes opponent's variables
-						model.opponentDeck = model.yourDeck.size();
-						model.opponentDiscardPile = model.yourDiscardPile.size();
-						model.opponentHandCards = model.yourHandCards.size();
+						model.opponentDeck = model.yourDeck;
+						model.opponentDiscardPile = model.yourDiscardPile;
+						model.opponentHandCards = view.hboxHandCards.getChildren().size();
 					});
 
 					updateGUI();
