@@ -207,8 +207,6 @@ public class Game {
 	public void switchPlayer() {
 		
 		currentPlayer.resetStates();
-		if (!this.currentPlayer.containsCardType(this.currentPlayer.handCards, CardType.Action))
-			this.currentPlayer.setActualPhase(Phase.Buy);
 		
 		if (currentPlayer.equals(this.player1)) {
 			this.currentPlayer = player2;
@@ -224,6 +222,9 @@ public class Game {
 			if(this.gameMode == GameMode.Simulation)
 				new Thread(bot).start();
 		}
+		
+		if (!this.currentPlayer.containsCardType(this.currentPlayer.handCards, CardType.Action))
+			this.currentPlayer.setActualPhase(Phase.Buy);
 	}
 
 	/**
