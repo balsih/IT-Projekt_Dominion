@@ -149,13 +149,23 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				}
 				model.yourNewHandCards.clear();
 			}
+			
+			//Adds the played cards with event handlers
+			if (model.newPlayedCard != null){
+				ImageView img = model.newPlayedCard.getImage();
+				setGeneralImageEvents(resizeImage(img));
+				view.hboxPlayedCards.getChildren().add(img);
+				model.newPlayedCard = null;
+			}
 
 			// Adds the discard pile top card to the GUI
 			if (model.yourDiscardPile == 0){
 				view.stackpDiscard.getChildren().clear();
 			} else 	if (model.yourDiscardPileTopCard != null){
 				view.stackpDiscard.getChildren().clear();
-				view.stackpDiscard.getChildren().add(resizeImage(model.yourDiscardPileTopCard.getImage()));
+				ImageView img = model.yourDiscardPileTopCard.getImage();
+				setGeneralImageEvents(resizeImage(img));
+				view.stackpDiscard.getChildren().add(img);
 			}
 
 			// Clears the deck pile when it is empty
@@ -264,7 +274,6 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				if (model.interaction == Interaction.Skip && card.getType() != CardType.Victory
 						&& model.sendPlayCard(card)) {
 					view.hboxHandCards.getChildren().remove(img);
-					view.hboxPlayedCards.getChildren().add(0, img);
 					updateGUI();
 				}
 

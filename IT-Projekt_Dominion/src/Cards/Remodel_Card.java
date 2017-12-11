@@ -83,6 +83,7 @@ public class Remodel_Card extends Card {
 		newHandCard.add(pickedCard);
 		ugmsg.setBuyedCard(pickedCard);
 		ugmsg.setDiscardPileTopCard(pickedCard);
+		ugmsg.setDiscardPileCardNumber(this.player.getDiscardPile().size());
 		if (this.player.getActions() == 0 || !this.player.containsCardType(this.player.getHandCards(), CardType.Action))
 			ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.player.skipPhase(), ugmsg);
 		

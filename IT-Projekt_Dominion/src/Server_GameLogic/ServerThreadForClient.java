@@ -289,7 +289,7 @@ public class ServerThreadForClient implements Runnable {
 		cgmsg.setBuyCards(game.getBuyCards());
 		this.player.getHandCards().add(new Gold_Card());
 		this.player.getHandCards().add(new Gold_Card());
-		this.player.getHandCards().add(new Woodcutter_Card());
+		this.player.getHandCards().add(new Cellar_Card());
 		this.player.getHandCards().add(new Workshop_Card());
 		cgmsg.setHandCards(this.player.getHandCards());
 		cgmsg.setDeckPile(this.player.getDeckPile());
@@ -438,6 +438,11 @@ public class ServerThreadForClient implements Runnable {
     	this.player.countVictoryPoints();
     	psmsgSelf.setVictoryPoints(this.player.getVictoryPoints());
     	this.logger.info(opponent.getPlayerName()+" "+GameSuccess.Won.toString()+"!");
+    	
+    	DB_Connector dbConnector = DB_Connector.getDB_Connector();
+    	dbConnector.addScore(this.player, this.player.getVictoryPoints());
+    	dbConnector.addScore(opponent, opponent.getVictoryPoints());
+    	
     	return psmsgSelf;
 	}
 

@@ -323,5 +323,6 @@ public class DB_Connector {
 	
 	public static void main(String[] args){
 		DB_Connector connector = new DB_Connector();
+		connector.addScore("Adrian", 20);
 	}
 }

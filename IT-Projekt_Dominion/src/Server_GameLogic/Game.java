@@ -25,6 +25,7 @@ import Cards.Village_Card;
 import Cards.Woodcutter_Card;
 import Cards.Workshop_Card;
 import Messages.GameSuccess;
+import Server_Services.DB_Connector;
 
 /**
  * @author Bodo Gruetter
@@ -207,8 +208,6 @@ public class Game {
 	public void switchPlayer() {
 		
 		currentPlayer.resetStates();
-		if (!this.currentPlayer.containsCardType(this.currentPlayer.handCards, CardType.Action))
-			this.currentPlayer.setActualPhase(Phase.Buy);
 		
 		if (currentPlayer.equals(this.player1)) {
 			this.currentPlayer = player2;
@@ -224,6 +223,9 @@ public class Game {
 			if(this.gameMode == GameMode.Simulation)
 				new Thread(bot).start();
 		}
+		
+		if (!this.currentPlayer.containsCardType(this.currentPlayer.handCards, CardType.Action))
+			this.currentPlayer.setActualPhase(Phase.Buy);
 	}
 
 	/**
@@ -233,27 +235,44 @@ public class Game {
 	 * and sets the player status.
 	 */
 	public void checkWinner() {
-		player1.countVictoryPoints();
-		player2.countVictoryPoints();
+		this.player1.countVictoryPoints();
+		this.player2.countVictoryPoints();
 
-		if (player1.getVictoryPoints() > player2.getVictoryPoints()) {
-			player1.setStatus(GameSuccess.Won);
-			player2.setStatus(GameSuccess.Lost);
-		} else if (player1.getVictoryPoints() == player2.getVictoryPoints()) {
-			if (player1.getMoves() > player2.getMoves()) {
-				player1.setStatus(GameSuccess.Won);
-				player2.setStatus(GameSuccess.Lost);
-			} else if (player1.getMoves() == player2.getMoves()) {
-				player1.setStatus(GameSuccess.Won);
-				player2.setStatus(GameSuccess.Won);
+		if (this.player1.getVictoryPoints() > this.player2.getVictoryPoints()) {
+			this.player1.setStatus(GameSuccess.Won);
+			this.player2.setStatus(GameSuccess.Lost);
+		} else if (this.player1.getVictoryPoints() == this.player2.getVictoryPoints()) {
+			if (this.player1.getMoves() > this.player2.getMoves()) {
+				this.player1.setStatus(GameSuccess.Won);
+				this.player2.setStatus(GameSuccess.Lost);
+			} else if (this.player1.getMoves() == this.player2.getMoves()) {
+				this.player1.setStatus(GameSuccess.Won);
+				this.player2.setStatus(GameSuccess.Won);
 			} else {
-				player2.setStatus(GameSuccess.Lost);
-				player2.setStatus(GameSuccess.Won);
+				this.player2.setStatus(GameSuccess.Lost);
+				this.player2.setStatus(GameSuccess.Won);
 			}
 		} else {
-			player1.setStatus(GameSuccess.Lost);
-			player2.setStatus(GameSuccess.Won);
+			this.player1.setStatus(GameSuccess.Lost);
+			this.player2.setStatus(GameSuccess.Won);
 		}
+		
+		// saves score in database
+		this.saveScore();
+	}
+	
+	/**
+	 * @author Bodo Gruetter
+	 * 
+	 * Saves the player scores exluding bot in database.
+	 */
+	private void saveScore(){
+		DB_Connector connector = DB_Connector.getDB_Connector();
+		
+		if(this.gameMode.equals(GameMode.Singleplayer) || this.gameMode.equals(GameMode.Multiplayer))
+			connector.addScore(this.player1, this.player1.getVictoryPoints());
+		if(this.gameMode.equals(GameMode.Multiplayer))
+			connector.addScore(this.player2, this.player2.getVictoryPoints());
 	}
 
 	/**
