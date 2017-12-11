@@ -80,11 +80,11 @@ public class Bot extends Player implements Runnable {
 		buyPrioMoreCards.put(CardName.Woodcutter, 28);
 		buyPrioMoreCards.put(CardName.Workshop, 30);
 
-		maxCardsOfAType.put(CardName.Market, 3);
-		maxCardsOfAType.put(CardName.Smithy, 2);
+		maxCardsOfAType.put(CardName.Market, 2);
+		maxCardsOfAType.put(CardName.Smithy, 1);
 		maxCardsOfAType.put(CardName.Village, 2);
-		maxCardsOfAType.put(CardName.Mine, 2);
-		maxCardsOfAType.put(CardName.Cellar, 2);
+		maxCardsOfAType.put(CardName.Mine, 1);
+		maxCardsOfAType.put(CardName.Cellar, 1);
 		maxCardsOfAType.put(CardName.Workshop, 1);
 		maxCardsOfAType.put(CardName.Remodel, 1);
 		maxCardsOfAType.put(CardName.Woodcutter, 2);
