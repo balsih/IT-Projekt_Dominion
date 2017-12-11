@@ -107,14 +107,14 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			// Updates the log; newest text on top
 			if (model.newLog != null) {
 				String existingLog = view.txtaLog.getText();
-				view.txtaLog.setText(model.newLog+"\r\n".concat(existingLog));
+				view.txtaLog.setText(model.newLog+System.lineSeparator().concat(existingLog));
 				model.newLog = null;
 			}
 
 			// Updates the chat; newest message on top
 			if (model.newChat != null) {
 				String existingMessages = view.txtaChatArea.getText();
-				view.txtaChatArea.setText(model.newChat+"\r\n".concat(existingMessages));
+				view.txtaChatArea.setText(model.newChat+System.lineSeparator().concat(existingMessages));
 
 				view.txtfChatArea.setText(""); // Removes the entered text
 				model.newChat = null;
