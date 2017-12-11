@@ -215,9 +215,9 @@ public class GameApp_Model extends Model {
 		return valid;
 	}
 
-	/**TESTED
+	/**
 	 * @author Lukas
-	 * Translates any parts of a String between two #
+	 * Translates any parts of a String between two #: i.e. #translateThisString#
 	 * 
 	 * @param input
 	 * @return translated input
@@ -237,6 +237,7 @@ public class GameApp_Model extends Model {
 			tmpIndex = endIndex;
 		}
 		
+		//if there was at least 1 Tag
 		if(output.length() > 0){
 			//if the last match was not the end of the translation
 			if(endIndex != input.length()){
@@ -250,23 +251,29 @@ public class GameApp_Model extends Model {
 	/**
 	 * @author Lukas
 	 * Separates server-site line-separators client-site. Regex is "=="
-	 * Translation inclusive
+	 * Translation inclusive if translation
 	 * 
 	 * @param input
+	 * @param translation
 	 * @return output, one String with system-specific separators
 	 */
-	private String lineSeparator(String input){
-		System.out.println("Input: "+input);
-		String translatedInput = this.translate(input);
-		System.out.println("TranslatedInput: "+translatedInput);
-		String[] lines = translatedInput.split(LINE_SEPARATOR_REGEX);
+	private String lineSeparator(String input, boolean translation){
+		String processedInput;
+		if(translation){
+			processedInput = this.translate(input);
+		}else{
+			processedInput = input;
+		}
+		String[] lines = processedInput.split(LINE_SEPARATOR_REGEX);
 		String output = "";
+		
+		//separates the lines if there are multiple lines
 		if(lines.length > 1){
 			for(int i = 0; i < lines.length; i++){
 				output += lines[i]+System.lineSeparator();
 			}
 		}else{
-			output = translatedInput;;
+			output = processedInput;;
 		}
 		return output;
 	}
@@ -274,12 +281,13 @@ public class GameApp_Model extends Model {
 
 	/**
 	 * @author Lukas Gehrig
-	 * The IP and port will be set here
-	 * It knocks to server if the port with the given IP is open
+	 * Sets the IP and the port of the server to connect
+	 * In addition, it knocks to server if the port with the given IP is listening
 	 * 
 	 * @param ipAddress
 	 * @param port
-	 * @return result, true if the port with the given IP is open
+	 * @return result, translated NO_CONNECTION to server String.
+	 * 					Just necessary if the knock failed
 	 */
 	public String init(String ipAddress, Integer port){
 		this.ipAddress = ipAddress;
@@ -297,7 +305,7 @@ public class GameApp_Model extends Model {
 	}
 
 	/**
-	 *@author Bradley Richards
+	 *@author Lukas, source: Bradley Richards
 	 *Creates a new Socket with the set IP and Port
 	 * 
 	 * @return Socket
@@ -312,8 +320,8 @@ public class GameApp_Model extends Model {
 		return socket;
 	}
 
-	/**TESTED
-	 * @author Lukas (@author Adrian encryptPassword)
+	/**
+	 * @author Lukas
 	 * The client sends his encrypted password to server and will get to the MainMenu if the password is appropriate to clientName
 	 * 
 	 * @param clientName
@@ -325,8 +333,9 @@ public class GameApp_Model extends Model {
 		this.failure = true;
 		this.clientName = clientName;
 		Login_Message lmsg = new Login_Message();
-		lmsg.setClient(clientName);//set the clientName and encrypted password to XML
+		lmsg.setClient(clientName);
 		
+		//Set the encrypted password to the Login_Message
 		try {
 			lmsg.setPassword(this.encryptPassword(password));
 		} catch (NoSuchAlgorithmException e) {
@@ -345,21 +354,23 @@ public class GameApp_Model extends Model {
 		return this.translate(result);
 	}
 
-	/**TESTED
-	 * @author Lukas (@author Adrian encryptPassword)
-	 * The client wants to create his own profile. For this purpose the clientName has to be unique in the database.
-	 * If the storage process succeeded, the client will get into the MainMenu.
+	/**
+	 * @author Lukas
+	 * Sends the clientName and the encrypted password to server.
+	 * When the clientName was unique, the name and encrypted password will be stored in the server's database
 	 * 
 	 * @param clientName
 	 * @param password
-	 * @return result, usually only necessary if clientName is already set
+	 * @return result, usually only necessary if clientName is already set or there is no connection to server
 	 */
 	public String sendCreateNewPlayer(String clientName, String password){
 		String result = NO_CONNECTION;
 		this.failure = true;
 		this.clientName = clientName;
+		
+		//Set the clientName and encrypted password to XML
 		CreateNewPlayer_Message cnpmsg = new CreateNewPlayer_Message();
-		cnpmsg.setClient(this.clientName);//set the clientName and encrypted password to XML
+		cnpmsg.setClient(this.clientName);
 		try {
 			cnpmsg.setPassword(this.encryptPassword(password));
 		} catch (NoSuchAlgorithmException e) {
@@ -378,11 +389,11 @@ public class GameApp_Model extends Model {
 		return this.translate(result);
 	}
 
-	/**TESTED
+	/**
 	 * @author Lukas
-	 * The client sends a request to server for the top5 Highscore
+	 * Sends a request to server for the top5 Highscore
 	 * 
-	 * @return result, the Highscore in one String or the message that client lost connection to server
+	 * @return result, the Highscore in one String or message that client lost connection to server
 	 */
 	public String sendHighScoreRequest(){
 		String result = this.translate(NO_CONNECTION);
@@ -391,14 +402,24 @@ public class GameApp_Model extends Model {
 		Message msgIn = this.processMessage(hsmsg);
 		if(msgIn instanceof HighScore_Message){
 			HighScore_Message nhsmsg = (HighScore_Message) msgIn;
-			result = nhsmsg.getHighScore();
+			String highscore = nhsmsg.getHighScore();
+			Integer translation = nhsmsg.getTranslation();
+			
+			//0 for translation(true)
+			if(translation == 0){
+				result = this.lineSeparator(nhsmsg.getHighScore(), true);
+				
+			//1 for translation(false)
+			}else if(translation == 1){
+				result = this.lineSeparator(nhsmsg.getHighScore(), false);
+			}
 		}
-		return this.translate(result);
+		return result;
 	}
 
-	/**TESTED
+	/**
 	 * @author Lukas
-	 * The client sends his GameMode (Singleplayer or Multiplayer) to Server.
+	 * Sends the client's cosen GameMode (Singleplayer or Multiplayer) to server.
 	 * 
 	 * @param mode
 	 * @return result, usually only necessary if the client lost connection to server
@@ -407,7 +428,7 @@ public class GameApp_Model extends Model {
 		String result = NO_CONNECTION;
 		this.failure = true;
 		GameMode_Message gmmsg = new GameMode_Message();
-		gmmsg.setClient(this.clientName);//set the clientName and mode(SinglePlayer or MultiPlayer) to XML
+		gmmsg.setClient(this.clientName);
 		gmmsg.setMode(mode);
 		this.gameMode = mode;
 
@@ -419,9 +440,9 @@ public class GameApp_Model extends Model {
 		return this.translate(result);
 	}
 
-	/**TESTED
+	/**
 	 * @author Lukas
-	 * The client wants to buy a card. The result depends on the players validity to buy.
+	 * Sends the card the client wants to buy. The result depends on the players validity to buy.
 	 * 
 	 * @param cardName
 	 * @return update, tells the controller if the game has to be updated
@@ -446,7 +467,7 @@ public class GameApp_Model extends Model {
 		return update;
 	}
 
-	/**TESTED
+	/**
 	 * @author Lukas
 	 * The client wants to play a chosen Card. The result depends on the validity of the move
 	 * 
@@ -468,9 +489,9 @@ public class GameApp_Model extends Model {
 		return update;
 	}
 
-	/**TESTED
+	/**
 	 * @author Lukas
-	 * The clients sends a Chat_Message to the opponent. The chat of the client will also be sent to server and back.
+	 * Sends a Chat_Message to the opponent. The chat of the client will return from server.
 	 * 
 	 * @param chat
 	 * @return update, tells the controller if the game has to be updated
@@ -488,9 +509,9 @@ public class GameApp_Model extends Model {
 		return update;
 	}
 
-	/**SEMI-TESTED
+	/**
 	 * @author Lukas
-	 * To interact once or multiple times with the server, the specified answers of the interactions has to be set
+	 * Sends the specified interaction with content to server.
 	 * 
 	 * @return update, tells the controller if the game has to be updated
 	 */
@@ -531,15 +552,12 @@ public class GameApp_Model extends Model {
 			update = true;
 			this.discardCard = null;
 			this.buyChoice = null;
-
-			switch(this.interaction){//nothing toDo with the missing Interactions
 			
-				//The picked card with mine will come into the hand and not to discardPile. But the buyCards has to be decreased
-			case Mine:
+			//The picked card with mine will come into the hand and not to discardPile. But the buyCards has to be decreased
+			if(this.interaction == Interaction.Mine){
 				this.yourNewHandCards.add(ugmsg.getBuyedCard());
 				this.buyCards.replace(ugmsg.getBuyedCard().getCardName(), this.buyCards.get(ugmsg.getBuyedCard().getCardName())-1);
 				ugmsg.setBuyedCard(null);
-				break;
 			}
 			this.interaction = Interaction.Skip;//defaultSetting
 			this.processUpdateGame(ugmsg);
@@ -570,9 +588,9 @@ public class GameApp_Model extends Model {
 	}
 
 
-	/**TESTED
+	/**
 	 * @author Lukas
-	 * Creates a new Game
+	 * Set all necessary variables to creates a new Game
 	 * 
 	 * @param msgIn
 	 */
@@ -592,7 +610,7 @@ public class GameApp_Model extends Model {
 	 * @author Lukas
 	 * Set success and victoryPoints. Result depends weather you won or lost
 	 * 
-	 * @param msgIn, PlayerSuccess_Message
+	 * @param msgIn
 	 */
 	private void processPlayerSuccess(Message msgIn) {
 		PlayerSuccess_Message psmsg = (PlayerSuccess_Message) msgIn;
@@ -601,11 +619,12 @@ public class GameApp_Model extends Model {
 	}
 
 
-	/**MOSTLY TESTED
+	/**
 	 * @author Lukas
 	 * Interpret all updates and provides structures for further work
 	 * 
-	 * @param msgIn, UpdateGame_Message. Can consist various contents
+	 * @param msgIn
+	 * 				 UpdateGame_Message. Can consist various contents
 	 */
 
 	protected void processUpdateGame(Message msgIn) {	
@@ -623,7 +642,7 @@ public class GameApp_Model extends Model {
 
 		//If something necessary happened in the Game, it will be provided to show
 		if(ugmsg.getLog() != null){
-			this.newLog = this.lineSeparator(ugmsg.getLog());
+			this.newLog = this.lineSeparator(ugmsg.getLog(), true);
 		}
 
 		//If the client or opponent sent a chat, it will be provided to show
@@ -713,7 +732,7 @@ public class GameApp_Model extends Model {
 
 
 	/**
-	 * @author Lukas
+	 * @author Lukas, source: Bradley Richards
 	 * SetUp a socket_connection to server with the given message and returns the answer
 	 * 
 	 * @param message
