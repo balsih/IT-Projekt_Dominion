@@ -179,7 +179,7 @@ public class Game {
 		this.currentPlayer.setActualPhase(Phase.Action);
 		
 		// starts the first bot in a simulation
-		if(this.gameMode == GameMode.Simulation)
+		if (this.gameMode == GameMode.Simulation)
 			new Thread(bot).start();
 	}
 
