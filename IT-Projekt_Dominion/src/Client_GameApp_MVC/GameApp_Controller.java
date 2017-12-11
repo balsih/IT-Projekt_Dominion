@@ -84,6 +84,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 					if(model.sendInteraction()){
 						view.hboxHandCards.getChildren().removeAll(tmpViews);
 						tmpViews.clear();
+						model.cellarDiscards.clear();
 					}
 				}
 				break;
