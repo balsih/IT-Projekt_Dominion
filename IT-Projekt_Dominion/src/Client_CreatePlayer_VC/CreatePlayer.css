@@ -6,12 +6,21 @@
     -fx-border-color: black;
 }
 
+#structureBox {
+	-fx-background-color: rgba(0, 0, 0, 0.5);
+	-fx-background-radius: 10;
+}
+
 #centerBox {
 	-fx-border-width: 10 2 3 4;
 	-fx-padding: 25px;
 	-fx-spacing: 40px;
-	-fx-background-color: rgba(0, 0, 0, 0.5);
 }
+
+#typingBox {
+	-fx-spacing: 235px;
+}
+
 
 #namePasswordLanguageBox {
 	-fx-padding: 0px;
@@ -72,6 +81,21 @@
 	-fx-text-fill: #000000;
 }
 
+.dialog-pane {
+    -fx-background-color: black;
+    -fx-border-color: black;
+}
+
+.dialog-pane .label {
+    -fx-text-fill: white;
+}
+.dialog-pane:header .header-panel {
+    -fx-background-color: black;
+}
+
+.dialog-pane:header .header-panel .label {
+    -fx-font-size: 20px;
+}
 
 
 

@@ -14,9 +14,12 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -35,17 +38,20 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 	private ServiceLocator sl; 
 	
 	// controls -> accessed by controller 
+	
+	protected Label logoLbl;
+	protected Label keepTypingLbl;
+	
 	protected Label createNewPlayerLbl;
 		
 	protected Label nameLbl;
 	protected TextField nameText;
 		
 	protected Label passwordLbl;
-	protected TextField passwordText;
+	protected PasswordField passwordText;
 	
 	protected Label languageSelectLbl;
 	
-		
 	protected Button saveBtn;
 	protected Button backBtn;
 	
@@ -81,8 +87,44 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		VBox languageBox = new VBox();
 		languageBox.setId("languageBox");
 		
+		VBox structureBox = new VBox();
+		structureBox.setId("structureBox");
+		
 		
 		// labels and text fields
+		logoLbl = new Label();
+		logoLbl.setId("logoLbl");
+		logoLbl.setPrefSize(410.0, 150.0);
+		logoLbl.setMinSize(380.0, 0.0);
+		logoLbl.setAlignment(Pos.CENTER);
+
+		Image image = new Image(getClass().getResourceAsStream("Logo.png"));
+		ImageView imageView = new ImageView(image);
+		logoLbl.setGraphic(imageView);
+
+		imageView.setScaleX(1.1);
+		imageView.setScaleY(1.1);
+
+		// Keep Typing Label
+		keepTypingLbl = new Label();
+		keepTypingLbl.setId("keepTypingLbl");
+		keepTypingLbl.setPrefSize(40.0, 20.0);
+		keepTypingLbl.setMinSize(40.0, 20.0);
+		// keepTypingLbl.setAlignment(Pos.CENTER_RIGHT);
+		keepTypingLbl.setAlignment(Pos.CENTER_LEFT);
+
+		Image image2 = new Image(getClass().getResourceAsStream("KeepTyping.png"));
+		ImageView imageView2 = new ImageView(image2);
+		keepTypingLbl.setGraphic(imageView2);
+
+		Label space = new Label();
+		HBox typingBox = new HBox();
+		typingBox.setId("typingBox");
+		typingBox.getChildren().addAll(space, keepTypingLbl);
+		
+		/////////
+		
+		
 		createNewPlayerLbl = new Label(t.getString("cnp.createNewPlayerLbl"));
 		createNewPlayerLbl.setId("createNewPlayerLbl");
 		
@@ -94,10 +136,9 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		
 		passwordLbl = new Label(t.getString("cnp.passwordLbl"));
 		passwordLbl.setId("passwordLbl");
-		passwordText = new TextField();
+		passwordText = new PasswordField();
 		passwordText.setId("passwordText");
 		passwordBox.getChildren().addAll(passwordLbl, passwordText);
-		
 		
 		
 		// buttons
@@ -112,7 +153,7 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		// warning message, if login fails
 		saveAlert = new Alert(AlertType.WARNING);
 		saveAlert.setTitle(t.getString("cnp.saveAlert"));
-		saveAlert.setHeaderText(t.getString("isUsed"));
+		//saveAlert.setHeaderText(t.getString("isUsed"));
 		// loginAlert.setContentText("do this or that");
 		
 		// VBox for layout and spacing 
@@ -125,14 +166,21 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		root.setAlignment(Pos.CENTER);
 		centerBox.getChildren().addAll(createNewPlayerLbl, namePasswordLanguageBox, buttonBox);
 		// centerBox.getChildren().addAll(createNewPlayer, nameBox, passwordBox, buttonBox); // -> ohne Sprachauswahl 
-		root.getChildren().add(centerBox);
+		
+		structureBox.getChildren().addAll(logoLbl, typingBox, centerBox);
+		
+		
+		root.getChildren().add(structureBox);
 		
 		
 		Scene scene = new Scene(root);	
 		scene.getStylesheets().add(getClass().getResource("CreatePlayer.css").toExternalForm());
 		this.stage.setScene(scene);
-		//stage.setFullScreen(true); // set Full Screen
-		//stage.setFullScreenExitHint(""); // set full screen message -> shows nothing
+		stage.setFullScreen(true); // set Full Screen
+		stage.setFullScreenExitHint(""); // set full screen message -> shows nothing
+		
+		saveAlert.initOwner(stage); // focus stays on full screen when alert message appears
+		
 		
 		return scene;
 	}

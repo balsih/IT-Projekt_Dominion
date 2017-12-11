@@ -40,7 +40,6 @@ public class Login_View extends View<GameApp_Model> {
 	//private ServiceLocator sl = ServiceLocator.getServiceLocator();
 	private ServiceLocator sl;
 	
-	
 	// controls -> accessed by controller 
 	
 	protected Label logoLbl;
