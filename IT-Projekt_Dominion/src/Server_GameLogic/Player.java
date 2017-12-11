@@ -409,7 +409,7 @@ public class Player {
 				this.moves++;
 				game.switchPlayer();
 				ugmsg.setCurrentPlayer(game.getCurrentPlayer().getPlayerName());
-				ugmsg.setCurrentPhase(game.getCurrentPlayer().actualPhase);
+				ugmsg.setCurrentPhase(this.actualPhase);
 				ugmsg.setActions(game.getCurrentPlayer().getActions());
 				ugmsg.setBuys(game.getCurrentPlayer().getBuys());
 				ugmsg.setCoins(game.getCurrentPlayer().getCoins());
