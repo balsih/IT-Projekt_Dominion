@@ -16,13 +16,13 @@ public class HighScore_Message extends Message {
 
 	private static final String ELEMENT_HIGHSCORE = "highScore";
 	private static final String ELEMENT_TRANSLATION = "translation";
-	private String highScore;
+	private String highScore = null;
 	
 	/*
 	 * 0 = translation(true)
 	 * 1 = translation(false)
 	 */
-	private Integer translation;
+	private Integer translation = null;
 
 
 	public HighScore_Message(){
@@ -37,13 +37,17 @@ public class HighScore_Message extends Message {
 	protected void addNodes(Document docIn){
         Element root = docIn.getDocumentElement();
 		
-		Element highScore = docIn.createElement(ELEMENT_HIGHSCORE);
-		highScore.setTextContent(this.highScore);
-		root.appendChild(highScore);
+        if(this.highScore != null){
+    		Element highScore = docIn.createElement(ELEMENT_HIGHSCORE);
+    		highScore.setTextContent(this.highScore);
+    		root.appendChild(highScore);
+        }
 		
-		Element translation = docIn.createElement(ELEMENT_TRANSLATION);
-		translation.setTextContent(this.translation.toString());
-		root.appendChild(translation);
+        if(this.translation != null){
+    		Element translation = docIn.createElement(ELEMENT_TRANSLATION);
+    		translation.setTextContent(this.translation.toString());
+    		root.appendChild(translation);
+        }
 	}
 
 	/**
