@@ -47,6 +47,8 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 	private ColorAdjust initial = new ColorAdjust();
 	private ColorAdjust brighter = new ColorAdjust();
 	private ColorAdjust darker = new ColorAdjust();
+	
+	private LinkedList<ImageView> tmpViews = new LinkedList<ImageView>();
 
 	// Translates GUI-text
 	private ServiceLocator sl = ServiceLocator.getServiceLocator();
@@ -79,7 +81,11 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				break;
 			case Cellar:
 				if (model.cellarDiscards.size() >= 1) {
-					model.sendInteraction();
+					if(model.sendInteraction()){
+						view.hboxHandCards.getChildren().removeAll(tmpViews);
+						tmpViews.clear();
+						model.cellarDiscards.clear();
+					}
 				}
 				break;
 			}
@@ -107,14 +113,14 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			// Updates the log; newest text on top
 			if (model.newLog != null) {
 				String existingLog = view.txtaLog.getText();
-				view.txtaLog.setText(model.newLog+"\r\n".concat(existingLog));
+				view.txtaLog.setText(model.newLog+System.lineSeparator().concat(existingLog));
 				model.newLog = null;
 			}
 
 			// Updates the chat; newest message on top
 			if (model.newChat != null) {
 				String existingMessages = view.txtaChatArea.getText();
-				view.txtaChatArea.setText(model.newChat+"\r\n".concat(existingMessages));
+				view.txtaChatArea.setText(model.newChat+System.lineSeparator().concat(existingMessages));
 
 				view.txtfChatArea.setText(""); // Removes the entered text
 				model.newChat = null;
@@ -146,26 +152,30 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 					ImageView img = card.getImage();
 					setInitialHandCardsEvents(card, resizeImage(img));
 					view.hboxHandCards.getChildren().add(img);
-					model.yourHandCards.add(card);
 				}
 				model.yourNewHandCards.clear();
 			}
+			
+			//Adds the played cards with event handlers
+			if (model.newPlayedCard != null){
+				ImageView img = model.newPlayedCard.getImage();
+				setGeneralImageEvents(resizeImage(img));
+				view.hboxPlayedCards.getChildren().add(img);
+				model.newPlayedCard = null;
+			}
 
 			// Adds the discard pile top card to the GUI
-			if (model.yourDiscardPile.isEmpty()){
+			if (model.yourDiscardPile == 0){
 				view.stackpDiscard.getChildren().clear();
 			} else 	if (model.yourDiscardPileTopCard != null){
 				view.stackpDiscard.getChildren().clear();
-				view.stackpDiscard.getChildren().add(resizeImage(model.yourDiscardPileTopCard.getImage()));
-			}
-
-			// Clears the discard pile when it is empty
-			if (model.yourDiscardPile.isEmpty()) {
-				view.stackpDiscard.getChildren().clear();
+				ImageView img = model.yourDiscardPileTopCard.getImage();
+				setGeneralImageEvents(resizeImage(img));
+				view.stackpDiscard.getChildren().add(img);
 			}
 
 			// Clears the deck pile when it is empty
-			if (model.yourDeck.isEmpty()){
+			if (model.yourDeck == 0){
 				view.stackpDeck.getChildren().clear();
 			} else {
 				// Adds a flipside card to the deck pile when it is empty to simulate the presence of deck cards
@@ -187,9 +197,9 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 			// Updates the number of current hand cards, discard cards and deck cards
 			if (model.currentPlayer.compareTo(model.clientName) == 0) {
-				view.lblNmbrOfCrntHandCards.setText(Integer.toString(model.yourHandCards.size()));
-				view.lblNmbrOfCrntDiscards.setText(Integer.toString(model.yourDiscardPile.size()));
-				view.lblNmbrOfCrntDeckCards.setText(Integer.toString(model.yourDeck.size()));
+				view.lblNmbrOfCrntHandCards.setText(Integer.toString(view.hboxHandCards.getChildren().size()));
+				view.lblNmbrOfCrntDiscards.setText(Integer.toString(model.yourDiscardPile));
+				view.lblNmbrOfCrntDeckCards.setText(Integer.toString(model.yourDeck));
 			} else {
 				view.lblNmbrOfCrntHandCards.setText(Integer.toString(model.opponentHandCards));
 				view.lblNmbrOfCrntDiscards.setText(Integer.toString(model.opponentDiscardPile));
@@ -236,7 +246,8 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 		// If the user enters an image, it gets brighter
 		img.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
-			img.setEffect(brighter);
+			if ((model.interaction != Interaction.Cellar) || (model.interaction == Interaction.Cellar && !tmpViews.contains(img)))
+				img.setEffect(brighter);
 		});
 
 		// If the user zooms an image, it gets bigger and gets back its original brightness
@@ -250,7 +261,8 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		img.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
 			img.setFitWidth(imageWidth);
 			img.setFitHeight(imageHeight);
-			img.setEffect(initial);
+			if ((model.interaction != Interaction.Cellar) || (model.interaction == Interaction.Cellar && !tmpViews.contains(img)))
+				img.setEffect(initial);
 		});
 	}
 
@@ -270,7 +282,6 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				if (model.interaction == Interaction.Skip && card.getType() != CardType.Victory
 						&& model.sendPlayCard(card)) {
 					view.hboxHandCards.getChildren().remove(img);
-					view.hboxPlayedCards.getChildren().add(0, img);
 					updateGUI();
 				}
 
@@ -278,12 +289,13 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				else if (model.interaction == Interaction.Cellar) {
 					if (model.cellarDiscards.contains(card)) {
 						model.cellarDiscards.remove(card);
+						tmpViews.remove(img);
 						img.setEffect(initial);
 					} else {
 						model.cellarDiscards.add(card);
+						tmpViews.add(img);
 						img.setEffect(darker);
 					}
-					updateGUI();
 				}
 
 				// During the remodel1 interaction, the clicked card gets discarded
@@ -454,9 +466,9 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 						setInitialATVCardEvents(provinceCard, (ImageView) view.vboxProvinceCards.getChildren().get(0));
 
 						// Initializes opponent's variables
-						model.opponentDeck = model.yourDeck.size();
-						model.opponentDiscardPile = model.yourDiscardPile.size();
-						model.opponentHandCards = model.yourHandCards.size();
+						model.opponentDeck = model.yourDeck;
+						model.opponentDiscardPile = model.yourDiscardPile;
+						model.opponentHandCards = view.hboxHandCards.getChildren().size();
 					});
 
 					updateGUI();

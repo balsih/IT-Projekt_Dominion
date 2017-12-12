@@ -64,6 +64,7 @@ public class Workshop_Card extends Card {
 		
 		ugmsg.setBuyedCard(selectedCard);
 		ugmsg.setDiscardPileTopCard(selectedCard);
+		ugmsg.setDiscardPileCardNumber(this.player.getDiscardPile().size());
 		ugmsg.setLog(player.getPlayerName()+": #picked# #"+selectedNameCard.toString()+"# #card#");
 		
 		// update game Messages -> XML 

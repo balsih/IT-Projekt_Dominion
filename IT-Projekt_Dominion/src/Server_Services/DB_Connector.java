@@ -154,7 +154,7 @@ public class DB_Connector {
 	 * @return highScore - the 5 best players with their score.
 	 */
 	public String getHighScore() {
-		String selectHighScore = "Select Username, Score from Player_Scoring order by Score desc limit 0,5";
+		String selectHighScore = "Select distinct Username, Score from Player_Scoring order by Score desc limit 0,5";
 		String highScore = "";
 
 		try {
@@ -323,5 +323,6 @@ public class DB_Connector {
 	
 	public static void main(String[] args){
 		DB_Connector connector = new DB_Connector();
+		System.out.println(connector.getHighScore());
 	}
 }

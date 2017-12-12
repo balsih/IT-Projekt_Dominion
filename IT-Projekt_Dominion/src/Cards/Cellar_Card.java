@@ -43,14 +43,26 @@ public class Cellar_Card extends Card {
 	
 	public UpdateGame_Message executeCellar(LinkedList<Card> discardedCards) {
 		
-		int numDiscardedCards = discardedCards.size();
-		this.player.getHandCards().removeAll(discardedCards);
-		while(!discardedCards.isEmpty()){
-			this.player.getDiscardPile().push(discardedCards.removeFirst());
+		LinkedList<Card> realDiscardedCards = new LinkedList<Card>();
+		LinkedList<Card> handCards = this.player.getHandCards();
+		for(int i = 0; i < discardedCards.size(); i++){
+			for(int j = 0; j < handCards.size(); j++){
+				if(handCards.get(j).getCardName().equals(discardedCards.get(i).getCardName())){
+					realDiscardedCards.add(handCards.remove(j));
+					break;
+				}
+			}
 		}
 		
-		UpdateGame_Message ugmsg = this.player.draw(numDiscardedCards);
-		ugmsg.setLog(player.getPlayerName()+": #picked# #"+discardedCards.size()+"# #cards#"); // how many card have been picked 
+		this.player.getDiscardPile().addAll(realDiscardedCards);
+		UpdateGame_Message ugmsg = this.player.draw(realDiscardedCards.size());
+		
+		
+		ugmsg.setLog(player.getPlayerName()+": #picked# #"+discardedCards.size()+"# #cards#"); // how many card have been picked
+		if(!this.player.getDiscardPile().isEmpty())
+			ugmsg.setDiscardPileTopCard(this.player.getDiscardPile().peek());
+		ugmsg.setDiscardPileCardNumber(this.player.getDiscardPile().size());
+		
 		if (!this.player.containsCardType(this.player.getHandCards(), CardType.Action))
 			ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.player.skipPhase(), ugmsg);
 		

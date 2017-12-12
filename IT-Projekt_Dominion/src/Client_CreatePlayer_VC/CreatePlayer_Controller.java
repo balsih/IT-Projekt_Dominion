@@ -72,7 +72,7 @@ public class CreatePlayer_Controller extends Controller<GameApp_Model, CreatePla
 			try {
 				model.startBtnClickSound();
 				String message = model.sendCreateNewPlayer(view.nameText.getText(), view.passwordText.getText());
-				if (model.failure) {
+				if (model.getFailure()) {
 					view.saveAlert.setHeaderText(message);
 					view.saveAlert.showAndWait(); // warning alert if save fails
 				}

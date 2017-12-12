@@ -24,6 +24,8 @@ public class Server_Model extends Model {
 	String info;
 	private volatile boolean stop = false;
 	
+	Runnable r;
+	
 	
 	public Server_Model(){
 		super();
@@ -41,7 +43,7 @@ public class Server_Model extends Model {
 		try{
 			this.listener = new ServerSocket(port);
 			//Accept connections in separate thread
-			Runnable r = new Runnable(){
+			this.r = new Runnable(){
 				@Override
 				public void run() {
 					while(!stop){
@@ -52,6 +54,7 @@ public class Server_Model extends Model {
 							new Thread(client).start();
 						} catch (Exception e){
 							logger.info(e.toString());
+							new Thread(r, "ServerSocket").start();
 						}
 					}
 				}

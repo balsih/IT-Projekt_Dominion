@@ -19,7 +19,6 @@ import Messages.Interaction;
 import Messages.Message;
 import Messages.PlayerSuccess_Message;
 import Messages.UpdateGame_Message;
-import javafx.scene.Scene;
 
 /**
  * @author Simon
@@ -37,9 +36,9 @@ public class Bot extends Player implements Runnable {
 	private ArrayList<CardName> cardNamesOfActionHandCards = new ArrayList<CardName>();
 	private static final HashMap<CardName, Integer> PRIOLIST_TOPDISCARDPILE_CARD = new HashMap<CardName, Integer>();
 	private static final ArrayList<String> NAMES = new ArrayList<String>();
-	private static final double SHARE_OF_TREASURE_CARDS = 0.35;
+	// private static final double SHARE_OF_TREASURE_CARDS = 0.35;
 	private static final int MIN_TIME_BEFORE_EXECUTING = 100, MAX_TIME_BEFORE_EXECUTING = 300;
-	private static final int MAX_TREASURE_CARDS = 12, MAX_ACTION_CARDS = 10;
+	private static final int MAX_TREASURE_CARDS = 12, MAX_ACTION_CARDS = 8;
 	private Card cardToPlay = null;
 	private CardName cardToBuy = null;
 	private double numberOfGoldAndSilverCards = 0.0, numberOfTotalCards = 10.0;
@@ -53,23 +52,22 @@ public class Bot extends Player implements Runnable {
 
 		counter = 1;
 
-		buyPrioOneCard.put(CardName.Cellar, 0);
-		buyPrioOneCard.put(CardName.Duchy, 10);
+		buyPrioOneCard.put(CardName.Cellar, 32);
+		buyPrioOneCard.put(CardName.Duchy, 20);
 		buyPrioOneCard.put(CardName.Estate, 5);
-		buyPrioOneCard.put(CardName.Gold, 80);
+		buyPrioOneCard.put(CardName.Gold, 75);
 		buyPrioOneCard.put(CardName.Market, 68);
 		buyPrioOneCard.put(CardName.Mine, 24);
 		buyPrioOneCard.put(CardName.Province, 100);
 		buyPrioOneCard.put(CardName.Remodel, 22);
 		buyPrioOneCard.put(CardName.Silver, 70);
-		buyPrioOneCard.put(CardName.Smithy, 26);
+		buyPrioOneCard.put(CardName.Smithy, 34);
 		buyPrioOneCard.put(CardName.Village, 66);
 		buyPrioOneCard.put(CardName.Woodcutter, 28);
 		buyPrioOneCard.put(CardName.Workshop, 30);
 
-		// change priorities!
-		buyPrioMoreCards.put(CardName.Cellar, 0);
-		buyPrioMoreCards.put(CardName.Duchy, 10);
+		buyPrioMoreCards.put(CardName.Cellar, 32);
+		buyPrioMoreCards.put(CardName.Duchy, 48);
 		buyPrioMoreCards.put(CardName.Estate, 5);
 		buyPrioMoreCards.put(CardName.Gold, 50);
 		buyPrioMoreCards.put(CardName.Market, 68);
@@ -77,15 +75,15 @@ public class Bot extends Player implements Runnable {
 		buyPrioMoreCards.put(CardName.Province, 100);
 		buyPrioMoreCards.put(CardName.Remodel, 22);
 		buyPrioMoreCards.put(CardName.Silver, 40);
-		buyPrioMoreCards.put(CardName.Smithy, 26);
+		buyPrioMoreCards.put(CardName.Smithy, 46);
 		buyPrioMoreCards.put(CardName.Village, 66);
 		buyPrioMoreCards.put(CardName.Woodcutter, 28);
 		buyPrioMoreCards.put(CardName.Workshop, 30);
 
-		maxCardsOfAType.put(CardName.Market, 3);
-		maxCardsOfAType.put(CardName.Smithy, 2);
-		maxCardsOfAType.put(CardName.Village, 3);
-		maxCardsOfAType.put(CardName.Mine, 2);
+		maxCardsOfAType.put(CardName.Market, 2);
+		maxCardsOfAType.put(CardName.Smithy, 1);
+		maxCardsOfAType.put(CardName.Village, 2);
+		maxCardsOfAType.put(CardName.Mine, 1);
 		maxCardsOfAType.put(CardName.Cellar, 1);
 		maxCardsOfAType.put(CardName.Workshop, 1);
 		maxCardsOfAType.put(CardName.Remodel, 1);
@@ -114,6 +112,15 @@ public class Bot extends Player implements Runnable {
 		PRIOLIST_TOPDISCARDPILE_CARD.put(CardName.Village, 60);
 		PRIOLIST_TOPDISCARDPILE_CARD.put(CardName.Woodcutter, 40);
 		PRIOLIST_TOPDISCARDPILE_CARD.put(CardName.Workshop, 45);
+
+		prioListForPlaying.put(CardName.Cellar, 1);
+		prioListForPlaying.put(CardName.Market, 9);
+		prioListForPlaying.put(CardName.Mine, 2);
+		prioListForPlaying.put(CardName.Remodel, 1);
+		prioListForPlaying.put(CardName.Smithy, 4);
+		prioListForPlaying.put(CardName.Village, 8);
+		prioListForPlaying.put(CardName.Woodcutter, 3);
+		prioListForPlaying.put(CardName.Workshop, 2);
 	}
 
 	/**
@@ -122,17 +129,17 @@ public class Bot extends Player implements Runnable {
 	public void run() {
 		System.out.println(this.playerName + " started round " + counter);
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(1500);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		makeBreak();
 		while (actions > 0 && actualPhase == Phase.Action) {
 			estimatePlayPriorityOfActionCards();
 			playActionCards();
+			System.out.println(this.playerName + " ActionCard played");
 		}
-		System.out.println(this.playerName + " Action_Phase finished");
+		System.out.println(this.playerName + " ActionPhase finished");
 		if (buys > 0 && actualPhase == Phase.Buy) {
 			playTreasureCards();
 			System.out.println(this.playerName + " TreasureCards played");
@@ -146,19 +153,16 @@ public class Bot extends Player implements Runnable {
 		}
 		System.out.println(this.playerName + " round " + counter + " finished");
 		counter++;
-		System.out.println("");
 		System.out.println("***************************");
-		System.out.println(this.playerName + " " + handCards.toString() + "\t\t" + numberOfGoldAndSilverCards + "\t"
-				+ numberOfActionCards);
-		System.out.println(game.isGameEnded());
-		System.out.println(game.checkGameEnding());
-		System.out.println(game.getProvincePile().toString());
-		System.out.println(this.victoryPoints);
-		System.out.println(this.getStatus());
-		System.out.println(this.buyPrioMoreCards.toString() + "\n" + this.buyPrioOneCard.toString() + "\n"
-				+ this.prioListForPlaying.toString());
+		System.out.println(this.playerName + " HandCards: " + handCards.toString() + "\t\t TreasureCards: "
+				+ numberOfGoldAndSilverCards + "\t ActionCards: " + numberOfActionCards + "\t TotalCards: "
+				+ numberOfTotalCards);
+		System.out.println("GameEnding: " + game.isGameEnded() + "\t Status: " + this.getStatus() + "\t GameStage: " + this.gameStage);
+		System.out.println("ProvincePile: " + game.getProvincePile().toString());
+		System.out.println("MoreBuyPrio: " + this.buyPrioMoreCards.toString());
+		System.out.println("OneBuyPrio: " + this.buyPrioOneCard.toString());
+		System.out.println("PlayPrio: " + this.prioListForPlaying.toString());
 		System.out.println("***************************");
-		System.out.println("");
 	}
 
 	/**
@@ -193,13 +197,13 @@ public class Bot extends Player implements Runnable {
 			}
 		}
 		if (cardToPlay == null) {
-			actions = 0;
-			skipPhase();
+			UpdateGame_Message ugmsg = (UpdateGame_Message) skipPhase();
+			this.sendToOpponent(this, ugmsg);
 		} else {
 			Message playMessage = play(cardToPlay);
 			makeBreak();
 			System.out.println(this.playerName + " played " + cardToPlay.toString());
-			
+
 			// the card could be bought
 			if (playMessage instanceof UpdateGame_Message) {
 				UpdateGame_Message ugmsg = (UpdateGame_Message) playMessage;
@@ -272,39 +276,41 @@ public class Bot extends Player implements Runnable {
 					System.out.println(this.playerName + " discarded " + discardedCard.toString());
 
 					// executeRemodel2
-					LinkedList<CardName> takeChoices1 = ugmsg.getCardSelection();
-					List<CardName> prioList1 = this.buyPrioOneCard.keySet().stream().sorted(
+					LinkedList<CardName> availableCards = ugmsg.getCardSelection();
+					List<CardName> prioList = this.buyPrioOneCard.keySet().stream().sorted(
 							(s1, s2) -> Integer.compare(this.buyPrioOneCard.get(s2), this.buyPrioOneCard.get(s1)))
 							.collect(Collectors.toList());
-					for (CardName discardedCard2 : prioList1) {
-						if (takeChoices1.contains(discardedCard2)) {
+					for (CardName newCard : prioList) {
+						if (availableCards.contains(newCard)) {
 							Remodel_Card rCard2 = (Remodel_Card) this.getPlayedCards()
 									.get(this.getPlayedCards().size() - 1);
-							ugmsg = rCard2.executeRemodel2(discardedCard2);
-							System.out.println(this.playerName + " bought " + discardedCard2);
+							ugmsg = rCard2.executeRemodel2(newCard);
+							this.sendToOpponent(this, ugmsg);
+							System.out.println(this.playerName + " bought " + newCard);
 							numberOfTotalCards++;
 							if (Card.getCard(cardToBuy).getType().equals(CardType.Action))
 								numberOfActionCards++;
-							else if (discardedCard2.equals(CardName.Silver) || discardedCard2.equals(CardName.Gold))
+							else if (newCard.equals(CardName.Silver) || newCard.equals(CardName.Gold))
 								numberOfGoldAndSilverCards++;
+							break;
 						}
-						break;
 					}
 					break;
 
 				case Workshop:
-					LinkedList<CardName> takeChoices2 = ugmsg.getCardSelection();
+					LinkedList<CardName> availableUpgrades = ugmsg.getCardSelection();
 					List<CardName> prioList2 = this.buyPrioOneCard.keySet().stream().sorted(
 							(s1, s2) -> Integer.compare(this.buyPrioOneCard.get(s2), this.buyPrioOneCard.get(s1)))
 							.collect(Collectors.toList());
 					for (CardName newCard : prioList2) {
-						if (takeChoices2.contains(newCard)) {
+						if (availableUpgrades.contains(newCard)) {
 							Workshop_Card wCard = (Workshop_Card) this.getPlayedCards()
 									.get(this.getPlayedCards().size() - 1);
 							ugmsg = wCard.executeWorkshop(newCard);
+							this.sendToOpponent(this, ugmsg);
 							System.out.println(this.playerName + " bought " + newCard);
 							numberOfTotalCards++;
-							if (Card.getCard(cardToBuy).getType().equals(CardType.Action))
+							if (Card.getCard(newCard).getType().equals(CardType.Action))
 								numberOfActionCards++;
 							else if (newCard.equals(CardName.Silver) || newCard.equals(CardName.Gold))
 								numberOfGoldAndSilverCards++;
@@ -319,7 +325,8 @@ public class Bot extends Player implements Runnable {
 				// if Bot couldn't buy card --> skipPhase
 			} else if (playMessage instanceof Failure_Message) {
 				System.out.println("That should never happen!");
-				skipPhase();
+				UpdateGame_Message ugmsg = (UpdateGame_Message) skipPhase();
+				this.sendToOpponent(this, ugmsg);
 			}
 
 			// if nothing applies playMessage must be a PlayerSuccess_Message --> do nothing
@@ -336,12 +343,12 @@ public class Bot extends Player implements Runnable {
 		List<CardName> buyList;
 		if (buys > 2 && gameStage <= 75) {
 			List<CardName> list2 = buyPrioMoreCards.keySet().stream()
-					.sorted((s1, s2) -> Integer.compare(buyPrioOneCard.get(s2), buyPrioOneCard.get(s1)))
+					.sorted((c1, c2) -> Integer.compare(buyPrioOneCard.get(c2), buyPrioOneCard.get(c1)))
 					.collect(Collectors.toList());
 			buyList = list2;
 		} else {
 			List<CardName> list1 = buyPrioOneCard.keySet().stream()
-					.sorted((s1, s2) -> Integer.compare(buyPrioOneCard.get(s2), buyPrioOneCard.get(s1)))
+					.sorted((c1, c2) -> Integer.compare(buyPrioOneCard.get(c2), buyPrioOneCard.get(c1)))
 					.collect(Collectors.toList());
 			buyList = list1;
 		}
@@ -378,11 +385,13 @@ public class Bot extends Player implements Runnable {
 				// if there are still left some buys and less than 2 coins --> skipPhase, else
 				// buy another card
 				else {
+					System.out.println(this.playerName + " Problem1");
 					if (ugmsg.getCurrentPhase() == null) {
-						System.out.println(this.playerName + " stop buyPhase");
+						System.out.println(this.playerName + " Problem2");
 						if (coins <= 2) {
-							skipPhase();
-							this.sendToOpponent(this, ugmsg);
+							System.out.println(this.playerName + " stop buyPhase");
+							UpdateGame_Message ugmsg1 = (UpdateGame_Message) skipPhase();
+							this.sendToOpponent(this, ugmsg1);
 							if (handCards.size() > 1) {
 								chooseDiscardPileTopCard();
 								break;
@@ -394,9 +403,11 @@ public class Bot extends Player implements Runnable {
 
 			// if Failure_Message --> keep searching
 			else if (buyMessage instanceof Failure_Message)
+				System.out.println(this.playerName + " buyMessage instanceof Failure");
 				if (index < buyList.size())
 					continue;
 				else {
+					System.out.println(this.playerName + " couldn't buy any Card --> skipPhase");
 					UpdateGame_Message ugmsg = (UpdateGame_Message) skipPhase();
 					this.sendToOpponent(this, ugmsg);
 					makeBreak();
@@ -471,29 +482,25 @@ public class Bot extends Player implements Runnable {
 		// change priorities according gameStage number
 		int tempEstate = buyPrioOneCard.get(CardName.Estate);
 		int tempDuchy = buyPrioOneCard.get(CardName.Duchy);
-		int tempProvince = buyPrioOneCard.get(CardName.Province);
 		if (gameStage == 100 && done0) {
-			tempEstate += 70;
+			tempEstate += 25;
 			tempDuchy += 20;
-			tempProvince += 10;
 			done0 = false;
 		} else if (gameStage == 75 && done1) {
-			tempEstate += 10;
-			tempDuchy += 10;
-			tempProvince += 10;
+			tempEstate += 20;
+			tempDuchy += 20;
 			done1 = false;
 		} else if (gameStage == 50 && done2) {
-			tempDuchy += 10;
-			tempProvince += 10;
+			tempDuchy += 20;
 			done2 = false;
 		} else if (gameStage == 25 && done3) {
-			tempDuchy += 10;
-			tempProvince += 10;
+			tempDuchy += 15;
 			done3 = false;
 		}
 		buyPrioOneCard.replace(CardName.Estate, tempEstate);
 		buyPrioOneCard.replace(CardName.Duchy, tempDuchy);
-		buyPrioOneCard.replace(CardName.Province, tempProvince);
+		buyPrioMoreCards.replace(CardName.Estate, tempEstate);
+		buyPrioMoreCards.replace(CardName.Duchy, tempDuchy);
 	}
 
 	/**
@@ -506,7 +513,7 @@ public class Bot extends Player implements Runnable {
 		int sizeDuchyPile = game.getDuchyPile().size();
 
 		if (sizeProvincePile <= 2 && sizeDuchyPile <= 2)
-			points += 10;
+			points += 20;
 		else {
 			if (sizeProvincePile < 3 || sizeDuchyPile < 4)
 				points += 7;
@@ -545,31 +552,48 @@ public class Bot extends Player implements Runnable {
 	 */
 	private void estimateBuyPriorityOfTreasureCards() {
 		if (numberOfGoldAndSilverCards >= MAX_TREASURE_CARDS || gameStage >= 75) {
-			buyPrioOneCard.remove(CardName.Gold);
-			buyPrioOneCard.remove(CardName.Silver);
+			buyPrioOneCard.replace(CardName.Gold, 0);
+			buyPrioOneCard.replace(CardName.Silver, 0);
+			buyPrioMoreCards.replace(CardName.Gold, 0);
+			buyPrioMoreCards.replace(CardName.Silver, 0);
 		} else {
-			int tempGold = buyPrioOneCard.get(CardName.Gold);
-			int tempSilver = buyPrioOneCard.get(CardName.Silver);
-			if (numberOfGoldAndSilverCards / numberOfTotalCards < SHARE_OF_TREASURE_CARDS) {
-				if (tempGold < 98)
-					tempGold += 1;
-				if (tempSilver < 97)
-					tempSilver += 1;
-			} else {
-				if (tempGold > 20)
-					tempGold -= 5;
-				if (tempSilver > 10)
-					tempSilver -= 5;
+			int tempGold1 = buyPrioOneCard.get(CardName.Gold);
+			int tempSilver1 = buyPrioOneCard.get(CardName.Silver);
+			int tempGold2 = buyPrioMoreCards.get(CardName.Gold);
+			int tempSilver2 = buyPrioMoreCards.get(CardName.Silver);
+
+			if (getNumberOfOwnedCards(CardName.Gold) > 4) {
+				tempGold1 -= 5;
+				tempGold2 -= 5;
 			}
-			buyPrioOneCard.replace(CardName.Gold, tempGold);
-			buyPrioOneCard.replace(CardName.Silver, tempSilver);
+			if (getNumberOfOwnedCards(CardName.Silver) > 4) {
+				tempSilver1 -= 5;
+				tempSilver2 -= 5;
+			}
+
+			// if (numberOfGoldAndSilverCards / numberOfTotalCards <
+			// SHARE_OF_TREASURE_CARDS) {
+			// if (tempGold1 < 65)
+			// tempGold1 += 5;
+			// if (tempSilver1 < 50)
+			// tempSilver1 += 5;
+			// } else {
+			// if (tempGold1 > 20)
+			// tempGold1 -= 5;
+			// if (tempSilver1 > 10)
+			// tempSilver1 -= 5;
+			// }
+
+			buyPrioOneCard.replace(CardName.Gold, tempGold1);
+			buyPrioOneCard.replace(CardName.Silver, tempSilver1);
+			buyPrioMoreCards.replace(CardName.Gold, tempGold2);
+			buyPrioMoreCards.replace(CardName.Silver, tempSilver2);
 		}
 	}
 
 	/**
 	 * Calculate the priority of each ActionCards for the buying decision.
 	 */
-	// wenn gekauft, prio herabsetzen --> Methode dringend umbauen!
 	private void estimateBuyPriorityOfActionCards() {
 		for (int i = 0; i < cardNamesOfActionCards.size(); i++) {
 			if (getNumberOfOwnedCards(cardNamesOfActionCards.get(i)) == maxCardsOfAType
@@ -584,8 +608,8 @@ public class Bot extends Player implements Runnable {
 		}
 		if (numberOfActionCards >= MAX_ACTION_CARDS) {
 			for (int i = 0; i < cardNamesOfActionCards.size(); i++) {
-				buyPrioOneCard.remove(cardNamesOfActionCards.get(i));
-				buyPrioMoreCards.remove(cardNamesOfActionCards.get(i));
+				buyPrioOneCard.replace(cardNamesOfActionCards.get(i), 0);
+				buyPrioMoreCards.replace(cardNamesOfActionCards.get(i), 0);
 			}
 		}
 	}

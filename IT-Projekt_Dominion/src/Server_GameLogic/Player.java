@@ -84,9 +84,6 @@ public class Player {
 		this.buys = 1;
 		this.coins = 0;
 		this.actualPhase = Phase.Action;
-
-		if (!this.containsCardType(this.handCards, CardType.Action))
-			this.setActualPhase(Phase.Buy);
 	}
 
 	/**
@@ -412,7 +409,7 @@ public class Player {
 				this.moves++;
 				game.switchPlayer();
 				ugmsg.setCurrentPlayer(game.getCurrentPlayer().getPlayerName());
-				ugmsg.setCurrentPhase(this.actualPhase);
+				ugmsg.setCurrentPhase(game.getCurrentPlayer().actualPhase);
 				ugmsg.setActions(game.getCurrentPlayer().getActions());
 				ugmsg.setBuys(game.getCurrentPlayer().getBuys());
 				ugmsg.setCoins(game.getCurrentPlayer().getCoins());
@@ -443,10 +440,9 @@ public class Player {
 			this.deckPile.push(discardPile.pop());
 
 		// Counts the number of victory points
-		Iterator<Card> iter = deckPile.iterator();
-		while (iter.hasNext())
-			if (iter.next().getType().equals(CardType.Victory)) {
-				iter.next().executeCard(this);
+		for (Card card : this.deckPile)
+			if (card.getType().equals(CardType.Victory)) {
+				card.executeCard(this);
 			}
 	}
 
