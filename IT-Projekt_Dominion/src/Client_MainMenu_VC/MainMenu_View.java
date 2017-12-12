@@ -175,8 +175,8 @@ public class MainMenu_View extends View<GameApp_Model> {
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add(getClass().getResource("MainMenu.css").toExternalForm());
 		this.stage.setScene(scene);
-		//stage.setFullScreen(true); // set Full Screen
-		//stage.setFullScreenExitHint(""); // set full screen message -> shows nothing
+		stage.setFullScreen(true); // set Full Screen
+		stage.setFullScreenExitHint(""); // set full screen message -> shows nothing
 		updateTexts(); // switch text language if chanced over dropdown menu
 		return scene;
 	}
