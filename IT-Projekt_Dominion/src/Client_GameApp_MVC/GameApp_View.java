@@ -387,6 +387,7 @@ public class GameApp_View extends View<GameApp_Model> {
 		vboxCurrentPlayerButtons.getStyleClass().add("vboxCurrentPlayerButtons");
 		btnGiveUp.getStyleClass().add("btnGiveUp");
 		btnCommit.getStyleClass().add("btnCommit");
+		btnCommit.setMinHeight(40);
 		gridpCurrentPlayer.getStyleClass().add("gridpCurrentPlayer");
 		lblCrntHandCards.getStyleClass().add("lblCurrentPlayer");
 		lblNmbrOfCrntHandCards.getStyleClass().add("lblCurrentPlayer");
