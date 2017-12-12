@@ -58,8 +58,9 @@ public class Cellar_Card extends Card {
 		UpdateGame_Message ugmsg = this.player.draw(realDiscardedCards.size());
 		
 		
-		ugmsg.setLog(player.getPlayerName()+": #picked# #"+discardedCards.size()+"# #cards#"); // how many card have been picked 
-		ugmsg.setDiscardPileTopCard(this.player.getDiscardPile().peek());
+		ugmsg.setLog(player.getPlayerName()+": #picked# #"+discardedCards.size()+"# #cards#"); // how many card have been picked
+		if(!this.player.getDiscardPile().isEmpty())
+			ugmsg.setDiscardPileTopCard(this.player.getDiscardPile().peek());
 		ugmsg.setDiscardPileCardNumber(this.player.getDiscardPile().size());
 		
 		if (!this.player.containsCardType(this.player.getHandCards(), CardType.Action))
