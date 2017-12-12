@@ -478,7 +478,7 @@ public class Game {
 		return workshopPile;
 	}
 
-	public boolean isGameEnded() {
+	public boolean getGameEnded() {
 		return gameEnded;
 	}
 
