@@ -20,6 +20,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -37,6 +39,10 @@ public class MainMenu_View extends View<GameApp_Model> {
 	private ServiceLocator sl;
 	
 	// controls -> accessed by controller
+	
+	protected Label logoLbl;
+	protected Label keepTypingLbl;
+	
 	protected Label playerLbl;
 	protected ComboBox<String> languageSelectComboBox;
 	protected Label mainMenuLbl;
@@ -77,8 +83,50 @@ public class MainMenu_View extends View<GameApp_Model> {
 		gameModeBox.setId("gameModeBox");
 		VBox highscoreBox = new VBox();
 		highscoreBox.setId("highscoreBox");
+		
+		VBox structureBox = new VBox();
+		structureBox.setId("structureBox");
+		
 
 		// labels and text fields
+		logoLbl = new Label();
+		logoLbl.setId("logoLbl");
+		logoLbl.setPrefSize(410.0, 150.0);
+		logoLbl.setMinSize(380.0, 0.0);
+		logoLbl.setAlignment(Pos.CENTER);
+	
+		Image image = new Image(getClass().getResourceAsStream("Logo.png"));
+		ImageView imageView = new ImageView(image);
+		logoLbl.setGraphic(imageView);
+
+		imageView.setScaleX(1.1);
+		imageView.setScaleY(1.1);
+
+		// Keep Typing Label
+		keepTypingLbl = new Label();
+		keepTypingLbl.setId("keepTypingLbl");
+		keepTypingLbl.setPrefSize(40.0, 20.0);
+		keepTypingLbl.setMinSize(40.0, 20.0);
+		//keepTypingLbl.setAlignment(Pos.CENTER_RIGHT);
+		keepTypingLbl.setAlignment(Pos.CENTER_LEFT);
+	
+		Image image2 = new Image(getClass().getResourceAsStream("KeepTyping.png"));
+		ImageView imageView2 = new ImageView(image2);
+		keepTypingLbl.setGraphic(imageView2);
+		
+		Label space = new Label();
+		HBox typingBox = new HBox();
+		typingBox.setId("typingBox");
+		typingBox.getChildren().addAll(space, keepTypingLbl);
+
+//		imageView2.setScaleX(1.1);
+//		imageView2.setScaleY(1.1);
+		
+		
+		
+		
+		
+		
 		// shows the name of the actual player
 	
 		//playerLbl = new Label("Spieler: Bodo Grütter"); // zum testen da noch kein Playername vorhanden
@@ -122,7 +170,7 @@ public class MainMenu_View extends View<GameApp_Model> {
 		
 		// warning message, if start game (single- or multiplayer) fails
 		startGameAlert = new Alert(AlertType.WARNING);
-		//startGameAlert.setTitle(t.getString("menu.startGameAlert"));
+		startGameAlert.setTitle(t.getString("menu.startGameAlert"));
 		//startGameAlert.setHeaderText(t.getString("NoConnection"));
 		// loginAlert.setContentText("do this or that");
 		
@@ -131,16 +179,6 @@ public class MainMenu_View extends View<GameApp_Model> {
 		highscoreLbl.setId("highscoreLbl");
 		
 		highscoreListLbl = new Label(model.sendHighScoreRequest()); // sets the top five as a five line String
-		
-//		// test code :
-//		String s = "Rene";
-//		int i = 18;
-//		String ss = "Rene Schwab";
-//		int ii = 69;
-//		String f = ""+s+ ":\t"+i+ "\n"+ss+":\t"+ii+ "\n"+"slkfajlfkdasj"+ "\n"+"slkfajlfkdasj"+ "\n"+"slkfajlfkdasj";
-//		// end of testcode
-//		highscoreListLbl = new Label(f);
-		
 		highscoreListLbl.setId("highscoreListLbl");
 		highscoreListLbl.setPrefSize(280, 160);
 
@@ -166,10 +204,14 @@ public class MainMenu_View extends View<GameApp_Model> {
 		// layout and size configurations
 		root.setPrefSize(1280, 720);
 		root.setAlignment(Pos.CENTER);
+		
 		centerBox.getChildren().addAll(playerAndLanguageBox, mainMenuLbl, gameModeAndHigscoreBox, startAndQuitBox );
 		// centerBox.getChildren().addAll(createNewPlayer, nameBox, passwordBox,
 		// buttonBox); // -> ohne Sprachauswahl
-		root.getChildren().add(centerBox);
+		
+		structureBox.getChildren().addAll(logoLbl, typingBox, centerBox);
+		
+		root.getChildren().add(structureBox);
 		
 		
 		Scene scene = new Scene(root);
@@ -178,6 +220,9 @@ public class MainMenu_View extends View<GameApp_Model> {
 		stage.setFullScreen(true); // set Full Screen
 		stage.setFullScreenExitHint(""); // set full screen message -> shows nothing
 		updateTexts(); // switch text language if chanced over dropdown menu
+		
+		startGameAlert.initOwner(stage); // focus stays on full screen when alert message appears
+		
 		return scene;
 	}
 	
