@@ -60,7 +60,7 @@ public class GameApp_Model extends Model {
 	private ServiceLocator sl = ServiceLocator.getServiceLocator();
 	private Translator t = sl.getTranslator();
 	
-	private Dominion_Main main;
+	protected Dominion_Main main;
 	private String ipAddress;
 	private Integer port;
 	

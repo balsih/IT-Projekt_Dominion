@@ -42,7 +42,6 @@ import javafx.scene.layout.VBox;
 public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> {
 
 	private boolean listenToServer;
-	private Dominion_Main main;
 
 	private ColorAdjust initial = new ColorAdjust();
 	private ColorAdjust brighter = new ColorAdjust();
@@ -61,7 +60,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		view.btnGiveUp.setOnAction(event -> {
 			model.sendGiveUp();
 			this.listenToServer = false; // Stops the thread
-			this.main.startMainMenu();	
+			model.main.startMainMenu();	
 		});
 
 		// Adds the new chat message to the GUI
