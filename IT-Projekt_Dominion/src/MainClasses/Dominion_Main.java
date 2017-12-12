@@ -98,7 +98,7 @@ public class Dominion_Main extends Application {
 		GameApp_Controller controller = new GameApp_Controller(model, this.gameApp_View);
 		this.gameApp_View.start();
 		this.mainMenu_View.stop();
-		model.startMediaPlayer("Morgen.mp3"); // starts new sound for GameApp 
+		model.startMediaPlayer("Celtic_Music.mp3"); // starts new sound for GameApp 
 	}
 	
 	

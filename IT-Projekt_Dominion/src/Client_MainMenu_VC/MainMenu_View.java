@@ -170,8 +170,8 @@ public class MainMenu_View extends View<GameApp_Model> {
 		// centerBox.getChildren().addAll(createNewPlayer, nameBox, passwordBox,
 		// buttonBox); // -> ohne Sprachauswahl
 		root.getChildren().add(centerBox);
-
-
+		
+		
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add(getClass().getResource("MainMenu.css").toExternalForm());
 		this.stage.setScene(scene);
