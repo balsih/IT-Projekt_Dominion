@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import Abstract_MVC.Controller;
@@ -28,13 +29,18 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.ZoomEvent;
 import javafx.scene.layout.VBox;
+import javafx.stage.Popup;
 
 /**
  * @author Adrian
@@ -46,7 +52,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 	private ColorAdjust initial = new ColorAdjust();
 	private ColorAdjust brighter = new ColorAdjust();
 	private ColorAdjust darker = new ColorAdjust();
-	
+
 	private LinkedList<ImageView> tmpViews = new LinkedList<ImageView>();
 
 	// Translates GUI-text
@@ -58,9 +64,22 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 		// If a player gives up, get him back to the main menu
 		view.btnGiveUp.setOnAction(event -> {
-			model.sendGiveUp();
-			this.listenToServer = false; // Stops the thread
-			model.main.startMainMenu();	
+
+			// Creates a new alert that asks the user if he really wants to give up
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setTitle("Are you sure?");
+			alert.setHeaderText("If you click ok, you'll lose.");
+			alert.setContentText("Do you really want to leave this game?");
+
+			Optional<ButtonType> result = alert.showAndWait();
+			if (result.get() == ButtonType.OK){
+				model.sendGiveUp();
+				this.listenToServer = false; // Stops the thread
+				model.main.startMainMenu();
+				view.stop();
+			} else {
+				alert.hide();
+			}
 		});
 
 		// Adds the new chat message to the GUI
@@ -69,6 +88,8 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 			if (newMessage.length()>0){
 				model.sendChat(newMessage);
+				updateGUI();
+				view.txtfChatArea.setText(""); // Removes the entered text
 			}
 		});
 
@@ -113,6 +134,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			if (model.newLog != null) {
 				String existingLog = view.txtaLog.getText();
 				view.txtaLog.setText(model.newLog+System.lineSeparator().concat(existingLog));
+
 				model.newLog = null;
 			}
 
@@ -121,7 +143,6 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				String existingMessages = view.txtaChatArea.getText();
 				view.txtaChatArea.setText(model.newChat+System.lineSeparator().concat(existingMessages));
 
-				view.txtfChatArea.setText(""); // Removes the entered text
 				model.newChat = null;
 			}
 
@@ -137,7 +158,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				view.lblNameOfCurrentPhase.setText(t.getString("cleanUp.lblNameOfCurrentPhase")); // Clean up
 				break;
 			}
-			
+
 			// Clears the played cards and if it was the client's turn the hand cards after a player's turn ended
 			if (model.turnEnded){
 				view.hboxPlayedCards.getChildren().clear();
@@ -154,7 +175,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				}
 				model.yourNewHandCards.clear();
 			}
-			
+
 			//Adds the played cards with event handlers
 			if (model.newPlayedCard != null){
 				ImageView img = model.newPlayedCard.getImage();
@@ -235,10 +256,6 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 	// Defines changes in size and brightness of images after triggering an event
 	private void setGeneralImageEvents(ImageView img) {
 
-		// Stores the image height and width
-		int imageHeight = (int) img.getFitHeight();
-		int imageWidth = (int) img.getFitWidth();
-
 		// Sets an initial and brighter image brightness
 		initial.setBrightness(0);
 		brighter.setBrightness(+0.5);
@@ -249,32 +266,49 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				img.setEffect(brighter);
 		});
 
-		// If the user zooms an image, it gets bigger and gets back its original brightness
+		// If the user zooms an image, it gets bigger
 		img.addEventHandler(ZoomEvent.ZOOM, event -> {
-			img.setFitWidth(imageWidth * 3);
-			img.setFitHeight(imageHeight * 3);
-			img.setEffect(initial);
+			setZoomEvents(img);
 		});
 
-		// If the user exits an image, it changes back to its original size and brightness
+		// If the user scrolls an image, it gets bigger
+		img.addEventHandler(ScrollEvent.ANY, event -> {
+			setZoomEvents(img);
+		});
+
+		// If the user exits an image, it gets back its initial brightness
 		img.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
-			img.setFitWidth(imageWidth);
-			img.setFitHeight(imageHeight);
 			if ((model.interaction != Interaction.Cellar) || (model.interaction == Interaction.Cellar && !tmpViews.contains(img)))
 				img.setEffect(initial);
 		});
 	}
 
+	private void setZoomEvents(ImageView img) {
+		// Stores the image height and width
+		int imageHeight = (int) img.getFitHeight();
+		int imageWidth = (int) img.getFitWidth();
+
+		// Creates a new popup with the zoomed image and shows/autohides it
+		Popup popupZoom = new Popup();
+		ImageView popupImage = new ImageView(img.getImage());
+		popupImage.setFitHeight(imageHeight*5);
+		popupImage.setFitWidth(imageWidth*5);
+		popupZoom.getContent().add(popupImage);
+		popupZoom.centerOnScreen();
+		popupZoom.show(view.getStage());
+		popupZoom.setAutoHide(true);
+	}
+
 	// Sets events on hand cards
 	private void setInitialHandCardsEvents(Card card, ImageView img) {
-	
+
 		// Image brightness
 		initial.setBrightness(0);
 		darker.setBrightness(-0.5);
 
 		// Describes what happens when the user clicks a hand card
 		img.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-			
+
 			if (model.currentPlayer.compareTo(model.clientName) == 0) {
 
 				// Removes a treasure or action card from the hand and adds it to the played cards
@@ -358,7 +392,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				}			
 			}
 		});
-		
+
 		setGeneralImageEvents(img);
 	}
 

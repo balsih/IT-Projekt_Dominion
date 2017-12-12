@@ -34,6 +34,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.input.ZoomEvent;
 import javafx.scene.layout.GridPane;
@@ -487,9 +488,8 @@ public class GUI_Test extends Application {
 			ImageView img = (ImageView) child;
 			// setInitialHandCardsEvents(img);
 
-			Popup popup = new Popup();
-
-			img.addEventHandler(ZoomEvent.ZOOM, event -> {
+			img.addEventHandler(ZoomEvent.ZOOM, event -> { // ScrollEvent.ANY
+				Popup popup = new Popup();
 				ImageView popupImage = new ImageView(img.getImage());
 				popupImage.setFitHeight(500);
 				popupImage.setFitWidth(300);

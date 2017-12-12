@@ -3,25 +3,18 @@ package Client_GameApp_MVC;
 import Abstract_MVC.View;
 import Client_Services.ServiceLocator;
 import Client_Services.Translator;
-import MainClasses.Dominion_Main;
-import Messages.GameMode_Message;
-import Server_GameLogic.GameMode;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 /**
@@ -155,7 +148,6 @@ public class GameApp_View extends View<GameApp_Model> {
 	
 	public GameApp_View(Stage stage, GameApp_Model model){
 		super(stage, model);
-		// do something in the meantime (until GUI gets created)
 	}
 
 	// Creates the GUI with all its containers and contents
@@ -187,14 +179,15 @@ public class GameApp_View extends View<GameApp_Model> {
 		this.vboxMineCards = new VBox(1, lblNmbrOfMineCards);
 		this.vboxVillageCards = new VBox(1, lblNmbrOfVillageCards);
 
+		// Sorted by price
 		gridpActionCards.add(vboxCellarCards, 0, 0);
-		gridpActionCards.add(vboxMarketCards, 1, 0);
-		gridpActionCards.add(vboxRemodelCards, 2, 0);
-		gridpActionCards.add(vboxSmithyCards, 3, 0);
-		gridpActionCards.add(vboxWoodcutterCards, 0, 1);
-		gridpActionCards.add(vboxWorkshopCards, 1, 1);
+		gridpActionCards.add(vboxWoodcutterCards, 1, 0);
+		gridpActionCards.add(vboxWorkshopCards, 2, 0);
+		gridpActionCards.add(vboxVillageCards, 3, 0);
+		gridpActionCards.add(vboxRemodelCards, 0, 1);
+		gridpActionCards.add(vboxSmithyCards, 1, 1);
 		gridpActionCards.add(vboxMineCards, 2, 1);
-		gridpActionCards.add(vboxVillageCards, 3, 1);
+		gridpActionCards.add(vboxMarketCards, 3, 1);
 		
 		this.vboxActionCards = new VBox(lblActionCards, gridpActionCards);
 
@@ -415,13 +408,9 @@ public class GameApp_View extends View<GameApp_Model> {
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add(GameApp_View.class.getResource("GameApp.css").toExternalForm());
 		stage.setScene(scene);
-		
-		// Set stage boundaries to visible bounds of the main screen
-		Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
-        stage.setX(primaryScreenBounds.getMinX());
-        stage.setY(primaryScreenBounds.getMinY());
-        stage.setWidth(primaryScreenBounds.getWidth());
-        stage.setHeight(primaryScreenBounds.getHeight());
+        
+        // Sets stage full screen
+		stage.setFullScreen(true);
 		
 		stage.setTitle("Dominion");
 		stage.show();
