@@ -70,7 +70,6 @@ public class Player {
 
 		this.playerName = name;
 		this.resetStates();
-		this.actualPhase = Phase.Buy;
 		this.serverThreadForClient = serverThreadForClient;
 	}
 
@@ -413,6 +412,7 @@ public class Player {
 				ugmsg.setActions(game.getCurrentPlayer().getActions());
 				ugmsg.setBuys(game.getCurrentPlayer().getBuys());
 				ugmsg.setCoins(game.getCurrentPlayer().getCoins());
+				ugmsg.setLog("#It's your turn#: " + game.getCurrentPlayer().getPlayerName());
 				break;
 
 			default:

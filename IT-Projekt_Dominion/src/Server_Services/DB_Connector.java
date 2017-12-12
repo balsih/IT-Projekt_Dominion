@@ -162,7 +162,7 @@ public class DB_Connector {
 			this.rs = this.prepStmt.executeQuery();
 
 			while (this.rs.next()) {
-				highScore += rs.getString("Username") + ":\t";
+				highScore += rs.getString("Username") + ":\t\t\t\t";
 				highScore += rs.getString("Score") + "==";
 			}
 
@@ -323,6 +323,6 @@ public class DB_Connector {
 	
 	public static void main(String[] args){
 		DB_Connector connector = new DB_Connector();
-		System.out.println(connector.getHighScore());
+		connector.addNewPlayer("Bodo", "Bodo");
 	}
 }
