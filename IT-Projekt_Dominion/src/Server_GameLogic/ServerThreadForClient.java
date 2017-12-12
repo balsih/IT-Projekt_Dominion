@@ -290,10 +290,6 @@ public class ServerThreadForClient implements Runnable {
 	protected CreateGame_Message getCG_Message(Game game){
 		CreateGame_Message cgmsg = new CreateGame_Message();
 		cgmsg.setBuyCards(game.getBuyCards());
-		this.player.getHandCards().add(new Gold_Card());
-		this.player.getHandCards().add(new Gold_Card());
-		this.player.getHandCards().add(new Cellar_Card());
-		this.player.getHandCards().add(new Workshop_Card());
 		cgmsg.setHandCards(this.player.getHandCards());
 		cgmsg.setDeckPile(this.player.getDeckPile());
 		cgmsg.setOpponent(game.getOpponent(this.player).getPlayerName());

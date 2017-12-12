@@ -171,13 +171,8 @@ public class Game {
 		Collections.shuffle(this.player2.deckPile);
 		this.player1.draw(player1.NUM_OF_HANDCARDS);
 		this.player2.draw(player2.NUM_OF_HANDCARDS);
-//		this.currentPlayer = this.getStarter();
-		this.currentPlayer = this.player1;
+		this.currentPlayer = this.getStarter();
 		this.currentPlayer.resetStates();
-		
-		// FOR TESTS
-		this.player1.setActualPhase(Phase.Action);
-		this.player2.setActualPhase(Phase.Action);
 		
 		// starts the first bot in a simulation
 		if (this.gameMode == GameMode.Simulation)
