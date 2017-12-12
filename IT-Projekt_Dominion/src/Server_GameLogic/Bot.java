@@ -157,7 +157,7 @@ public class Bot extends Player implements Runnable {
 		System.out.println(this.playerName + " HandCards: " + handCards.toString() + "\t\t TreasureCards: "
 				+ numberOfGoldAndSilverCards + "\t ActionCards: " + numberOfActionCards + "\t TotalCards: "
 				+ numberOfTotalCards);
-		System.out.println("GameEnding: " + game.isGameEnded() + "\t Status: " + this.getStatus() + "\t GameStage: " + this.gameStage);
+		System.out.println("GameEnding: " + game.getGameEnded() + "\t Status: " + this.getStatus() + "\t GameStage: " + this.gameStage);
 		System.out.println("ProvincePile: " + game.getProvincePile().toString());
 		System.out.println("MoreBuyPrio: " + this.buyPrioMoreCards.toString());
 		System.out.println("OneBuyPrio: " + this.buyPrioOneCard.toString());

@@ -438,27 +438,33 @@ public class ServerThreadForClient implements Runnable {
 	 * In addition it stores the result of both players into the database.
 	 * 
 	 * @param msgIn
-	 * @return PlayerSuccess_Message, the client loses
+	 * @return psmsgSelf, PlayerSuccess_Message, the client loses
+	 * 			Failure_Message if game already ended
 	 */
     private Message processGiveUp(Message msgIn) {
-    	PlayerSuccess_Message psmsgOpponent = new PlayerSuccess_Message();
-    	Player opponent = this.game.getOpponent(this.player);
-    	psmsgOpponent.setSuccess(GameSuccess.Won);
-    	opponent.countVictoryPoints();
-    	psmsgOpponent.setVictoryPoints(opponent.getVictoryPoints());
-    	this.player.sendToOpponent(this.player, psmsgOpponent);
-    	
-    	PlayerSuccess_Message psmsgSelf = new PlayerSuccess_Message();
-    	psmsgSelf.setSuccess(GameSuccess.Lost);
-    	this.player.countVictoryPoints();
-    	psmsgSelf.setVictoryPoints(this.player.getVictoryPoints());
-    	this.logger.info(opponent.getPlayerName()+" "+GameSuccess.Won.toString()+"!");
-    	
-    	DB_Connector dbConnector = DB_Connector.getDB_Connector();
-    	dbConnector.addScore(this.player, this.player.getVictoryPoints());
-    	dbConnector.addScore(opponent, opponent.getVictoryPoints());
-    	
-    	return psmsgSelf;
+    	if(!this.game.getGameEnded()){
+        	PlayerSuccess_Message psmsgOpponent = new PlayerSuccess_Message();
+        	Player opponent = this.game.getOpponent(this.player);
+        	psmsgOpponent.setSuccess(GameSuccess.Won);
+        	opponent.countVictoryPoints();
+        	psmsgOpponent.setVictoryPoints(opponent.getVictoryPoints());
+        	this.player.sendToOpponent(this.player, psmsgOpponent);
+        	
+        	PlayerSuccess_Message psmsgSelf = new PlayerSuccess_Message();
+        	psmsgSelf.setSuccess(GameSuccess.Lost);
+        	this.player.countVictoryPoints();
+        	psmsgSelf.setVictoryPoints(this.player.getVictoryPoints());
+        	this.logger.info(opponent.getPlayerName()+" "+GameSuccess.Won.toString()+"!");
+        	
+        	DB_Connector dbConnector = DB_Connector.getDB_Connector();
+        	dbConnector.addScore(this.player, this.player.getVictoryPoints());
+        	dbConnector.addScore(opponent, opponent.getVictoryPoints());
+        	
+        	this.game.setGameEnded(true);
+        	
+        	return psmsgSelf;
+    	}
+    	return new Failure_Message();
 	}
 
 	/**

@@ -296,9 +296,9 @@ public class Game {
 		}
 
 		if (this.provincePile.isEmpty() || counter == 3)
-			return true;
-		else
-			return false;
+			return this.gameEnded = true;
+		
+		return false;
 	}
 
 	/**
@@ -478,7 +478,7 @@ public class Game {
 		return workshopPile;
 	}
 
-	public boolean isGameEnded() {
+	public boolean getGameEnded() {
 		return gameEnded;
 	}
 
