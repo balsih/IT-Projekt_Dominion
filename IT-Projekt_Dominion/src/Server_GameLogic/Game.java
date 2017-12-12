@@ -296,9 +296,9 @@ public class Game {
 		}
 
 		if (this.provincePile.isEmpty() || counter == 3)
-			return true;
-		else
-			return false;
+			return this.gameEnded = true;
+		
+		return false;
 	}
 
 	/**
