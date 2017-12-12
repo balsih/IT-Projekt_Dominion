@@ -49,7 +49,7 @@ public abstract class Message {
     // Data included in a message
     private long id;
     private long timestamp;
-    private String client;
+    private String client = null;
     private MessageType type;
 
     // Generator for a unique message ID

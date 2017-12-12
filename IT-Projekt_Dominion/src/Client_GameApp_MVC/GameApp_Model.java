@@ -296,7 +296,6 @@ public class GameApp_Model extends Model {
 		String result = NO_CONNECTION;
 		this.failure = true;
 		Knock_Message kmsg = new Knock_Message();
-		kmsg.setClient("unknown client");
 		Message msgIn = this.processMessage(kmsg);
 		if(msgIn instanceof Commit_Message)
 			this.failure = false;
@@ -333,7 +332,6 @@ public class GameApp_Model extends Model {
 		this.failure = true;
 		this.clientName = clientName;
 		Login_Message lmsg = new Login_Message();
-		lmsg.setClient(clientName);
 		
 		//Set the encrypted password to the Login_Message
 		try {
@@ -370,7 +368,6 @@ public class GameApp_Model extends Model {
 		
 		//Set the clientName and encrypted password to XML
 		CreateNewPlayer_Message cnpmsg = new CreateNewPlayer_Message();
-		cnpmsg.setClient(this.clientName);
 		try {
 			cnpmsg.setPassword(this.encryptPassword(password));
 		} catch (NoSuchAlgorithmException e) {
@@ -428,7 +425,6 @@ public class GameApp_Model extends Model {
 		String result = NO_CONNECTION;
 		this.failure = true;
 		GameMode_Message gmmsg = new GameMode_Message();
-		gmmsg.setClient(this.clientName);
 		gmmsg.setMode(mode);
 		this.gameMode = mode;
 
@@ -743,6 +739,7 @@ public class GameApp_Model extends Model {
 		Message msgIn = null;
 		if(socket != null){
 			try{
+				message.setClient(this.clientName);
 				message.send(socket);
 				msgIn = Message.receive(socket);
 			}catch(Exception e){

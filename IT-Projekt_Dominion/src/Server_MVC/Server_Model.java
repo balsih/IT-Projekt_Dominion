@@ -51,7 +51,11 @@ public class Server_Model extends Model {
 							Socket socket = listener.accept();
 							//start the thread
 							ServerThreadForClient client = ServerThreadForClient.getServerThreadForClient(socket);
-							new Thread(client).start();
+							if(client != null){
+								new Thread(client).start();
+							}else{
+								logger.info("Thread was null");
+							}
 						} catch (Exception e){
 							logger.info(e.toString());
 							new Thread(r, "ServerSocket").start();
