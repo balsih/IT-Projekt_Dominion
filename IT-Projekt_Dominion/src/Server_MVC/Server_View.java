@@ -1,5 +1,8 @@
 package Server_MVC;
 
+import java.net.Inet4Address;
+import java.net.UnknownHostException;
+
 import Abstract_MVC.View;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -33,6 +36,12 @@ public class Server_View extends View<Server_Model>{
 	
 		super(stage, model);
 		this.stage = stage;
+		
+		try {
+			this.stage.setTitle("LocalHost: "+Inet4Address.getLocalHost().getHostAddress());
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
 		
 		this.lblPort = new Label("Port");
 		this.lblPort.getStyleClass().add("label");
