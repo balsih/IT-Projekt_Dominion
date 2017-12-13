@@ -145,9 +145,11 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		// buttons
 		saveBtn = new Button(t.getString("cnp.saveBtn"));
 		saveBtn.setId("saveBtn");
+		saveBtn.setPrefSize(130.0, 30.0);
 		saveBtn.setDisable(true);
 		backBtn = new Button(t.getString("cnp.backBtn"));
 		backBtn.setId("backBtn");	
+		backBtn.setPrefSize(130.0, 30.0);
 		HBox buttonBox = new HBox(saveBtn, backBtn);
 		buttonBox.setId("buttonBox");
 		

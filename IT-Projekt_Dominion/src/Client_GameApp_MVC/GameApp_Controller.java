@@ -113,8 +113,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		});
 
 		// By closing the window, the player gives up and exits the game
-		this.view.getStage().setOnCloseRequest(event -> {
-			model.startMediaPlayer("Celtic_Music.mp3"); // starts new sound 
+		this.view.getStage().setOnCloseRequest(event -> { 
 			model.sendGiveUp();
 			this.listenToServer = false; // Stops the thread
 			view.stop();
