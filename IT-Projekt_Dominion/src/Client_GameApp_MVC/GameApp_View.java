@@ -344,34 +344,43 @@ public class GameApp_View extends View<GameApp_Model> {
 		root.setVgrow(vboxHandCards, Priority.ALWAYS);
 
 		// Styles the elements of the GUI
+		lblActionCards.getStyleClass().add("lblHeaders");
 		vboxActionCards.getStyleClass().add("vbox");
 		gridpActionCards.getStyleClass().add("cardGaps");
 		lblActionCards.getStyleClass().add("Label");
 
+		lblTreasureCards.getStyleClass().add("lblHeaders");
 		vboxTreasureCards.getStyleClass().add("vbox");
 		hboxTreasureCards.getStyleClass().add("cardGaps");
 		hboxTreasureCards.getStyleClass().add("hbox");
 
+		lblVictoryCards.getStyleClass().add("lblHeaders");
 		vboxVictoryCards.getStyleClass().add("vbox");
 		hboxVictoryCards.getStyleClass().add("cardGaps");
 		hboxVictoryCards.getStyleClass().add("hbox");
 
+		lblChatArea.getStyleClass().add("lblHeaders");
 		vboxChatArea.getStyleClass().add("vbox");
 		vboxChatArea.setPrefWidth(150);
 		txtfChatArea.setMinWidth(320);
 		hboxChatArea.getStyleClass().add("hbox");
 
+		lblLog.getStyleClass().add("lblHeaders");
 		vboxLog.getStyleClass().add("vbox");
 		vboxLog.setPrefWidth(150);
 
+		lblDiscard.getStyleClass().add("lblHeaders");
 		vboxDiscard.getStyleClass().add("vbox");
 
+		lblDeck.getStyleClass().add("lblHeaders");
 		vboxDeck.getStyleClass().add("vbox");
 
+		lblPlayedCards.getStyleClass().add("lblHeaders");
 		vboxPlayedCards.getStyleClass().add("vbox");
 		vboxPlayedCards.setPrefWidth(Double.MAX_VALUE);
 		hboxPlayedCards.getStyleClass().add("hbox");
 
+		lblHandCards.getStyleClass().add("lblHeaders");
 		vboxHandCards.getStyleClass().add("vbox");
 		vboxHandCards.setPrefWidth(Double.MAX_VALUE);
 		hboxHandCards.getStyleClass().add("hbox");
@@ -380,8 +389,9 @@ public class GameApp_View extends View<GameApp_Model> {
 		scrlpHandCards.setStyle("-fx-background-color: transparent;");
 
 		// Adds special styling to the current player area
-		hboxCurrentPlayer.getStyleClass().add("hbox");
-		hboxCurrentPhase.getStyleClass().add("hbox");
+		hboxCurrentPlayer.getStyleClass().add("hboxCurrentPlayer");
+		hboxCurrentPhase.getStyleClass().add("hboxCurrentPlayer");
+		
 		hboxContentCurrentPlayer.getStyleClass().add("hbox");
 		vboxCurrentPlayer.getStyleClass().add("vboxCurrentPlayer");
 		vboxCurrentPlayerButtons.getStyleClass().add("vboxCurrentPlayerButtons");
@@ -389,6 +399,10 @@ public class GameApp_View extends View<GameApp_Model> {
 		btnCommit.getStyleClass().add("btnCommit");
 		btnCommit.setMinHeight(40);
 		gridpCurrentPlayer.getStyleClass().add("gridpCurrentPlayer");
+		lblCurrentPlayer.getStyleClass().add("lblCurrentPlayer");
+		lblNameOfCurrentPlayer.getStyleClass().add("lblCurrentPlayer");
+		lblCurrentPhase.getStyleClass().add("lblCurrentPlayer");
+		lblNameOfCurrentPhase.getStyleClass().add("lblCurrentPlayer");
 		lblCrntHandCards.getStyleClass().add("lblCurrentPlayer");
 		lblNmbrOfCrntHandCards.getStyleClass().add("lblCurrentPlayer");
 		lblCrntDeckCards.getStyleClass().add("lblCurrentPlayer");

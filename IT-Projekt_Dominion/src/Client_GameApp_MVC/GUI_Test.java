@@ -343,8 +343,9 @@ public class GUI_Test extends Application {
 
 		vboxActionCards.getStyleClass().add("vbox");
 		gridpActionCards.getStyleClass().add("cardGaps");
-		lblActionCards.getStyleClass().add("Label");
-
+		// lblActionCards.getStyleClass().add("Label");
+		lblActionCards.getStyleClass().add("hboxCurrentPlayer");
+		
 		vboxTreasureCards.getStyleClass().add("vbox");
 		hboxTreasureCards.getStyleClass().add("cardGaps");
 		hboxTreasureCards.getStyleClass().add("hbox");
