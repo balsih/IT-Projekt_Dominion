@@ -130,9 +130,7 @@ public class Login_View extends View<GameApp_Model> {
 		typingBox.setId("typingBox");
 		typingBox.getChildren().addAll(space, keepTypingLbl);
 
-//		imageView2.setScaleX(1.1);
-//		imageView2.setScaleY(1.1);
-		
+
 		loginLbl = new Label(t.getString("login.loginLbl"));
 		loginLbl.setId("loginLbl");
 		
@@ -147,7 +145,7 @@ public class Login_View extends View<GameApp_Model> {
 		ipText.setId("ipText");
 		ipText.setText("127.0.0.1"); // IP nur zu Testzwecken
 		//ipText.setPrefSize(220.0, 30.0);
-		ipText.setPrefSize(150.0, 30.0);
+		ipText.setPrefSize(140.0, 30.0);
 		portText = new TextField();
 		portText.setId("portText");
 		//portText.setText("8080"); // Port nur zu Testzwecken
@@ -155,6 +153,7 @@ public class Login_View extends View<GameApp_Model> {
 		
 		connectBtn = new Button(t.getString("login.connectBtn"));
 		connectBtn.setId("connectBtn");	
+		connectBtn.setPrefSize(130.0, 30.0);
 		connectBtn.setDisable(true);
 		
 		HBox ipAndConnectBox = new HBox(ipText, portText, connectBtn);
@@ -178,6 +177,7 @@ public class Login_View extends View<GameApp_Model> {
 		passwordText.setPrefSize(220.0, 30.0);
 		loginBtn = new Button(t.getString("login.loginBtn"));
 		loginBtn.setId("loginBtn");
+		loginBtn.setPrefSize(130.0, 30.0);
 		loginBtn.setDisable(true);
 		
 		HBox pwLoginBox = new HBox(passwordText, loginBtn);
@@ -193,8 +193,10 @@ public class Login_View extends View<GameApp_Model> {
 		// buttons
 		createNewPlayerBtn = new Button(t.getString("login.createNewPlayerBtn"));
 		createNewPlayerBtn.setId("createNewPlayerBtn");
+		createNewPlayerBtn.setPrefSize(192, 30);
 		quitBtn = new Button(t.getString("login.quitBtn"));
 		quitBtn.setId("quitBtn");
+		quitBtn.setPrefSize(168.0, 30.0);
 		
 		HBox buttonBox = new HBox(createNewPlayerBtn, quitBtn);
 		buttonBox.setId("buttonBox");
