@@ -285,7 +285,8 @@ public class GameApp_View extends View<GameApp_Model> {
 		this.lblCrntActions = new Label(t.getString("current.lblCrntActions")); // Actions
 		this.lblCrntBuys = new Label(t.getString("current.lblCrntBuys")); // Buys
 		this.lblCrntCoins = new Label(t.getString("current.lblCrntCoins")); // Coins
-		this.btnCommit = new Button(t.getString("current.btnCommit")); // Commit
+		this.btnCommit = new Button(t.getString("current.btnSkip")); // Commit/Skip
+		btnCommit.setDisable(true);
 		this.btnGiveUp = new Button(t.getString("current.btnGiveUp")); // Give up
 		
 		this.lblNameOfCurrentPlayer = new Label();
@@ -420,7 +421,7 @@ public class GameApp_View extends View<GameApp_Model> {
 		root.getStyleClass().add("rootFormat");
 		
 		// Scene and stage
-		Scene scene = new Scene(root);
+		Scene scene = new Scene(root, 1280, 720);
 		scene.getStylesheets().add(GameApp_View.class.getResource("GameApp.css").toExternalForm());
 		stage.setScene(scene);
         

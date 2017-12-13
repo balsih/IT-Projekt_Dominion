@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import Cards.Card;
 import Cards.CardName;
+import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
@@ -17,6 +18,7 @@ import javafx.stage.Popup;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -415,6 +417,7 @@ public class GUI_Test extends Application {
 		ImageView img16 = new ImageView(new Image(getClass().getResourceAsStream("Images/Geld_01.jpg")));
 		ImageView img17 = new ImageView(new Image(getClass().getResourceAsStream("Images/Geld_01.jpg")));
 		ImageView img18 = new ImageView(new Image(getClass().getResourceAsStream("Images/Geld_01.jpg")));
+		ImageView img19 = new ImageView(new Image(getClass().getResourceAsStream("Images/confetti.gif")));
 
 		// Test: set width and height of images	
 		img1.setFitHeight(120);
@@ -453,6 +456,8 @@ public class GUI_Test extends Application {
 		img17.setFitHeight(120);
 		img18.setFitWidth(80);
 		img18.setFitHeight(120);
+		img19.setFitWidth(80);
+		img19.setFitHeight(120);
 
 		// Test: add buy cards to the containers
 		vboxCellarCards.getChildren().add(0, img1);
@@ -462,7 +467,7 @@ public class GUI_Test extends Application {
 		vboxWoodcutterCards.getChildren().add(0, img5);
 		vboxWorkshopCards.getChildren().add(0, img6);
 		vboxMineCards.getChildren().add(0, img7);
-		vboxVillageCards.getChildren().add(0, img8);
+		vboxVillageCards.getChildren().add(0, img19);
 
 		vboxGoldCards.getChildren().add(0, img9);
 		vboxSilverCards.getChildren().add(0, img10);
@@ -490,14 +495,50 @@ public class GUI_Test extends Application {
 			// setInitialHandCardsEvents(img);
 
 			img.addEventHandler(ZoomEvent.ZOOM, event -> { // ScrollEvent.ANY
-				Popup popup = new Popup();
-				ImageView popupImage = new ImageView(img.getImage());
-				popupImage.setFitHeight(500);
-				popupImage.setFitWidth(300);
-				popup.getContent().add(popupImage);
-				popup.centerOnScreen();
-				popup.show(stage);
-				popup.setAutoHide(true);
+//				Popup popup = new Popup();
+//				ImageView popupImage = new ImageView(img.getImage());
+//				popupImage.setFitHeight(500);
+//				popupImage.setFitWidth(300);
+//				popup.getContent().add(popupImage);
+//				popup.centerOnScreen();
+//				popup.show(stage);
+//				popup.setAutoHide(true);
+				
+//				// can use an Alert, Dialog, or PopupWindow as needed...
+//				Stage popup = new Stage();
+//				// configure UI for popup etc...
+//
+//				// hide popup after 3 seconds:
+//				PauseTransition delay = new PauseTransition(Duration.seconds(3));
+//				delay.setOnFinished(e -> popup.hide());
+//
+//				popup.show();
+//				delay.play();
+				
+//				Alert alert = new Alert(AlertType.INFORMATION);
+//				alert.setTitle("Action phase started");
+//				alert.setHeaderText(null);
+//				alert.setContentText("Action phase has just startet for currentPlayer");
+//
+//				PauseTransition delay = new PauseTransition(Duration.seconds(2));
+//				delay.setOnFinished(e -> alert.hide());
+//				alert.show();
+//				delay.play();
+				
+				Popup popupPlayerSuccess = new Popup();
+				Label lblWinner = new Label("Winner: ");
+				Label lblNameOfWinner = new Label("Hanspeter");
+				Label lblVictoryPoints = new Label("Victory Points: ");
+				Label lblNmbrOfVictoryPoints = new Label ("22");
+				HBox hboxWinnerName = new HBox(lblWinner, lblNameOfWinner);
+				HBox hboxWinnerVictoryPoints = new HBox(lblVictoryPoints, lblNmbrOfVictoryPoints);
+				ImageView confettiGIF = new ImageView(new Image(getClass().getResourceAsStream("Images/confetti.gif")));
+				
+				VBox vboxWinner = new VBox(hboxWinnerName, hboxWinnerVictoryPoints, confettiGIF);
+				
+				popupPlayerSuccess.getContent().add(vboxWinner);
+				popupPlayerSuccess.centerOnScreen();
+				popupPlayerSuccess.show(stage);
 			});
 		}
 
@@ -569,6 +610,7 @@ public class GUI_Test extends Application {
 			} else {
 			    alert.hide();
 			}
+		
 	});
 
 	// Set mouse click on action

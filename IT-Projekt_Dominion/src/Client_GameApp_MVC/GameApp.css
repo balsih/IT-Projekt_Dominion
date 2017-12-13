@@ -105,3 +105,21 @@ Label {
     -fx-background-insets: 0,1,2;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0.0, 0, 1);
 }
+
+.giveUpAlert > *.label.content{
+    -fx-text-fill: black;
+    -fx-font: 15px "Arial";
+}
+
+.giveUpAlert:header *.header-panel *.label{
+    -fx-text-fill: black;
+}
+
+.generalAlert > *.label.content{
+    -fx-text-fill: black;
+    -fx-font: 15px "Arial";
+}
+
+.generalAlert:header *.header-panel *.label{
+    -fx-text-fill: black;
+}

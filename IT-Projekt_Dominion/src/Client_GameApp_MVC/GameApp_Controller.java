@@ -25,12 +25,15 @@ import Messages.PlayerSuccess_Message;
 import Messages.UpdateGame_Message;
 import Server_GameLogic.GameMode;
 import Server_GameLogic.Phase;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.effect.ColorAdjust;
@@ -39,8 +42,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.ZoomEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Popup;
+import javafx.util.Duration;
 
 /**
  * @author Adrian
@@ -62,23 +68,30 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 	public GameApp_Controller(GameApp_Model model, GameApp_View view) {
 		super(model, view);
 
-		// If a player gives up, get him back to the main menu
+		// If a player gives up, he gets back to main menu
 		view.btnGiveUp.setOnAction(event -> {
 
 			// Creates a new alert that asks the user if he really wants to give up
-			Alert alert = new Alert(AlertType.CONFIRMATION);
-			alert.setTitle("Are you sure?");
-			alert.setHeaderText("If you click ok, you'll lose.");
-			alert.setContentText("Do you really want to leave this game?");
+			Alert giveUpAlert = new Alert(AlertType.CONFIRMATION);
+			giveUpAlert.setTitle(t.getString("giveUpAlert.title")); // Are you sure?
+			giveUpAlert.setHeaderText(t.getString("giveUpAlert.header")); // If you click ok, you'll lose.
+			giveUpAlert.setContentText(t.getString("giveUpAlert.content")); // Do you really want to leave this game?
 
-			Optional<ButtonType> result = alert.showAndWait();
+			// Special styling for the alert
+			giveUpAlert.initOwner(view.getStage());
+
+			DialogPane alertDialogPane = giveUpAlert.getDialogPane();
+			alertDialogPane.getStyleClass().add("giveUpAlert");
+
+			Optional<ButtonType> result = giveUpAlert.showAndWait();
 			if (result.get() == ButtonType.OK){
 				model.sendGiveUp();
 				this.listenToServer = false; // Stops the thread
 				model.main.startMainMenu();
+				model.startMediaPlayer("Celtic_Music.mp3"); // Starts new sound
 				view.stop();
 			} else {
-				alert.hide();
+				giveUpAlert.hide();
 			}
 		});
 
@@ -98,6 +111,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			switch (model.interaction) {
 			case Skip:
 				model.sendInteraction();
+				startPhaseAlert();
 				break;
 			case Cellar:
 				if (model.cellarDiscards.size() >= 1) {
@@ -144,19 +158,52 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				view.txtaChatArea.setText(model.newChat+System.lineSeparator().concat(existingMessages));
 
 				model.newChat = null;
+
+				// Shows an alert that informs the player about newly received chat messages
+				Alert chatAlert = new Alert(AlertType.INFORMATION);
+				chatAlert.setTitle(t.getString("chatAlert.title")); // Chat message
+				chatAlert.setHeaderText(null);
+				chatAlert.setContentText(t.getString("chatAlert.content")); // A new chat message has been sent.
+
+				chatAlert.initOwner(view.getStage());
+
+				DialogPane chatDialogPane = chatAlert.getDialogPane();
+				chatDialogPane.getStyleClass().add("generalAlert");
+				
+				// Auto-hides the alert after the specified duration
+				PauseTransition delay = new PauseTransition(Duration.seconds(2));
+				delay.setOnFinished(e -> chatAlert.hide());
+				chatAlert.show();
+				delay.play();
+			}
+
+			if (model.turnEnded){
+				startPhaseAlert();
 			}
 
 			// Displays the current phase
 			switch (model.currentPhase) {
+			// The action phase can be skipped, therefore the button gets enabled
 			case Action:
 				view.lblNameOfCurrentPhase.setText(t.getString("action.lblNameOfCurrentPhase")); // Action
+				view.btnCommit.setDisable(false);
 				break;
 			case Buy:
 				view.lblNameOfCurrentPhase.setText(t.getString("buy.lblNameOfCurrentPhase")); // Buy
+				view.btnCommit.setDisable(true);
 				break;
 			case CleanUp:
 				view.lblNameOfCurrentPhase.setText(t.getString("cleanUp.lblNameOfCurrentPhase")); // Clean up
+				view.btnCommit.setDisable(true);
 				break;
+			}
+
+			// During the cellar interaction, the button serves to commit the user's choice
+			if (model.interaction == Interaction.Cellar){
+				view.btnCommit.setDisable(false);
+				view.btnCommit.setText(t.getString("current.btnCommit"));
+			} else {
+				view.btnCommit.setText(t.getString("current.btnSkip"));
 			}
 
 			// Clears the played cards and if it was the client's turn the hand cards after a player's turn ended
@@ -226,24 +273,112 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				view.lblNmbrOfCrntDeckCards.setText(Integer.toString(model.opponentDeck));
 			}
 
-			// Updates the number of action cards, treasure cards and victory cards
+			// Updates the number of action, treasure and victory cards
+			// Adds a flipside card to the card's area when the stack is empty
 			view.lblNmbrOfCellarCards.setText(Integer.toString(model.buyCards.get(CardName.Cellar)));
+			if (model.buyCards.get(CardName.Cellar)==0){
+				view.vboxCellarCards.getChildren().remove(0);
+				view.vboxCellarCards.getChildren().add(0, resizeImage(Card.getCard(CardName.Flipside).getImage()));
+			}
+
 			view.lblNmbrOfMarketCards.setText(Integer.toString(model.buyCards.get(CardName.Market)));
+			if (model.buyCards.get(CardName.Market)==0){
+				view.vboxMarketCards.getChildren().remove(0);
+				view.vboxMarketCards.getChildren().add(0, resizeImage(Card.getCard(CardName.Flipside).getImage()));
+			}
+
 			view.lblNmbrOfRemodelCards.setText(Integer.toString(model.buyCards.get(CardName.Remodel)));
+			if (model.buyCards.get(CardName.Remodel)==0){
+				view.vboxRemodelCards.getChildren().remove(0);
+				view.vboxRemodelCards.getChildren().add(0, resizeImage(Card.getCard(CardName.Flipside).getImage()));
+			}
+
 			view.lblNmbrOfSmithyCards.setText(Integer.toString(model.buyCards.get(CardName.Smithy)));
+			if (model.buyCards.get(CardName.Smithy)==0){
+				view.vboxSmithyCards.getChildren().remove(0);
+				view.vboxSmithyCards.getChildren().add(0, resizeImage(Card.getCard(CardName.Flipside).getImage()));
+			}
+
 			view.lblNmbrOfWoodcutterCards.setText(Integer.toString(model.buyCards.get(CardName.Woodcutter)));
+			if (model.buyCards.get(CardName.Woodcutter)==0){
+				view.vboxWoodcutterCards.getChildren().remove(0);
+				view.vboxWoodcutterCards.getChildren().add(0, resizeImage(Card.getCard(CardName.Flipside).getImage()));
+			}
+
 			view.lblNmbrOfWorkshopCards.setText(Integer.toString(model.buyCards.get(CardName.Workshop)));
+			if (model.buyCards.get(CardName.Workshop)==0){
+				view.vboxWorkshopCards.getChildren().remove(0);
+				view.vboxWorkshopCards.getChildren().add(0, resizeImage(Card.getCard(CardName.Flipside).getImage()));
+			}
+
 			view.lblNmbrOfMineCards.setText(Integer.toString(model.buyCards.get(CardName.Mine)));
+			if (model.buyCards.get(CardName.Mine)==0){
+				view.vboxMineCards.getChildren().remove(0);
+				view.vboxMineCards.getChildren().add(0, resizeImage(Card.getCard(CardName.Flipside).getImage()));
+			}
+
 			view.lblNmbrOfVillageCards.setText(Integer.toString(model.buyCards.get(CardName.Village)));
+			if (model.buyCards.get(CardName.Village)==0){
+				view.vboxVillageCards.getChildren().remove(0);
+				view.vboxVillageCards.getChildren().add(0, resizeImage(Card.getCard(CardName.Flipside).getImage()));
+			}
 
 			view.lblNmbrOfGoldCards.setText(Integer.toString(model.buyCards.get(CardName.Gold)));
+			if (model.buyCards.get(CardName.Gold)==0){
+				view.vboxGoldCards.getChildren().remove(0);
+				view.vboxGoldCards.getChildren().add(0, resizeImage(Card.getCard(CardName.Flipside).getImage()));
+			}
+
 			view.lblNmbrOfSilverCards.setText(Integer.toString(model.buyCards.get(CardName.Silver)));
+			if (model.buyCards.get(CardName.Silver)==0){
+				view.vboxSilverCards.getChildren().remove(0);
+				view.vboxSilverCards.getChildren().add(0, resizeImage(Card.getCard(CardName.Flipside).getImage()));
+			}
+
 			view.lblNmbrOfCopperCards.setText(Integer.toString(model.buyCards.get(CardName.Copper)));
+			if (model.buyCards.get(CardName.Copper)==0){
+				view.vboxCopperCards.getChildren().remove(0);
+				view.vboxCopperCards.getChildren().add(0, resizeImage(Card.getCard(CardName.Flipside).getImage()));
+			}
 
 			view.lblNmbrOfDuchyCards.setText(Integer.toString(model.buyCards.get(CardName.Duchy)));
+			if (model.buyCards.get(CardName.Duchy)==0){
+				view.vboxDuchyCards.getChildren().remove(0);
+				view.vboxDuchyCards.getChildren().add(0, resizeImage(Card.getCard(CardName.Flipside).getImage()));
+			}
+
 			view.lblNmbrOfEstateCards.setText(Integer.toString(model.buyCards.get(CardName.Estate)));
+			if (model.buyCards.get(CardName.Estate)==0){
+				view.vboxEstateCards.getChildren().remove(0);
+				view.vboxEstateCards.getChildren().add(0, resizeImage(Card.getCard(CardName.Flipside).getImage()));
+			}
+
 			view.lblNmbrOfProvinceCards.setText(Integer.toString(model.buyCards.get(CardName.Province)));
+			if (model.buyCards.get(CardName.Province)==0){
+				view.vboxProvinceCards.getChildren().remove(0);
+				view.vboxProvinceCards.getChildren().add(0, resizeImage(Card.getCard(CardName.Flipside).getImage()));
+			}
 		});
+	}
+
+	// Shows an alert that informs the player about the current phase and whose turn it is
+	private void startPhaseAlert() {
+		Alert phaseAlert = new Alert(AlertType.INFORMATION);
+		phaseAlert.setTitle(model.currentPlayer+t.getString("phaseAlert.title")); // 's turn
+		phaseAlert.setHeaderText(null);
+		phaseAlert.setContentText(model.currentPhase+" "+t.getString("phaseAlert.content")+" "+model.currentPlayer+"."); // phase has just started for
+
+		// Special styling for the alert
+		phaseAlert.initOwner(view.getStage());
+
+		DialogPane phaseDialogPane = phaseAlert.getDialogPane();
+		phaseDialogPane.getStyleClass().add("generalAlert");
+
+		// Auto-hides the alert after the specified duration
+		PauseTransition delay = new PauseTransition(Duration.seconds(1.5));
+		delay.setOnFinished(e -> phaseAlert.hide());
+		phaseAlert.show();
+		delay.play();
 	}
 
 	// Resizes the image to the optimal fit size
@@ -433,11 +568,17 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 					// Ensures the update happens on the JavaFX Application Thread by using Platform.runLater()
 					Platform.runLater(() -> {
 
+						startPhaseAlert();
+
 						// Disables chat while playing singleplayer mode
 						if (model.gameMode.equals(GameMode.Singleplayer)) {
+							view.txtaChatArea.setText(t.getString("chatArea.info")); // only available in multiplayer mode 
 							view.txtfChatArea.setDisable(true);
 							view.btnSendChatArea.setDisable(true);
 						}
+
+						// The buy phase can never be skipped
+						view.btnCommit.setDisable(true);
 
 						// Adds Action cards and event handlers
 						Card cellarCard = Card.getCard(CardName.Cellar);
@@ -509,14 +650,27 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				} else if (msgIn instanceof PlayerSuccess_Message) {
 					PlayerSuccess_Message psmsg = (PlayerSuccess_Message) msgIn;
 
-					// Ensure the update happens on the JavaFX Application
-					// Thread, by using Platform.runLater()
+					// Ensures the update happens on the JavaFX Application Thread, by using Platform.runLater()
 					Platform.runLater(() -> {
 
 						// main.startSuccess(psmsg.getSuccess());
-						psmsg.getSuccess(); // won/lost
-						// Spieler hat gewonnen: z. B. in Log anzeigen oder Bild
-						// anzeigen
+						
+						// Shows a popup with information about the winner
+						Popup popupPlayerSuccess = new Popup();
+						Label lblWinner = new Label(t.getString("popupPlayerSuccess.lblWinner")); // Winner:
+						Label lblNameOfWinner = new Label(psmsg.getClient());
+						Label lblVictoryPoints = new Label(t.getString("popupPlayerSuccess.lblVictoryPoints")); // Victory points:
+						Label lblNmbrOfVictoryPoints = new Label (Integer.toString(psmsg.getVictoryPoints()));
+						HBox hboxWinnerName = new HBox(lblWinner, lblNameOfWinner);
+						HBox hboxWinnerVictoryPoints = new HBox(lblVictoryPoints, lblNmbrOfVictoryPoints);
+						ImageView confettiGIF = new ImageView(new Image(getClass().getResourceAsStream("Images/confetti.gif")));
+						
+						VBox vboxWinner = new VBox(hboxWinnerName, hboxWinnerVictoryPoints, confettiGIF);
+						
+						popupPlayerSuccess.getContent().add(vboxWinner);
+						popupPlayerSuccess.centerOnScreen();
+						popupPlayerSuccess.show(view.getStage());
+						
 						listenToServer = false;
 
 					});
