@@ -49,7 +49,9 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 	protected TextField nameText;
 		
 	protected Label passwordLbl;
+	protected TextField textField;
 	protected PasswordField passwordText;
+
 	
 	protected Label languageSelectLbl;
 	
@@ -84,9 +86,6 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		nameBox.setId("nameBox");
 		VBox passwordBox = new VBox();
 		passwordBox.setId("passwordBox");
-		
-		VBox languageBox = new VBox();
-		languageBox.setId("languageBox");
 		
 		VBox structureBox = new VBox();
 		structureBox.setId("structureBox");
@@ -137,9 +136,50 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		
 		passwordLbl = new Label(t.getString("cnp.passwordLbl"));
 		passwordLbl.setId("passwordLbl");
+		
+		//////////////////
+		// text field to show password as unmasked
+		textField = new TextField();
+		textField.setId("textField");
+		// Set initial state
+		textField.setManaged(false);
+		textField.setVisible(false);
+
+		// Actual password field
 		passwordText = new PasswordField();
 		passwordText.setId("passwordText");
-		passwordBox.getChildren().addAll(passwordLbl, passwordText);
+
+		CheckBox unmaskPw = new CheckBox();
+		unmaskPw.setId("unmaskPw");
+
+		// Bind properties. Toggle textField and passwordField
+		// visibility and managability properties mutually when checkbox's state
+		// is changed.
+		// Because we want to display only one component (textField or
+		// passwordField)
+		// on the scene at a time.
+		textField.managedProperty().bind(unmaskPw.selectedProperty());
+		textField.visibleProperty().bind(unmaskPw.selectedProperty());
+
+		passwordText.managedProperty().bind(unmaskPw.selectedProperty().not());
+		passwordText.visibleProperty().bind(unmaskPw.selectedProperty().not());
+
+		// Bind the textField and passwordField text values bidirectionally.
+		textField.textProperty().bindBidirectional(passwordText.textProperty());
+		
+		
+		
+		//passwordBox.getChildren().addAll(passwordLbl, passwordText, textField, unmaskPw);
+		passwordBox.getChildren().addAll(passwordLbl, passwordText, textField, unmaskPw);
+
+		//////////////////////////
+		
+
+		
+		
+//		passwordText = new PasswordField();
+//		passwordText.setId("passwordText");
+		//passwordBox.getChildren().addAll(passwordLbl, passwordText);
 		
 		
 		// buttons
@@ -160,43 +200,18 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		// loginAlert.setContentText("do this or that");
 		
 		// VBox for layout and spacing 
-		VBox namePasswordLanguageBox = new VBox();
-		namePasswordLanguageBox.setId("namePasswordLanguageBox");
-		namePasswordLanguageBox.getChildren().addAll(nameBox, passwordBox, languageBox);
+		VBox namePasswordBox = new VBox();
+		namePasswordBox.setId("namePasswordLanguageBox");
+		namePasswordBox.getChildren().addAll(nameBox, passwordBox);
 		
 		// layout and size configurations 
 		root.setPrefSize(1280,720);
 		root.setAlignment(Pos.CENTER);
-		centerBox.getChildren().addAll(createNewPlayerLbl, namePasswordLanguageBox, buttonBox);
+		centerBox.getChildren().addAll(createNewPlayerLbl, namePasswordBox, buttonBox);
 		// centerBox.getChildren().addAll(createNewPlayer, nameBox, passwordBox, buttonBox); // -> ohne Sprachauswahl 
 		
 		
-		//////////////////
-		// text field to show password as unmasked
-	    TextField textField = new TextField();
-	    // Set initial state
-	    textField.setManaged(false);
-	    textField.setVisible(false);
-
-	    // Actual password field
-	    PasswordField passwordField = new PasswordField();
-
-	    CheckBox checkBox = new CheckBox("Show/Hide password");
-
-	    // Bind properties. Toggle textField and passwordField
-	    // visibility and managability properties mutually when checkbox's state is changed.
-	    // Because we want to display only one component (textField or passwordField)
-	    // on the scene at a time.
-	    textField.managedProperty().bind(checkBox.selectedProperty());
-	    textField.visibleProperty().bind(checkBox.selectedProperty());
-
-	    passwordField.managedProperty().bind(checkBox.selectedProperty().not());
-	    passwordField.visibleProperty().bind(checkBox.selectedProperty().not());
-
-	    // Bind the textField and passwordField text values bidirectionally.
-	    textField.textProperty().bindBidirectional(passwordField.textProperty());
-	    
-	    //////////////////////////
+		
 		
 		
 		

@@ -130,7 +130,7 @@ public class MainMenu_View extends View<GameApp_Model> {
 		// shows the name of the actual player
 	
 		//playerLbl = new Label("Spieler: Bodo Grütter"); // zum testen da noch kein Playername vorhanden
-		playerLbl = new Label(model.getClientName());
+		playerLbl = new Label(t.getString("menu.player")+" "+model.getClientName());
 		playerLbl.setId("playerLbl");
 		
 		// language selection with ComboBox
@@ -180,8 +180,7 @@ public class MainMenu_View extends View<GameApp_Model> {
 		
 		highscoreListLbl = new Label(model.sendHighScoreRequest()); // sets the top five as a five line String
 		highscoreListLbl.setId("highscoreListLbl");
-		highscoreListLbl.setPrefSize(280, 160);
-
+		highscoreListLbl.setPrefSize(360, 130);
 		
 		
 		// nameText.setPrefSize(220.0, 30.0);
@@ -229,14 +228,14 @@ public class MainMenu_View extends View<GameApp_Model> {
 	public void updateTexts() {
 		//startGameBtn
 		Translator t = sl.getTranslator();
-		quitBtn.setText(t.getString("menu.quitBtn"));
-		highscoreLbl.setText(t.getString("menu.highscoreLbl"));
-		startGameAlert.setTitle(t.getString("menu.startGameAlert"));
-		startGameAlert.setHeaderText(t.getString("NoConnection"));
-		multiPlayerBtn.setText(t.getString("menu.multiPlayerBtn"));
-		singlePlayerBtn.setText(t.getString("menu.singlePlayerBtn"));
-		selectModeLbl.setText(t.getString("menu.selectModeLbl"));
 		mainMenuLbl.setText(t.getString("menu.mainMenuLbl"));
+		playerLbl.setText(t.getString("menu.player")+" "+model.getClientName());
+		selectModeLbl.setText(t.getString("menu.selectModeLbl"));
+		singlePlayerBtn.setText(t.getString("menu.singlePlayerBtn"));
+		multiPlayerBtn.setText(t.getString("menu.multiPlayerBtn"));
+		highscoreLbl.setText(t.getString("menu.highscoreLbl"));
+		quitBtn.setText(t.getString("menu.quitBtn"));
+		startGameAlert.setTitle(t.getString("menu.startGameAlert"));
 	}
 	
 }// end MainMenu_View
