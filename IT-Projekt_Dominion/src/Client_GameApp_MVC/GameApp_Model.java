@@ -681,10 +681,8 @@ public class GameApp_Model extends Model {
 				((this.currentPlayer.compareTo(this.clientName) == 0 && ugmsg.getCurrentPlayer() == null)
 				|| (this.currentPlayer.compareTo(this.clientName) != 0 && ugmsg.getCurrentPlayer() != null))){
 			this.yourDiscardPile = ugmsg.getDiscardPileCardNumber();
-			System.out.println("yourDiscardPile: "+ugmsg.getDiscardPileCardNumber());
 		}else if(ugmsg.getDiscardPileCardNumber() != null){
 			this.opponentDiscardPile = ugmsg.getDiscardPileCardNumber();
-			System.out.println("opponentDiscardPile: "+ugmsg.getDiscardPileCardNumber());
 		}
 
 		//Always client's topCard
@@ -708,6 +706,7 @@ public class GameApp_Model extends Model {
 		//Move the played Card from the hand into newPlayedCard
 		if(ugmsg.getPlayedCard() != null){
 			this.newPlayedCard = ugmsg.getPlayedCard();
+			System.out.println("PlayedCard: "+this.newPlayedCard);
 		}
 
 		//If interaction is set, the Type of Interaction can be checked (i.e. meaning of the commit_Button)
