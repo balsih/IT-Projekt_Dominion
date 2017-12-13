@@ -70,8 +70,8 @@
 }
 
 #unmaskPw {
-	-fx-background-color: ;
-	 -fx-padding: px;
+	-fx-background-color: transparent;
+
 }
 
 #unmaskPw > .box > .mark {
