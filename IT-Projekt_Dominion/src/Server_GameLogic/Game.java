@@ -173,7 +173,8 @@ public class Game {
 		this.player2.draw(player2.NUM_OF_HANDCARDS);
 		this.currentPlayer = this.getStarter();
 		this.currentPlayer.resetStates();
-		this.currentPlayer.setActualPhase(Phase.Buy);
+		this.player1.setActualPhase(Phase.Buy);
+		this.player2.setActualPhase(Phase.Buy);
 		
 		// starts the first bot in a simulation
 		if (this.gameMode == GameMode.Simulation)
