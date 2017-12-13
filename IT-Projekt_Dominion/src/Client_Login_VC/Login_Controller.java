@@ -32,7 +32,7 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 		view.passwordLbl.setDisable(true);
 		view.passwordText.setDisable(true);
 		view.createNewPlayerBtn.setDisable(true);
-		view.quitBtn.setDisable(true);
+		//view.quitBtn.setDisable(true);
 		
 		// set on action and handling for ipText
 		view.ipText.textProperty().addListener((change) -> {
@@ -79,7 +79,7 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 					view.passwordLbl.setDisable(false);
 					view.passwordText.setDisable(false);
 					view.createNewPlayerBtn.setDisable(false);
-					view.quitBtn.setDisable(false);
+					//view.quitBtn.setDisable(false);
 				} else {
 					view.loginAlert.setHeaderText(message);
 					view.loginAlert.showAndWait(); // warning alert if login fails

@@ -60,9 +60,25 @@
 	-fx-font-size: 10pt
 }
 
+
+#textField {
+	-fx-font-size: 10pt
+}
+
 #passwordText {
 	-fx-font-size: 10pt
 }
+
+#unmaskPw {
+	-fx-background-color: ;
+	 -fx-padding: px;
+}
+
+#unmaskPw > .box > .mark {
+    -fx-padding: 10px;
+}
+
+
 
 .button {
 	-fx-background-image: url("btn.png");
