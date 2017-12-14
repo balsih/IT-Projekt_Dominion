@@ -165,7 +165,7 @@ public class DB_Connector {
 			while (this.rs.next()) {
 				highScore += rs.getString("Username") + ",";
 				highScore += rs.getString("Score") + ",";
-				highScore += rs.getString("Moves") + "==";
+				highScore += rs.getString("Moves") + ",";
 			}
 
 			return highScore;
@@ -204,7 +204,7 @@ public class DB_Connector {
 					+ "Password varchar (130))";
 			String createPlayer_Scoring = "create table if not exists Player_Scoring("
 					+ "ID int not null auto_increment primary key," + "Username varchar(25) not null,"
-					+ "Score int not null," + "Moves int not null"
+					+ "Score int not null," + "Moves int not null,"
 					+ "foreign key (Username) references Player (Username))";
 
 			this.stmt = connection.createStatement();
@@ -317,7 +317,7 @@ public class DB_Connector {
 			this.rs = stmt.executeQuery(selectPlayer_Scoring);
 
 			while (rs.next()) {
-				System.out.println(this.rs.getString(2) + ": " + this.rs.getInt(3));
+				System.out.println(this.rs.getString(2) + ": " + this.rs.getInt(3) + ", " + this.rs.getInt(4));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -326,7 +326,6 @@ public class DB_Connector {
 	
 	public static void main(String[] args){
 		DB_Connector connector = new DB_Connector();
-		
-		connector.addNewPlayer("Bodo", "Bodo");
+		connector.selectPlayer();
 	}
 }

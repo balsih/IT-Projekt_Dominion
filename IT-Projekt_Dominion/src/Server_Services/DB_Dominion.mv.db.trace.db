@@ -1,118 +1,60 @@
-2017-12-10 16:18:49 database: flush
-org.h2.message.DbException: Allgemeiner Fehler: "java.lang.IllegalStateException: The file is locked: nio:C:/Users/bodog/OneDrive/Dokumente/FHNW_Wirtschaftsinformatik/workspace/IT-Projekt_Dominion/IT-Projekt_Dominion/src/Server_Services/DB_Dominion.mv.db.mv.db [1.4.195/7]"
-General error: "java.lang.IllegalStateException: The file is locked: nio:C:/Users/bodog/OneDrive/Dokumente/FHNW_Wirtschaftsinformatik/workspace/IT-Projekt_Dominion/IT-Projekt_Dominion/src/Server_Services/DB_Dominion.mv.db.mv.db [1.4.195/7]" [50000-195]
-	at org.h2.message.DbException.get(DbException.java:168)
-	at org.h2.message.DbException.convert(DbException.java:295)
-	at org.h2.mvstore.db.MVTableEngine$1.uncaughtException(MVTableEngine.java:95)
-	at org.h2.mvstore.MVStore.panic(MVStore.java:378)
-	at org.h2.mvstore.MVStore.<init>(MVStore.java:361)
-	at org.h2.mvstore.MVStore$Builder.open(MVStore.java:2930)
-	at org.h2.mvstore.db.MVTableEngine$Store.open(MVTableEngine.java:155)
-	at org.h2.mvstore.db.MVTableEngine.init(MVTableEngine.java:100)
-	at org.h2.engine.Database.getPageStore(Database.java:2476)
-	at org.h2.engine.Database.open(Database.java:697)
-	at org.h2.engine.Database.openDatabase(Database.java:276)
-	at org.h2.engine.Database.<init>(Database.java:270)
-	at org.h2.engine.Engine.openSession(Engine.java:64)
-	at org.h2.engine.Engine.openSession(Engine.java:176)
-	at org.h2.engine.Engine.createSessionAndValidate(Engine.java:154)
-	at org.h2.engine.Engine.createSession(Engine.java:137)
-	at org.h2.engine.Engine.createSession(Engine.java:27)
-	at org.h2.engine.SessionRemote.connectEmbeddedOrServer(SessionRemote.java:354)
-	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:116)
-	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:100)
-	at org.h2.Driver.connect(Driver.java:69)
-	at java.sql.DriverManager.getConnection(Unknown Source)
-	at java.sql.DriverManager.getConnection(Unknown Source)
-	at Server_Services.DB_Connector.createDBConnection(DB_Connector.java:239)
-	at Server_Services.DB_Connector.<init>(DB_Connector.java:40)
-	at Server_Services.DB_Connector.main(DB_Connector.java:325)
-Caused by: org.h2.jdbc.JdbcSQLException: Allgemeiner Fehler: "java.lang.IllegalStateException: The file is locked: nio:C:/Users/bodog/OneDrive/Dokumente/FHNW_Wirtschaftsinformatik/workspace/IT-Projekt_Dominion/IT-Projekt_Dominion/src/Server_Services/DB_Dominion.mv.db.mv.db [1.4.195/7]"
-General error: "java.lang.IllegalStateException: The file is locked: nio:C:/Users/bodog/OneDrive/Dokumente/FHNW_Wirtschaftsinformatik/workspace/IT-Projekt_Dominion/IT-Projekt_Dominion/src/Server_Services/DB_Dominion.mv.db.mv.db [1.4.195/7]" [50000-195]
-	at org.h2.message.DbException.getJdbcSQLException(DbException.java:345)
-	... 26 more
-Caused by: java.lang.IllegalStateException: The file is locked: nio:C:/Users/bodog/OneDrive/Dokumente/FHNW_Wirtschaftsinformatik/workspace/IT-Projekt_Dominion/IT-Projekt_Dominion/src/Server_Services/DB_Dominion.mv.db.mv.db [1.4.195/7]
-	at org.h2.mvstore.DataUtils.newIllegalStateException(DataUtils.java:765)
-	at org.h2.mvstore.FileStore.open(FileStore.java:173)
-	at org.h2.mvstore.MVStore.<init>(MVStore.java:347)
-	... 21 more
-2017-12-10 16:19:00 database: flush
-org.h2.message.DbException: Allgemeiner Fehler: "java.lang.IllegalStateException: The file is locked: nio:C:/Users/bodog/OneDrive/Dokumente/FHNW_Wirtschaftsinformatik/workspace/IT-Projekt_Dominion/IT-Projekt_Dominion/src/Server_Services/DB_Dominion.mv.db.mv.db [1.4.195/7]"
-General error: "java.lang.IllegalStateException: The file is locked: nio:C:/Users/bodog/OneDrive/Dokumente/FHNW_Wirtschaftsinformatik/workspace/IT-Projekt_Dominion/IT-Projekt_Dominion/src/Server_Services/DB_Dominion.mv.db.mv.db [1.4.195/7]" [50000-195]
-	at org.h2.message.DbException.get(DbException.java:168)
-	at org.h2.message.DbException.convert(DbException.java:295)
-	at org.h2.mvstore.db.MVTableEngine$1.uncaughtException(MVTableEngine.java:95)
-	at org.h2.mvstore.MVStore.panic(MVStore.java:378)
-	at org.h2.mvstore.MVStore.<init>(MVStore.java:361)
-	at org.h2.mvstore.MVStore$Builder.open(MVStore.java:2930)
-	at org.h2.mvstore.db.MVTableEngine$Store.open(MVTableEngine.java:155)
-	at org.h2.mvstore.db.MVTableEngine.init(MVTableEngine.java:100)
-	at org.h2.engine.Database.getPageStore(Database.java:2476)
-	at org.h2.engine.Database.open(Database.java:697)
-	at org.h2.engine.Database.openDatabase(Database.java:276)
-	at org.h2.engine.Database.<init>(Database.java:270)
-	at org.h2.engine.Engine.openSession(Engine.java:64)
-	at org.h2.engine.Engine.openSession(Engine.java:176)
-	at org.h2.engine.Engine.createSessionAndValidate(Engine.java:154)
-	at org.h2.engine.Engine.createSession(Engine.java:137)
-	at org.h2.engine.Engine.createSession(Engine.java:27)
-	at org.h2.engine.SessionRemote.connectEmbeddedOrServer(SessionRemote.java:354)
-	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:116)
-	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:100)
-	at org.h2.Driver.connect(Driver.java:69)
-	at java.sql.DriverManager.getConnection(Unknown Source)
-	at java.sql.DriverManager.getConnection(Unknown Source)
-	at Server_Services.DB_Connector.createDBConnection(DB_Connector.java:239)
-	at Server_Services.DB_Connector.<init>(DB_Connector.java:40)
-	at Server_Services.DB_Connector.main(DB_Connector.java:325)
-Caused by: org.h2.jdbc.JdbcSQLException: Allgemeiner Fehler: "java.lang.IllegalStateException: The file is locked: nio:C:/Users/bodog/OneDrive/Dokumente/FHNW_Wirtschaftsinformatik/workspace/IT-Projekt_Dominion/IT-Projekt_Dominion/src/Server_Services/DB_Dominion.mv.db.mv.db [1.4.195/7]"
-General error: "java.lang.IllegalStateException: The file is locked: nio:C:/Users/bodog/OneDrive/Dokumente/FHNW_Wirtschaftsinformatik/workspace/IT-Projekt_Dominion/IT-Projekt_Dominion/src/Server_Services/DB_Dominion.mv.db.mv.db [1.4.195/7]" [50000-195]
-	at org.h2.message.DbException.getJdbcSQLException(DbException.java:345)
-	... 26 more
-Caused by: java.lang.IllegalStateException: The file is locked: nio:C:/Users/bodog/OneDrive/Dokumente/FHNW_Wirtschaftsinformatik/workspace/IT-Projekt_Dominion/IT-Projekt_Dominion/src/Server_Services/DB_Dominion.mv.db.mv.db [1.4.195/7]
-	at org.h2.mvstore.DataUtils.newIllegalStateException(DataUtils.java:765)
-	at org.h2.mvstore.FileStore.open(FileStore.java:173)
-	at org.h2.mvstore.MVStore.<init>(MVStore.java:347)
-	... 21 more
-2017-12-10 16:20:10 database: flush
-org.h2.message.DbException: Allgemeiner Fehler: "java.lang.IllegalStateException: The file is locked: nio:C:/Users/bodog/OneDrive/Dokumente/FHNW_Wirtschaftsinformatik/workspace/IT-Projekt_Dominion/IT-Projekt_Dominion/src/Server_Services/DB_Dominion.mv.db.mv.db [1.4.195/7]"
-General error: "java.lang.IllegalStateException: The file is locked: nio:C:/Users/bodog/OneDrive/Dokumente/FHNW_Wirtschaftsinformatik/workspace/IT-Projekt_Dominion/IT-Projekt_Dominion/src/Server_Services/DB_Dominion.mv.db.mv.db [1.4.195/7]" [50000-195]
-	at org.h2.message.DbException.get(DbException.java:168)
-	at org.h2.message.DbException.convert(DbException.java:295)
-	at org.h2.mvstore.db.MVTableEngine$1.uncaughtException(MVTableEngine.java:95)
-	at org.h2.mvstore.MVStore.panic(MVStore.java:378)
-	at org.h2.mvstore.MVStore.<init>(MVStore.java:361)
-	at org.h2.mvstore.MVStore$Builder.open(MVStore.java:2930)
-	at org.h2.mvstore.db.MVTableEngine$Store.open(MVTableEngine.java:155)
-	at org.h2.mvstore.db.MVTableEngine.init(MVTableEngine.java:100)
-	at org.h2.engine.Database.getPageStore(Database.java:2476)
-	at org.h2.engine.Database.open(Database.java:697)
-	at org.h2.engine.Database.openDatabase(Database.java:276)
-	at org.h2.engine.Database.<init>(Database.java:270)
-	at org.h2.engine.Engine.openSession(Engine.java:64)
-	at org.h2.engine.Engine.openSession(Engine.java:176)
-	at org.h2.engine.Engine.createSessionAndValidate(Engine.java:154)
-	at org.h2.engine.Engine.createSession(Engine.java:137)
-	at org.h2.engine.Engine.createSession(Engine.java:27)
-	at org.h2.engine.SessionRemote.connectEmbeddedOrServer(SessionRemote.java:354)
-	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:116)
-	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:100)
-	at org.h2.Driver.connect(Driver.java:69)
-	at java.sql.DriverManager.getConnection(Unknown Source)
-	at java.sql.DriverManager.getConnection(Unknown Source)
-	at Server_Services.DB_Connector.createDBConnection(DB_Connector.java:239)
-	at Server_Services.DB_Connector.<init>(DB_Connector.java:40)
-	at Server_Services.DB_Connector.main(DB_Connector.java:325)
-Caused by: org.h2.jdbc.JdbcSQLException: Allgemeiner Fehler: "java.lang.IllegalStateException: The file is locked: nio:C:/Users/bodog/OneDrive/Dokumente/FHNW_Wirtschaftsinformatik/workspace/IT-Projekt_Dominion/IT-Projekt_Dominion/src/Server_Services/DB_Dominion.mv.db.mv.db [1.4.195/7]"
-General error: "java.lang.IllegalStateException: The file is locked: nio:C:/Users/bodog/OneDrive/Dokumente/FHNW_Wirtschaftsinformatik/workspace/IT-Projekt_Dominion/IT-Projekt_Dominion/src/Server_Services/DB_Dominion.mv.db.mv.db [1.4.195/7]" [50000-195]
-	at org.h2.message.DbException.getJdbcSQLException(DbException.java:345)
-	... 26 more
-Caused by: java.lang.IllegalStateException: The file is locked: nio:C:/Users/bodog/OneDrive/Dokumente/FHNW_Wirtschaftsinformatik/workspace/IT-Projekt_Dominion/IT-Projekt_Dominion/src/Server_Services/DB_Dominion.mv.db.mv.db [1.4.195/7]
-	at org.h2.mvstore.DataUtils.newIllegalStateException(DataUtils.java:765)
-	at org.h2.mvstore.FileStore.open(FileStore.java:173)
-	at org.h2.mvstore.MVStore.<init>(MVStore.java:347)
-	... 21 more
-2017-12-14 15:21:00 jdbc[3]: exception
+2017-12-14 15:56:38 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLException: Syntax Fehler in SQL Befehl "CREATE TABLE IF NOT EXISTS PLAYER_SCORING(ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,USERNAME VARCHAR(25) NOT NULL,SCORE INT NOT NULL,MOVES INT NOT NULLFOREIGN[*] KEY (USERNAME) REFERENCES PLAYER (USERNAME)) "; erwartet "NULL"
 Syntax error in SQL statement "CREATE TABLE IF NOT EXISTS PLAYER_SCORING(ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,USERNAME VARCHAR(25) NOT NULL,SCORE INT NOT NULL,MOVES INT NOT NULLFOREIGN[*] KEY (USERNAME) REFERENCES PLAYER (USERNAME)) "; expected "NULL"; SQL statement:
 create table if not exists Player_Scoring(ID int not null auto_increment primary key,Username varchar(25) not null,Score int not null,Moves int not nullforeign key (Username) references Player (Username)) [42001-195]
+2017-12-14 15:56:38 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "PLAYER_SCORING" nicht gefunden
+Table "PLAYER_SCORING" not found; SQL statement:
+Select distinct Username, Score, Moves from Player_Scoring order by Score desc, Moves asc limit 0,5 [42102-195]
+2017-12-14 15:58:27 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax Fehler in SQL Befehl "CREATE TABLE IF NOT EXISTS PLAYER_SCORING(ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,USERNAME VARCHAR(25) NOT NULL,SCORE INT NOT NULL,MOVES INT NOT NULLFOREIGN[*] KEY (USERNAME) REFERENCES PLAYER (USERNAME)) "; erwartet "NULL"
+Syntax error in SQL statement "CREATE TABLE IF NOT EXISTS PLAYER_SCORING(ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,USERNAME VARCHAR(25) NOT NULL,SCORE INT NOT NULL,MOVES INT NOT NULLFOREIGN[*] KEY (USERNAME) REFERENCES PLAYER (USERNAME)) "; expected "NULL"; SQL statement:
+create table if not exists Player_Scoring(ID int not null auto_increment primary key,Username varchar(25) not null,Score int not null,Moves int not nullforeign key (Username) references Player (Username)) [42001-195]
+2017-12-14 15:58:36 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax Fehler in SQL Befehl "CREATE TABLE IF NOT EXISTS PLAYER_SCORING(ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,USERNAME VARCHAR(25) NOT NULL,SCORE INT NOT NULL,MOVES INT NOT NULLFOREIGN[*] KEY (USERNAME) REFERENCES PLAYER (USERNAME)) "; erwartet "NULL"
+Syntax error in SQL statement "CREATE TABLE IF NOT EXISTS PLAYER_SCORING(ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,USERNAME VARCHAR(25) NOT NULL,SCORE INT NOT NULL,MOVES INT NOT NULLFOREIGN[*] KEY (USERNAME) REFERENCES PLAYER (USERNAME)) "; expected "NULL"; SQL statement:
+create table if not exists Player_Scoring(ID int not null auto_increment primary key,Username varchar(25) not null,Score int not null,Moves int not nullforeign key (Username) references Player (Username)) [42001-195]
+2017-12-14 15:59:07 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax Fehler in SQL Befehl "CREATE TABLE IF NOT EXISTS PLAYER_SCORING(ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,USERNAME VARCHAR(25) NOT NULL,SCORE INT NOT NULL,MOVES INT NOT NULLFOREIGN[*] KEY (USERNAME) REFERENCES PLAYER (USERNAME)) "; erwartet "NULL"
+Syntax error in SQL statement "CREATE TABLE IF NOT EXISTS PLAYER_SCORING(ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,USERNAME VARCHAR(25) NOT NULL,SCORE INT NOT NULL,MOVES INT NOT NULLFOREIGN[*] KEY (USERNAME) REFERENCES PLAYER (USERNAME)) "; expected "NULL"; SQL statement:
+create table if not exists Player_Scoring(ID int not null auto_increment primary key,Username varchar(25) not null,Score int not null,Moves int not nullforeign key (Username) references Player (Username)) [42001-195]
+2017-12-14 15:59:22 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "PLAYER_SCORING" nicht gefunden
+Table "PLAYER_SCORING" not found; SQL statement:
+Select distinct Username, Score, Moves from Player_Scoring order by Score desc, Moves asc limit 0,5 [42102-195]
+2017-12-14 16:00:09 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "PLAYER_SCORING" nicht gefunden
+Table "PLAYER_SCORING" not found; SQL statement:
+Insert into Player_Scoring (Username, Score, Moves) values (?, ?, ?) [42102-195]
+2017-12-14 16:00:09 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "PLAYER_SCORING" nicht gefunden
+Table "PLAYER_SCORING" not found; SQL statement:
+Insert into Player_Scoring (Username, Score, Moves) values (?, ?, ?) [42102-195]
+2017-12-14 16:00:10 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "PLAYER_SCORING" nicht gefunden
+Table "PLAYER_SCORING" not found; SQL statement:
+Select distinct Username, Score, Moves from Player_Scoring order by Score desc, Moves asc limit 0,5 [42102-195]
+2017-12-14 16:01:31 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax Fehler in SQL Befehl "CREATE TABLE IF NOT EXISTS PLAYER_SCORING(ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,USERNAME VARCHAR(25) NOT NULL,SCORE INT NOT NULL,MOVES INT NOT NULLFOREIGN[*] KEY (USERNAME) REFERENCES PLAYER (USERNAME)) "; erwartet "NULL"
+Syntax error in SQL statement "CREATE TABLE IF NOT EXISTS PLAYER_SCORING(ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,USERNAME VARCHAR(25) NOT NULL,SCORE INT NOT NULL,MOVES INT NOT NULLFOREIGN[*] KEY (USERNAME) REFERENCES PLAYER (USERNAME)) "; expected "NULL"; SQL statement:
+create table if not exists Player_Scoring(ID int not null auto_increment primary key,Username varchar(25) not null,Score int not null,Moves int not nullforeign key (Username) references Player (Username)) [42001-195]
+2017-12-14 16:01:31 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "PLAYER_SCORING" nicht gefunden
+Table "PLAYER_SCORING" not found; SQL statement:
+select * from Player_Scoring [42102-195]
+2017-12-14 16:01:42 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax Fehler in SQL Befehl "CREATE TABLE IF NOT EXISTS PLAYER_SCORING(ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,USERNAME VARCHAR(25) NOT NULL,SCORE INT NOT NULL,MOVES INT NOT NULLFOREIGN[*] KEY (USERNAME) REFERENCES PLAYER (USERNAME)) "; erwartet "NULL"
+Syntax error in SQL statement "CREATE TABLE IF NOT EXISTS PLAYER_SCORING(ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,USERNAME VARCHAR(25) NOT NULL,SCORE INT NOT NULL,MOVES INT NOT NULLFOREIGN[*] KEY (USERNAME) REFERENCES PLAYER (USERNAME)) "; expected "NULL"; SQL statement:
+create table if not exists Player_Scoring(ID int not null auto_increment primary key,Username varchar(25) not null,Score int not null,Moves int not nullforeign key (Username) references Player (Username)) [42001-195]
+2017-12-14 16:01:42 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "PLAYER_SCORING" nicht gefunden
+Table "PLAYER_SCORING" not found; SQL statement:
+select * from Player_Scoring [42102-195]
+2017-12-14 16:02:49 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax Fehler in SQL Befehl "CREATE TABLE IF NOT EXISTS PLAYER_SCORING(ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,USERNAME VARCHAR(25) NOT NULL,SCORE INT NOT NULL,MOVES INT NOT NULLFOREIGN[*] KEY (USERNAME) REFERENCES PLAYER (USERNAME)) "; erwartet "NULL"
+Syntax error in SQL statement "CREATE TABLE IF NOT EXISTS PLAYER_SCORING(ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,USERNAME VARCHAR(25) NOT NULL,SCORE INT NOT NULL,MOVES INT NOT NULLFOREIGN[*] KEY (USERNAME) REFERENCES PLAYER (USERNAME)) "; expected "NULL"; SQL statement:
+create table if not exists Player_Scoring(ID int not null auto_increment primary key,Username varchar(25) not null,Score int not null,Moves int not nullforeign key (Username) references Player (Username)) [42001-195]
+2017-12-14 16:02:49 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "PLAYER_SCORING" nicht gefunden
+Table "PLAYER_SCORING" not found; SQL statement:
+select * from Player_Scoring [42102-195]
