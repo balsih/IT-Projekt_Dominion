@@ -434,6 +434,9 @@ public class GameApp_Model extends Model {
 		if(msgIn instanceof Commit_Message){
 			this.failure = false;
 			this.main.startGameApp();
+		}else if(msgIn instanceof Failure_Message){
+			Failure_Message fmsg = (Failure_Message) msgIn;
+			result =fmsg.getNotification();
 		}
 		return this.translate(result);
 	}

@@ -58,6 +58,7 @@ public class ServerThreadForClient implements Runnable {
 	private static HashMap<String, ServerThreadForClient> connections = new HashMap<String, ServerThreadForClient>();
 	
 	private final Logger logger = Logger.getLogger("");
+	private final Integer AFK_TIMER = 1800000;
 
 	private Socket clientSocket;
 	private Message msgIn;
@@ -184,7 +185,7 @@ public class ServerThreadForClient implements Runnable {
 		
 		//without inetAddress, you would be kicked out after the specified time-limit
 		if(!(msgIn instanceof Knock_Message) && !(msgIn instanceof Login_Message) && !(msgIn instanceof CreateNewPlayer_Message)
-				&& this.clientSocket.getInetAddress() != this.inetAddress && System.currentTimeMillis() - this.currentTime > 60000){
+				&& !this.clientSocket.getInetAddress().equals(this.inetAddress) && System.currentTimeMillis() - this.currentTime > this.AFK_TIMER){
 			Failure_Message fmsg = new Failure_Message();
 			fmsg.setNotification("#clientUsed#");
 			return new Failure_Message();
@@ -260,9 +261,8 @@ public class ServerThreadForClient implements Runnable {
 		String clientName = lmsg.getClient();
 		boolean success = false;
 		
-		if(!onlineClients.contains(clientName) || System.currentTimeMillis() - this.currentTime > 60000){
+		if(!onlineClients.contains(clientName) || System.currentTimeMillis() - this.currentTime > this.AFK_TIMER){
 			success = dbConnector.checkLoginInput(this.clientName, lmsg.getPassword());
-			onlineClients.add(clientName);
 		}
 		
 		if(success){
