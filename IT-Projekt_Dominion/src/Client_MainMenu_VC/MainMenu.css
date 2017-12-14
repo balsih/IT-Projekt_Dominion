@@ -8,7 +8,7 @@
 
 
 #structureBox {
-	-fx-background-color: rgba(0, 0, 0, 0.5);
+	-fx-background-color: rgba(0, 0, 0, 0.6);
 	-fx-background-radius: 10;
 }
 
@@ -28,39 +28,41 @@
 }
 
 #singleAndMultiplayerBox {
-	-fx-spacing: 15px;
+	-fx-spacing: 30px;
 }
 
 #highscoreListLbl {
 	-fx-spacing: 0px;
-	-fx-background-color: rgba(0, 0, 0, 6);
-	-fx-border-color: black;
+	-fx-background-color: rgba(0, 0, 0, 0.8);
+
 }
+
 
 #playerAndLanguageBox {
-	-fx-spacing: 145px;
-	-fx-background-color: rgba(0, 0, 0, 6);
+	-fx-background-color: rgba(0, 0, 0, 0.8);
+
 }
 
-.combo-box-popup {
-	-fx-background: rgba(0, 0, 0, 6);
-	-fx-background-color: rgba(0, 0, 0, 6);
-	-fx-text-fill: white;
+.combo-box  {
+    -fx-text-fill: white ;
+}
+.combo-box .combo-box-popup .list-view, .combo-box .combo-box-popup .list-cell {
+    -fx-background-color: rgba(0, 0, 0, 0.6);
+    -fx-text-fill: white ;
+}
+.combo-box .combo-box-popup .list-cell:hover {
+    -fx-text-fill: yellow ;
+    -fx-background-color: rgba(0, 0, 0, 1);
 }
 
 #languageSelectComboBox {
-	-fx-font-size: 15px;
+	-fx-font-size: 14px;
     -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-background-color: rgba(0, 0, 0, 6);
+    -fx-background-color: rgba(0, 0, 0, 0.6);
 }
 
-	
-#highscoreBoxxxxxxx {
-	-fx-spacing: 2px;
-	-fx-background-color: rgba(0, 0, 0, 6);
-	-fx-border-color: white;
-}
+
 #gameModeAndHigscoreBox {
 	-fx-spacing: 35px;
 }
@@ -89,19 +91,10 @@
     -fx-font-weight: bold;
     -fx-font-family: "Bookman Old Style";
 }
-#playerLbll {
-	
-	-fx-text-alignment: center;
-	-fx-font-size: 12pt
-}
 
 #playerLbl {
-	
-	-fx-font: bold 12pt "Bookman Old Style";
-    -fx-text-alignment: center;
-    -fx-text-fill: white;
+	-fx-font-size: 12pt
 }
-
 
 
 

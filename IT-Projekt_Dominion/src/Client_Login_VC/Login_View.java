@@ -168,12 +168,14 @@ public class Login_View extends View<GameApp_Model> {
 		//nameText.setDisable(true); -> disable before connecting 
 		nameText.setPrefSize(220.0, 30.0);
 		nameText.setMaxSize(220.0, 30.0);
+		nameText.setText("Haus"); // zum testen
 		nameBox.getChildren().addAll(nameLbl, nameText);
 		
 		passwordLbl = new Label(t.getString("login.passwordLbl"));
 		passwordLbl.setId("passwordLbl");
 		passwordText = new PasswordField();
 		passwordText.setId("passwordText");
+		passwordText.setText("Haus"); // zum testen
 		passwordText.setPrefSize(220.0, 30.0);
 		loginBtn = new Button(t.getString("login.loginBtn"));
 		loginBtn.setId("loginBtn");

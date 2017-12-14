@@ -124,12 +124,11 @@ public class MainMenu_View extends View<GameApp_Model> {
 		
 		
 		
-		
-		
-		
 		// shows the name of the actual player
 		playerLbl = new Label(t.getString("menu.player")+" "+model.getClientName());
 		playerLbl.setId("playerLbl");
+		playerLbl.setPrefSize(295, 15);
+		playerLbl.setAlignment(Pos.CENTER.BOTTOM_LEFT);
 		
 		// language selection with ComboBox
 		ObservableList<String> lang = FXCollections.observableArrayList();
@@ -146,14 +145,19 @@ public class MainMenu_View extends View<GameApp_Model> {
 		languageSelectComboBox.setValue(lang.get(currentIndex)); 
 		languageSelectComboBox.setId("languageSelectComboBox");
 		
-		//languageSelectComboBox.setTooltip(new Tooltip(t.getString("program.languageTip")));
-		//languageSelectComboBox.setPrefSize(280.0, 30.0);
+		languageSelectComboBox.setTooltip(new Tooltip(t.getString("program.languageTip")));
+		//languageSelectComboBox.setPrefSize(20.0, 20.0);
 		
 		HBox playerAndLanguageBox = new HBox(playerLbl, languageSelectComboBox);
+		
+		//playerAndLanguageBox.setPrefSize(360, 40);
 		playerAndLanguageBox.setId("playerAndLanguageBox");
+		playerAndLanguageBox.setAlignment(Pos.CENTER.CENTER_LEFT);
+		
 		
 		
 		mainMenuLbl = new Label(t.getString("menu.mainMenuLbl"));
+		mainMenuLbl.setPrefSize(300, 50);
 		mainMenuLbl.setId("mainMenuLbl");
 		
 		selectModeLbl = new Label(/*t.getString("menu.selectModeLbl")*/);
