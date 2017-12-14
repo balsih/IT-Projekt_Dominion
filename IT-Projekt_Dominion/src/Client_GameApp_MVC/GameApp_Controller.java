@@ -88,7 +88,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				model.sendGiveUp();
 				this.listenToServer = false; // Stops the thread
 				model.main.startMainMenu();
-				model.startMediaPlayer("Celtic_Music.mp3"); // Starts new sound
+				model.startMediaPlayer("Medieval_Camelot.mp3"); // Starts new sound
 				view.stop();
 			} else {
 				giveUpAlert.hide();
@@ -111,7 +111,6 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			switch (model.interaction) {
 			case Skip:
 				model.sendInteraction();
-				startPhaseAlert();
 				break;
 			case Cellar:
 				if (model.cellarDiscards.size() >= 1) {
@@ -178,13 +177,14 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				delay.play();
 			}
 
-			if (model.turnEnded){
-				startPhaseAlert();
+			// Displays a popup, that informs the user about the current phase
+			if (model.phaseChanged == true){ // phase changed
+				startPhasePopup();
+				model.phaseChanged = false;
 			}
 
 			// Displays the current phase
 			switch (model.currentPhase) {
-			// The action phase can be skipped, therefore the button gets enabled
 			case Action:
 				view.lblNameOfCurrentPhase.setText(t.getString("action.lblNameOfCurrentPhase")); // Action
 				view.btnCommit.setDisable(false);
@@ -193,6 +193,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				view.lblNameOfCurrentPhase.setText(t.getString("buy.lblNameOfCurrentPhase")); // Buy
 				view.btnCommit.setDisable(false);
 				break;
+			// The cleanUp phase cannot be skipped. Therefore, the button is disabled.
 			case CleanUp:
 				view.lblNameOfCurrentPhase.setText(t.getString("cleanUp.lblNameOfCurrentPhase")); // Clean up
 				view.btnCommit.setDisable(true);
@@ -362,24 +363,48 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		});
 	}
 
-	// Shows an alert that informs the player about the current phase and whose turn it is
-	private void startPhaseAlert() {		
-		Popup popupPhase = new Popup();
-
+	// Displays a popup that informs the player about the current phase
+	private void startPhasePopup() {
+		
 		ImageView imgActionPhase = new ImageView(new Image(getClass().getResourceAsStream("Images/actionPhase.png")));
 		ImageView imgBuyPhase = new ImageView(new Image(getClass().getResourceAsStream("Images/buyPhase.png")));
 		ImageView imgCleanUpPhase = new ImageView(new Image(getClass().getResourceAsStream("Images/cleanUpPhase.png")));
 		ImageView imgAktionsphase = new ImageView(new Image(getClass().getResourceAsStream("Images/Aktionsphase.png")));
 		ImageView imgKaufphase = new ImageView(new Image(getClass().getResourceAsStream("Images/Kaufphase.png")));
 		ImageView imgAufräumphase = new ImageView(new Image(getClass().getResourceAsStream("Images/Aufräumphase.png")));
+		
+		Popup popupPhase = new Popup();
+		
+		if (t.getCurrentLocale().getLanguage().equals("de")){
+			switch (model.currentPhase){
+			case Action:
+				popupPhase.getContent().add(imgAktionsphase);
+				break;
+			case Buy:
+				popupPhase.getContent().add(imgKaufphase);
+				break;
+			case CleanUp:
+				popupPhase.getContent().add(imgAufräumphase);
+				break;
+			}
+		} else {
+			switch (model.currentPhase){
+			case Action:
+				popupPhase.getContent().add(imgActionPhase);
+				break;
+			case Buy:
+				popupPhase.getContent().add(imgBuyPhase);
+				break;
+			case CleanUp:
+				popupPhase.getContent().add(imgCleanUpPhase);
+				break;
+			}
+		}
 
-		imgActionPhase.setPreserveRatio(true);
-		//imgActionPhase.setFitWidth(300);
-		popupPhase.getContent().add(imgActionPhase);
 		popupPhase.centerOnScreen();
 		popupPhase.setAutoHide(true);
 
-		// Auto-hides the alert after the specified duration
+		// Auto-hides the popup after the specified duration
 		PauseTransition delay = new PauseTransition(Duration.seconds(1.5));
 		delay.setOnFinished(e -> popupPhase.hide());
 		popupPhase.show(view.getStage());
@@ -615,8 +640,8 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 					// Ensures the update happens on the JavaFX Application Thread by using Platform.runLater()
 					Platform.runLater(() -> {
-
-						startPhaseAlert();
+						
+						startPhasePopup();
 
 						// Disables chat while playing singleplayer mode
 						if (model.gameMode.equals(GameMode.Singleplayer)) {
@@ -693,9 +718,10 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 					updateGUI();
 
 				} else if (msgIn instanceof PlayerSuccess_Message) {
+
+					PlayerSuccess_Message psmsg = (PlayerSuccess_Message) msgIn;
 					createWinnerPopup();
-					//					PlayerSuccess_Message psmsg = (PlayerSuccess_Message) msgIn;
-					//
+					
 					//					// Ensures the update happens on the JavaFX Application Thread, by using Platform.runLater()
 					//					Platform.runLater(() -> {
 					//
