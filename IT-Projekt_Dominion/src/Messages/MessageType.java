@@ -14,6 +14,7 @@ public enum MessageType {
 	GameMode,
 	HighScore,
 	Login,
+	Logout,
 	PlayCard,
 	PlayerSuccess,
 	UpdateGame,
@@ -55,6 +56,7 @@ public enum MessageType {
     	else if (msg instanceof GameMode_Message) type = MessageType.GameMode;
     	else if (msg instanceof HighScore_Message) type = MessageType.HighScore;
     	else if (msg instanceof Login_Message) type = MessageType.Login;
+    	else if (msg instanceof Logout_Message) type = MessageType.Logout;
     	else if (msg instanceof PlayCard_Message) type = MessageType.PlayCard;
     	else if (msg instanceof PlayerSuccess_Message) type = MessageType.PlayerSuccess;
     	else if (msg instanceof UpdateGame_Message) type = MessageType.UpdateGame;

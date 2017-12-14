@@ -54,7 +54,7 @@ import Server_Services.DB_Connector;
  */
 public class ServerThreadForClient implements Runnable {
 	
-	private static HashMap<InetAddress, LinkedList<String>> clientNamesOnIP = new HashMap<InetAddress, LinkedList<String>>();
+	private static LinkedList<String> onlineClients = new LinkedList<String>();
 	private static HashMap<String, ServerThreadForClient> connections = new HashMap<String, ServerThreadForClient>();
 	
 	private final Logger logger = Logger.getLogger("");
@@ -63,87 +63,97 @@ public class ServerThreadForClient implements Runnable {
 	private Message msgIn;
 	private Game game;
 	private Player player;
+	private InetAddress inetAddress;
 	public Queue<Message> waitingMessages = new LinkedList<Message>();
-	private String clientName = null;
+	private String clientName = "unknown client";
+	private long currentTime = System.currentTimeMillis();
 
 
 	private ServerThreadForClient(){
 		super();
 	}
 	
+	
+//	/**
+//	 * @author Lukas
+//	 * Factory Pattern, if a new client connects to server, a new Thread will be created.
+//	 * If a client already had connected with server with the same clientName, the client will have the same Thread as before
+//	 * 
+//	 * @param clientSocket
+//	 * @return client, a new or existing Thread. Result depends weather a Thread of the client already exists or not
+//	 * 					, or null if there is any Exception to ensure further server-listening
+//	 */
+//	public static ServerThreadForClient getServerThreadForClient(Socket clientSocket){
+//		try {
+//			Message msgIn = Message.receive(clientSocket);
+//			String clientName = msgIn.getClient();
+//			ServerThreadForClient client = null;
+//			LinkedList<String> clientNames;
+//			InetAddress inetAddress = clientSocket.getInetAddress();
+//			
+//			//Checks the client's IP and name to assign the correct Thread
+//			if(clientNamesOnIP.containsKey(inetAddress)){
+//				clientNames = clientNamesOnIP.get(inetAddress);
+//				boolean found = false;
+//				for(String storedClient: clientNames){
+//					if(storedClient.compareTo(clientName) == 0){
+//						client = connections.get(storedClient);
+//						found = true;
+//						break;
+//					}
+//				}
+//				if(!found){
+//					//If the client already had a connection with the server, but not with the current name
+//					client = new ServerThreadForClient();
+//					clientNames.add(clientName);
+//					clientNamesOnIP.replace(inetAddress, clientNames);
+//					connections.put(clientName, client);
+//				}
+//			}else{
+//				//If the client never had a connection before with the server
+//				client = new ServerThreadForClient();
+//				LinkedList<String> newClientNameList = new LinkedList<String>();
+//				newClientNameList.add(clientName);
+//				connections.put(clientName, client);
+//				clientNamesOnIP.put(inetAddress, newClientNameList);
+//			}
+//			//New socket for every connection needed, msgIn already received (only 1 Message.receive per Message possible)
+//			client.addClientSocket(clientSocket);
+//			client.setMsgIn(msgIn);
+//			return client;
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return null;
+//		}
+//	}
+
 	/**
 	 * @author Lukas
 	 * Factory Pattern, if a new client connects to server, a new Thread will be created.
-	 * If a client already had connected with server with the same clientName, the client will have the same Thread as before
+	 * If a client already had connected with server, the client will have the same Thread as before
 	 * 
 	 * @param clientSocket
 	 * @return client, a new or existing Thread. Result depends weather a Thread of the client already exists or not
-	 * 					, or null if there is any Exception to ensure further server-listening
 	 */
 	public static ServerThreadForClient getServerThreadForClient(Socket clientSocket){
-		try {
+		try{
+			ServerThreadForClient client;
 			Message msgIn = Message.receive(clientSocket);
 			String clientName = msgIn.getClient();
-			ServerThreadForClient client = null;
-			LinkedList<String> clientNames;
-			InetAddress inetAddress = clientSocket.getInetAddress();
-			
-			//Checks the client's IP and name to assign the correct Thread
-			if(clientNamesOnIP.containsKey(inetAddress)){
-				clientNames = clientNamesOnIP.get(inetAddress);
-				boolean found = false;
-				for(String storedClient: clientNames){
-					if(storedClient.compareTo(clientName) == 0){
-						client = connections.get(storedClient);
-						found = true;
-						break;
-					}
-				}
-				if(!found){
-					//If the client already had a connection with the server, but not with the current name
-					client = new ServerThreadForClient();
-					clientNames.add(clientName);
-					clientNamesOnIP.replace(inetAddress, clientNames);
-					connections.put(clientName, client);
-				}
+			if(connections.containsKey(clientName)){
+				client = connections.get(clientName);
 			}else{
-				//If the client never had a connection before with the server
 				client = new ServerThreadForClient();
-				LinkedList<String> newClientNameList = new LinkedList<String>();
-				newClientNameList.add(clientName);
 				connections.put(clientName, client);
-				clientNamesOnIP.put(inetAddress, newClientNameList);
 			}
-			//New socket for every connection needed, msgIn already received (only 1 Message.receive per Message possible)
 			client.addClientSocket(clientSocket);
 			client.setMsgIn(msgIn);
 			return client;
-		} catch (Exception e) {
+		}catch(Exception e){
 			e.printStackTrace();
 			return null;
 		}
 	}
-
-//	/**
-//	 * @author Lukas
-//	 * Factory Pattern, if a new client connects to server, a new Thread will be created.
-//	 * If a client already had connected with server, the client will have the same Thread as before
-//	 * 
-//	 * @param clientSocket
-//	 * @return client, a new or existing Thread. Result depends weather a Thread of the client already exists or not
-//	 */
-//	public static ServerThreadForClient getServerThreadForClient(Socket clientSocket){
-//		ServerThreadForClient client;
-//		InetAddress inetAddress = clientSocket.getInetAddress();
-//		if(connections.containsKey(inetAddress)){
-//			client = connections.get(inetAddress);
-//		}else{
-//			client = new ServerThreadForClient();
-//			connections.put(inetAddress, client);
-//		}
-//		client.addClientSocket(clientSocket);
-//		return client;
-//	}
 
 	/**
 	 * @author Lukas, source: Bradley Richards
@@ -171,7 +181,20 @@ public class ServerThreadForClient implements Runnable {
 	 */
     private Message processMessage(Message msgIn) {
 		Message msgOut = null;
-		if(msgIn instanceof Knock_Message || msgIn instanceof Login_Message || msgIn instanceof CreateNewPlayer_Message){
+		
+		//without inetAddress, you would be kicked out after the specified time-limit
+		if(!(msgIn instanceof Knock_Message) && !(msgIn instanceof Login_Message) && !(msgIn instanceof CreateNewPlayer_Message)
+				&& this.clientSocket.getInetAddress() != this.inetAddress && System.currentTimeMillis() - this.currentTime > 60000){
+			Failure_Message fmsg = new Failure_Message();
+			fmsg.setNotification("#clientUsed#");
+			return new Failure_Message();
+		}
+		
+		if(!(msgIn instanceof Knock_Message) && !(msgIn instanceof Login_Message) && !(msgIn instanceof CreateNewPlayer_Message)){
+			this.currentTime = System.currentTimeMillis();
+		}
+		
+		if(msgIn instanceof Login_Message || msgIn instanceof CreateNewPlayer_Message){
 			this.clientName = msgIn.getClient();
 		}
 		
@@ -209,6 +232,9 @@ public class ServerThreadForClient implements Runnable {
 		case Interaction:
 			msgOut = this.processInteraction(msgIn);
 			break;
+		case Logout:
+			msgOut = this.processLogout(msgIn);
+			break;
 		case Knock:
 			msgOut = new Commit_Message();
 			break;
@@ -231,10 +257,19 @@ public class ServerThreadForClient implements Runnable {
 	private Message processLogin(Message msgIn) {
 		Login_Message lmsg = (Login_Message) msgIn;
 		DB_Connector dbConnector = DB_Connector.getDB_Connector();
-		boolean success = dbConnector.checkLoginInput(this.clientName, lmsg.getPassword());
+		String clientName = lmsg.getClient();
+		boolean success = false;
+		
+		if(!onlineClients.contains(clientName) || System.currentTimeMillis() - this.currentTime > 60000){
+			success = dbConnector.checkLoginInput(this.clientName, lmsg.getPassword());
+			onlineClients.add(clientName);
+		}
 		
 		if(success){
 			this.logger.info(this.clientName+"'s login succeeded");
+			onlineClients.add(this.clientName);
+			this.currentTime = System.currentTimeMillis();
+			this.inetAddress = this.clientSocket.getInetAddress();
 			Commit_Message cmsg = new Commit_Message();
 			return cmsg;
 			
@@ -263,6 +298,9 @@ public class ServerThreadForClient implements Runnable {
 		boolean success = dbConnector.addNewPlayer(this.clientName, password);
 		if(success){
 			this.logger.info(this.clientName+"'s storage succeeded");
+			onlineClients.add(this.clientName);
+			this.currentTime = System.currentTimeMillis();
+			this.inetAddress = this.clientSocket.getInetAddress();
 			Commit_Message cmsg = new Commit_Message();
 			return cmsg;
 			
@@ -520,6 +558,18 @@ public class ServerThreadForClient implements Runnable {
     	}
     	return new Failure_Message();
 	}
+    
+    /**
+     * @author Lukas
+     * Deletes the client from the list to enable further login's
+     * 
+     * @param msgIn
+     * @return
+     */
+    private Message processLogout(Message msgIn){
+    	onlineClients.remove(this.clientName);
+    	return new Commit_Message();
+    }
 
 	/**
 	 * @author Lukas
