@@ -97,6 +97,7 @@ public class GameApp_Model extends Model {
 	protected HashMap<CardName, Integer> buyCards;
 	protected CardName buyChoice = null;
 	protected Phase currentPhase = null;
+	protected boolean phaseChanged = false;
 	protected boolean turnEnded = false;
 
 	public enum UserInput {
@@ -664,8 +665,10 @@ public class GameApp_Model extends Model {
 			this.coins = ugmsg.getCoins();
 
 		//Always currentPlayer
-		if(ugmsg.getCurrentPhase() != null)
+		if(ugmsg.getCurrentPhase() != null){
 			this.currentPhase = ugmsg.getCurrentPhase();
+			this.phaseChanged = true;
+		}
 
 		//If a buy was successful. Always currentPlayer
 		//stores the buyedCard of the currentPlayer and reduces the value of the buyCards(Cards which can be bought)
