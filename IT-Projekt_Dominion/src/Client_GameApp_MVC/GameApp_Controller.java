@@ -190,7 +190,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				break;
 			case Buy:
 				view.lblNameOfCurrentPhase.setText(t.getString("buy.lblNameOfCurrentPhase")); // Buy
-				view.btnCommit.setDisable(true);
+				view.btnCommit.setDisable(false);
 				break;
 			case CleanUp:
 				view.lblNameOfCurrentPhase.setText(t.getString("cleanUp.lblNameOfCurrentPhase")); // Clean up
@@ -576,9 +576,6 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 							view.txtfChatArea.setDisable(true);
 							view.btnSendChatArea.setDisable(true);
 						}
-
-						// The buy phase can never be skipped
-						view.btnCommit.setDisable(true);
 
 						// Adds Action cards and event handlers
 						Card cellarCard = Card.getCard(CardName.Cellar);
