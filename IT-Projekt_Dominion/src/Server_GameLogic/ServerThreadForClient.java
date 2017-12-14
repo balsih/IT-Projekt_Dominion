@@ -549,8 +549,8 @@ public class ServerThreadForClient implements Runnable {
         	this.logger.info(opponent.getPlayerName()+" "+GameSuccess.Won.toString()+"!");
         	
         	DB_Connector dbConnector = DB_Connector.getDB_Connector();
-        	dbConnector.addScore(this.player, this.player.getVictoryPoints());
-        	dbConnector.addScore(opponent, opponent.getVictoryPoints());
+        	dbConnector.addScore(this.player, this.player.getVictoryPoints(), this.player.getMoves());
+        	dbConnector.addScore(opponent, opponent.getVictoryPoints(), opponent.getMoves());
         	
         	this.game.setGameEnded(true);
         	
