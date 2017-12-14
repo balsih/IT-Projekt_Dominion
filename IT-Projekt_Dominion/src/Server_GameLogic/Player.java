@@ -302,10 +302,10 @@ public class Player {
 		 */
 		if (this.handCards.size() > 1) {
 			ugmsg.setDiscardPileTopCard(selectedTopCard);
-			
+			ugmsg.setLog("#topCard# "+selectedTopCard.getCardName().toString()); 
 		} else if (this.handCards.size() == 1 && selectedTopCard == null) {
 			ugmsg.setDiscardPileTopCard(this.handCards.element());
-
+			ugmsg.setLog("#topCard# "+this.handCards.element().getCardName().toString());
 		} else if (this.handCards.size() == 0 && selectedTopCard == null) {
 			ugmsg.setDiscardPileTopCard(this.discardPile.peek());
 		}
@@ -399,7 +399,7 @@ public class Player {
 
 				if (this.handCards.size() > 1) {
 					ugmsg.setInteractionType(Interaction.EndOfTurn);
-					ugmsg.setLog("#Choose a hand card as top card in discard pile#");
+					ugmsg.setLog("#choseTopCard#"); // choose top card for discardPile 
 				} else
 					ugmsg = UpdateGame_Message.merge(this.cleanUp(null), ugmsg);
 				break;
@@ -412,7 +412,6 @@ public class Player {
 				ugmsg.setActions(game.getCurrentPlayer().getActions());
 				ugmsg.setBuys(game.getCurrentPlayer().getBuys());
 				ugmsg.setCoins(game.getCurrentPlayer().getCoins());
-				ugmsg.setLog("#Your turn#: " + game.getCurrentPlayer().getPlayerName());
 				break;
 
 			default:
