@@ -110,11 +110,10 @@ public class Dominion_Main extends Application {
 		if(this.login_View != null){
 			this.login_View.stop();
 			this.login_View = null;
-		}else if(this.createPlayer_View != null){
+		} else if(this.createPlayer_View != null){
 			this.createPlayer_View.stop();
 			this.createPlayer_View = null;
 		}
-		
 	}
 	
 	@Override

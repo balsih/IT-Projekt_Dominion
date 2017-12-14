@@ -45,7 +45,7 @@
 .combo-box-popup {
 	-fx-background: rgba(0, 0, 0, 6);
 	-fx-background-color: rgba(0, 0, 0, 6);
-	 -fx-text-fill: white;
+	-fx-text-fill: white;
 }
 
 #languageSelectComboBox {
@@ -89,11 +89,20 @@
     -fx-font-weight: bold;
     -fx-font-family: "Bookman Old Style";
 }
-#playerLbl {
+#playerLbll {
+	
 	-fx-text-alignment: center;
 	-fx-font-size: 12pt
-	
 }
+
+#playerLbl {
+	
+	-fx-font: bold 12pt "Bookman Old Style";
+    -fx-text-alignment: center;
+    -fx-text-fill: white;
+}
+
+
 
 
 .button {

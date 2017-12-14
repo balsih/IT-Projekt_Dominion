@@ -128,8 +128,6 @@ public class MainMenu_View extends View<GameApp_Model> {
 		
 		
 		// shows the name of the actual player
-	
-		//playerLbl = new Label("Spieler: Bodo Grütter"); // zum testen da noch kein Playername vorhanden
 		playerLbl = new Label(t.getString("menu.player")+" "+model.getClientName());
 		playerLbl.setId("playerLbl");
 		
