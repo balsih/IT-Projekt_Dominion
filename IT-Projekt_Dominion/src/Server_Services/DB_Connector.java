@@ -80,16 +80,17 @@ public class DB_Connector {
 	 * @param score - the achieved score in a game.
 	 * @return Boolean - depending on if the insert statement works.
 	 */
-	public boolean addScore(Player player, int score) {
+	public boolean addScore(Player player, int score, int moves) {
 		try {
 			/*
 			 * prepares the preparedStatement with the insert into statement.
 			 * sets the parameters as value and executes the statement.
 			 */
-			String insertIntoPlayer_Scoring = "Insert into Player_Scoring (Username, Score) values (?, ?)";
+			String insertIntoPlayer_Scoring = "Insert into Player_Scoring (Username, Score, Moves) values (?, ?, ?)";
 			this.prepStmt = connection.prepareStatement(insertIntoPlayer_Scoring);
 			this.prepStmt.setString(1, player.getPlayerName());
 			this.prepStmt.setInt(2, score);
+			this.prepStmt.setInt(3, moves);
 			this.prepStmt.execute();
 
 			return true;
@@ -154,7 +155,7 @@ public class DB_Connector {
 	 * @return highScore - the 5 best players with their score.
 	 */
 	public String getHighScore() {
-		String selectHighScore = "Select distinct Username, Score from Player_Scoring order by Score desc limit 0,5";
+		String selectHighScore = "Select distinct Username, Score, Moves from Player_Scoring order by Score desc, Moves asc limit 0,5";
 		String highScore = "";
 
 		try {
@@ -162,8 +163,9 @@ public class DB_Connector {
 			this.rs = this.prepStmt.executeQuery();
 
 			while (this.rs.next()) {
-				highScore += rs.getString("Username") + ":\t\t\t\t";
-				highScore += rs.getString("Score") + "==";
+				highScore += rs.getString("Username") + ",";
+				highScore += rs.getString("Score") + ",";
+				highScore += rs.getString("Moves") + "==";
 			}
 
 			return highScore;
@@ -202,7 +204,8 @@ public class DB_Connector {
 					+ "Password varchar (130))";
 			String createPlayer_Scoring = "create table if not exists Player_Scoring("
 					+ "ID int not null auto_increment primary key," + "Username varchar(25) not null,"
-					+ "Score int not null," + "foreign key (Username) references Player (Username))";
+					+ "Score int not null," + "Moves int not null"
+					+ "foreign key (Username) references Player (Username))";
 
 			this.stmt = connection.createStatement();
 			this.stmt.execute(createPlayer);
@@ -323,6 +326,7 @@ public class DB_Connector {
 	
 	public static void main(String[] args){
 		DB_Connector connector = new DB_Connector();
+		
 		connector.addNewPlayer("Bodo", "Bodo");
 	}
 }

@@ -273,9 +273,9 @@ public class Game {
 		DB_Connector connector = DB_Connector.getDB_Connector();
 		
 		if(this.gameMode.equals(GameMode.Singleplayer) || this.gameMode.equals(GameMode.Multiplayer))
-			connector.addScore(this.player1, this.player1.getVictoryPoints());
+			connector.addScore(this.player1, this.player1.getVictoryPoints(), this.player1.getMoves());
 		if(this.gameMode.equals(GameMode.Multiplayer))
-			connector.addScore(this.player2, this.player2.getVictoryPoints());
+			connector.addScore(this.player2, this.player2.getVictoryPoints(), this.player2.getMoves());
 	}
 
 	/**
