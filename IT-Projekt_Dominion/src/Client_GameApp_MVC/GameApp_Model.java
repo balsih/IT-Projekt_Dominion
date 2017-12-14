@@ -171,7 +171,7 @@ public class GameApp_Model extends Model {
 	 */
 	public boolean checkUserInput(String userInput, UserInput inputType){
 		boolean valid = false;
-		final int MAX_INPUT_LENGTH = 30;
+		final int MAX_INPUT_LENGTH = 12;
 		String[] parts = userInput.split("\\.");
 
 		switch(inputType) {
