@@ -176,9 +176,12 @@ public class Game {
 		this.player1.setActualPhase(Phase.Buy);
 		this.player2.setActualPhase(Phase.Buy);
 		
-		// starts the first bot in a simulation
-		if (this.gameMode == GameMode.Simulation)
+		if((this.currentPlayer.equals(player2) && this.gameMode.equals(GameMode.Singleplayer)) || this.gameMode.equals(GameMode.Simulation))
 			new Thread(bot).start();
+		
+//		// starts the first bot in a simulation
+//		if (this.gameMode == GameMode.Simulation)
+//			new Thread(bot).start();
 	}
 
 	/**
@@ -327,6 +330,7 @@ public class Game {
 				existingGame.player2.setGame(existingGame);
 				
 				gameCounter++;
+				existingGame.gameMode = GameMode.Multiplayer;
 				existingGame.startGame();
 				
 				existingGame.getPlayer1().getServerThreadForClient()
@@ -336,8 +340,6 @@ public class Game {
 				existingGame.logger.info(existingGame.player1.getPlayerName() + " started a multiplayer game versus " + existingGame.player2.getPlayerName());
 				
 			}
-
-			existingGame.gameMode = GameMode.Multiplayer;
 			return existingGame;
 			
 			// creates and starts in singleplayer mode a game with a player and a bot
@@ -348,8 +350,8 @@ public class Game {
 			game.player1.setGame(game);
 			game.setPlayer2(game.bot);
 			game.bot.setGame(game);
-			game.startGame();
 			game.gameMode = GameMode.Singleplayer;
+			game.startGame();
 			
 			game.getPlayer1().getServerThreadForClient()
 					.addWaitingMessages(game.getPlayer1().getServerThreadForClient().getCG_Message(game));
