@@ -129,6 +129,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		// By closing the window, the player gives up and exits the game
 		this.view.getStage().setOnCloseRequest(event -> { 
 			model.sendGiveUp();
+			model.sendLogout();
 			this.listenToServer = false; // Stops the thread
 			view.stop();
 			Platform.exit();
@@ -169,7 +170,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 				DialogPane chatDialogPane = chatAlert.getDialogPane();
 				chatDialogPane.getStyleClass().add("generalAlert");
-				
+
 				// Auto-hides the alert after the specified duration
 				PauseTransition delay = new PauseTransition(Duration.seconds(2));
 				delay.setOnFinished(e -> chatAlert.hide());
@@ -362,22 +363,26 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 	}
 
 	// Shows an alert that informs the player about the current phase and whose turn it is
-	private void startPhaseAlert() {
-		Alert phaseAlert = new Alert(AlertType.INFORMATION);
-		phaseAlert.setTitle(model.currentPlayer+t.getString("phaseAlert.title")); // 's turn
-		phaseAlert.setHeaderText(null);
-		phaseAlert.setContentText(model.currentPhase+" "+t.getString("phaseAlert.content")+" "+model.currentPlayer+"."); // phase has just started for
+	private void startPhaseAlert() {		
+		Popup popupPhase = new Popup();
 
-		// Special styling for the alert
-		phaseAlert.initOwner(view.getStage());
+		ImageView imgActionPhase = new ImageView(new Image(getClass().getResourceAsStream("Images/actionPhase.png")));
+		ImageView imgBuyPhase = new ImageView(new Image(getClass().getResourceAsStream("Images/buyPhase.png")));
+		ImageView imgCleanUpPhase = new ImageView(new Image(getClass().getResourceAsStream("Images/cleanUpPhase.png")));
+		ImageView imgAktionsphase = new ImageView(new Image(getClass().getResourceAsStream("Images/Aktionsphase.png")));
+		ImageView imgKaufphase = new ImageView(new Image(getClass().getResourceAsStream("Images/Kaufphase.png")));
+		ImageView imgAufräumphase = new ImageView(new Image(getClass().getResourceAsStream("Images/Aufräumphase.png")));
 
-		DialogPane phaseDialogPane = phaseAlert.getDialogPane();
-		phaseDialogPane.getStyleClass().add("generalAlert");
+		imgActionPhase.setPreserveRatio(true);
+		//imgActionPhase.setFitWidth(300);
+		popupPhase.getContent().add(imgActionPhase);
+		popupPhase.centerOnScreen();
+		popupPhase.setAutoHide(true);
 
 		// Auto-hides the alert after the specified duration
 		PauseTransition delay = new PauseTransition(Duration.seconds(1.5));
-		delay.setOnFinished(e -> phaseAlert.hide());
-		phaseAlert.show();
+		delay.setOnFinished(e -> popupPhase.hide());
+		popupPhase.show(view.getStage());
 		delay.play();
 	}
 
@@ -444,6 +449,11 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		// Describes what happens when the user clicks a hand card
 		img.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 
+			// If model.success isn't null, someone has won the game
+			if (model.success != null){
+				createWinnerPopup();
+			}
+
 			if (model.currentPlayer.compareTo(model.clientName) == 0) {
 
 				// Removes a treasure or action card from the hand and adds it to the played cards
@@ -498,11 +508,49 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		setGeneralImageEvents(img);
 	}
 
+	private void createWinnerPopup() {
+
+		// Ensures the update happens on the JavaFX Application Thread, by using Platform.runLater()
+		Platform.runLater(() -> {
+
+			String winner;
+			if (model.success == model.success.Won) {
+				winner = model.getClientName();
+			} else {
+				winner = model.opponent;
+			}
+
+			// Shows a popup with information about the winner
+			Popup popupPlayerSuccess = new Popup();
+			Label lblWinner = new Label("Winner: ");
+			Label lblNameOfWinner = new Label(winner);
+			Label lblVictoryPoints = new Label("Victory points: ");
+			Label lblNmbrOfVictoryPoints = new Label (Integer.toString(model.victoryPoints));
+			HBox hboxWinnerName = new HBox(lblWinner, lblNameOfWinner);
+			HBox hboxWinnerVictoryPoints = new HBox(lblVictoryPoints, lblNmbrOfVictoryPoints);
+			ImageView confettiGIF = new ImageView(new Image(getClass().getResourceAsStream("Images/confetti.gif")));
+
+			VBox vboxWinner = new VBox(hboxWinnerName, hboxWinnerVictoryPoints, confettiGIF);
+
+			popupPlayerSuccess.getContent().add(vboxWinner);
+			popupPlayerSuccess.centerOnScreen();
+			popupPlayerSuccess.show(view.getStage());
+
+			listenToServer = false;
+		});
+
+	}
+
 	// Sets events on action, treasure and victory cards
 	private void setInitialATVCardEvents(Card card, ImageView img) {
 
 		// Describes what happens when the user clicks a action, treasure or victory card
 		img.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+
+			// If model.success isn't null, someone has won the game
+			if (model.success != null){
+				createWinnerPopup();
+			}
 
 			if (model.currentPlayer.compareTo(model.clientName) == 0) {
 
@@ -645,32 +693,33 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 					updateGUI();
 
 				} else if (msgIn instanceof PlayerSuccess_Message) {
-					PlayerSuccess_Message psmsg = (PlayerSuccess_Message) msgIn;
-
-					// Ensures the update happens on the JavaFX Application Thread, by using Platform.runLater()
-					Platform.runLater(() -> {
-
-						// main.startSuccess(psmsg.getSuccess());
-						
-						// Shows a popup with information about the winner
-						Popup popupPlayerSuccess = new Popup();
-						Label lblWinner = new Label(t.getString("popupPlayerSuccess.lblWinner")); // Winner:
-						Label lblNameOfWinner = new Label(psmsg.getClient());
-						Label lblVictoryPoints = new Label(t.getString("popupPlayerSuccess.lblVictoryPoints")); // Victory points:
-						Label lblNmbrOfVictoryPoints = new Label (Integer.toString(psmsg.getVictoryPoints()));
-						HBox hboxWinnerName = new HBox(lblWinner, lblNameOfWinner);
-						HBox hboxWinnerVictoryPoints = new HBox(lblVictoryPoints, lblNmbrOfVictoryPoints);
-						ImageView confettiGIF = new ImageView(new Image(getClass().getResourceAsStream("Images/confetti.gif")));
-						
-						VBox vboxWinner = new VBox(hboxWinnerName, hboxWinnerVictoryPoints, confettiGIF);
-						
-						popupPlayerSuccess.getContent().add(vboxWinner);
-						popupPlayerSuccess.centerOnScreen();
-						popupPlayerSuccess.show(view.getStage());
-						
-						listenToServer = false;
-
-					});
+					createWinnerPopup();
+					//					PlayerSuccess_Message psmsg = (PlayerSuccess_Message) msgIn;
+					//
+					//					// Ensures the update happens on the JavaFX Application Thread, by using Platform.runLater()
+					//					Platform.runLater(() -> {
+					//
+					//						// main.startSuccess(psmsg.getSuccess());
+					//						
+					//						// Shows a popup with information about the winner
+					//						Popup popupPlayerSuccess = new Popup();
+					//						Label lblWinner = new Label(t.getString("popupPlayerSuccess.lblWinner")); // Winner:
+					//						Label lblNameOfWinner = new Label(psmsg.getClient());
+					//						Label lblVictoryPoints = new Label(t.getString("popupPlayerSuccess.lblVictoryPoints")); // Victory points:
+					//						Label lblNmbrOfVictoryPoints = new Label (Integer.toString(psmsg.getVictoryPoints()));
+					//						HBox hboxWinnerName = new HBox(lblWinner, lblNameOfWinner);
+					//						HBox hboxWinnerVictoryPoints = new HBox(lblVictoryPoints, lblNmbrOfVictoryPoints);
+					//						ImageView confettiGIF = new ImageView(new Image(getClass().getResourceAsStream("Images/confetti.gif")));
+					//						
+					//						VBox vboxWinner = new VBox(hboxWinnerName, hboxWinnerVictoryPoints, confettiGIF);
+					//						
+					//						popupPlayerSuccess.getContent().add(vboxWinner);
+					//						popupPlayerSuccess.centerOnScreen();
+					//						popupPlayerSuccess.show(view.getStage());
+					//						
+					//						listenToServer = false;
+					//
+					//					});
 				}
 			}
 		}

@@ -584,7 +584,7 @@ public class GameApp_Model extends Model {
 		return update;
 	}
 	
-	protected void sendLogout(){
+	public void sendLogout(){
 		Logout_Message lmsg = new Logout_Message();
 		this.processMessage(lmsg);
 	}

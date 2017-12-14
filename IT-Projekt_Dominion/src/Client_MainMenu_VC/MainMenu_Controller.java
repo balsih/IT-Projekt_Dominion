@@ -64,27 +64,38 @@ public class MainMenu_Controller extends Controller<GameApp_Model, MainMenu_View
 				
 		
 		// sets values of the combobox and updates the texts to selected language 
+		// and set a new Translator with the selected language 
 		view.languageSelectComboBox.setOnAction((e) -> {
 			String newLang = view.languageSelectComboBox.getValue();
-			sl.setTranslator(new Translator(newLang));
+			Translator translator = new Translator(newLang);
+			sl.setTranslator(translator);
 			sl.getConfiguration().setLocalOption("Language", newLang);
 			view.updateTexts();
+			model.setTranslator(translator);
 		});
+		
 		
 		// set on action and handling for quitBtn
 		view.quitBtn.setOnAction((event) -> {
 			model.startBtnClickSound();
 			view.stop();
+			model.sendLogout();
+			sl.getConfiguration().save();
 		});
 		
 		
-		// gets called when the window is closed -> save the language of the combobox to the local cfg File
-		view.getStage().setOnHiding((e) -> {
-			// save config file
-			sl.getConfiguration().save();
-			//System.out.println("saved config");
-		}); 
+//		// gets called when the window is closed -> save the language of the combobox to the local cfg File
+//		view.getStage().setOnHiding((e) -> {
+//			// save config file
+//			sl.getConfiguration().save();
+//			//System.out.println("saved config");
+//		}); 
 		
+		
+		view.getStage().setOnCloseRequest((event) -> {
+			model.sendLogout();
+			sl.getConfiguration().save();
+		});
 		
 	}
 }//end MainMenu_Controller
