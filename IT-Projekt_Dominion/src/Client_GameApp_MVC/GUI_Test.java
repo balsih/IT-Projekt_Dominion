@@ -158,7 +158,7 @@ public class GUI_Test extends Application {
 
 		// Controls chat area
 		Label lblChatArea = new Label("Chat");
-		ScrollPane scrlpChatArea = new ScrollPane();
+		//ScrollPane scrlpChatArea = new ScrollPane();
 		TextArea txtaChatArea = new TextArea();
 		txtaChatArea.setDisable(true);
 		TextField txtfChatArea = new TextField();
@@ -248,14 +248,14 @@ public class GUI_Test extends Application {
 		hboxVictoryCards.getChildren().add(2, vboxProvinceCards);
 
 		// Chat area
-		scrlpChatArea.setMaxWidth(400);
+		// scrlpChatArea.setMaxWidth(400);
 		txtaChatArea.setMaxWidth(400);
-		scrlpChatArea.setMaxHeight(100);
+		// scrlpChatArea.setMaxHeight(100);
 		txtaChatArea.setMaxHeight(100);
 		txtfChatArea.setMinWidth(320);
-		scrlpChatArea.setContent(txtaChatArea);
+		// scrlpChatArea.setContent(txtaChatArea);
 		HBox hboxChatArea = new HBox(txtfChatArea, btnSendChatArea);
-		VBox vboxChatArea = new VBox(lblChatArea, scrlpChatArea, hboxChatArea);
+		VBox vboxChatArea = new VBox(lblChatArea, txtaChatArea, hboxChatArea);
 
 		// Log area
 		scrlpLog.setMaxWidth(400);
@@ -599,17 +599,25 @@ public class GUI_Test extends Application {
 //			popup.show(stage);
 //			popup.setAutoHide(true);
 			
-			Alert alert = new Alert(AlertType.CONFIRMATION);
-			alert.setTitle("Are you sure?");
-			alert.setHeaderText("If you click ok, you'll lose.");
-			alert.setContentText("Do you really want to leave this game?");
-
-			Optional<ButtonType> result = alert.showAndWait();
-			if (result.get() == ButtonType.OK){
-			   Platform.exit();
-			} else {
-			    alert.hide();
-			}
+//			Alert alert = new Alert(AlertType.CONFIRMATION);
+//			alert.setTitle("Are you sure?");
+//			alert.setHeaderText("If you click ok, you'll lose.");
+//			alert.setContentText("Do you really want to leave this game?");
+//
+//			Optional<ButtonType> result = alert.showAndWait();
+//			if (result.get() == ButtonType.OK){
+//			   Platform.exit();
+//			} else {
+//			    alert.hide();
+//			}
+			
+	
+			txtaChatArea.setDisable(false);
+			txtaChatArea.setEditable(false);
+			
+			String existingMessages = txtaChatArea.getText();
+			txtaChatArea.setText(txtfChatArea.getText()+System.lineSeparator().concat(existingMessages));
+			txtfChatArea.setText("");
 		
 	});
 

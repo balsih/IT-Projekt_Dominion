@@ -3,6 +3,7 @@ package Client_GameApp_MVC;
 import Abstract_MVC.View;
 import Client_Services.ServiceLocator;
 import Client_Services.Translator;
+import Messages.GameSuccess;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -74,7 +75,6 @@ public class GameApp_View extends View<GameApp_Model> {
 
 	// Chat area
 	protected Label lblChatArea;
-	protected ScrollPane scrlpChatArea;
 	protected TextArea txtaChatArea;
 	protected TextField txtfChatArea;
 	protected Button btnSendChatArea;
@@ -84,7 +84,6 @@ public class GameApp_View extends View<GameApp_Model> {
 
 	// Log area
 	protected Label lblLog;
-	protected ScrollPane scrlpLog;
 	protected TextArea txtaLog;
 	
 	protected VBox vboxLog;
@@ -148,6 +147,8 @@ public class GameApp_View extends View<GameApp_Model> {
 	
 	public GameApp_View(Stage stage, GameApp_Model model){
 		super(stage, model);
+		
+		model.success = null;
 	}
 
 	// Creates the GUI with all its containers and contents
@@ -225,26 +226,22 @@ public class GameApp_View extends View<GameApp_Model> {
 
 		// Creates chat area
 		this.lblChatArea = new Label(t.getString("chat.lblChatArea")); // Chat
-		this.scrlpChatArea = new ScrollPane();
 		this.txtaChatArea = new TextArea();
 		this.txtfChatArea = new TextField();
 
 		this.btnSendChatArea = new Button(t.getString("chat.btnSendChatArea")); // Send
-		scrlpChatArea.setContent(txtaChatArea);
-		scrlpChatArea.setMaxWidth(500);
+		txtaChatArea.setMaxWidth(500);
 		txtaChatArea.setEditable(false);
 		this.hboxChatArea = new HBox(txtfChatArea, btnSendChatArea);
-		this.vboxChatArea = new VBox(lblChatArea, scrlpChatArea, hboxChatArea);
+		this.vboxChatArea = new VBox(lblChatArea, txtaChatArea, hboxChatArea);
 
 		// Creates log area
 		this.lblLog = new Label(t.getString("log.lblLog")); // Log
-		this.scrlpLog = new ScrollPane();
 		this.txtaLog = new TextArea();
 
-		scrlpLog.setContent(txtaLog);
-		scrlpLog.setMaxWidth(500);
+		txtaLog.setMaxWidth(500);
 		txtaLog.setEditable(false);
-		this.vboxLog = new VBox(lblLog, scrlpLog);
+		this.vboxLog = new VBox(lblLog, txtaLog);
 
 		// Creates discard area
 		this.lblDiscard = new Label(t.getString("discard.lblDiscard")); // Discard
