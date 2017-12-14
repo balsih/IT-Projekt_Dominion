@@ -412,7 +412,7 @@ public class Player {
 				ugmsg.setActions(game.getCurrentPlayer().getActions());
 				ugmsg.setBuys(game.getCurrentPlayer().getBuys());
 				ugmsg.setCoins(game.getCurrentPlayer().getCoins());
-				ugmsg.setLog("#It's your turn#: " + game.getCurrentPlayer().getPlayerName());
+				ugmsg.setLog("#Your turn#: " + game.getCurrentPlayer().getPlayerName());
 				break;
 
 			default:
