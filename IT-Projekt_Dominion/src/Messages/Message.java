@@ -153,6 +153,7 @@ public abstract class Message {
         else if (type == MessageType.GameMode) newMessage = new GameMode_Message();
         else if (type == MessageType.HighScore) newMessage = new HighScore_Message();
         else if (type == MessageType.Login) newMessage = new Login_Message();
+        else if (type == MessageType.Logout) newMessage = new Logout_Message();
         else if (type == MessageType.PlayCard) newMessage = new PlayCard_Message();
         else if (type == MessageType.PlayerSuccess) newMessage = new PlayerSuccess_Message();
         else if (type == MessageType.UpdateGame) newMessage = new UpdateGame_Message();

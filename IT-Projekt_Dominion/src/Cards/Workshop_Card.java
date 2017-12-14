@@ -13,7 +13,7 @@ import Server_GameLogic.GameMode;
 import Server_GameLogic.Player;
 
 /**
- * @author René
+ * @author Rene
  * @version 1.0
  * @created 31-Okt-2017 16:58:17
  */

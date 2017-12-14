@@ -8,7 +8,7 @@ import Server_GameLogic.Game;
 import Server_GameLogic.Player;
 
 /**
- * @author Renate
+ * @author Rene
  * @version 1.0
  * @created 31-Okt-2017 16:58:05
  */
@@ -32,7 +32,7 @@ public class Cellar_Card extends Card {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
 		//#DiscardCards# Chose cards to discard
-		ugmsg.setLog(player.getPlayerName()+": #played# #"+this.cardName.toString()+"# #card#. #DiscardCards#");
+		ugmsg.setLog(player.getPlayerName()+": #played# "+this.cardName.toString()+" #card#. #DiscardCards#");
 		
 		// update game Messages -> XML 
 		ugmsg.setInteractionType(Interaction.Cellar);
@@ -57,8 +57,7 @@ public class Cellar_Card extends Card {
 		this.player.getDiscardPile().addAll(realDiscardedCards);
 		UpdateGame_Message ugmsg = this.player.draw(realDiscardedCards.size());
 		
-		
-		ugmsg.setLog(player.getPlayerName()+": #picked# #"+discardedCards.size()+"# #cards#"); // how many card have been picked
+		ugmsg.setLog(player.getPlayerName()+": #picked#"+discardedCards.size()+" #cards#"); // how many card have been picked
 		if(!this.player.getDiscardPile().isEmpty())
 			ugmsg.setDiscardPileTopCard(this.player.getDiscardPile().peek());
 		ugmsg.setDiscardPileCardNumber(this.player.getDiscardPile().size());

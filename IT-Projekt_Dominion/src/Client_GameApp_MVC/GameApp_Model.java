@@ -34,6 +34,7 @@ import Messages.Interaction;
 import Messages.Interaction_Message;
 import Messages.Knock_Message;
 import Messages.Login_Message;
+import Messages.Logout_Message;
 import Messages.Message;
 import Messages.MessageType;
 import Messages.PlayCard_Message;
@@ -171,7 +172,7 @@ public class GameApp_Model extends Model {
 	 */
 	public boolean checkUserInput(String userInput, UserInput inputType){
 		boolean valid = false;
-		final int MAX_INPUT_LENGTH = 30;
+		final int MAX_INPUT_LENGTH = 12;
 		String[] parts = userInput.split("\\.");
 
 		switch(inputType) {
@@ -582,6 +583,11 @@ public class GameApp_Model extends Model {
 		}
 		return update;
 	}
+	
+	protected void sendLogout(){
+		Logout_Message lmsg = new Logout_Message();
+		this.processMessage(lmsg);
+	}
 
 
 	/**
@@ -800,6 +806,10 @@ public class GameApp_Model extends Model {
 
 	public void setIP(String ipAddress){
 		this.ipAddress = ipAddress;
+	}
+	
+	public void setTranslator(Translator translator){
+		this.t = translator;
 	}
 
 	public void setClientName(String clientName){
