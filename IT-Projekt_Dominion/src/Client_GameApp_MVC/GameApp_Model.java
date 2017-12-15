@@ -42,6 +42,7 @@ import Messages.PlayerSuccess_Message;
 import Messages.UpdateGame_Message;
 import Server_GameLogic.GameMode;
 import Server_GameLogic.Phase;
+import Server_GameLogic.Player;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
@@ -90,15 +91,15 @@ public class GameApp_Model extends Model {
 	protected Card discardCard = null;
 	protected LinkedList<Card> cellarDiscards = new LinkedList<Card>();
 
-	protected GameSuccess success = null;
-	protected Integer victoryPoints = null;
-
 	protected GameMode gameMode = null;
 	protected HashMap<CardName, Integer> buyCards;
 	protected CardName buyChoice = null;
 	protected Phase currentPhase = null;
 	protected boolean phaseChanged = false;
 	protected boolean turnEnded = false;
+	
+	protected Player clientPlayer = null;
+	protected Player opponentPlayer = null;
 
 	public enum UserInput {
 		clientName,
@@ -614,14 +615,19 @@ public class GameApp_Model extends Model {
 
 	/**
 	 * @author Lukas
-	 * Set success and victoryPoints. Result depends weather you won or lost
+	 * Set the players with set success and victoryPoints. Result depends weather you won or lost
 	 * 
 	 * @param msgIn
 	 */
 	protected void processPlayerSuccess(Message msgIn) {
 		PlayerSuccess_Message psmsg = (PlayerSuccess_Message) msgIn;
-		this.success = psmsg.getSuccess();
-		this.victoryPoints = psmsg.getVictoryPoints();
+		if(psmsg.getPlayer1().getPlayerName().compareTo(this.clientName) == 0){
+			this.clientPlayer = psmsg.getPlayer1();
+			this.opponentPlayer = psmsg.getPlayer2();
+		}else{
+			this.opponentPlayer = psmsg.getPlayer1();
+			this.clientPlayer = psmsg.getPlayer2();
+		}
 	}
 
 

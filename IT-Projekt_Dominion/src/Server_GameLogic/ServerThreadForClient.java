@@ -57,7 +57,7 @@ public class ServerThreadForClient implements Runnable {
 	private static LinkedList<String> onlineClients = new LinkedList<String>();
 	private static HashMap<String, ServerThreadForClient> connections = new HashMap<String, ServerThreadForClient>();
 	
-	private final Logger logger = Logger.getLogger("");
+	private static final Logger logger = Logger.getLogger("");
 	private final Integer AFK_TIMER = 1800000;
 
 	private Socket clientSocket;
@@ -151,7 +151,7 @@ public class ServerThreadForClient implements Runnable {
 			client.setMsgIn(msgIn);
 			return client;
 		}catch(Exception e){
-			e.printStackTrace();
+			logger.severe("Exception in gerServerThreadForClient(Socket clientSocket): "+e.toString());
 			return null;
 		}
 	}
@@ -163,9 +163,10 @@ public class ServerThreadForClient implements Runnable {
 	 */
 	@Override
 	public void run(){
+		Message msgOut = processMessage(this.msgIn);
+		msgOut.send(clientSocket);
+		try { if (clientSocket != null) clientSocket.close(); } catch (IOException e) {}
 		try{				// Read a message from the client
-			Message msgOut = processMessage(this.msgIn);
-			msgOut.send(clientSocket);
 		}catch(Exception e) {
 			logger.severe(e.toString());
 		}finally{
@@ -200,7 +201,7 @@ public class ServerThreadForClient implements Runnable {
 		}
 		
 		if(!(msgIn instanceof AskForChanges_Message))
-			this.logger.info("Received from "+this.clientName+": "+msgIn.getType().toString());
+			logger.info("Received from "+this.clientName+": "+msgIn.getType().toString());
 		
 		switch (MessageType.getType(msgIn)) {
 		case AskForChanges:
@@ -266,7 +267,7 @@ public class ServerThreadForClient implements Runnable {
 		}
 		
 		if(success){
-			this.logger.info(this.clientName+"'s login succeeded");
+			logger.info(this.clientName+"'s login succeeded");
 			onlineClients.add(this.clientName);
 			this.currentTime = System.currentTimeMillis();
 			this.inetAddress = this.clientSocket.getInetAddress();
@@ -274,7 +275,7 @@ public class ServerThreadForClient implements Runnable {
 			return cmsg;
 			
 		}else{
-			this.logger.info(this.clientName+"'s login failed");
+			logger.info(this.clientName+"'s login failed");
 			Failure_Message fmsg = new Failure_Message();
 			fmsg.setNotification("#loginFailed#");
 			return fmsg;
@@ -297,7 +298,7 @@ public class ServerThreadForClient implements Runnable {
 		DB_Connector dbConnector = DB_Connector.getDB_Connector();
 		boolean success = dbConnector.addNewPlayer(this.clientName, password);
 		if(success){
-			this.logger.info(this.clientName+"'s storage succeeded");
+			logger.info(this.clientName+"'s storage succeeded");
 			onlineClients.add(this.clientName);
 			this.currentTime = System.currentTimeMillis();
 			this.inetAddress = this.clientSocket.getInetAddress();
@@ -305,7 +306,7 @@ public class ServerThreadForClient implements Runnable {
 			return cmsg;
 			
 		}else{
-			this.logger.info(this.clientName+"'s storage failed");
+			logger.info(this.clientName+"'s storage failed");
 			Failure_Message fmsg = new Failure_Message();
 			fmsg.setNotification(this.clientName+" #isUsed#");
 			return fmsg;
@@ -332,7 +333,7 @@ public class ServerThreadForClient implements Runnable {
 			//1 = translation(false), the real highscore can't be translated
 			hsmsg.setTranslation(1);
 		}
-		this.logger.info("send highscore to "+this.clientName);
+		logger.info("send highscore to "+this.clientName);
 		return hsmsg;
 	}
 	
@@ -408,7 +409,7 @@ public class ServerThreadForClient implements Runnable {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		ugmsg.setChat(chat);
 		this.player.sendToOpponent(this.player, ugmsg);
-		this.logger.info(cmsg.getClient()+" has sent chat to "+this.game.getOpponent(this.player).getPlayerName()+": "+cmsg.getChat());
+		logger.info(cmsg.getClient()+" has sent chat to "+this.game.getOpponent(this.player).getPlayerName()+": "+cmsg.getChat());
 		return ugmsg;
 	}
 
@@ -451,7 +452,7 @@ public class ServerThreadForClient implements Runnable {
 				this.player.sendToOpponent(this.player, EOTmsg);
 				return EOTmsg;
 			}
-			this.logger.info("Interaction "+Interaction.EndOfTurn.toString()+" failed");
+			logger.info("Interaction "+Interaction.EndOfTurn.toString()+" failed");
 			return new Failure_Message();
 			
 		//Player discards his chosen handCards
@@ -470,7 +471,7 @@ public class ServerThreadForClient implements Runnable {
 			Card disposeRemodelCard = this.getRealHandCard(imsg.getDisposeRemodelCard());
 			if(disposeRemodelCard != null)
 				return remodel1Card.executeRemodel1(disposeRemodelCard);
-			this.logger.info("Interaction "+Interaction.Remodel1.toString()+" failed");
+			logger.info("Interaction "+Interaction.Remodel1.toString()+" failed");
 			return new Failure_Message();
 			
 		//Player chose a card from the buyCards. Max-costs: disposedCard_cost +2 coins
@@ -482,10 +483,10 @@ public class ServerThreadForClient implements Runnable {
 		case Mine:
 			Mine_Card mineCard = (Mine_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
 			Card disposedMineCard = this.getRealHandCard(imsg.getDisposedMineCard());
-			this.logger.info("The disposedCard serversite is (369): "+imsg.getDisposedMineCard());
+			logger.info("The disposedCard serversite is (369): "+imsg.getDisposedMineCard());
 			if(disposedMineCard != null)
 				return mineCard.executeMine(disposedMineCard);
-			this.logger.info("Interaction "+Interaction.Mine.toString()+" failed");
+			logger.info("Interaction "+Interaction.Mine.toString()+" failed");
 			return new Failure_Message();
 		default:
 			return null;
@@ -535,26 +536,14 @@ public class ServerThreadForClient implements Runnable {
 	 */
     private Message processGiveUp(Message msgIn) {
     	if(!this.game.getGameEnded()){
-        	PlayerSuccess_Message psmsgOpponent = new PlayerSuccess_Message();
-        	Player opponent = this.game.getOpponent(this.player);
-        	psmsgOpponent.setSuccess(GameSuccess.Won);
-        	opponent.countVictoryPoints();
-        	psmsgOpponent.setVictoryPoints(opponent.getVictoryPoints());
-        	this.player.sendToOpponent(this.player, psmsgOpponent);
-        	
-        	PlayerSuccess_Message psmsgSelf = new PlayerSuccess_Message();
-        	psmsgSelf.setSuccess(GameSuccess.Lost);
-        	this.player.countVictoryPoints();
-        	psmsgSelf.setVictoryPoints(this.player.getVictoryPoints());
-        	this.logger.info(opponent.getPlayerName()+" "+GameSuccess.Won.toString()+"!");
-        	
-        	DB_Connector dbConnector = DB_Connector.getDB_Connector();
-        	dbConnector.addScore(this.player, this.player.getVictoryPoints(), this.player.getMoves());
-        	dbConnector.addScore(opponent, opponent.getVictoryPoints(), opponent.getMoves());
-        	
+        	PlayerSuccess_Message psmsg = new PlayerSuccess_Message();
+        	psmsg.setPlayer1(this.player);
+        	psmsg.setPlayer2(this.game.getOpponent(this.player));
+        	this.player.sendToOpponent(this.player, psmsg);
         	this.game.setGameEnded(true);
+        	logger.info(this.game.getOpponent(this.player).getPlayerName()+" "+GameSuccess.Won.toString()+"!");
         	
-        	return psmsgSelf;
+        	return psmsg;
     	}
     	return new Failure_Message();
 	}
