@@ -46,7 +46,7 @@ public class Workshop_Card extends Card {
 		LinkedList<CardName> availableCards = new LinkedList<CardName>();
 		availableCards.addAll(list);
 		
-		ugmsg.setLog(player.getPlayerName()+": #played# "+this.cardName.toString()+" #card#. #Workshop1#");
+		ugmsg.setLog(player.getPlayerName()+": #played# "+"#this.cardName.toString()#"+" #card#. #Workshop1#");
 			
 		// update game Messages -> XML 
 		ugmsg.setInteractionType(Interaction.Workshop);
@@ -65,7 +65,7 @@ public class Workshop_Card extends Card {
 		ugmsg.setBuyedCard(selectedCard);
 		ugmsg.setDiscardPileTopCard(selectedCard);
 		ugmsg.setDiscardPileCardNumber(this.player.getDiscardPile().size());
-		ugmsg.setLog(player.getPlayerName()+": #picked# "+selectedNameCard.toString()+" #card#");
+		ugmsg.setLog(player.getPlayerName()+": #picked# "+"#selectedNameCard.toString()#"+" #card#");
 		
 		// update game Messages -> XML 
 		if (this.player.getActions() == 0 || !this.player.containsCardType(this.player.getHandCards(), CardType.Action))

@@ -230,6 +230,7 @@ public class MainMenu_View extends View<GameApp_Model> {
 	public void updateTexts() {
 		//startGameBtn
 		Translator t = sl.getTranslator();
+		languageSelectComboBox.setTooltip(new Tooltip(t.getString("program.languageTip")));
 		mainMenuLbl.setText(t.getString("menu.mainMenuLbl"));
 		playerLbl.setText(t.getString("menu.player")+" "+model.getClientName());
 		selectModeLbl.setText(t.getString("menu.selectModeLbl"));

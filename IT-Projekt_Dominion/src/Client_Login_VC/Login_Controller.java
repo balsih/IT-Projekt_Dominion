@@ -39,7 +39,7 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 			try {
 				if (!view.ipText.getText().isEmpty() && !view.portText.getText().isEmpty()) {
 					boolean ipAdresse = model.checkUserInput(view.ipText.getText(), UserInput.ipAddress); 
-					boolean portNumber = model.checkUserInput(view.portText.getText(), UserInput.clientName); // provisorisch
+					boolean portNumber = model.checkUserInput(view.portText.getText(), UserInput.port); 
 					view.connectBtn.setDisable(!(ipAdresse && portNumber));
 				} else {
 					view.connectBtn.setDisable(true);
@@ -54,7 +54,7 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 			try {
 				if (!view.ipText.getText().isEmpty() && !view.portText.getText().isEmpty()) {
 					boolean ipAdresse = model.checkUserInput(view.ipText.getText(), UserInput.ipAddress);
-					boolean portNumber = model.checkUserInput(view.portText.getText(), UserInput.clientName); // provisorisch
+					boolean portNumber = model.checkUserInput(view.portText.getText(), UserInput.port); 
 					view.connectBtn.setDisable(!(ipAdresse && portNumber));
 				} else {
 					view.connectBtn.setDisable(true);
@@ -65,21 +65,18 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 		});
 		
 		
-		// set on action and handling for connectBtn -> Methode nur noch aktuell bis init() angepasst wurde -> String return und ABfrage von boolean failure
+		// set on action and handling for connectBtn 
 		view.connectBtn.setOnAction((event) -> {
 			try {	
 				model.startBtnClickSound();
 				String message = model.init(view.ipText.getText(), Integer.parseInt(view.portText.getText()));
-				if(!model.getFailure()){
-					//view.connectAlert.showAndWait(); -> keien Fehlermeldung vorgesehen
-	
+				if(!model.getFailure()){	
 					// enables the elements again after connectBtn got clicked 
 					view.nameLbl.setDisable(false);
 					view.nameText.setDisable(false);
 					view.passwordLbl.setDisable(false);
 					view.passwordText.setDisable(false);
 					view.createNewPlayerBtn.setDisable(false);
-					//view.quitBtn.setDisable(false);
 				} else {
 					view.loginAlert.setHeaderText(message);
 					view.loginAlert.showAndWait(); // warning alert if login fails
@@ -88,34 +85,6 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 				e.printStackTrace();
 			}
 		});
-		
-		// adapted/new method below:
-		
-		
-//		// set on action and handling for connectBtn
-//		view.connectBtn.setOnAction((event) -> {
-//			try {
-//				model.startBtnClickSound();
-//				String message = model.init(view.ipText.getText(), Integer.parseInt(view.portText.getText()));
-//				if (model.getFailure()) {
-//					view.loginAlert.setHeaderText(message);
-//					view.loginAlert.showAndWait(); // warning alert if login fails
-//					view.connectAlert.showAndWait();
-//				} else {
-//					// enables the elements again after connectBtn got clicked
-//					view.nameLbl.setDisable(false);
-//					view.nameText.setDisable(false);
-//					view.passwordLbl.setDisable(false);
-//					view.passwordText.setDisable(false);
-//					view.createNewPlayerBtn.setDisable(false);
-//					view.quitBtn.setDisable(false);
-//				}
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		});
-
-		
 		
 		// set on action and handling for nameText
 		view.nameText.textProperty().addListener((change) -> {
