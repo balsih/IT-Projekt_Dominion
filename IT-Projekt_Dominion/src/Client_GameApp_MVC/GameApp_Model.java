@@ -43,6 +43,8 @@ import Messages.UpdateGame_Message;
 import Server_GameLogic.GameMode;
 import Server_GameLogic.Phase;
 import Server_GameLogic.Player;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
@@ -57,6 +59,7 @@ public class GameApp_Model extends Model {
 	private final String NO_CONNECTION = "#NoConnection#";
 	private final String TRANSLATE_REGEX = "#[\\w\\s]*#";
 	private final String LINE_SEPARATOR_REGEX = "==";
+	private final String HIGHSCORE_REGEX = "\\s*,\\s*";
 	private final String SALT = "[B@d8c7b51";
 
 	private ServiceLocator sl = ServiceLocator.getServiceLocator();
@@ -393,28 +396,19 @@ public class GameApp_Model extends Model {
 	 * @author Lukas
 	 * Sends a request to server for the top5 Highscore
 	 * 
-	 * @return result, the Highscore in one String or message that client lost connection to server
+	 * @return result, ObservableList with the Highscore
 	 */
-	public String sendHighScoreRequest(){
-		String result = this.translate(NO_CONNECTION);
+	public ObservableList<String> sendHighScoreRequest(){
 		HighScore_Message hsmsg = new HighScore_Message();
+		String[] highscoreList = new String[]{};
 
 		Message msgIn = this.processMessage(hsmsg);
 		if(msgIn instanceof HighScore_Message){
 			HighScore_Message nhsmsg = (HighScore_Message) msgIn;
-			String highscore = nhsmsg.getHighScore();
-			Integer translation = nhsmsg.getTranslation();
-			
-			//0 for translation(true)
-			if(translation == 0){
-				result = this.lineSeparator(nhsmsg.getHighScore(), true);
-				
-			//1 for translation(false)
-			}else if(translation == 1){
-				result = this.lineSeparator(nhsmsg.getHighScore(), false);
-			}
+			highscoreList = nhsmsg.getHighScore().split(this.HIGHSCORE_REGEX);
 		}
-		return result;
+		ObservableList<String> observableHighscoreList = FXCollections.observableArrayList(highscoreList);
+		return observableHighscoreList;
 	}
 
 	/**
