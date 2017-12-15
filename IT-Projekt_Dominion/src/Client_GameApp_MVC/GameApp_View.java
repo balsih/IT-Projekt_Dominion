@@ -3,7 +3,6 @@ package Client_GameApp_MVC;
 import Abstract_MVC.View;
 import Client_Services.ServiceLocator;
 import Client_Services.Translator;
-import Messages.GameSuccess;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -148,7 +147,9 @@ public class GameApp_View extends View<GameApp_Model> {
 	public GameApp_View(Stage stage, GameApp_Model model){
 		super(stage, model);
 		
-		model.success = null;
+		// Resets the winner/loser
+		model.clientPlayer = null;
+		model.opponentPlayer = null;
 	}
 
 	// Creates the GUI with all its containers and contents

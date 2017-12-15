@@ -1,36 +1,26 @@
 package Client_GameApp_MVC;
 
-import java.io.IOException;
-import java.net.Socket;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
 import Abstract_MVC.Controller;
 import Cards.Card;
 import Cards.CardName;
 import Cards.CardType;
 import Client_Services.ServiceLocator;
 import Client_Services.Translator;
-import MainClasses.Dominion_Main;
 import Messages.AskForChanges_Message;
 import Messages.Commit_Message;
 import Messages.CreateGame_Message;
-import Messages.GameMode_Message;
+import Messages.GameSuccess;
 import Messages.Interaction;
 import Messages.Message;
-import Messages.MessageType;
 import Messages.PlayerSuccess_Message;
 import Messages.UpdateGame_Message;
 import Server_GameLogic.GameMode;
 import Server_GameLogic.Phase;
+import Server_GameLogic.Player;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
@@ -44,7 +34,6 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.ZoomEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
 import javafx.stage.Popup;
 import javafx.util.Duration;
 
@@ -68,7 +57,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 	public GameApp_Controller(GameApp_Model model, GameApp_View view) {
 		super(model, view);
 
-		// If a player gives up, he gets back to main menu
+		// Defines what happens after giving up the game
 		view.btnGiveUp.setOnAction(event -> {
 
 			// Creates a new alert that asks the user if he really wants to give up
@@ -77,12 +66,14 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			giveUpAlert.setHeaderText(t.getString("giveUpAlert.header")); // If you click ok, you'll lose.
 			giveUpAlert.setContentText(t.getString("giveUpAlert.content")); // Do you really want to leave this game?
 
-			// Special styling for the alert
+			// Makes sure that the alert gets displayed in front of the stage
 			giveUpAlert.initOwner(view.getStage());
 
+			// Special styling for the alert
 			DialogPane alertDialogPane = giveUpAlert.getDialogPane();
 			alertDialogPane.getStyleClass().add("giveUpAlert");
 
+			// Handles button clicks
 			Optional<ButtonType> result = giveUpAlert.showAndWait();
 			if (result.get() == ButtonType.OK){
 				model.sendGiveUp();
@@ -95,7 +86,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			}
 		});
 
-		// Adds the new chat message to the GUI
+		// Defines what happens after sending a new chat message
 		view.btnSendChatArea.setOnAction(event -> {
 			String newMessage = view.txtfChatArea.getText();
 
@@ -106,12 +97,14 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			}
 		});
 
-		// Defines what happens after clicking the button "commit"
+		// Defines what happens after clicking the button commit/skip
 		view.btnCommit.setOnAction(event -> {
 			switch (model.interaction) {
+			// Skips a game phase
 			case Skip:
 				model.sendInteraction();
 				break;
+				// Discards user-defined hand cards in cellar interaction
 			case Cellar:
 				if (model.cellarDiscards.size() >= 1) {
 					if(model.sendInteraction()){
@@ -126,12 +119,13 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		});
 
 		// By closing the window, the player gives up and exits the game
-		this.view.getStage().setOnCloseRequest(event -> { 
+		this.view.getStage().setOnCloseRequest(event -> {
 			model.sendGiveUp();
 			model.sendLogout();
 			this.listenToServer = false; // Stops the thread
 			view.stop();
 			Platform.exit();
+
 		});
 
 		// Starts the thread
@@ -159,14 +153,16 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 				model.newChat = null;
 
-				// Shows an alert that informs the player about newly received chat messages
+				// Displays an alert that informs the player about newly received chat messages
 				Alert chatAlert = new Alert(AlertType.INFORMATION);
 				chatAlert.setTitle(t.getString("chatAlert.title")); // Chat message
 				chatAlert.setHeaderText(null);
 				chatAlert.setContentText(t.getString("chatAlert.content")); // A new chat message has been sent.
 
+				// Makes sure that the alert gets displayed in front of the stage
 				chatAlert.initOwner(view.getStage());
 
+				// Styling of the alert
 				DialogPane chatDialogPane = chatAlert.getDialogPane();
 				chatDialogPane.getStyleClass().add("generalAlert");
 
@@ -178,12 +174,12 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			}
 
 			// Displays a popup, that informs the user about the current phase
-			if (model.phaseChanged == true){ // phase changed
+			if (model.phaseChanged == true){
 				startPhasePopup();
 				model.phaseChanged = false;
 			}
 
-			// Displays the current phase
+			// Displays the current phase in the current player area
 			switch (model.currentPhase) {
 			case Action:
 				view.lblNameOfCurrentPhase.setText(t.getString("action.lblNameOfCurrentPhase")); // Action
@@ -193,29 +189,30 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				view.lblNameOfCurrentPhase.setText(t.getString("buy.lblNameOfCurrentPhase")); // Buy
 				view.btnCommit.setDisable(false);
 				break;
-			// The cleanUp phase cannot be skipped. Therefore, the button is disabled.
+				// The cleanUp phase cannot be skipped. Therefore, the button skip gets disabled.
 			case CleanUp:
 				view.lblNameOfCurrentPhase.setText(t.getString("cleanUp.lblNameOfCurrentPhase")); // Clean up
 				view.btnCommit.setDisable(true);
 				break;
 			}
 
-			// During the cellar interaction, the button serves to commit the user's choice
+			// During the cellar interaction, the button serves to commit the user's cellar discard choice.
+			// Else, it enables the user to skip a game phase.
 			if (model.interaction == Interaction.Cellar){
 				view.btnCommit.setDisable(false);
-				view.btnCommit.setText(t.getString("current.btnCommit"));
+				view.btnCommit.setText(t.getString("current.btnCommit")); // Commit
 			} else {
-				view.btnCommit.setText(t.getString("current.btnSkip"));
+				view.btnCommit.setText(t.getString("current.btnSkip")); // Skip phase
 			}
 
-			// Clears the played cards and if it was the client's turn the hand cards after a player's turn ended
+			// Clears the played cards and, if it was the client's turn, the hand cards after a player's turn ended
 			if (model.turnEnded){
 				view.hboxPlayedCards.getChildren().clear();
 				if (model.clientName.compareTo(model.currentPlayer) != 0)
 					view.hboxHandCards.getChildren().clear();
 			}
 
-			// Adds new hand cards with event handlers
+			// Adds new hand to the hand cards area with event handlers
 			if (!model.yourNewHandCards.isEmpty()) {
 				for (Card card : model.yourNewHandCards) {
 					ImageView img = card.getImage();
@@ -225,7 +222,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				model.yourNewHandCards.clear();
 			}
 
-			//Adds the played cards with event handlers
+			// Adds played cards to the played cards area with event handlers
 			if (model.newPlayedCard != null){
 				ImageView img = model.newPlayedCard.getImage();
 				setGeneralImageEvents(resizeImage(img));
@@ -233,7 +230,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				model.newPlayedCard = null;
 			}
 
-			// Adds the discard pile top card to the GUI
+			// Adds the discard pile top card to the stack pane
 			if (model.yourDiscardPile == 0){
 				view.stackpDiscard.getChildren().clear();
 			} else 	if (model.yourDiscardPileTopCard != null){
@@ -247,7 +244,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			if (model.yourDeck == 0){
 				view.stackpDeck.getChildren().clear();
 			} else {
-				// Adds a flipside card to the deck pile when it is empty to simulate the presence of deck cards
+				// Adds a flipside card to the deck pile to show that it is not empty
 				if (view.stackpDeck.getChildren().isEmpty())
 					view.stackpDeck.getChildren().add(resizeImage(Card.getCard(CardName.Flipside).getImage()));
 			}
@@ -365,16 +362,17 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 	// Displays a popup that informs the player about the current phase
 	private void startPhasePopup() {
-		
+
 		ImageView imgActionPhase = new ImageView(new Image(getClass().getResourceAsStream("Images/actionPhase.png")));
 		ImageView imgBuyPhase = new ImageView(new Image(getClass().getResourceAsStream("Images/buyPhase.png")));
 		ImageView imgCleanUpPhase = new ImageView(new Image(getClass().getResourceAsStream("Images/cleanUpPhase.png")));
 		ImageView imgAktionsphase = new ImageView(new Image(getClass().getResourceAsStream("Images/Aktionsphase.png")));
 		ImageView imgKaufphase = new ImageView(new Image(getClass().getResourceAsStream("Images/Kaufphase.png")));
 		ImageView imgAufräumphase = new ImageView(new Image(getClass().getResourceAsStream("Images/Aufräumphase.png")));
-		
+
 		Popup popupPhase = new Popup();
-		
+
+		// Displays the image in the specified language
 		if (t.getCurrentLocale().getLanguage().equals("de")){
 			switch (model.currentPhase){
 			case Action:
@@ -401,47 +399,48 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			}
 		}
 
+		// Positions and auto-hides the popup after the specified duration
 		popupPhase.centerOnScreen();
 		popupPhase.setAutoHide(true);
 
-		// Auto-hides the popup after the specified duration
 		PauseTransition delay = new PauseTransition(Duration.seconds(1.5));
 		delay.setOnFinished(e -> popupPhase.hide());
 		popupPhase.show(view.getStage());
 		delay.play();
 	}
 
-	// Resizes the image to the optimal fit size
+	// Resizes images to the optimal fit size
 	private ImageView resizeImage(ImageView img) {
 		img.setFitWidth(80);
 		img.setFitHeight(120);
 		return img;
 	}
 
-	// Defines changes in size and brightness of images after triggering an event
+	// Defines image changes in size and brightness after triggering an event
 	private void setGeneralImageEvents(ImageView img) {
 
-		// Sets an initial and brighter image brightness
+		// Sets the initial and brighter image brightness
 		initial.setBrightness(0);
 		brighter.setBrightness(+0.5);
 
-		// If the user enters an image, it gets brighter
+		// If the user enters an image, it gets brighter (except for cellar interaction)
 		img.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
 			if ((model.interaction != Interaction.Cellar) || (model.interaction == Interaction.Cellar && !tmpViews.contains(img)))
 				img.setEffect(brighter);
 		});
 
-		// If the user zooms an image, it gets bigger
+		// If the user zooms an image, a popup displays it bigger
 		img.addEventHandler(ZoomEvent.ZOOM, event -> {
 			setZoomEvents(img);
 		});
 
-		// If the user scrolls an image, it gets bigger
+		// If the user scrolls an image, a popup displays it bigger
+		// (this event is for hardware unable to trigger ZoomEvent.ZOOM)
 		img.addEventHandler(ScrollEvent.ANY, event -> {
 			setZoomEvents(img);
 		});
 
-		// If the user exits an image, it gets back its initial brightness
+		// If the user exits an image, it gets back the initial brightness (except for cellar interaction)
 		img.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
 			if ((model.interaction != Interaction.Cellar) || (model.interaction == Interaction.Cellar && !tmpViews.contains(img)))
 				img.setEffect(initial);
@@ -474,8 +473,8 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		// Describes what happens when the user clicks a hand card
 		img.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 
-			// If model.success isn't null, someone has won the game
-			if (model.success != null){
+			// Create a winner popup if someone has won the game
+			if (model.clientPlayer != null || model.opponentPlayer != null){
 				createWinnerPopup();
 			}
 
@@ -538,26 +537,50 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		// Ensures the update happens on the JavaFX Application Thread, by using Platform.runLater()
 		Platform.runLater(() -> {
 
-			String winner;
-			if (model.success == model.success.Won) {
-				winner = model.getClientName();
-			} else {
-				winner = model.opponent;
+			String winnerName = null;
+			String loserName = null;
+			int winnerVictoryPoints = 0;
+			int loserVictoryPoints = 0;
+			
+			// Gets loser and winner names with the number of acquired victory points
+			if (model.clientPlayer.getStatus() == GameSuccess.Won){
+				winnerName = model.clientPlayer.getPlayerName();
+				winnerVictoryPoints = model.clientPlayer.getVictoryPoints();
+				loserName = model.opponentPlayer.getPlayerName();
+				loserVictoryPoints = model.opponentPlayer.getVictoryPoints();
+			} else if (model.opponentPlayer.getStatus() == GameSuccess.Won) {
+				winnerName = model.opponentPlayer.getPlayerName();
+				winnerVictoryPoints = model.opponentPlayer.getVictoryPoints();
+				loserName = model.clientPlayer.getPlayerName();
+				loserVictoryPoints = model.clientPlayer.getVictoryPoints();
 			}
-
+			
 			// Shows a popup with information about the winner
 			Popup popupPlayerSuccess = new Popup();
-			Label lblWinner = new Label("Winner: ");
-			Label lblNameOfWinner = new Label(winner);
-			Label lblVictoryPoints = new Label("Victory points: ");
-			Label lblNmbrOfVictoryPoints = new Label (Integer.toString(model.victoryPoints));
+			
+			Label lblWinner = new Label("Winner:");
+			Label lblNameOfWinner = new Label(winnerName);
+			
+			Label lblLoser = new Label("Loser:");
+			Label lblNameOfLoser = new Label(loserName);
+			
+			Label lblWinnerVictoryPoints = new Label("Winner's victory points:");
+			Label lblNmbrOfWinnerVictoryPoints = new Label(Integer.toString(winnerVictoryPoints));
+			
+			Label lblLoserVictoryPoints = new Label("Loser's victory points:");
+			Label lblNmbrOfLoserVictoryPoints = new Label(Integer.toString(loserVictoryPoints));
+			
 			HBox hboxWinnerName = new HBox(lblWinner, lblNameOfWinner);
-			HBox hboxWinnerVictoryPoints = new HBox(lblVictoryPoints, lblNmbrOfVictoryPoints);
+			HBox hboxWinnerVictoryPoints = new HBox(lblWinnerVictoryPoints, lblNmbrOfWinnerVictoryPoints);
+			
+			HBox hboxLoserName = new HBox(lblLoser, lblNameOfLoser);
+			HBox hboxLoserVictoryPoints = new HBox(lblLoserVictoryPoints, lblNmbrOfLoserVictoryPoints);
+			
 			ImageView confettiGIF = new ImageView(new Image(getClass().getResourceAsStream("Images/confetti.gif")));
 
-			VBox vboxWinner = new VBox(hboxWinnerName, hboxWinnerVictoryPoints, confettiGIF);
+			VBox result = new VBox(hboxWinnerName, hboxWinnerVictoryPoints, hboxLoserName, hboxLoserVictoryPoints, confettiGIF);
 
-			popupPlayerSuccess.getContent().add(vboxWinner);
+			popupPlayerSuccess.getContent().add(result);
 			popupPlayerSuccess.centerOnScreen();
 			popupPlayerSuccess.show(view.getStage());
 
@@ -572,8 +595,8 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		// Describes what happens when the user clicks a action, treasure or victory card
 		img.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 
-			// If model.success isn't null, someone has won the game
-			if (model.success != null){
+			// Create a winner popup if someone has won the game
+			if (model.clientPlayer != null || model.opponentPlayer != null){
 				createWinnerPopup();
 			}
 
@@ -640,7 +663,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 					// Ensures the update happens on the JavaFX Application Thread by using Platform.runLater()
 					Platform.runLater(() -> {
-						
+
 						startPhasePopup();
 
 						// Disables chat while playing singleplayer mode
@@ -720,31 +743,6 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				} else if (msgIn instanceof PlayerSuccess_Message) {
 					model.processPlayerSuccess(msgIn);
 					createWinnerPopup();
-					
-					//					// Ensures the update happens on the JavaFX Application Thread, by using Platform.runLater()
-					//					Platform.runLater(() -> {
-					//
-					//						// main.startSuccess(psmsg.getSuccess());
-					//						
-					//						// Shows a popup with information about the winner
-					//						Popup popupPlayerSuccess = new Popup();
-					//						Label lblWinner = new Label(t.getString("popupPlayerSuccess.lblWinner")); // Winner:
-					//						Label lblNameOfWinner = new Label(psmsg.getClient());
-					//						Label lblVictoryPoints = new Label(t.getString("popupPlayerSuccess.lblVictoryPoints")); // Victory points:
-					//						Label lblNmbrOfVictoryPoints = new Label (Integer.toString(psmsg.getVictoryPoints()));
-					//						HBox hboxWinnerName = new HBox(lblWinner, lblNameOfWinner);
-					//						HBox hboxWinnerVictoryPoints = new HBox(lblVictoryPoints, lblNmbrOfVictoryPoints);
-					//						ImageView confettiGIF = new ImageView(new Image(getClass().getResourceAsStream("Images/confetti.gif")));
-					//						
-					//						VBox vboxWinner = new VBox(hboxWinnerName, hboxWinnerVictoryPoints, confettiGIF);
-					//						
-					//						popupPlayerSuccess.getContent().add(vboxWinner);
-					//						popupPlayerSuccess.centerOnScreen();
-					//						popupPlayerSuccess.show(view.getStage());
-					//						
-					//						listenToServer = false;
-					//
-					//					});
 				}
 			}
 		}
