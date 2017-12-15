@@ -62,7 +62,7 @@ public class ServerThreadForClient implements Runnable {
 
 	private Socket clientSocket;
 	private Message msgIn;
-	private Game game;
+	private Game game = null;
 	private Player player;
 	private InetAddress inetAddress;
 	public Queue<Message> waitingMessages = new LinkedList<Message>();
@@ -535,13 +535,23 @@ public class ServerThreadForClient implements Runnable {
 	 * 			Failure_Message if game already ended
 	 */
     private Message processGiveUp(Message msgIn) {
+    	PlayerSuccess_Message psmsg = new PlayerSuccess_Message();
     	if(!this.game.getGameEnded()){
-        	PlayerSuccess_Message psmsg = new PlayerSuccess_Message();
+    		this.player.countVictoryPoints();
+    		this.player.setStatus(GameSuccess.Lost);
         	psmsg.setPlayer1(this.player);
-        	psmsg.setPlayer2(this.game.getOpponent(this.player));
-        	this.player.sendToOpponent(this.player, psmsg);
-        	this.game.setGameEnded(true);
-        	logger.info(this.game.getOpponent(this.player).getPlayerName()+" "+GameSuccess.Won.toString()+"!");
+    		Player opponent = this.game.getOpponent(this.player);
+    		this.game.setGameEnded(true);
+    		if(opponent == null){
+	    		this.game.setGameCounter(this.game.getGameCounter()+1);
+	    		psmsg.setNumOfPlayers(1);
+    		}else{
+        		opponent.countVictoryPoints();
+        		opponent.setStatus(GameSuccess.Won);
+            	psmsg.setPlayer2(opponent);
+            	this.player.sendToOpponent(this.player, psmsg);
+    		}
+        	logger.info(this.player.getPlayerName()+" "+GameSuccess.Lost.toString()+"! (gave up)");
         	
         	return psmsg;
     	}

@@ -16,10 +16,10 @@ public class PlayerSuccess_Message extends Message {
 	private static final String ELEMENT_PLAYER_NAME = "playerName";
 	private static final String ELEMENT_SUCCESS = "success";
 	private static final String ELEMENT_VICTORY_POINTS = "victoryPoints";
-	private final Integer NUM_OF_PLAYERS = 2;
+	private Integer numOfPlayers = 2;
 	
-	private Player player1;
-	private Player player2;
+	private Player player1 = null;
+	private Player player2 = null;
 
 
 	public PlayerSuccess_Message(){
@@ -34,7 +34,7 @@ public class PlayerSuccess_Message extends Message {
 	protected void addNodes(Document docIn){
         Element root = docIn.getDocumentElement();
         
-        for(int i = 0; i < this.NUM_OF_PLAYERS; i++){
+        for(int i = 0; i < this.numOfPlayers; i++){
         	Player player = null;
         	if(i == 0){
         		player = this.player1;
@@ -109,5 +109,10 @@ public class PlayerSuccess_Message extends Message {
 	
 	public void setPlayer2(Player player2){
 		this.player2 = player2;
+	}
+	
+	//just used if there is just 1 player to set
+	public void setNumOfPlayers(Integer number){
+		this.numOfPlayers = number;
 	}
 }//end PlayerSuccess_Message
