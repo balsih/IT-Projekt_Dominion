@@ -32,12 +32,11 @@ public class Bot extends Player implements Runnable {
 	private HashMap<CardName, Integer> prioListForPlaying = new HashMap<CardName, Integer>();
 	private HashMap<CardName, Integer> prioListForRemodel = new HashMap<CardName, Integer>();
 	private HashMap<CardName, Integer> maxCardsOfAType = new HashMap<CardName, Integer>();
-	private ArrayList<CardName> cardNamesOfActionCards = new ArrayList<CardName>();
+	private static final ArrayList<CardName> CARDNAMESOFACTIONCARDS = new ArrayList<CardName>();
 	private ArrayList<CardName> cardNamesOfActionHandCards = new ArrayList<CardName>();
 	private static final HashMap<CardName, Integer> PRIOLIST_TOPDISCARDPILE_CARD = new HashMap<CardName, Integer>();
 	private static final ArrayList<String> NAMES = new ArrayList<String>();
-	// private static final double SHARE_OF_TREASURE_CARDS = 0.35;
-	private static final int MIN_TIME_BEFORE_EXECUTING = 100, MAX_TIME_BEFORE_EXECUTING = 300;
+	private static final int MIN_TIME_BEFORE_EXECUTING = 500, MAX_TIME_BEFORE_EXECUTING = 1500;
 	private static final int MAX_TREASURE_CARDS = 12, MAX_ACTION_CARDS = 8;
 	private Card cardToPlay = null;
 	private CardName cardToBuy = null;
@@ -53,30 +52,30 @@ public class Bot extends Player implements Runnable {
 		counter = 1;
 
 		buyPrioOneCard.put(CardName.Cellar, 32);
-		buyPrioOneCard.put(CardName.Duchy, 20);
+		buyPrioOneCard.put(CardName.Duchy, 25);
 		buyPrioOneCard.put(CardName.Estate, 5);
-		buyPrioOneCard.put(CardName.Gold, 75);
+		buyPrioOneCard.put(CardName.Gold, 90);
 		buyPrioOneCard.put(CardName.Market, 68);
-		buyPrioOneCard.put(CardName.Mine, 24);
+		buyPrioOneCard.put(CardName.Mine, 30);
 		buyPrioOneCard.put(CardName.Province, 100);
 		buyPrioOneCard.put(CardName.Remodel, 22);
-		buyPrioOneCard.put(CardName.Silver, 70);
-		buyPrioOneCard.put(CardName.Smithy, 34);
-		buyPrioOneCard.put(CardName.Village, 66);
+		buyPrioOneCard.put(CardName.Silver, 65);
+		buyPrioOneCard.put(CardName.Smithy, 66);
+		buyPrioOneCard.put(CardName.Village, 64);
 		buyPrioOneCard.put(CardName.Woodcutter, 28);
 		buyPrioOneCard.put(CardName.Workshop, 30);
 
 		buyPrioMoreCards.put(CardName.Cellar, 32);
 		buyPrioMoreCards.put(CardName.Duchy, 48);
 		buyPrioMoreCards.put(CardName.Estate, 5);
-		buyPrioMoreCards.put(CardName.Gold, 50);
-		buyPrioMoreCards.put(CardName.Market, 68);
-		buyPrioMoreCards.put(CardName.Mine, 24);
+		buyPrioMoreCards.put(CardName.Gold, 70);
+		buyPrioMoreCards.put(CardName.Market, 65);
+		buyPrioMoreCards.put(CardName.Mine, 45);
 		buyPrioMoreCards.put(CardName.Province, 100);
 		buyPrioMoreCards.put(CardName.Remodel, 22);
-		buyPrioMoreCards.put(CardName.Silver, 40);
-		buyPrioMoreCards.put(CardName.Smithy, 46);
-		buyPrioMoreCards.put(CardName.Village, 66);
+		buyPrioMoreCards.put(CardName.Silver, 62);
+		buyPrioMoreCards.put(CardName.Smithy, 63);
+		buyPrioMoreCards.put(CardName.Village, 61);
 		buyPrioMoreCards.put(CardName.Woodcutter, 28);
 		buyPrioMoreCards.put(CardName.Workshop, 30);
 
@@ -89,14 +88,14 @@ public class Bot extends Player implements Runnable {
 		maxCardsOfAType.put(CardName.Remodel, 1);
 		maxCardsOfAType.put(CardName.Woodcutter, 2);
 
-		cardNamesOfActionCards.add(CardName.Cellar);
-		cardNamesOfActionCards.add(CardName.Market);
-		cardNamesOfActionCards.add(CardName.Mine);
-		cardNamesOfActionCards.add(CardName.Smithy);
-		cardNamesOfActionCards.add(CardName.Workshop);
-		cardNamesOfActionCards.add(CardName.Village);
-		cardNamesOfActionCards.add(CardName.Remodel);
-		cardNamesOfActionCards.add(CardName.Woodcutter);
+		CARDNAMESOFACTIONCARDS.add(CardName.Cellar);
+		CARDNAMESOFACTIONCARDS.add(CardName.Market);
+		CARDNAMESOFACTIONCARDS.add(CardName.Mine);
+		CARDNAMESOFACTIONCARDS.add(CardName.Smithy);
+		CARDNAMESOFACTIONCARDS.add(CardName.Workshop);
+		CARDNAMESOFACTIONCARDS.add(CardName.Village);
+		CARDNAMESOFACTIONCARDS.add(CardName.Remodel);
+		CARDNAMESOFACTIONCARDS.add(CardName.Woodcutter);
 
 		PRIOLIST_TOPDISCARDPILE_CARD.put(CardName.Copper, 100);
 		PRIOLIST_TOPDISCARDPILE_CARD.put(CardName.Cellar, 70);
@@ -131,7 +130,6 @@ public class Bot extends Player implements Runnable {
 		try {
 			Thread.sleep(1500);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		while (actions > 0 && actualPhase == Phase.Action) {
@@ -400,7 +398,6 @@ public class Bot extends Player implements Runnable {
 					}
 				}
 			}
-
 			// if Failure_Message --> keep searching
 			else if (buyMessage instanceof Failure_Message)
 				System.out.println(this.playerName + " buyMessage instanceof Failure");
@@ -448,11 +445,11 @@ public class Bot extends Player implements Runnable {
 	 * Fills a name-list with entries, chooses one and gives it back.
 	 */
 	public static String getNameOfBot() {
-		NAMES.add("AI-\"Bodo\"");
-		NAMES.add("AI-\"Lukas\"");
-		NAMES.add("AI-\"Simon\"");
-		NAMES.add("AI-\"Adrian\"");
-		NAMES.add("AI-\"René\"");
+		NAMES.add("Computer-\"Bodo\"");
+		NAMES.add("Computer-\"Lukas\"");
+		NAMES.add("Computer-\"Simon\"");
+		NAMES.add("Computer-\"Adrian\"");
+		NAMES.add("Computer-\"René\"");
 		Random rand = new Random();
 		String nameOfBot = NAMES.get(rand.nextInt(5));
 		return nameOfBot;
@@ -571,19 +568,6 @@ public class Bot extends Player implements Runnable {
 				tempSilver2 -= 5;
 			}
 
-			// if (numberOfGoldAndSilverCards / numberOfTotalCards <
-			// SHARE_OF_TREASURE_CARDS) {
-			// if (tempGold1 < 65)
-			// tempGold1 += 5;
-			// if (tempSilver1 < 50)
-			// tempSilver1 += 5;
-			// } else {
-			// if (tempGold1 > 20)
-			// tempGold1 -= 5;
-			// if (tempSilver1 > 10)
-			// tempSilver1 -= 5;
-			// }
-
 			buyPrioOneCard.replace(CardName.Gold, tempGold1);
 			buyPrioOneCard.replace(CardName.Silver, tempSilver1);
 			buyPrioMoreCards.replace(CardName.Gold, tempGold2);
@@ -595,21 +579,21 @@ public class Bot extends Player implements Runnable {
 	 * Calculate the priority of each ActionCards for the buying decision.
 	 */
 	private void estimateBuyPriorityOfActionCards() {
-		for (int i = 0; i < cardNamesOfActionCards.size(); i++) {
-			if (getNumberOfOwnedCards(cardNamesOfActionCards.get(i)) == maxCardsOfAType
-					.get(cardNamesOfActionCards.get(i))) {
-				int tempValue1 = buyPrioOneCard.get(cardNamesOfActionCards.get(i));
-				int tempValue2 = buyPrioMoreCards.get(cardNamesOfActionCards.get(i));
+		for (int i = 0; i < CARDNAMESOFACTIONCARDS.size(); i++) {
+			if (getNumberOfOwnedCards(CARDNAMESOFACTIONCARDS.get(i)) == maxCardsOfAType
+					.get(CARDNAMESOFACTIONCARDS.get(i))) {
+				int tempValue1 = buyPrioOneCard.get(CARDNAMESOFACTIONCARDS.get(i));
+				int tempValue2 = buyPrioMoreCards.get(CARDNAMESOFACTIONCARDS.get(i));
 				tempValue1 -= 10;
 				tempValue2 -= 10;
-				buyPrioOneCard.replace(cardNamesOfActionCards.get(i), tempValue1);
-				buyPrioMoreCards.replace(cardNamesOfActionCards.get(i), tempValue2);
+				buyPrioOneCard.replace(CARDNAMESOFACTIONCARDS.get(i), tempValue1);
+				buyPrioMoreCards.replace(CARDNAMESOFACTIONCARDS.get(i), tempValue2);
 			}
 		}
 		if (numberOfActionCards >= MAX_ACTION_CARDS) {
-			for (int i = 0; i < cardNamesOfActionCards.size(); i++) {
-				buyPrioOneCard.replace(cardNamesOfActionCards.get(i), 0);
-				buyPrioMoreCards.replace(cardNamesOfActionCards.get(i), 0);
+			for (int i = 0; i < CARDNAMESOFACTIONCARDS.size(); i++) {
+				buyPrioOneCard.replace(CARDNAMESOFACTIONCARDS.get(i), 0);
+				buyPrioMoreCards.replace(CARDNAMESOFACTIONCARDS.get(i), 0);
 			}
 		}
 	}
