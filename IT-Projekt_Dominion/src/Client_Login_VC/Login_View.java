@@ -195,7 +195,7 @@ public class Login_View extends View<GameApp_Model> {
 		// buttons
 		createNewPlayerBtn = new Button(t.getString("login.createNewPlayerBtn"));
 		createNewPlayerBtn.setId("createNewPlayerBtn");
-		createNewPlayerBtn.setPrefSize(192, 30);
+		createNewPlayerBtn.setPrefSize(182, 30);
 		quitBtn = new Button(t.getString("login.quitBtn"));
 		quitBtn.setId("quitBtn");
 		quitBtn.setPrefSize(168.0, 30.0);
