@@ -145,8 +145,6 @@ public abstract class Message {
         // Get the message type from the root element and create the new message
         MessageType type = MessageType.parseType(root.getAttribute(ATTR_TYPE));
         Message newMessage;
-        if(type == MessageType.PlayerSuccess)
-        	System.out.println("");
         if (type == MessageType.AskForChanges) newMessage = new AskForChanges_Message();
         else if (type == MessageType.BuyCard) newMessage = new BuyCard_Message();
         else if (type == MessageType.Chat) newMessage = new Chat_Message();
