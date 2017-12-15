@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Logger;
 
 import Server_GameLogic.Player;
 
@@ -22,6 +23,7 @@ import Server_GameLogic.Player;
 public class DB_Connector {
 
 	private static DB_Connector connector;
+	private final Logger logger = Logger.getLogger("");
 	
 	// Necessary objects that we use with jdbc
 	private Connection connection;
@@ -212,7 +214,8 @@ public class DB_Connector {
 			this.stmt.execute(createPlayer_Scoring);
 
 			return true;
-		} catch (SQLException e) {
+		} catch (SQLException | NullPointerException e) {
+			this.logger.severe("Exception in createDBStructure: "+e.toString());
 			return false;
 		}
 	}
