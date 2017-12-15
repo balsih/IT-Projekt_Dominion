@@ -404,7 +404,7 @@ public class Bot extends Player implements Runnable {
 			// if Failure_Message --> keep searching
 			else if (buyMessage instanceof Failure_Message)
 				System.out.println(this.playerName + " buyMessage instanceof Failure");
-				if (index < buyList.size())
+				if (index < buyList.size() -1)
 					continue;
 				else {
 					System.out.println(this.playerName + " couldn't buy any Card --> skipPhase");
