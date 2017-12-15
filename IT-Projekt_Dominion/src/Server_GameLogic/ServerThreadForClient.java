@@ -326,12 +326,8 @@ public class ServerThreadForClient implements Runnable {
 		String highScore = dbConnector.getHighScore();
 		if(highScore.length() == 0){
 			hsmsg.setHighScore("#noHighscore#");
-			//0 = translation(true)
-			hsmsg.setTranslation(0);
 		}else{
 			hsmsg.setHighScore(highScore);
-			//1 = translation(false), the real highscore can't be translated
-			hsmsg.setTranslation(1);
 		}
 		logger.info("send highscore to "+this.clientName);
 		return hsmsg;

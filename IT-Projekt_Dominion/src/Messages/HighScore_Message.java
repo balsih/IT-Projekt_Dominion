@@ -15,14 +15,7 @@ import org.w3c.dom.NodeList;
 public class HighScore_Message extends Message {
 
 	private static final String ELEMENT_HIGHSCORE = "highScore";
-	private static final String ELEMENT_TRANSLATION = "translation";
 	private String highScore = null;
-	
-	/*
-	 * 0 = translation(true)
-	 * 1 = translation(false)
-	 */
-	private Integer translation = null;
 
 
 	public HighScore_Message(){
@@ -42,12 +35,6 @@ public class HighScore_Message extends Message {
     		highScore.setTextContent(this.highScore);
     		root.appendChild(highScore);
         }
-		
-        if(this.translation != null){
-    		Element translation = docIn.createElement(ELEMENT_TRANSLATION);
-    		translation.setTextContent(this.translation.toString());
-    		root.appendChild(translation);
-        }
 	}
 
 	/**
@@ -63,12 +50,6 @@ public class HighScore_Message extends Message {
             Element highScore = (Element) tmpElements.item(0);
             this.highScore = highScore.getTextContent();
         }
-        
-		tmpElements = root.getElementsByTagName(ELEMENT_TRANSLATION);
-        if (tmpElements.getLength() > 0) {
-            Element translation = (Element) tmpElements.item(0);
-            this.translation = Integer.parseInt(translation.getTextContent());
-        }
 	}
 
 	
@@ -76,24 +57,8 @@ public class HighScore_Message extends Message {
 		return this.highScore;
 	}
 	
-	/**
-	 * @return 0 if translation(true)
-	 * 			,1 if translation(false)
-	 */
-	public Integer getTranslation(){
-		return this.translation;
-	}
 
 	public void setHighScore(String highScore){
 		this.highScore = highScore;
-	}
-	
-	/**
-	 * @param translation
-	 * 			0 if translation(true)
-	 * 			,1 if translation(false)
-	 */
-	public void setTranslation(Integer translation){
-		this.translation = translation;
 	}
 }//end HighScore_Message
