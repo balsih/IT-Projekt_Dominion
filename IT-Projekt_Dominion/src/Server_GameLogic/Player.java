@@ -514,8 +514,8 @@ public class Player {
 	private PlayerSuccess_Message getCurrentPlayerSuccessMsg() {
 		PlayerSuccess_Message psmsg = new PlayerSuccess_Message();
 
-		psmsg.setSuccess(this.status);
-		psmsg.setVictoryPoints(this.victoryPoints);
+		psmsg.setPlayer1(game.getPlayer1());
+		psmsg.setPlayer2(game.getPlayer2());
 
 		return psmsg;
 	}
@@ -531,8 +531,8 @@ public class Player {
 	private PlayerSuccess_Message getOpponentSuccessMsg() {
 		PlayerSuccess_Message psmsg = new PlayerSuccess_Message();
 
-		psmsg.setSuccess(this.status);
-		psmsg.setVictoryPoints(this.victoryPoints);
+		psmsg.setPlayer1(game.getPlayer1());
+		psmsg.setPlayer2(game.getPlayer2());
 
 		return psmsg;
 	}
