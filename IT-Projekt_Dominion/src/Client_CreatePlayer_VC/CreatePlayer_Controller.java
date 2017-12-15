@@ -9,6 +9,7 @@ import Client_Services.ServiceLocator;
 import Client_Services.Translator;
 import MainClasses.Dominion_Main;
 import javafx.scene.control.MenuItem;
+import javafx.scene.input.KeyCode;
 
 /**
  * @author Rene
@@ -66,6 +67,35 @@ public class CreatePlayer_Controller extends Controller<GameApp_Model, CreatePla
 			}
 		});	
 		
+		
+		
+		// set on action and handling for passwordText, activates saveBtn over Enter Key if PW text is focused
+		view.passwordText.setOnKeyPressed((event) -> {
+			try {
+				// check if fields are empty
+				if (!view.nameText.getText().isEmpty() && !view.passwordText.getText().isEmpty()) {
+					// regex username/password
+					boolean userName = model.checkUserInput(view.nameText.getText(), UserInput.clientName);
+					boolean password = model.checkUserInput(view.passwordText.getText(), UserInput.password);
+					view.saveBtn.setDisable(!(userName && password));
+					if (event.getCode() == KeyCode.ENTER) {
+						model.startBtnClickSound();
+						String message = model.sendCreateNewPlayer(view.nameText.getText(),view.passwordText.getText());
+						if (model.getFailure()) {
+							view.saveAlert.setHeaderText(message);
+							view.saveAlert.showAndWait(); // warning alert if save fails
+						}
+					}
+
+				} else {
+					view.saveBtn.setDisable(true);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+				
+				
 		
 		// set on action and handling for saveBtn
 		view.saveBtn.setOnAction((event) -> {

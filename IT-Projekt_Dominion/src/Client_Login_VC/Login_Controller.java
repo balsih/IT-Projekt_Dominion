@@ -5,6 +5,7 @@ import Client_GameApp_MVC.GameApp_Model;
 import Client_GameApp_MVC.GameApp_Model.UserInput;
 import MainClasses.Dominion_Main;
 import javafx.application.Platform;
+import javafx.scene.input.KeyCode;
 
 /**
  * @author Rene
@@ -65,6 +66,45 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 		});
 		
 		
+
+		
+		// set on action and handling for portText, activates connectBtn over
+		// Enter Key if port text is focused
+		view.portText.setOnKeyPressed((event) -> {
+			try {
+				if (!view.ipText.getText().isEmpty() && !view.portText.getText().isEmpty()) {
+					boolean ipAdresse = model.checkUserInput(view.ipText.getText(), UserInput.ipAddress);
+					boolean portNumber = model.checkUserInput(view.portText.getText(), UserInput.port);
+					view.connectBtn.setDisable(!(ipAdresse && portNumber));
+					if (event.getCode() == KeyCode.ENTER) {
+						model.startBtnClickSound();
+						String message = model.init(view.ipText.getText(), Integer.parseInt(view.portText.getText()));
+
+						if (!model.getFailure()) {
+							// enables the elements again after connectBtn got clicked
+							view.nameLbl.setDisable(false);
+							view.nameText.setDisable(false);
+							view.passwordLbl.setDisable(false);
+							view.passwordText.setDisable(false);
+							view.createNewPlayerBtn.setDisable(false);
+						} else {
+							view.loginAlert.setHeaderText(message);
+							view.loginAlert.showAndWait(); // warning alert if login fails
+						}
+					}
+				} else {
+					view.connectBtn.setDisable(true);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+		
+		
+	
+
+				
+		
 		// set on action and handling for connectBtn 
 		view.connectBtn.setOnAction((event) -> {
 			try {	
@@ -85,6 +125,8 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 				e.printStackTrace();
 			}
 		});
+		
+		
 		
 		// set on action and handling for nameText
 		view.nameText.textProperty().addListener((change) -> {
@@ -120,6 +162,36 @@ public class Login_Controller extends Controller<GameApp_Model, Login_View> {
 			}
 		});
 		
+		
+		
+		
+		
+		// set on action and handling for passwordText, presses loginBtn over Enter Key if PW text is focused 
+		view.passwordText.setOnKeyPressed((event) -> {
+			try {
+				// check if fields are empty
+				if (!view.nameText.getText().isEmpty() && !view.passwordText.getText().isEmpty()) {
+					// regex username/password
+					boolean userName = model.checkUserInput(view.nameText.getText(), UserInput.clientName);
+					boolean password = model.checkUserInput(view.passwordText.getText(), UserInput.password);
+					view.loginBtn.setDisable(!(userName && password));
+					if (event.getCode() == KeyCode.ENTER) {
+						model.startBtnClickSound();
+						String message = model.sendLogin(view.nameText.getText(), view.passwordText.getText());
+						if (model.getFailure()) {
+							view.loginAlert.setHeaderText(message);
+							view.loginAlert.showAndWait(); // warning alert if login fails
+						}
+					}
+				} else {
+					view.loginBtn.setDisable(true);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+		
+
 		
 		// set on action and handling for loginBtn
 		view.loginBtn.setOnAction((event) -> {

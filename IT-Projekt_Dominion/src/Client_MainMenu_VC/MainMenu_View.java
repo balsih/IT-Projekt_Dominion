@@ -193,21 +193,21 @@ public class MainMenu_View extends View<GameApp_Model> {
 		
 		TableColumn<Highscore, String> nameColumn = new TableColumn<Highscore, String>("Player");
 		nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-		nameColumn.setPrefWidth(220);
+		nameColumn.setPrefWidth(260);
 		
 		TableColumn<Highscore, String> scoreColumn = new TableColumn<Highscore, String>("Score");
 		scoreColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
-		scoreColumn.setPrefWidth(30);
+		scoreColumn.setPrefWidth(50);
 		
 		TableColumn<Highscore, String> movesColumn = new TableColumn<Highscore, String>("Moves");
 		movesColumn.setCellValueFactory(new PropertyValueFactory<>("moves"));
-		movesColumn.setPrefWidth(30);
+		movesColumn.setPrefWidth(50);
 		
 		table = new TableView<Highscore>();
 		table.setId("table");
 		table.setItems(model.sendHighScoreRequest());
 		table.getColumns().addAll(nameColumn, scoreColumn, movesColumn);
-		table.setPrefSize(360, 250);
+		table.setPrefSize(346, 162);
 		
 		
 		
