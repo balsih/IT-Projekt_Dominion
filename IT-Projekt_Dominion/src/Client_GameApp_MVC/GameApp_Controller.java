@@ -102,15 +102,19 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			switch (model.interaction) {
 			// Skips a game phase
 			case Skip:
-				model.sendInteraction();
+				if (model.currentPlayer.compareTo(model.clientName) == 0) {
+					model.sendInteraction();
+				}
 				break;
 				// Discards user-defined hand cards in cellar interaction
 			case Cellar:
-				if (model.cellarDiscards.size() >= 1) {
-					if(model.sendInteraction()){
-						view.hboxHandCards.getChildren().removeAll(tmpViews);
-						tmpViews.clear();
-						model.cellarDiscards.clear();
+				if (model.currentPlayer.compareTo(model.clientName) == 0) {
+					if (model.cellarDiscards.size() >= 1) {
+						if(model.sendInteraction()){
+							view.hboxHandCards.getChildren().removeAll(tmpViews);
+							tmpViews.clear();
+							model.cellarDiscards.clear();
+						}
 					}
 				}
 				break;
@@ -183,11 +187,23 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			switch (model.currentPhase) {
 			case Action:
 				view.lblNameOfCurrentPhase.setText(t.getString("action.lblNameOfCurrentPhase")); // Action
-				view.btnCommit.setDisable(false);
+
+				// Enables the button commit only for the current player during the specified phase
+				if (model.currentPlayer.compareTo(model.clientName) == 0) {
+					view.btnCommit.setDisable(false);
+				} else {
+					view.btnCommit.setDisable(true);
+				}
 				break;
 			case Buy:
 				view.lblNameOfCurrentPhase.setText(t.getString("buy.lblNameOfCurrentPhase")); // Buy
-				view.btnCommit.setDisable(false);
+
+				// Enables the button commit only for the current player during the specified phase
+				if (model.currentPlayer.compareTo(model.clientName) == 0) {
+					view.btnCommit.setDisable(false);
+				} else {
+					view.btnCommit.setDisable(true);
+				}
 				break;
 				// The cleanUp phase cannot be skipped. Therefore, the button skip gets disabled.
 			case CleanUp:
@@ -546,7 +562,12 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 		// Ensures the update happens on the JavaFX Application Thread, by using Platform.runLater()
 		Platform.runLater(() -> {
-			
+
+			// Disables all buttons after a player has won
+			view.btnCommit.setDisable(true);
+			view.btnGiveUp.setDisable(true);
+			view.btnSendChatArea.setDisable(true);
+
 			String loserName = null;
 			String winnerName = null;
 			int winnerVictoryPoints = 0;
@@ -760,7 +781,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 				} else if (msgIn instanceof PlayerSuccess_Message) {
 					model.processPlayerSuccess(msgIn);
-					
+
 					// Displays the winner and loser of the game
 					createWinnerPopup();
 				}
