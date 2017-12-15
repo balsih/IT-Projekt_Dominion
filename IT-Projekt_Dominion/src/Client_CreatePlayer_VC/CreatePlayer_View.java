@@ -49,7 +49,7 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 	protected TextField nameText;
 		
 	protected Label passwordLbl;
-	protected TextField textField;
+	protected TextField pWtextField;
 	protected PasswordField passwordText;
 
 	
@@ -67,7 +67,7 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 	 */
 	public CreatePlayer_View(Stage stage, GameApp_Model model){
 		super(stage, model);
-		//stage.initStyle(StageStyle.TRANSPARENT);
+		
 	}
 
 	@Override
@@ -110,7 +110,6 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		keepTypingLbl.setId("keepTypingLbl");
 		keepTypingLbl.setPrefSize(40.0, 20.0);
 		keepTypingLbl.setMinSize(40.0, 20.0);
-		// keepTypingLbl.setAlignment(Pos.CENTER_RIGHT);
 		keepTypingLbl.setAlignment(Pos.CENTER_LEFT);
 
 		Image image2 = new Image(getClass().getResourceAsStream("KeepTyping.png"));
@@ -139,11 +138,11 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		
 		//////////////////
 		// text field to show password as unmasked
-		textField = new TextField();
-		textField.setId("textField");
+		pWtextField = new TextField();
+		pWtextField.setId("textField");
 		// Set initial state
-		textField.setManaged(false);
-		textField.setVisible(false);
+		pWtextField.setManaged(false);
+		pWtextField.setVisible(false);
 
 		// Actual password field
 		passwordText = new PasswordField();
@@ -158,28 +157,36 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		// Because we want to display only one component (textField or
 		// passwordField)
 		// on the scene at a time.
-		textField.managedProperty().bind(unmaskPw.selectedProperty());
-		textField.visibleProperty().bind(unmaskPw.selectedProperty());
+		pWtextField.managedProperty().bind(unmaskPw.selectedProperty());
+		pWtextField.visibleProperty().bind(unmaskPw.selectedProperty());
 
 		passwordText.managedProperty().bind(unmaskPw.selectedProperty().not());
 		passwordText.visibleProperty().bind(unmaskPw.selectedProperty().not());
 
+		
 		// Bind the textField and passwordField text values bidirectionally.
-		textField.textProperty().bindBidirectional(passwordText.textProperty());
+		pWtextField.textProperty().bindBidirectional(passwordText.textProperty());
 		
+		Label showPwLbl = new Label(t.getString("cnp.showPwLbl"));
+		showPwLbl.setId("showPwLbl");
+
 		
+		HBox unmaskPwBox = new HBox(unmaskPw, showPwLbl);
+		unmaskPwBox.setId("unmaskPwBox");
+		unmaskPwBox.setAlignment(Pos.CENTER.CENTER_LEFT);
+
 		
 		//passwordBox.getChildren().addAll(passwordLbl, passwordText, textField, unmaskPw);
-		passwordBox.getChildren().addAll(passwordLbl, passwordText, textField, unmaskPw);
+		passwordBox.getChildren().addAll(passwordLbl, passwordText, pWtextField);
+		
+		VBox pwFieldAndUnmaskBox = new VBox(passwordBox,unmaskPwBox);
+		pwFieldAndUnmaskBox.setId("pwFieldAndUnmaskBox");
+		
+		
+		
+		
 
 		//////////////////////////
-		
-
-		
-		
-//		passwordText = new PasswordField();
-//		passwordText.setId("passwordText");
-		//passwordBox.getChildren().addAll(passwordLbl, passwordText);
 		
 		
 		// buttons
@@ -202,21 +209,18 @@ public class CreatePlayer_View extends View<GameApp_Model> {
 		// VBox for layout and spacing 
 		VBox namePasswordBox = new VBox();
 		namePasswordBox.setId("namePasswordLanguageBox");
-		namePasswordBox.getChildren().addAll(nameBox, passwordBox);
+		//namePasswordBox.getChildren().addAll(nameBox, passwordBox);
+		
+		
+		namePasswordBox.getChildren().addAll(nameBox, pwFieldAndUnmaskBox);
+		
 		
 		// layout and size configurations 
 		root.setPrefSize(1280,720);
 		root.setAlignment(Pos.CENTER);
 		centerBox.getChildren().addAll(createNewPlayerLbl, namePasswordBox, buttonBox);
 		// centerBox.getChildren().addAll(createNewPlayer, nameBox, passwordBox, buttonBox); // -> ohne Sprachauswahl 
-		
-		
-		
-		
-		
-		
-		
-		//structureBox.getChildren().addAll(logoLbl, typingBox, centerBox, passwordField, textField, checkBox);
+
 	    
 	    structureBox.getChildren().addAll(logoLbl, typingBox, centerBox);
 		
