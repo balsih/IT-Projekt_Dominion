@@ -5,6 +5,7 @@ import java.util.Locale;
 
 import Abstract_MVC.View;
 import Client_GameApp_MVC.GameApp_Model;
+import Client_GameApp_MVC.Highscore;
 import Client_Services.ServiceLocator;
 import Client_Services.Translator;
 import Server_GameLogic.Game;
@@ -17,9 +18,11 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -60,7 +63,7 @@ public class MainMenu_View extends View<GameApp_Model> {
 	
 	protected Alert startGameAlert;
 	
-	protected TableView<String> table;
+	protected TableView<Highscore> table;
 	
 	/**
 	 * 
@@ -180,30 +183,37 @@ public class MainMenu_View extends View<GameApp_Model> {
 		// loginAlert.setContentText("do this or that");
 		
 		
-		highscoreLbl = new Label(/*t.getString("menu.highscoreLbl")*/);
+		highscoreLbl = new Label(t.getString("menu.highscoreLbl"));
 		highscoreLbl.setId("highscoreLbl");
 		
-		highscoreListLbl = new Label(model.sendHighScoreRequest()); // sets the top five as a five line String
-		highscoreListLbl.setId("highscoreListLbl");
-		highscoreListLbl.setPrefSize(360, 130);
+//		highscoreListLbl = new Label(model.sendHighScoreRequest()); // sets the top five as a five line String
+//		highscoreListLbl.setId("highscoreListLbl");
+//		highscoreListLbl.setPrefSize(360, 130);
 		
 		
+		TableColumn<Highscore, String> nameColumn = new TableColumn<Highscore, String>("Player");
+		nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+		nameColumn.setPrefWidth(220);
 		
+		TableColumn<Highscore, String> scoreColumn = new TableColumn<Highscore, String>("Score");
+		scoreColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
+		scoreColumn.setPrefWidth(30);
 		
+		TableColumn<Highscore, String> movesColumn = new TableColumn<Highscore, String>("Moves");
+		movesColumn.setCellValueFactory(new PropertyValueFactory<>("moves"));
+		movesColumn.setPrefWidth(30);
 		
-		
-		
-		
-		
-		
-		
-		
-		
+		table = new TableView<Highscore>();
+		table.setId("table");
+		table.setItems(model.sendHighScoreRequest());
+		table.getColumns().addAll(nameColumn, scoreColumn, movesColumn);
+		table.setPrefSize(360, 250);
 		
 		
 		
 		// nameText.setPrefSize(220.0, 30.0);
-		highscoreBox.getChildren().addAll(highscoreLbl, highscoreListLbl );
+		//highscoreBox.getChildren().addAll(highscoreLbl, highscoreListLbl );
+		highscoreBox.getChildren().addAll(highscoreLbl, table);
 		
 		//startGameBtn = new Button(t.getString("menu.startGameBtn"));
 		

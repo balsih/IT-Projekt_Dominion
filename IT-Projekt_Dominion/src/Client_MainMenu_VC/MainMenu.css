@@ -34,8 +34,19 @@
 #highscoreListLbl {
 	-fx-spacing: 0px;
 	-fx-background-color: rgba(0, 0, 0, 0.8);
-
 }
+
+
+
+#table {
+	-fx-spacing: 0px;
+	-fx-background-color: rgba(0, 0, 0, 0.8);
+	-fx-font-size: 14px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-family: "Bookman Old Style";
+}
+
 
 
 #playerAndLanguageBox {

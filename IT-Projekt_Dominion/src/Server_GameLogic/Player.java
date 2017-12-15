@@ -302,10 +302,10 @@ public class Player {
 		 */
 		if (this.handCards.size() > 1) {
 			ugmsg.setDiscardPileTopCard(selectedTopCard);
-			ugmsg.setLog("#topCard# "+selectedTopCard.getCardName().toString()); 
+			ugmsg.setLog("#topCard# "+"#selectedTopCard.getCardName().toString()#"); 
 		} else if (this.handCards.size() == 1 && selectedTopCard == null) {
 			ugmsg.setDiscardPileTopCard(this.handCards.element());
-			ugmsg.setLog("#topCard# "+this.handCards.element().getCardName().toString());
+			ugmsg.setLog("#topCard# "+"#this.handCards.element().getCardName().toString()#");
 		} else if (this.handCards.size() == 0 && selectedTopCard == null) {
 			ugmsg.setDiscardPileTopCard(this.discardPile.peek());
 		}
