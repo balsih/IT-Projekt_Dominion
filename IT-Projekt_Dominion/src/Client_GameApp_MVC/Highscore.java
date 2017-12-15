@@ -2,10 +2,10 @@ package Client_GameApp_MVC;
 
 public class Highscore {
 	
-	private String name;
-	private int score, moves;
+	private String name, score, moves;
 
-	public Highscore(String name, int score, int moves) {
+
+	public Highscore(String name, String score, String moves) {
 		this.setName(name);
 		this.setScore(score);
 		this.setMoves(moves);
@@ -19,19 +19,19 @@ public class Highscore {
 		this.name = name;
 	}
 
-	public int getMoves() {
+	public String getMoves() {
 		return moves;
 	}
 
-	public void setMoves(int moves) {
+	public void setMoves(String moves) {
 		this.moves = moves;
 	}
 
-	public int getScore() {
+	public String getScore() {
 		return score;
 	}
 
-	public void setScore(int score) {
+	public void setScore(String score) {
 		this.score = score;
 	}
 
