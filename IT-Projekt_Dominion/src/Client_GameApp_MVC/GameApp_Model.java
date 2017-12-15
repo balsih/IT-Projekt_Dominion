@@ -618,7 +618,7 @@ public class GameApp_Model extends Model {
 	 * 
 	 * @param msgIn
 	 */
-	private void processPlayerSuccess(Message msgIn) {
+	protected void processPlayerSuccess(Message msgIn) {
 		PlayerSuccess_Message psmsg = (PlayerSuccess_Message) msgIn;
 		this.success = psmsg.getSuccess();
 		this.victoryPoints = psmsg.getVictoryPoints();

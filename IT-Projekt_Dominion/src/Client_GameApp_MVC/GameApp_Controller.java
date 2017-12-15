@@ -718,8 +718,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 					updateGUI();
 
 				} else if (msgIn instanceof PlayerSuccess_Message) {
-
-					PlayerSuccess_Message psmsg = (PlayerSuccess_Message) msgIn;
+					model.processPlayerSuccess(msgIn);
 					createWinnerPopup();
 					
 					//					// Ensures the update happens on the JavaFX Application Thread, by using Platform.runLater()
