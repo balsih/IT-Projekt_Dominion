@@ -761,6 +761,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				} else if (msgIn instanceof PlayerSuccess_Message) {
 					model.processPlayerSuccess(msgIn);
 					
+					// Displays the winner and loser of the game
 					createWinnerPopup();
 				}
 			}
