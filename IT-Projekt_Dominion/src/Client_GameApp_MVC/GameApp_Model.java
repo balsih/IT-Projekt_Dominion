@@ -398,16 +398,19 @@ public class GameApp_Model extends Model {
 	 * 
 	 * @return result, ObservableList with the Highscore
 	 */
-	public ObservableList<String> sendHighScoreRequest(){
+	public ObservableList<Highscore> sendHighScoreRequest(){
 		HighScore_Message hsmsg = new HighScore_Message();
-		String[] highscoreList = new String[]{};
+		LinkedList<Highscore> highscoreList = new LinkedList<Highscore>();
 
 		Message msgIn = this.processMessage(hsmsg);
 		if(msgIn instanceof HighScore_Message){
 			HighScore_Message nhsmsg = (HighScore_Message) msgIn;
-			highscoreList = nhsmsg.getHighScore().split(this.HIGHSCORE_REGEX);
+			String[] elements = nhsmsg.getHighScore().split(this.HIGHSCORE_REGEX);
+			for(int i = 0; i < elements.length; i+= 3){
+				highscoreList.add(new Highscore(elements[i], elements[i+1], elements[i+2]));
+			}
 		}
-		ObservableList<String> observableHighscoreList = FXCollections.observableArrayList(highscoreList);
+		ObservableList<Highscore> observableHighscoreList = FXCollections.observableList(highscoreList);
 		return observableHighscoreList;
 	}
 
