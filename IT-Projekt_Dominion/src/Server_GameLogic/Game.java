@@ -58,11 +58,12 @@ public class Game {
 	private final int NUM_OF_ACTIONCARDS = 10;
 
 	private static int gameCounter = 0;
+
 	private boolean gameEnded;
 
 	// the players of a game
-	private Player player1;
-	private Player player2;
+	private Player player1 = null;
+	private Player player2 = null;
 	private Player currentPlayer;
 	private Bot bot;
 	private Bot bot2;
@@ -421,6 +422,10 @@ public class Game {
 
 	public int getGameCounter() {
 		return gameCounter;
+	}
+	
+	public static void setGameCounter(int gameCounter) {
+		Game.gameCounter = gameCounter;
 	}
 
 	public Stack<Copper_Card> getCopperPile() {
