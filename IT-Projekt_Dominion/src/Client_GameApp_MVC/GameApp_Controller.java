@@ -173,7 +173,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				delay.play();
 			}
 
-			// Displays a popup, that informs the user about the current phase
+			// Displays a popup that informs the user about the current phase
 			if (model.phaseChanged == true){
 				startPhasePopup();
 				model.phaseChanged = false;
@@ -225,7 +225,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			// Adds played cards to the played cards area with event handlers
 			if (model.newPlayedCard != null){
 				ImageView img = model.newPlayedCard.getImage();
-				setGeneralImageEvents(resizeImage(img));
+				setGeneralImageEvents(resizeImage(img)); // Defines image changes in size and brightness after triggering an event
 				view.hboxPlayedCards.getChildren().add(img);
 				model.newPlayedCard = null;
 			}
@@ -236,7 +236,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			} else 	if (model.yourDiscardPileTopCard != null){
 				view.stackpDiscard.getChildren().clear();
 				ImageView img = model.yourDiscardPileTopCard.getImage();
-				setGeneralImageEvents(resizeImage(img));
+				setGeneralImageEvents(resizeImage(img)); // Defines image changes in size and brightness after triggering an event
 				view.stackpDiscard.getChildren().add(img);
 			}
 
@@ -363,12 +363,12 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 	// Displays a popup that informs the player about the current phase
 	private void startPhasePopup() {
 
-		ImageView imgActionPhase = new ImageView(new Image(getClass().getResourceAsStream("Images/actionPhase.png")));
-		ImageView imgBuyPhase = new ImageView(new Image(getClass().getResourceAsStream("Images/buyPhase.png")));
-		ImageView imgCleanUpPhase = new ImageView(new Image(getClass().getResourceAsStream("Images/cleanUpPhase.png")));
-		ImageView imgAktionsphase = new ImageView(new Image(getClass().getResourceAsStream("Images/Aktionsphase.png")));
-		ImageView imgKaufphase = new ImageView(new Image(getClass().getResourceAsStream("Images/Kaufphase.png")));
-		ImageView imgAufräumphase = new ImageView(new Image(getClass().getResourceAsStream("Images/Aufräumphase.png")));
+		ImageView imgActionPhase_en = new ImageView(new Image(getClass().getResourceAsStream("Images/imgActionPhase_en.png")));
+		ImageView imgBuyPhase_en = new ImageView(new Image(getClass().getResourceAsStream("Images/imgBuyPhase_en.png")));
+		ImageView imgCleanUpPhase_en = new ImageView(new Image(getClass().getResourceAsStream("Images/imgCleanUpPhase_en.png")));
+		ImageView imgActionPhase_de = new ImageView(new Image(getClass().getResourceAsStream("Images/imgActionPhase_de.png")));
+		ImageView imgBuyPhase_de = new ImageView(new Image(getClass().getResourceAsStream("Images/imgBuyPhase_de.png")));
+		ImageView imgCleanUpPhase_de = new ImageView(new Image(getClass().getResourceAsStream("Images/imgCleanUpPhase_de.png")));
 
 		Popup popupPhase = new Popup();
 
@@ -376,25 +376,25 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		if (t.getCurrentLocale().getLanguage().equals("de")){
 			switch (model.currentPhase){
 			case Action:
-				popupPhase.getContent().add(imgAktionsphase);
+				popupPhase.getContent().add(imgActionPhase_de);
 				break;
 			case Buy:
-				popupPhase.getContent().add(imgKaufphase);
+				popupPhase.getContent().add(imgBuyPhase_de);
 				break;
 			case CleanUp:
-				popupPhase.getContent().add(imgAufräumphase);
+				popupPhase.getContent().add(imgCleanUpPhase_de);
 				break;
 			}
 		} else {
 			switch (model.currentPhase){
 			case Action:
-				popupPhase.getContent().add(imgActionPhase);
+				popupPhase.getContent().add(imgActionPhase_en);
 				break;
 			case Buy:
-				popupPhase.getContent().add(imgBuyPhase);
+				popupPhase.getContent().add(imgBuyPhase_en);
 				break;
 			case CleanUp:
-				popupPhase.getContent().add(imgCleanUpPhase);
+				popupPhase.getContent().add(imgCleanUpPhase_en);
 				break;
 			}
 		}
@@ -435,7 +435,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		});
 
 		// If the user scrolls an image, a popup displays it bigger
-		// (this event is for hardware unable to trigger ZoomEvent.ZOOM)
+		// (this event is an alternative to the ZoomEvent for hardware unable to trigger ZoomEvent.ZOOM)
 		img.addEventHandler(ScrollEvent.ANY, event -> {
 			setZoomEvents(img);
 		});
@@ -447,12 +447,13 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		});
 	}
 
+	// Displays an image in a bigger size
 	private void setZoomEvents(ImageView img) {
-		// Stores the image height and width
+		// Stores the initial image height and width
 		int imageHeight = (int) img.getFitHeight();
 		int imageWidth = (int) img.getFitWidth();
 
-		// Creates a new popup with the zoomed image and shows/autohides it
+		// Creates a new popup with the bigger image and shows/autohides it
 		Popup popupZoom = new Popup();
 		ImageView popupImage = new ImageView(img.getImage());
 		popupImage.setFitHeight(imageHeight*5);
@@ -473,37 +474,43 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		// Describes what happens when the user clicks a hand card
 		img.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 
-			// Create a winner popup if someone has won the game
+			// Displays the winner if the card-click caused a player to win the game
 			if (model.clientPlayer != null || model.opponentPlayer != null){
 				createWinnerPopup();
 			}
 
+			// Checks if the player who clicked the image is the current player
+			// and therefore is allowed to play cards
 			if (model.currentPlayer.compareTo(model.clientName) == 0) {
 
-				// Removes a treasure or action card from the hand and adds it to the played cards
+				// Removes a treasure or action card from the hand
 				if (model.interaction == Interaction.Skip && card.getType() != CardType.Victory
 						&& model.sendPlayCard(card)) {
 					view.hboxHandCards.getChildren().remove(img);
 					updateGUI();
 				}
 
-				// During the cellar interaction, any clicked card gets discarded
+				// During the cellar interaction, any clicked hand card gets discarded.
+				// The card will be removed from the hand after clicking the button "commit".
 				else if (model.interaction == Interaction.Cellar) {
+					// Revokes a discard-decision by removing the card from cellarDiscards
 					if (model.cellarDiscards.contains(card)) {
 						model.cellarDiscards.remove(card);
 						tmpViews.remove(img);
 						img.setEffect(initial);
 					} else {
+						// Adds a card to cellarDiscards and makes it darker
 						model.cellarDiscards.add(card);
 						tmpViews.add(img);
 						img.setEffect(darker);
 					}
 				}
 
-				// During the remodel1 interaction, the clicked card gets discarded
+				// During the remodel1 interaction, one clicked hand card gets discarded
 				else if (model.interaction == Interaction.Remodel1) {
 					model.discardCard = card;
 					if (model.sendInteraction()) {
+						// Removes the card from the hand
 						view.hboxHandCards.getChildren().remove(img);
 						updateGUI();
 					}
@@ -514,6 +521,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 						&& (card.getCardName() == CardName.Copper || card.getCardName() == CardName.Silver)) {
 					model.discardCard = card;
 					if (model.sendInteraction()) {
+						// Removes the card from the hand
 						view.hboxHandCards.getChildren().remove(img);
 						updateGUI();
 					}
@@ -529,9 +537,11 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			}
 		});
 
+		// Defines image changes in size and brightness after triggering an event
 		setGeneralImageEvents(img);
 	}
 
+	// Displays the winner and loser after a game has ended
 	private void createWinnerPopup() {
 
 		// Ensures the update happens on the JavaFX Application Thread, by using Platform.runLater()
@@ -563,24 +573,20 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				}
 			}
 
-			// Shows a popup with information about the winner
+			// Displays a popup with information about the winner
 			Popup popupPlayerSuccess = new Popup();
 
 			Label lblWinner = new Label("Winner:");
 			Label lblNameOfWinner = new Label(winnerName);
-
 			Label lblLoser = new Label("Loser:");
 			Label lblNameOfLoser = new Label(loserName);
-
 			Label lblWinnerVictoryPoints = new Label("Winner's victory points:");
 			Label lblNmbrOfWinnerVictoryPoints = new Label(Integer.toString(winnerVictoryPoints));
-
 			Label lblLoserVictoryPoints = new Label("Loser's victory points:");
 			Label lblNmbrOfLoserVictoryPoints = new Label(Integer.toString(loserVictoryPoints));
 
 			HBox hboxWinnerName = new HBox(lblWinner, lblNameOfWinner);
 			HBox hboxWinnerVictoryPoints = new HBox(lblWinnerVictoryPoints, lblNmbrOfWinnerVictoryPoints);
-
 			HBox hboxLoserName = new HBox(lblLoser, lblNameOfLoser);
 			HBox hboxLoserVictoryPoints = new HBox(lblLoserVictoryPoints, lblNmbrOfLoserVictoryPoints);
 
@@ -600,24 +606,26 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 	// Sets events on action, treasure and victory cards
 	private void setInitialATVCardEvents(Card card, ImageView img) {
 
-		// Describes what happens when the user clicks a action, treasure or victory card
+		// Describes what happens when the user clicks an action, treasure or victory card
 		img.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 
-			// Create a winner popup if someone has won the game
+			// Displays the winner if the card-click caused a player to win the game (e.g. when province card stack is empty)
 			if (model.clientPlayer != null || model.opponentPlayer != null){
 				createWinnerPopup();
 			}
 
+			// Checks if the player who clicked the image is the current player
+			// and therefore is allowed to play cards
 			if (model.currentPlayer.compareTo(model.clientName) == 0) {
 
-				// During the skip interaction in the buy phase, the clicked card gets bought and rearranged in the GUI
+				// During the skip interaction in the buy phase, the clicked card gets bought
 				if (model.interaction == Interaction.Skip && model.currentPhase == Phase.Buy) {
 
 					if (model.sendBuyCard(card.getCardName()))
 						updateGUI();
 				}
 
-				// During the interaction remodel2 or workshop in the action phase, the clicked card gets chosen.
+				// During the interaction remodel2 or workshop in the action phase, the clicked card gets chosen ("bought")
 				else if ((model.interaction == Interaction.Remodel2 || model.interaction == Interaction.Workshop)
 						&& model.currentPhase == Phase.Action) {
 
@@ -632,10 +640,11 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			}
 		});
 
+		// Defines image changes in size and brightness after triggering an event
 		setGeneralImageEvents(img);
 	}
 
-	// Starts the ServerListening
+	// Starts the ServerListening thread
 	public void initializeServerListening() {
 		new Thread(new ServerListening()).start();
 		this.listenToServer = true;
@@ -659,7 +668,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				Message msgIn = model.processMessage(new AskForChanges_Message());
 
 				if (msgIn instanceof Commit_Message) {
-					// nothing toDo here
+					// nothing to do here
 
 				} else if (msgIn instanceof UpdateGame_Message) {
 					model.processUpdateGame(msgIn);
@@ -672,9 +681,10 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 					// Ensures the update happens on the JavaFX Application Thread by using Platform.runLater()
 					Platform.runLater(() -> {
 
+						// Displays a popup that informs the player about the current phase
 						startPhasePopup();
 
-						// Disables chat while playing singleplayer mode
+						// Disables the chat while playing singleplayer mode
 						if (model.gameMode.equals(GameMode.Singleplayer)) {
 							view.txtaChatArea.setText(t.getString("chatArea.info")); // only available in multiplayer mode 
 							view.txtfChatArea.setDisable(true);
@@ -750,6 +760,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 				} else if (msgIn instanceof PlayerSuccess_Message) {
 					model.processPlayerSuccess(msgIn);
+					
 					createWinnerPopup();
 				}
 			}
