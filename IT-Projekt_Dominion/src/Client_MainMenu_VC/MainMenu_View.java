@@ -183,12 +183,12 @@ public class MainMenu_View extends View<GameApp_Model> {
 		// loginAlert.setContentText("do this or that");
 		
 		
-		highscoreLbl = new Label(/*t.getString("menu.highscoreLbl")*/);
+		highscoreLbl = new Label(t.getString("menu.highscoreLbl"));
 		highscoreLbl.setId("highscoreLbl");
 		
-		//highscoreListLbl = new Label(model.sendHighScoreRequest()); // sets the top five as a five line String
-		highscoreListLbl.setId("highscoreListLbl");
-		highscoreListLbl.setPrefSize(360, 130);
+//		highscoreListLbl = new Label(model.sendHighScoreRequest()); // sets the top five as a five line String
+//		highscoreListLbl.setId("highscoreListLbl");
+//		highscoreListLbl.setPrefSize(360, 130);
 		
 		
 		TableColumn<Highscore, String> nameColumn = new TableColumn<Highscore, String>("Player");
@@ -212,8 +212,8 @@ public class MainMenu_View extends View<GameApp_Model> {
 		
 		
 		// nameText.setPrefSize(220.0, 30.0);
-		highscoreBox.getChildren().addAll(highscoreLbl, highscoreListLbl );
-		//highscoreBox.getChildren().addAll(highscoreLbl, table);
+		//highscoreBox.getChildren().addAll(highscoreLbl, highscoreListLbl );
+		highscoreBox.getChildren().addAll(highscoreLbl, table);
 		
 		//startGameBtn = new Button(t.getString("menu.startGameBtn"));
 		
