@@ -536,46 +536,54 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 		// Ensures the update happens on the JavaFX Application Thread, by using Platform.runLater()
 		Platform.runLater(() -> {
-
-			String winnerName = null;
+			
 			String loserName = null;
+			String winnerName = null;
 			int winnerVictoryPoints = 0;
 			int loserVictoryPoints = 0;
-			
+
 			// Gets loser and winner names with the number of acquired victory points
-			if (model.clientPlayer.getStatus() == GameSuccess.Won){
-				winnerName = model.clientPlayer.getPlayerName();
-				winnerVictoryPoints = model.clientPlayer.getVictoryPoints();
-				loserName = model.opponentPlayer.getPlayerName();
-				loserVictoryPoints = model.opponentPlayer.getVictoryPoints();
-			} else if (model.opponentPlayer.getStatus() == GameSuccess.Won) {
-				winnerName = model.opponentPlayer.getPlayerName();
-				winnerVictoryPoints = model.opponentPlayer.getVictoryPoints();
-				loserName = model.clientPlayer.getPlayerName();
-				loserVictoryPoints = model.clientPlayer.getVictoryPoints();
+			if (model.clientPlayer != null) {
+				if (model.clientPlayer.getStatus() == GameSuccess.Won){
+					winnerName = model.clientPlayer.getPlayerName();
+					winnerVictoryPoints = model.clientPlayer.getVictoryPoints();
+				} else {
+					loserName = model.clientPlayer.getPlayerName();
+					loserVictoryPoints = model.clientPlayer.getVictoryPoints();
+				}
 			}
-			
+
+			if (model.opponentPlayer != null) {
+				if (model.opponentPlayer.getStatus() == GameSuccess.Won) {
+					winnerName = model.opponentPlayer.getPlayerName();
+					winnerVictoryPoints = model.opponentPlayer.getVictoryPoints();
+				} else {
+					loserName = model.opponentPlayer.getPlayerName();
+					loserVictoryPoints = model.opponentPlayer.getVictoryPoints();
+				}
+			}
+
 			// Shows a popup with information about the winner
 			Popup popupPlayerSuccess = new Popup();
-			
+
 			Label lblWinner = new Label("Winner:");
 			Label lblNameOfWinner = new Label(winnerName);
-			
+
 			Label lblLoser = new Label("Loser:");
 			Label lblNameOfLoser = new Label(loserName);
-			
+
 			Label lblWinnerVictoryPoints = new Label("Winner's victory points:");
 			Label lblNmbrOfWinnerVictoryPoints = new Label(Integer.toString(winnerVictoryPoints));
-			
+
 			Label lblLoserVictoryPoints = new Label("Loser's victory points:");
 			Label lblNmbrOfLoserVictoryPoints = new Label(Integer.toString(loserVictoryPoints));
-			
+
 			HBox hboxWinnerName = new HBox(lblWinner, lblNameOfWinner);
 			HBox hboxWinnerVictoryPoints = new HBox(lblWinnerVictoryPoints, lblNmbrOfWinnerVictoryPoints);
-			
+
 			HBox hboxLoserName = new HBox(lblLoser, lblNameOfLoser);
 			HBox hboxLoserVictoryPoints = new HBox(lblLoserVictoryPoints, lblNmbrOfLoserVictoryPoints);
-			
+
 			ImageView confettiGIF = new ImageView(new Image(getClass().getResourceAsStream("Images/confetti.gif")));
 
 			VBox result = new VBox(hboxWinnerName, hboxWinnerVictoryPoints, hboxLoserName, hboxLoserVictoryPoints, confettiGIF);
