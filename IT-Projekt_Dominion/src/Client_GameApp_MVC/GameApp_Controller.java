@@ -21,11 +21,13 @@ import Server_GameLogic.Phase;
 import Server_GameLogic.Player;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -605,15 +607,25 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			Label lblNmbrOfWinnerVictoryPoints = new Label(Integer.toString(winnerVictoryPoints));
 			Label lblLoserVictoryPoints = new Label("Loser's victory points:");
 			Label lblNmbrOfLoserVictoryPoints = new Label(Integer.toString(loserVictoryPoints));
+			
+			Button btnGetBackToMainMenu = new Button("Get back to main menu");
+			
+			btnGetBackToMainMenu.setOnAction(event -> {
+				model.main.startMainMenu();
+				model.startMediaPlayer("Medieval_Camelot.mp3"); // Starts new sound
+				view.stop();
+			});
 
 			HBox hboxWinnerName = new HBox(lblWinner, lblNameOfWinner);
 			HBox hboxWinnerVictoryPoints = new HBox(lblWinnerVictoryPoints, lblNmbrOfWinnerVictoryPoints);
 			HBox hboxLoserName = new HBox(lblLoser, lblNameOfLoser);
 			HBox hboxLoserVictoryPoints = new HBox(lblLoserVictoryPoints, lblNmbrOfLoserVictoryPoints);
+			HBox hboxGetBack = new HBox(btnGetBackToMainMenu);
+			hboxGetBack.setAlignment(Pos.BOTTOM_RIGHT);
 
 			ImageView confettiGIF = new ImageView(new Image(getClass().getResourceAsStream("Images/confetti.gif")));
 
-			VBox result = new VBox(hboxWinnerName, hboxWinnerVictoryPoints, hboxLoserName, hboxLoserVictoryPoints, confettiGIF);
+			VBox result = new VBox(hboxWinnerName, hboxWinnerVictoryPoints, hboxLoserName, hboxLoserVictoryPoints, confettiGIF, hboxGetBack);
 
 			popupPlayerSuccess.getContent().add(result);
 			popupPlayerSuccess.centerOnScreen();
