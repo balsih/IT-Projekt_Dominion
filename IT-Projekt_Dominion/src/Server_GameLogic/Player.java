@@ -193,7 +193,7 @@ public class Player {
 			}
 
 			// sets all changed attributes of the UpdateGame_Message
-			ugmsg.setLog(this.playerName + ": #bought# "+"#buyedCard.getCardName().toString()#"+" #card#");
+			ugmsg.setLog(this.playerName + ": #bought# "+"#"+buyedCard.getCardName().toString()+"#"+" #card#");
 			ugmsg.setCoins(this.coins);
 			ugmsg.setBuys(this.buys);
 			ugmsg.setDiscardPileTopCard(this.discardPile.peek());
@@ -302,14 +302,17 @@ public class Player {
 		 */
 		if (this.handCards.size() > 1) {
 			ugmsg.setDiscardPileTopCard(selectedTopCard);
-			ugmsg.setLog("#topCard# "+"#selectedTopCard.getCardName().toString()#"); 
+			//ugmsg.setLog("#topCard# "+"#selectedTopCard.getCardName().toString()#"); 
+			
+			ugmsg.setLog("#topCard# "+"#"+selectedTopCard.getCardName().toString()+"#");
+			
 		} else if (this.handCards.size() == 1 && selectedTopCard == null) {
 			ugmsg.setDiscardPileTopCard(this.handCards.element());
-			ugmsg.setLog("#topCard# "+"#this.handCards.element().getCardName().toString()#");
+			ugmsg.setLog("#topCard# "+"#"+this.handCards.element().getCardName().toString()+"#");
 		} else if (this.handCards.size() == 0 && selectedTopCard == null) {
 			ugmsg.setDiscardPileTopCard(this.discardPile.peek());
 		}
-
+  
 		/*
 		 * the player lays his handcards down on the
 		 * discardPile and draw five new cards of his deckPile.

@@ -36,7 +36,7 @@ public class Mine_Card extends Card {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
 		//#DisposeCards# Chose cards to dispose
-		ugmsg.setLog(player.getPlayerName()+": #played# "+"#this.cardName.toString()#"+" #card#. #DisposeCard#");
+		ugmsg.setLog(player.getPlayerName()+": #played# "+"#"+this.cardName.toString()+"#"+" #card#. #DisposeCard#");
 		
 		// update game Messages -> XML 
 		ugmsg.setInteractionType(Interaction.Mine);
@@ -63,12 +63,12 @@ public class Mine_Card extends Card {
 				Silver_Card silverCard = game.getSilverPile().pop();
 				player.getHandCards().add(silverCard);
 				ugmsg.setBuyedCard(silverCard);
-				ugmsg.setLog(this.player.getPlayerName()+": #disposed# "+"#discardedCard.toString()#"+", #received# "+" #CardName.Silver.toString()#");
+				ugmsg.setLog(this.player.getPlayerName()+": #disposed# "+"#"+discardedCard.toString()+"#"+", #received# "+"#"+CardName.Silver.toString()+"#");
 			} else if (discardedCard.getCardName() == CardName.Silver){
 				Gold_Card goldCard = game.getGoldPile().pop();
 				player.getHandCards().add(goldCard);
 				ugmsg.setBuyedCard(goldCard);
-				ugmsg.setLog(this.player.getPlayerName()+": #disposed# "+"#discardedCard.toString()#"+", #received# "+" #CardName.Gold.toString()#");
+				ugmsg.setLog(this.player.getPlayerName()+": #disposed# "+"#"+discardedCard.toString()+"#"+", #received# "+"#"+CardName.Gold.toString()+"#");
 			}
 			if (this.player.getActions() == 0 || !this.player.containsCardType(this.player.getHandCards(), CardType.Action))
 				ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.player.skipPhase(), ugmsg);

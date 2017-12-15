@@ -37,7 +37,7 @@ public class Remodel_Card extends Card {
 		this.player = player;
 		
 		//#DisposeCard# Chose a card to get rid of
-		ugmsg.setLog(player.getPlayerName()+": #played# "+"#this.cardName.toString()#"+" #card#. #DisposeCard#");
+		ugmsg.setLog(player.getPlayerName()+": #played# "+"#"+this.cardName.toString()+"#"+" #card#. #DisposeCard#");
 		
 		// update game Messages -> XML 
 		ugmsg.setInteractionType(Interaction.Remodel1);
@@ -62,7 +62,7 @@ public class Remodel_Card extends Card {
 		this.player.getHandCards().remove(disposedCard); // removes card from hand 
 		
 		//#ChoseRemodel1# Chose a card with max 2 higher costs than the disposed card
-		ugmsg.setLog(player.getPlayerName()+": #disposed# "+"#disposedCard.getCardName().toString()#"+" #card#. #ChoseRemodel1#"); 
+		ugmsg.setLog(player.getPlayerName()+": #disposed# "+"#"+disposedCard.getCardName().toString()+"#"+" #card#. #ChoseRemodel1#"); 
 		
 		ugmsg.setInteractionType(Interaction.Remodel2);
 		ugmsg.setCardSelection(availableCards);
@@ -76,7 +76,7 @@ public class Remodel_Card extends Card {
 		Card pickedCard = this.player.pick(pickedCardName);
 		this.player.getDiscardPile().add(pickedCard);
 		
-		ugmsg.setLog(player.getPlayerName()+": #picked# "+"#pickedCardName.toString()#"+" #card#");
+		ugmsg.setLog(player.getPlayerName()+": #picked# "+"#"+pickedCardName.toString()+"#"+" #card#");
 		
 		// update game Messages -> XML
 		LinkedList<Card> newHandCard = new LinkedList<Card>();
