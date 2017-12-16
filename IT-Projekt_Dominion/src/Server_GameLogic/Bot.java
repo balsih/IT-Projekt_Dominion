@@ -479,7 +479,12 @@ public class Bot extends Player implements Runnable {
 	private void estimateBuyPriorityOfVictoryCards() {
 		calculateGameStage();
 		// change priorities according gameStage number
-		int tempEstate = buyPrioOneCard.get(CardName.Estate);
+		int tempEstate;
+		if (gameStage >= 50) {
+			tempEstate = buyPrioOneCard.get(CardName.Estate);
+		} else
+			tempEstate = 0;
+
 		int tempDuchy = buyPrioOneCard.get(CardName.Duchy);
 		if (gameStage == 100 && done0) {
 			tempEstate += 25;
@@ -496,10 +501,14 @@ public class Bot extends Player implements Runnable {
 			tempDuchy += 15;
 			done3 = false;
 		}
-		buyPrioOneCard.replace(CardName.Estate, tempEstate);
+
 		buyPrioOneCard.replace(CardName.Duchy, tempDuchy);
-		buyPrioMoreCards.replace(CardName.Estate, tempEstate);
 		buyPrioMoreCards.replace(CardName.Duchy, tempDuchy);
+
+		if (tempEstate != 0) {
+			buyPrioOneCard.replace(CardName.Estate, tempEstate);
+			buyPrioMoreCards.replace(CardName.Estate, tempEstate);
+		}
 	}
 
 	/**
@@ -587,7 +596,7 @@ public class Bot extends Player implements Runnable {
 			buyPrioMoreCards.put(CardName.Estate, 5);
 			done4 = false;
 		}
-		
+
 		for (int i = 0; i < CARDNAMESOFACTIONCARDS.size(); i++) {
 			if (getNumberOfOwnedCards(CARDNAMESOFACTIONCARDS.get(i)) == maxCardsOfAType
 					.get(CARDNAMESOFACTIONCARDS.get(i))) {
