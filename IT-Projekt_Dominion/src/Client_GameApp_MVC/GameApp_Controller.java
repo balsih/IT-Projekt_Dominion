@@ -37,6 +37,7 @@ import javafx.scene.input.ZoomEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 /**
@@ -492,11 +493,6 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		// Describes what happens when the user clicks a hand card
 		img.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
 
-			// Displays the winner if the card-click caused a player to win the game
-			if (model.clientPlayer != null || model.opponentPlayer != null){
-				createWinnerPopup();
-			}
-
 			// Checks if the player who clicked the image is the current player
 			// and therefore is allowed to play cards
 			if (model.currentPlayer.compareTo(model.clientName) == 0) {
@@ -553,6 +549,11 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 					}
 				}
 			}
+
+			// Displays the winner if the card-click caused a player to win the game
+			if (model.clientPlayer != null || model.opponentPlayer != null){
+				createWinnerPopup(view.getStage());
+			}
 		});
 
 		// Defines image changes in size and brightness after triggering an event
@@ -560,7 +561,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 	}
 
 	// Displays the winner and loser after a game has ended
-	private void createWinnerPopup() {
+	private void createWinnerPopup(Stage stage) {
 
 		// Ensures the update happens on the JavaFX Application Thread, by using Platform.runLater()
 		Platform.runLater(() -> {
@@ -607,13 +608,14 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			Label lblNmbrOfWinnerVictoryPoints = new Label(Integer.toString(winnerVictoryPoints));
 			Label lblLoserVictoryPoints = new Label("Loser's victory points:");
 			Label lblNmbrOfLoserVictoryPoints = new Label(Integer.toString(loserVictoryPoints));
-			
+
 			Button btnGetBackToMainMenu = new Button("Get back to main menu");
-			
+
 			btnGetBackToMainMenu.setOnAction(event -> {
 				model.main.startMainMenu();
 				model.startMediaPlayer("Medieval_Camelot.mp3"); // Starts new sound
 				view.stop();
+				this.listenToServer = false;
 			});
 
 			HBox hboxWinnerName = new HBox(lblWinner, lblNameOfWinner);
@@ -629,11 +631,9 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 			popupPlayerSuccess.getContent().add(result);
 			popupPlayerSuccess.centerOnScreen();
-			popupPlayerSuccess.show(view.getStage());
+			popupPlayerSuccess.show(stage); // popupPlayerSuccess.show(view.getStage()); or view.getStage().getScene().getWindow()
 
-			listenToServer = false;
 		});
-
 	}
 
 	// Sets events on action, treasure and victory cards
@@ -641,11 +641,6 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 		// Describes what happens when the user clicks an action, treasure or victory card
 		img.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-
-			// Displays the winner if the card-click caused a player to win the game (e.g. when province card stack is empty)
-			if (model.clientPlayer != null || model.opponentPlayer != null){
-				createWinnerPopup();
-			}
 
 			// Checks if the player who clicked the image is the current player
 			// and therefore is allowed to play cards
@@ -670,6 +665,11 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 						}
 					}
 				}			
+			}
+
+			// Displays the winner if the card-click caused a player to win the game (e.g. when province card stack is empty)
+			if (model.clientPlayer != null || model.opponentPlayer != null){
+				createWinnerPopup(view.getStage());
 			}
 		});
 
@@ -795,7 +795,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 					model.processPlayerSuccess(msgIn);
 
 					// Displays the winner and loser of the game
-					createWinnerPopup();
+					createWinnerPopup(view.getStage());
 				}
 			}
 		}
