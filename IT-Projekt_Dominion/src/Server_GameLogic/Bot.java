@@ -24,7 +24,7 @@ import Messages.UpdateGame_Message;
  * @author Simon
  * @version 1.0
  * @created 15-Nov-2017 08:36:00
- * @lastEdited 5-Dec-2017 23:25:00
+ * @lastEdited 16-Dec-2017 23:25:00
  */
 public class Bot extends Player implements Runnable {
 	private HashMap<CardName, Integer> buyPrioOneCard = new HashMap<CardName, Integer>();
