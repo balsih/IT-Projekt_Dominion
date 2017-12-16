@@ -54,7 +54,6 @@ public class Player {
 
 	private final Logger logger = Logger.getLogger("");
 
-
 	/**
 	 * Constructor for a Player
 	 * 
@@ -88,13 +87,11 @@ public class Player {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 *         Plays an action or a treasure card and executes it, if the
-	 *         conditions to play a card applies.
+	 * Plays an action or a treasure card and executes it, if the
+	 * conditions to play a card applies.
 	 *
-	 * @param selectedCard
-	 *            - the card the player selected to play.
-	 * @return UpdateGame_Message - the message that updates the play process,
-	 *         if all conditions applies.
+	 * @param selectedCard - the card the player selected to play.
+	 * @return UpdateGame_Message - the message that updates the play process, if all conditions applies.
 	 * @return Failure_Message - if no condition applies.
 	 */
 	public Message play(Card selectedCard) {
@@ -118,6 +115,14 @@ public class Player {
 				return fmsg;
 			else if (selectedCard.getCardName().equals(CardName.Cellar) && this.handCards.size() == 1)
 				return fmsg;
+			
+			if (game.checkGameEnding()) {
+				this.actualPhase = Phase.Ending;
+				game.checkWinner();
+
+				this.sendToOpponent(this, this.getOpponentSuccessMsg());
+				return this.getCurrentPlayerSuccessMsg();
+			}
 
 			ugmsg = selectedCard.executeCard(this);
 			playedCards.add(this.handCards.remove(index));
@@ -128,9 +133,9 @@ public class Player {
 			if ((this.actions == 0 || !this.containsCardType(this.handCards, CardType.Action))
 					&& ugmsg.getInteractionType() == null)
 				ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.skipPhase(), ugmsg);
-			
+
 			this.sendToOpponent(this, ugmsg);
-			
+
 			return ugmsg;
 
 			// plays the selected treasure card which not requires any available
@@ -139,9 +144,9 @@ public class Player {
 				&& selectedCard.getType() == CardType.Treasure) {
 			ugmsg = selectedCard.executeCard(this);
 			playedCards.add(this.handCards.remove(index));
-			
+
 			this.sendToOpponent(this, ugmsg);
-			
+
 			return ugmsg;
 		}
 
@@ -193,7 +198,7 @@ public class Player {
 			}
 
 			// sets all changed attributes of the UpdateGame_Message
-			ugmsg.setLog(this.playerName + ": #bought# "+"#"+buyedCard.getCardName().toString()+"#"+" #card#");
+			ugmsg.setLog(this.playerName + ": #bought# " + "#" + buyedCard.getCardName().toString() + "#" + " #card#");
 			ugmsg.setCoins(this.coins);
 			ugmsg.setBuys(this.buys);
 			ugmsg.setDiscardPileTopCard(this.discardPile.peek());
@@ -201,10 +206,10 @@ public class Player {
 			ugmsg.setBuyedCard(buyedCard);
 
 			// if the buy phase is terminated, skip
-			if (this.buys == 0){
+			if (this.buys == 0) {
 				ugmsg = UpdateGame_Message.merge((UpdateGame_Message) skipPhase(), ugmsg);
 			}
-			
+
 			this.sendToOpponent(this, ugmsg);
 
 			return ugmsg;
@@ -302,27 +307,28 @@ public class Player {
 		 */
 		if (this.handCards.size() > 1) {
 			ugmsg.setDiscardPileTopCard(selectedTopCard);
-			//ugmsg.setLog("#topCard# "+"#selectedTopCard.getCardName().toString()#"); 
-			
-			ugmsg.setLog("#topCard# "+"#"+selectedTopCard.getCardName().toString()+"#");
-			
+			// ugmsg.setLog("#topCard#
+			// "+"#selectedTopCard.getCardName().toString()#");
+
+			ugmsg.setLog("#topCard# " + "#" + selectedTopCard.getCardName().toString() + "#");
+
 		} else if (this.handCards.size() == 1 && selectedTopCard == null) {
 			ugmsg.setDiscardPileTopCard(this.handCards.element());
-			ugmsg.setLog("#topCard# "+"#"+this.handCards.element().getCardName().toString()+"#");
+			ugmsg.setLog("#topCard# " + "#" + this.handCards.element().getCardName().toString() + "#");
 		} else if (this.handCards.size() == 0 && selectedTopCard == null) {
 			ugmsg.setDiscardPileTopCard(this.discardPile.peek());
 		}
-  
+
 		/*
-		 * the player lays his handcards down on the
-		 * discardPile and draw five new cards of his deckPile.
+		 * the player lays his handcards down on the discardPile and draw five
+		 * new cards of his deckPile.
 		 */
 		while (!handCards.isEmpty()) {
 			this.discardPile.push(handCards.remove());
 		}
 
 		ugmsg.setDiscardPileCardNumber(this.discardPile.size());
-		
+
 		ugmsg = UpdateGame_Message.merge(this.draw(this.NUM_OF_HANDCARDS), ugmsg);
 
 		// if the cleanUp phase is terminated, skip
@@ -387,13 +393,20 @@ public class Player {
 
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		Failure_Message fmsg = new Failure_Message();
-		
 
 		if (this.equals(game.getCurrentPlayer())) {
 			switch (this.actualPhase) {
 			case Action:
 				this.actualPhase = Phase.Buy;
 				ugmsg.setCurrentPhase(this.actualPhase);
+				
+				if (game.checkGameEnding()) {
+					this.actualPhase = Phase.Ending;
+					game.checkWinner();
+
+					this.sendToOpponent(this, this.getOpponentSuccessMsg());
+					return this.getCurrentPlayerSuccessMsg();
+				}
 				break;
 
 			case Buy:
@@ -402,7 +415,8 @@ public class Player {
 
 				if (this.handCards.size() > 1) {
 					ugmsg.setInteractionType(Interaction.EndOfTurn);
-					ugmsg.setLog("#choseTopCard#"); // choose top card for discardPile 
+					ugmsg.setLog("#choseTopCard#"); // choose top card for
+													// discardPile
 				} else
 					ugmsg = UpdateGame_Message.merge(this.cleanUp(null), ugmsg);
 				break;
@@ -461,7 +475,7 @@ public class Player {
 	public void sendToOpponent(Player source, Message msg) {
 		if (source instanceof Bot)
 			this.serverThreadForClient.addWaitingMessages(msg);
-		else if (!(source instanceof Bot) && this.getGame().getGameMode() == GameMode.Multiplayer){
+		else if (!(source instanceof Bot) && this.getGame().getGameMode() == GameMode.Multiplayer) {
 			this.game.getOpponent(this).getServerThreadForClient().addWaitingMessages(msg);
 		}
 	}
@@ -539,8 +553,8 @@ public class Player {
 
 		return psmsg;
 	}
-	
-	public Queue<Message> getWaitingMsg(){
+
+	public Queue<Message> getWaitingMsg() {
 		return this.serverThreadForClient.waitingMessages;
 	}
 
