@@ -800,6 +800,16 @@ public class GameApp_Model extends Model {
 		mediaPlayerBtn.play();
 	}
 	
+	// Game stard sound
+		public void gameStartSound() {
+			if (mediaPlayerBtn != null) {
+				mediaPlayerBtn.stop();
+			}
+			URL resource = getClass().getResource("Sword_Sound.mp3");
+			mediaPlayerBtn = new MediaPlayer(new Media(resource.toString()));
+			mediaPlayerBtn.play();
+		}
+	
 
 	public String getClientName(){
 		return this.clientName;

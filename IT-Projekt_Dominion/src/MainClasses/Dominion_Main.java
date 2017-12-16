@@ -91,6 +91,7 @@ public class Dominion_Main extends Application {
 	
 	// Create game mvc
 	public void startGameApp(){		
+		model.gameStartSound();
 		this.gameApp_View = new GameApp_View(new Stage(), model);
 		GameApp_Controller controller = new GameApp_Controller(model, this.gameApp_View);
 		this.gameApp_View.start();
