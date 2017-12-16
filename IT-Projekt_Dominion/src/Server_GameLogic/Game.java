@@ -53,8 +53,8 @@ public class Game {
 	private HashMap<CardName, Integer> buyCards;
 
 	// the number of cards in a stack of a card type
-	private final int NUM_OF_TREASURECARDS = 10;
-	private final int NUM_OF_VICTORYCARDS = 2;
+	private final int NUM_OF_TREASURECARDS = 30;
+	private final int NUM_OF_VICTORYCARDS = 8;
 	private final int NUM_OF_ACTIONCARDS = 10;
 
 	private static int gameCounter = 0;
