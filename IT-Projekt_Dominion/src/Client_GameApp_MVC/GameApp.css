@@ -35,12 +35,21 @@ Label {
         linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
         linear-gradient(#dddddd 0%, #f6f6f6 50%);
     -fx-background-insets: 0, 1;
-    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 0.0 , 0 , 1 );
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 5, 0.0, 0, 1);
 }
 
 .lblCurrentPlayer {
 	-fx-text-fill: black;
 	-fx-font: 15px "Arial";
+}
+
+.lblPopupCurrentPhase {
+	-fx-font: 50px "Luminari";
+	-fx-text-fill: white;
+	-fx-padding: 20px;
+	-fx-background-image: url("Images/signpost.png");
+    -fx-background-insets: 0, 1;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 5, 0.0, 0, 1);
 }
 
 .vbox{

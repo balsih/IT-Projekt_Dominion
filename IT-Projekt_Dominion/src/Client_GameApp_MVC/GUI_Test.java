@@ -39,6 +39,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.input.ZoomEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -347,7 +349,7 @@ public class GUI_Test extends Application {
 		gridpActionCards.getStyleClass().add("cardGaps");
 		// lblActionCards.getStyleClass().add("Label");
 		lblActionCards.getStyleClass().add("hboxCurrentPlayer");
-		
+
 		vboxTreasureCards.getStyleClass().add("vbox");
 		hboxTreasureCards.getStyleClass().add("cardGaps");
 		hboxTreasureCards.getStyleClass().add("hbox");
@@ -495,50 +497,73 @@ public class GUI_Test extends Application {
 			// setInitialHandCardsEvents(img);
 
 			img.addEventHandler(ZoomEvent.ZOOM, event -> { // ScrollEvent.ANY
-//				Popup popup = new Popup();
-//				ImageView popupImage = new ImageView(img.getImage());
-//				popupImage.setFitHeight(500);
-//				popupImage.setFitWidth(300);
-//				popup.getContent().add(popupImage);
-//				popup.centerOnScreen();
-//				popup.show(stage);
-//				popup.setAutoHide(true);
-				
-//				// can use an Alert, Dialog, or PopupWindow as needed...
-//				Stage popup = new Stage();
-//				// configure UI for popup etc...
-//
-//				// hide popup after 3 seconds:
-//				PauseTransition delay = new PauseTransition(Duration.seconds(3));
-//				delay.setOnFinished(e -> popup.hide());
-//
-//				popup.show();
-//				delay.play();
-				
-//				Alert alert = new Alert(AlertType.INFORMATION);
-//				alert.setTitle("Action phase started");
-//				alert.setHeaderText(null);
-//				alert.setContentText("Action phase has just startet for currentPlayer");
-//
-//				PauseTransition delay = new PauseTransition(Duration.seconds(2));
-//				delay.setOnFinished(e -> alert.hide());
-//				alert.show();
-//				delay.play();
-				
-				Popup popupPlayerSuccess = new Popup();
-				Label lblWinner = new Label("Winner: ");
-				Label lblNameOfWinner = new Label("Hanspeter");
-				Label lblVictoryPoints = new Label("Victory Points: ");
-				Label lblNmbrOfVictoryPoints = new Label ("22");
-				HBox hboxWinnerName = new HBox(lblWinner, lblNameOfWinner);
-				HBox hboxWinnerVictoryPoints = new HBox(lblVictoryPoints, lblNmbrOfVictoryPoints);
-				ImageView confettiGIF = new ImageView(new Image(getClass().getResourceAsStream("Images/confetti.gif")));
-				
-				VBox vboxWinner = new VBox(hboxWinnerName, hboxWinnerVictoryPoints, confettiGIF);
-				
-				popupPlayerSuccess.getContent().add(vboxWinner);
-				popupPlayerSuccess.centerOnScreen();
-				popupPlayerSuccess.show(stage);
+				//				Popup popup = new Popup();
+				//				ImageView popupImage = new ImageView(img.getImage());
+				//				popupImage.setFitHeight(500);
+				//				popupImage.setFitWidth(300);
+				//				popup.getContent().add(popupImage);
+				//				popup.centerOnScreen();
+				//				popup.show(stage);
+				//				popup.setAutoHide(true);
+
+				//				// can use an Alert, Dialog, or PopupWindow as needed...
+				//				Stage popup = new Stage();
+				//				// configure UI for popup etc...
+				//
+				//				// hide popup after 3 seconds:
+				//				PauseTransition delay = new PauseTransition(Duration.seconds(3));
+				//				delay.setOnFinished(e -> popup.hide());
+				//
+				//				popup.show();
+				//				delay.play();
+
+				//				Alert alert = new Alert(AlertType.INFORMATION);
+				//				alert.setTitle("Action phase started");
+				//				alert.setHeaderText(null);
+				//				alert.setContentText("Action phase has just startet for currentPlayer");
+				//
+				//				PauseTransition delay = new PauseTransition(Duration.seconds(2));
+				//				delay.setOnFinished(e -> alert.hide());
+				//				alert.show();
+				//				delay.play();
+
+				//_____________________________
+
+				//				Popup popupPlayerSuccess = new Popup();
+				//				Label lblWinner = new Label("Winner: ");
+				//				Label lblNameOfWinner = new Label("Hanspeter");
+				//				Label lblVictoryPoints = new Label("Victory Points: ");
+				//				Label lblNmbrOfVictoryPoints = new Label ("22");
+				//				HBox hboxWinnerName = new HBox(lblWinner, lblNameOfWinner);
+				//				HBox hboxWinnerVictoryPoints = new HBox(lblVictoryPoints, lblNmbrOfVictoryPoints);
+				//				ImageView confettiGIF = new ImageView(new Image(getClass().getResourceAsStream("Images/confetti.gif")));
+				//
+				//				VBox vboxWinner = new VBox(hboxWinnerName, hboxWinnerVictoryPoints, confettiGIF);
+				//
+				//				popupPlayerSuccess.getContent().add(vboxWinner);
+				//				popupPlayerSuccess.centerOnScreen();
+				//				popupPlayerSuccess.show(stage);
+
+				//_____________________________
+
+				Popup popupPhase = new Popup();
+				Label lblPopupCurrentPhase = new Label();
+
+				// switch case Action/Buy/CleanUp
+				lblPopupCurrentPhase.setText("Phase: Action"); // (t.getString("action.lblNameOfCurrentPhase"));
+				lblPopupCurrentPhase.getStyleClass().add("lblPopupCurrentPhase");
+
+				popupPhase.getContent().add(lblPopupCurrentPhase);
+
+				// Positions and auto-hides the popup after the specified duration
+				popupPhase.centerOnScreen();
+				popupPhase.setAutoHide(true);
+
+				PauseTransition delay = new PauseTransition(Duration.seconds(1.5));
+				delay.setOnFinished(e -> popupPhase.hide());
+				popupPhase.show(stage);
+				delay.play();
+
 			});
 		}
 
@@ -576,85 +601,85 @@ public class GUI_Test extends Application {
 
 		// Test: button click to open popup
 		btnSendChatArea.setOnAction(event3 -> {
-//			Popup popup = new Popup();
-//			
-//			Button btnYes = new Button("Yes");
-//			Button btnNo = new Button("No");
-//			Text text = new Text();
-//			text.setText("Do you really want to leave the game and give up?");
-//			
-//			HBox hbox = new HBox(btnYes, btnNo);
-//			VBox vbox = new VBox(text, hbox);
-//			vbox.setStyle("-fx-spacing: 20px");
-//			hbox.setStyle("-fx-spacing: 20px");
-//			vbox.setStyle("-fx-background-color: white;");
-//			vbox.setAlignment(Pos.BOTTOM_LEFT);
-//			hbox.setAlignment(Pos.BOTTOM_RIGHT);
-//			
-//			popup.setWidth(200);
-//			popup.setHeight(100);
-//			
-//			popup.getContent().add(vbox);
-//			popup.centerOnScreen();
-//			popup.show(stage);
-//			popup.setAutoHide(true);
-			
-//			Alert alert = new Alert(AlertType.CONFIRMATION);
-//			alert.setTitle("Are you sure?");
-//			alert.setHeaderText("If you click ok, you'll lose.");
-//			alert.setContentText("Do you really want to leave this game?");
-//
-//			Optional<ButtonType> result = alert.showAndWait();
-//			if (result.get() == ButtonType.OK){
-//			   Platform.exit();
-//			} else {
-//			    alert.hide();
-//			}
-			
-	
+			//			Popup popup = new Popup();
+			//			
+			//			Button btnYes = new Button("Yes");
+			//			Button btnNo = new Button("No");
+			//			Text text = new Text();
+			//			text.setText("Do you really want to leave the game and give up?");
+			//			
+			//			HBox hbox = new HBox(btnYes, btnNo);
+			//			VBox vbox = new VBox(text, hbox);
+			//			vbox.setStyle("-fx-spacing: 20px");
+			//			hbox.setStyle("-fx-spacing: 20px");
+			//			vbox.setStyle("-fx-background-color: white;");
+			//			vbox.setAlignment(Pos.BOTTOM_LEFT);
+			//			hbox.setAlignment(Pos.BOTTOM_RIGHT);
+			//			
+			//			popup.setWidth(200);
+			//			popup.setHeight(100);
+			//			
+			//			popup.getContent().add(vbox);
+			//			popup.centerOnScreen();
+			//			popup.show(stage);
+			//			popup.setAutoHide(true);
+
+			//			Alert alert = new Alert(AlertType.CONFIRMATION);
+			//			alert.setTitle("Are you sure?");
+			//			alert.setHeaderText("If you click ok, you'll lose.");
+			//			alert.setContentText("Do you really want to leave this game?");
+			//
+			//			Optional<ButtonType> result = alert.showAndWait();
+			//			if (result.get() == ButtonType.OK){
+			//			   Platform.exit();
+			//			} else {
+			//			    alert.hide();
+			//			}
+
+
 			txtaChatArea.setDisable(false);
 			txtaChatArea.setEditable(false);
-			
+
 			String existingMessages = txtaChatArea.getText();
 			txtaChatArea.setText(txtfChatArea.getText()+System.lineSeparator().concat(existingMessages));
 			txtfChatArea.setText("");
-		
-	});
 
-	// Set mouse click on action
-	//		img1.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-	//			txtaChatArea.setText("You've clicked the image");
-	//			//event.consume();
-	//	     });
+		});
 
-	//		vboxPlayedCards.setOnDragOver(event -> {
-	//			vboxPlayedCards.setStyle("-fx-border-color: red;");
-	//		});
-	//		
-	//		vboxPlayedCards.setOnDragExited(event -> {
-	//			vboxPlayedCards.setStyle("-fx-border-color: white;");
-	//			event.consume();
-	//		});
-	//		
-	//		vboxPlayedCards.setOnDragDropped(event -> {
-	//			hboxPlayedCards.getChildren().add(img1);
-	//		});
-	//		
-	//		// Test Drag and drop of images
-	//		img1.setOnDragDetected(event -> {
-	//			Dragboard db = img1.startDragAndDrop(TransferMode.ANY);
-	//
-	//			ClipboardContent content = new ClipboardContent();
-	//			content.putImage(img1.getImage());
-	//			db.setContent(content);
-	//	        
-	//	        event.consume();
-	//		});
-	//		
-	//		img1.setOnDragDone(event -> {
-	//			// hboxPlayedCards.getChildren().add(img1);
-	//			hboxTreasureCards.getChildren().remove(img1);
-	//		});
+		// Set mouse click on action
+		//		img1.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+		//			txtaChatArea.setText("You've clicked the image");
+		//			//event.consume();
+		//	     });
 
-}
+		//		vboxPlayedCards.setOnDragOver(event -> {
+		//			vboxPlayedCards.setStyle("-fx-border-color: red;");
+		//		});
+		//		
+		//		vboxPlayedCards.setOnDragExited(event -> {
+		//			vboxPlayedCards.setStyle("-fx-border-color: white;");
+		//			event.consume();
+		//		});
+		//		
+		//		vboxPlayedCards.setOnDragDropped(event -> {
+		//			hboxPlayedCards.getChildren().add(img1);
+		//		});
+		//		
+		//		// Test Drag and drop of images
+		//		img1.setOnDragDetected(event -> {
+		//			Dragboard db = img1.startDragAndDrop(TransferMode.ANY);
+		//
+		//			ClipboardContent content = new ClipboardContent();
+		//			content.putImage(img1.getImage());
+		//			db.setContent(content);
+		//	        
+		//	        event.consume();
+		//		});
+		//		
+		//		img1.setOnDragDone(event -> {
+		//			// hboxPlayedCards.getChildren().add(img1);
+		//			hboxTreasureCards.getChildren().remove(img1);
+		//		});
+
+	}
 }
