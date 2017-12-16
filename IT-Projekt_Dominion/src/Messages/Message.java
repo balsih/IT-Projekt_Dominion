@@ -111,7 +111,8 @@ public abstract class Message {
             out.flush();
             s.shutdownOutput(); // ends output without closing socket
         } catch (Exception e) {
-        	System.out.println(e);
+        	Logger logger = Logger.getLogger("");
+        	logger.severe("Message send(): "+e.toString());
         }
     }    
 
