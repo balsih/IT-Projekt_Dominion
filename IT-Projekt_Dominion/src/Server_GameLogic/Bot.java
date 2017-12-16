@@ -233,6 +233,7 @@ public class Bot extends Player implements Runnable {
 						
 						// this is bullshit...
 						
+						
 //						if (actions == 1) {
 //							if (card.getType().equals(CardType.Action))
 //								discardedCardsForCellar.add(card);
