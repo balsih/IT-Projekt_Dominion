@@ -56,7 +56,7 @@ public class MainMenu_View extends View<GameApp_Model> {
 	protected Button multiPlayerBtn;
 	
 	protected Label highscoreLbl;
-	protected Label highscoreListLbl;
+	protected TableColumn<Highscore, String> nameColumn, pointColumn, roundColumn;
 	
 	protected Button startGameBtn;
 	protected Button quitBtn;
@@ -153,6 +153,7 @@ public class MainMenu_View extends View<GameApp_Model> {
 		
 		languageSelectComboBox.setTooltip(new Tooltip(t.getString("program.languageTip")));
 		//languageSelectComboBox.setPrefSize(20.0, 20.0);
+		languageSelectComboBox.toFront();
 		
 		HBox playerAndLanguageBox = new HBox(playerLbl, languageSelectComboBox);
 		
@@ -166,11 +167,11 @@ public class MainMenu_View extends View<GameApp_Model> {
 		mainMenuLbl.setPrefSize(300, 50);
 		mainMenuLbl.setId("mainMenuLbl");
 		
-		selectModeLbl = new Label(/*t.getString("menu.selectModeLbl")*/);
+		selectModeLbl = new Label(t.getString("menu.selectModeLbl"));
 		selectModeLbl.setId("selectModeLbl");
-		singlePlayerBtn = new Button(/*t.getString("menu.singlePlayerBtn")*/);
+		singlePlayerBtn = new Button(t.getString("menu.singlePlayerBtn"));
 		singlePlayerBtn.setId("singlePlayerBtn");
-		multiPlayerBtn = new Button(/*t.getString("menu.multiPlayerBtn")*/);
+		multiPlayerBtn = new Button(t.getString("menu.multiPlayerBtn"));
 		multiPlayerBtn.setId("multiPlayerBtn");
 		HBox singleAndMultiplayerBox = new HBox(singlePlayerBtn, multiPlayerBtn);
 		singleAndMultiplayerBox.setId("singleAndMultiplayerBox");
@@ -186,38 +187,30 @@ public class MainMenu_View extends View<GameApp_Model> {
 		highscoreLbl = new Label(t.getString("menu.highscoreLbl"));
 		highscoreLbl.setId("highscoreLbl");
 		
-//		highscoreListLbl = new Label(model.sendHighScoreRequest()); // sets the top five as a five line String
-//		highscoreListLbl.setId("highscoreListLbl");
-//		highscoreListLbl.setPrefSize(360, 130);
 		
-		
-		TableColumn<Highscore, String> nameColumn = new TableColumn<Highscore, String>("Player");
+		nameColumn = new TableColumn<Highscore, String>(t.getString("menu.table.player"));
 		nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-		nameColumn.setPrefWidth(260);
+		nameColumn.setPrefWidth(250);
 		
-		TableColumn<Highscore, String> scoreColumn = new TableColumn<Highscore, String>("Score");
-		scoreColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
-		scoreColumn.setPrefWidth(50);
+		pointColumn = new TableColumn<Highscore, String>(t.getString("menu.table.points"));
+		pointColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
+		pointColumn.setPrefWidth(55);
+		pointColumn.setId("pointColumn");
 		
-		TableColumn<Highscore, String> movesColumn = new TableColumn<Highscore, String>("Moves");
-		movesColumn.setCellValueFactory(new PropertyValueFactory<>("moves"));
-		movesColumn.setPrefWidth(50);
+		roundColumn = new TableColumn<Highscore, String>(t.getString("menu.table.rounds"));
+		roundColumn.setCellValueFactory(new PropertyValueFactory<>("moves"));
+		roundColumn.setPrefWidth(55);
+		roundColumn.setId("roundColumn");
 		
 		table = new TableView<Highscore>();
 		table.setId("table");
 		table.setItems(model.sendHighScoreRequest());
-		table.getColumns().addAll(nameColumn, scoreColumn, movesColumn);
+		table.getColumns().addAll(nameColumn, pointColumn, roundColumn);
 		table.setPrefSize(346, 162);
 		
 		
-		
-		// nameText.setPrefSize(220.0, 30.0);
-		//highscoreBox.getChildren().addAll(highscoreLbl, highscoreListLbl );
 		highscoreBox.getChildren().addAll(highscoreLbl, table);
 		
-		//startGameBtn = new Button(t.getString("menu.startGameBtn"));
-		
-		//startGameBtn.setId("startGameBtn");
 		quitBtn = new Button(/*t.getString("menu.quitBtn")*/);
 		quitBtn.setId("quitBtn");
 		HBox startAndQuitBox = new HBox(/*startGameBtn, */quitBtn);
@@ -264,6 +257,9 @@ public class MainMenu_View extends View<GameApp_Model> {
 		singlePlayerBtn.setText(t.getString("menu.singlePlayerBtn"));
 		multiPlayerBtn.setText(t.getString("menu.multiPlayerBtn"));
 		highscoreLbl.setText(t.getString("menu.highscoreLbl"));
+		nameColumn.setText(t.getString("menu.table.player"));
+		pointColumn.setText(t.getString("menu.table.player"));
+		roundColumn.setText(t.getString("menu.table.rounds"));
 		quitBtn.setText(t.getString("menu.quitBtn"));
 		startGameAlert.setTitle(t.getString("menu.startGameAlert"));
 	}
