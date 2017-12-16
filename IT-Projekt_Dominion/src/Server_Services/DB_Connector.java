@@ -157,7 +157,7 @@ public class DB_Connector {
 	 * @return highScore - the 5 best players with their score.
 	 */
 	public String getHighScore() {
-		String selectHighScore = "Select distinct Username, Score, Moves from Player_Scoring order by Score desc, Moves asc limit 0,5";
+		String selectHighScore = "Select distinct Username, Score, Moves from Player_Scoring order by Moves asc, Score desc limit 0,5";
 		String highScore = "";
 
 		try {

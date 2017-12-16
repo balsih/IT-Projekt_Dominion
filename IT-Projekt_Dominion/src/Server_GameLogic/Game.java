@@ -53,8 +53,8 @@ public class Game {
 	private HashMap<CardName, Integer> buyCards;
 
 	// the number of cards in a stack of a card type
-	private final int NUM_OF_TREASURECARDS = 30;
-	private final int NUM_OF_VICTORYCARDS = 8;
+	private final int NUM_OF_TREASURECARDS = 10;
+	private final int NUM_OF_VICTORYCARDS = 2;
 	private final int NUM_OF_ACTIONCARDS = 10;
 
 	private static int gameCounter = 0;
@@ -268,14 +268,15 @@ public class Game {
 	/**
 	 * @author Bodo Gruetter
 	 * 
-	 * Saves the player scores exluding bot in database.
+	 * Saves the player scores excluding bot in database.
 	 */
 	private void saveScore(){
 		DB_Connector connector = DB_Connector.getDB_Connector();
 		
-		if(this.gameMode.equals(GameMode.Singleplayer) || this.gameMode.equals(GameMode.Multiplayer))
+		if((this.gameMode.equals(GameMode.Singleplayer) || this.gameMode.equals(GameMode.Multiplayer))
+				&& this.player1.getStatus().equals(GameSuccess.Won))
 			connector.addScore(this.player1, this.player1.getVictoryPoints(), this.player1.getMoves());
-		if(this.gameMode.equals(GameMode.Multiplayer))
+		if(this.gameMode.equals(GameMode.Multiplayer) && this.player2.getStatus().equals(GameSuccess.Won))
 			connector.addScore(this.player2, this.player2.getVictoryPoints(), this.player2.getMoves());
 	}
 
