@@ -9,8 +9,9 @@
 	-fx-text-fill: black;
 }
 
-Label {
-	-fx-text-fill: white;
+Label {    
+    -fx-text-fill: white;
+    -fx-font: 15px "Arial Black";
 }
 
 .lblCurrentPlayer {
@@ -68,4 +69,13 @@ Label {
     -fx-background-insets: 0,1,2;
     -fx-text-fill: black;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0.0, 0, 1);
+}
+
+.lblPopupCurrentPhase {
+	-fx-font: 50px "Luminari";
+	-fx-text-fill: white;
+	-fx-padding: 25px;
+	-fx-background-image: url("Images/signpost.png");
+    -fx-background-insets: 0, 1;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 5, 0.0, 0, 1);
 }

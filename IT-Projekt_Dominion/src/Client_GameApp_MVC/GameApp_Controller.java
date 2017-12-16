@@ -382,47 +382,31 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 	// Displays a popup that informs the player about the current phase
 	private void startPhasePopup() {
 
-		ImageView imgActionPhase_en = new ImageView(new Image(getClass().getResourceAsStream("Images/imgActionPhase_en.png")));
-		ImageView imgBuyPhase_en = new ImageView(new Image(getClass().getResourceAsStream("Images/imgBuyPhase_en.png")));
-		ImageView imgCleanUpPhase_en = new ImageView(new Image(getClass().getResourceAsStream("Images/imgCleanUpPhase_en.png")));
-		ImageView imgActionPhase_de = new ImageView(new Image(getClass().getResourceAsStream("Images/imgActionPhase_de.png")));
-		ImageView imgBuyPhase_de = new ImageView(new Image(getClass().getResourceAsStream("Images/imgBuyPhase_de.png")));
-		ImageView imgCleanUpPhase_de = new ImageView(new Image(getClass().getResourceAsStream("Images/imgCleanUpPhase_de.png")));
-
 		Popup popupPhase = new Popup();
+		Label lblPopupCurrentPhase = new Label();
+		lblPopupCurrentPhase.getStyleClass().add("lblPopupCurrentPhase");
 
-		// Displays the image in the specified language
-		if (t.getCurrentLocale().getLanguage().equals("de")){
-			switch (model.currentPhase){
-			case Action:
-				popupPhase.getContent().add(imgActionPhase_de);
-				break;
-			case Buy:
-				popupPhase.getContent().add(imgBuyPhase_de);
-				break;
-			case CleanUp:
-				popupPhase.getContent().add(imgCleanUpPhase_de);
-				break;
-			}
-		} else {
-			switch (model.currentPhase){
-			case Action:
-				popupPhase.getContent().add(imgActionPhase_en);
-				break;
-			case Buy:
-				popupPhase.getContent().add(imgBuyPhase_en);
-				break;
-			case CleanUp:
-				popupPhase.getContent().add(imgCleanUpPhase_en);
-				break;
-			}
+		// Displays the current phase in the label
+		switch (model.currentPhase) {
+		case Action:
+			lblPopupCurrentPhase.setText("  Phase: "+t.getString("action.lblNameOfCurrentPhase")); // Action
+			break;
+		case Buy:
+			lblPopupCurrentPhase.setText("  Phase: "+t.getString("buy.lblNameOfCurrentPhase")); // Buy
+			break;
+		case CleanUp:
+			lblPopupCurrentPhase.setText("  Phase: "+t.getString("cleanUp.lblNameOfCurrentPhase")); // Clean up
+			break;
 		}
+
+		// Sets the label into the popup
+		popupPhase.getContent().add(lblPopupCurrentPhase);
 
 		// Positions and auto-hides the popup after the specified duration
 		popupPhase.centerOnScreen();
 		popupPhase.setAutoHide(true);
 
-		PauseTransition delay = new PauseTransition(Duration.seconds(1.5));
+		PauseTransition delay = new PauseTransition(Duration.seconds(1));
 		delay.setOnFinished(e -> popupPhase.hide());
 		popupPhase.show(view.getStage());
 		delay.play();
