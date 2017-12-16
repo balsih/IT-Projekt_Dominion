@@ -258,7 +258,7 @@ public class MainMenu_View extends View<GameApp_Model> {
 		multiPlayerBtn.setText(t.getString("menu.multiPlayerBtn"));
 		highscoreLbl.setText(t.getString("menu.highscoreLbl"));
 		nameColumn.setText(t.getString("menu.table.player"));
-		pointColumn.setText(t.getString("menu.table.player"));
+		pointColumn.setText(t.getString("menu.table.points"));
 		roundColumn.setText(t.getString("menu.table.rounds"));
 		quitBtn.setText(t.getString("menu.quitBtn"));
 		startGameAlert.setTitle(t.getString("menu.startGameAlert"));
