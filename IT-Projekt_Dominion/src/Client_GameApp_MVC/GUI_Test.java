@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import Cards.Card;
 import Cards.CardName;
+import Messages.GameSuccess;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -41,6 +42,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.input.ZoomEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -469,7 +471,7 @@ public class GUI_Test extends Application {
 		vboxWoodcutterCards.getChildren().add(0, img5);
 		vboxWorkshopCards.getChildren().add(0, img6);
 		vboxMineCards.getChildren().add(0, img7);
-		vboxVillageCards.getChildren().add(0, img19);
+		// vboxVillageCards.getChildren().add(0, img19);
 
 		vboxGoldCards.getChildren().add(0, img9);
 		vboxSilverCards.getChildren().add(0, img10);
@@ -546,24 +548,92 @@ public class GUI_Test extends Application {
 
 				//_____________________________
 
-				Popup popupPhase = new Popup();
-				Label lblPopupCurrentPhase = new Label();
+				//				Popup popupPhase = new Popup();
+				//				Label lblPopupCurrentPhase = new Label();
+				//
+				//				// switch case Action/Buy/CleanUp
+				//				lblPopupCurrentPhase.setText("Phase: Action"); // (t.getString("action.lblNameOfCurrentPhase"));
+				//				lblPopupCurrentPhase.getStyleClass().add("lblPopupCurrentPhase");
+				//
+				//				popupPhase.getContent().add(lblPopupCurrentPhase);
+				//
+				//				// Positions and auto-hides the popup after the specified duration
+				//				popupPhase.centerOnScreen();
+				//				popupPhase.setAutoHide(true);
+				//
+				//				PauseTransition delay = new PauseTransition(Duration.seconds(1.5));
+				//				delay.setOnFinished(e -> popupPhase.hide());
+				//				popupPhase.show(stage);
+				//				delay.play();
 
-				// switch case Action/Buy/CleanUp
-				lblPopupCurrentPhase.setText("Phase: Action"); // (t.getString("action.lblNameOfCurrentPhase"));
-				lblPopupCurrentPhase.getStyleClass().add("lblPopupCurrentPhase");
+				//_____________________________
 
-				popupPhase.getContent().add(lblPopupCurrentPhase);
+				// Displays the winner and loser after a game has ended
+				String loserName = "Hausi";
+				String winnerName = "Adrian";
+				int winnerVictoryPoints = 15;
+				int loserVictoryPoints = 14;
+				int winnerMoves = 27;
+				int loserMoves = 25;
 
-				// Positions and auto-hides the popup after the specified duration
-				popupPhase.centerOnScreen();
-				popupPhase.setAutoHide(true);
+				// Displays a popup with information about the winner
+				Popup popupPlayerSuccess = new Popup();
 
-				PauseTransition delay = new PauseTransition(Duration.seconds(1.5));
-				delay.setOnFinished(e -> popupPhase.hide());
-				popupPhase.show(stage);
-				delay.play();
+				Label lblPlayer = new Label("Player:");
+				
+				Label lblWinner = new Label("Winner:");
+				Label lblNameOfWinner = new Label(winnerName);
+				Label lblLoser = new Label("Loser:");
+				Label lblNameOfLoser = new Label(loserName);
+				
+				Label lblVictoryPoints = new Label("Victory points:");
+				Label lblNmbrOfWinnerVictoryPoints = new Label(Integer.toString(winnerVictoryPoints));
+				Label lblNmbrOfLoserVictoryPoints = new Label(Integer.toString(loserVictoryPoints));
 
+				Label lblMoves = new Label("Moves:");
+				Label lblNmbrOfWinnerMoves = new Label(Integer.toString(winnerMoves));
+				Label lblNmbrOfLoserMoves = new Label(Integer.toString(loserMoves));
+				
+				Button btnGetBackToMainMenu = new Button("Get back to main menu");
+				Label lblCongratulations = new Label("Congatulations, "+winnerName+"!");
+				lblCongratulations.setStyle("-fx-padding: 20px;");
+
+				// Dummy
+				btnGetBackToMainMenu.setOnAction(event2 -> {
+					popupPlayerSuccess.hide();
+				});
+
+				GridPane gridpGameSuccess = new GridPane();
+				gridpGameSuccess.getStyleClass().add("gridpGameSuccess");
+				gridpGameSuccess.setMinWidth(500);
+				
+				gridpGameSuccess.add(lblWinner, 1, 0);
+				gridpGameSuccess.add(lblNameOfWinner, 1, 1);
+				gridpGameSuccess.add(lblLoser, 2, 0);
+				gridpGameSuccess.add(lblNameOfLoser, 2, 1);
+				gridpGameSuccess.add(lblPlayer, 0, 1);
+				
+				gridpGameSuccess.add(lblVictoryPoints, 0, 2);
+				gridpGameSuccess.add(lblNmbrOfWinnerVictoryPoints, 1, 2);
+				gridpGameSuccess.add(lblNmbrOfLoserVictoryPoints, 2, 2);
+				
+				gridpGameSuccess.add(lblMoves, 0, 3);
+				gridpGameSuccess.add(lblNmbrOfWinnerMoves, 1, 3);
+				gridpGameSuccess.add(lblNmbrOfLoserMoves, 2, 3);
+				
+				// root
+				BorderPane bpGameSuccess = new BorderPane();
+				bpGameSuccess.getStyleClass().add("bpGameSuccess");
+				
+				bpGameSuccess.setTop(lblCongratulations);
+				bpGameSuccess.setLeft(gridpGameSuccess);
+				bpGameSuccess.setBottom(btnGetBackToMainMenu);
+				bpGameSuccess.setAlignment(lblCongratulations, Pos.TOP_CENTER);
+				bpGameSuccess.setAlignment(btnGetBackToMainMenu, Pos.BOTTOM_RIGHT);
+
+				popupPlayerSuccess.getContent().add(bpGameSuccess);
+				popupPlayerSuccess.centerOnScreen();
+				popupPlayerSuccess.show(stage);
 			});
 		}
 

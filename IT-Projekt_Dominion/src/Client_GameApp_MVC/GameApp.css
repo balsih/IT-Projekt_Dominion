@@ -132,3 +132,18 @@ Label {
 .generalAlert:header *.header-panel *.label{
     -fx-text-fill: black;
 }
+
+
+.bpGameSuccess {
+	-fx-background-image: url("Images/confetti.gif");
+    -fx-background-repeat: stretch;   
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+    -fx-effect: dropshadow(three-pass-box, black, 5, 0.5, 0, 0); 
+}
+
+.gridpGameSuccess{
+	-fx-hgap: 80px;
+	-fx-vgap: 20px;
+	-fx-padding: 5px;
+}

@@ -1,8 +1,17 @@
 package Client_GameApp_MVC;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+
 import Abstract_MVC.View;
+import Cards.Card;
+import Cards.CardName;
 import Client_Services.ServiceLocator;
 import Client_Services.Translator;
+import Messages.Interaction;
+import Server_GameLogic.GameMode;
+import Server_GameLogic.Phase;
+import Server_GameLogic.Player;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -147,9 +156,38 @@ public class GameApp_View extends View<GameApp_Model> {
 	public GameApp_View(Stage stage, GameApp_Model model){
 		super(stage, model);
 		
-		// Resets the winner/loser
+		// Resetting model variables
 		model.clientPlayer = null;
 		model.opponentPlayer = null;
+		
+		model.actions = 1;
+		model.buys = 1;
+		model.coins = 0;
+
+		model.clientName = null;
+		model.opponent = null;
+		model.currentPlayer = null;
+		model.yourNewHandCards = null;
+		model.opponentHandCards = null;
+		model.yourDeck = null;
+		model.opponentDeck = null;
+		model.yourDiscardPile = 0;
+		model.opponentDiscardPile = null;
+		model.newPlayedCard = null;
+		model.yourDiscardPileTopCard = null;
+		model.newChat = null;
+		model.newLog = null;
+		
+		model.interaction = Interaction.Skip;
+		model.cardSelection = null;
+		model.discardCard = null;
+		model.cellarDiscards = new LinkedList<Card>();
+
+		model.gameMode = null;
+		model.buyChoice = null;
+		model.currentPhase = null;
+		model.phaseChanged = false;
+		model.turnEnded = false;
 	}
 
 	// Creates the GUI with all its containers and contents

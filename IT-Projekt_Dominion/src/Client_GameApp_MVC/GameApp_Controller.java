@@ -34,6 +34,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.ZoomEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
@@ -559,15 +561,19 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			String winnerName = null;
 			int winnerVictoryPoints = 0;
 			int loserVictoryPoints = 0;
+			int winnerMoves = 0;
+			int loserMoves = 0;
 
-			// Gets loser and winner names with the number of acquired victory points
+			// Gets loser and winner names with the number of acquired victory points and needed moves
 			if (model.clientPlayer != null) {
 				if (model.clientPlayer.getStatus() == GameSuccess.Won){
 					winnerName = model.clientPlayer.getPlayerName();
 					winnerVictoryPoints = model.clientPlayer.getVictoryPoints();
+					winnerMoves = model.clientPlayer.getMoves();
 				} else {
 					loserName = model.clientPlayer.getPlayerName();
 					loserVictoryPoints = model.clientPlayer.getVictoryPoints();
+					loserMoves = model.clientPlayer.getMoves();
 				}
 			}
 
@@ -575,48 +581,76 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				if (model.opponentPlayer.getStatus() == GameSuccess.Won) {
 					winnerName = model.opponentPlayer.getPlayerName();
 					winnerVictoryPoints = model.opponentPlayer.getVictoryPoints();
+					winnerMoves = model.opponentPlayer.getMoves();
 				} else {
 					loserName = model.opponentPlayer.getPlayerName();
 					loserVictoryPoints = model.opponentPlayer.getVictoryPoints();
+					loserMoves = model.opponentPlayer.getMoves();
 				}
 			}
 
-			// Displays a popup with information about the winner
+			// Defines a popup with its content
 			Popup popupPlayerSuccess = new Popup();
 
-			Label lblWinner = new Label("Winner:");
+			Label lblPlayer = new Label(t.getString("popupPlayerSuccess.lblPlayer")); // Player:
+			
+			Label lblWinner = new Label(t.getString("popupPlayerSuccess.lblWinner")); // Winner:
 			Label lblNameOfWinner = new Label(winnerName);
-			Label lblLoser = new Label("Loser:");
+			Label lblLoser = new Label(t.getString("popupPlayerSuccess.lblLoser")); // Loser:
 			Label lblNameOfLoser = new Label(loserName);
-			Label lblWinnerVictoryPoints = new Label("Winner's victory points:");
+			
+			Label lblVictoryPoints = new Label(t.getString("popupPlayerSuccess.lblVictoryPoints")); // Victory points:
 			Label lblNmbrOfWinnerVictoryPoints = new Label(Integer.toString(winnerVictoryPoints));
-			Label lblLoserVictoryPoints = new Label("Loser's victory points:");
 			Label lblNmbrOfLoserVictoryPoints = new Label(Integer.toString(loserVictoryPoints));
 
-			Button btnGetBackToMainMenu = new Button("Get back to main menu");
-
+			Label lblMoves = new Label(t.getString("popupPlayerSuccess.lblMoves")); // Moves:
+			Label lblNmbrOfWinnerMoves = new Label(Integer.toString(winnerMoves));
+			Label lblNmbrOfLoserMoves = new Label(Integer.toString(loserMoves));
+			
+			Button btnGetBackToMainMenu = new Button(t.getString("popupPlayerSuccess.btnGetBackToMainMenu")); // Get back to main menu
+			Label lblCongratulations = new Label(t.getString("popupPlayerSuccess.lblCongratulations")); // Congratulations!
+			lblCongratulations.setStyle("-fx-padding: 20px;");
+			
+			// A button click leads the player back to the main menu
 			btnGetBackToMainMenu.setOnAction(event -> {
 				model.main.startMainMenu();
 				model.startMediaPlayer("Medieval_Camelot.mp3"); // Starts new sound
 				view.stop();
 				this.listenToServer = false;
 			});
+			
+			// Defines a gridPane with information about the winner and loser
+			GridPane gridpGameSuccess = new GridPane();
+			gridpGameSuccess.getStyleClass().add("gridpGameSuccess");
+			gridpGameSuccess.setMinWidth(500);
+			
+			gridpGameSuccess.add(lblPlayer, 0, 1);
+			gridpGameSuccess.add(lblWinner, 1, 0);
+			gridpGameSuccess.add(lblNameOfWinner, 1, 1);
+			gridpGameSuccess.add(lblLoser, 2, 0);
+			gridpGameSuccess.add(lblNameOfLoser, 2, 1);
+			
+			gridpGameSuccess.add(lblVictoryPoints, 0, 2);
+			gridpGameSuccess.add(lblNmbrOfWinnerVictoryPoints, 1, 2);
+			gridpGameSuccess.add(lblNmbrOfLoserVictoryPoints, 2, 2);
+			
+			gridpGameSuccess.add(lblMoves, 0, 3);
+			gridpGameSuccess.add(lblNmbrOfWinnerMoves, 1, 3);
+			gridpGameSuccess.add(lblNmbrOfLoserMoves, 2, 3);
+			
+			// Defines a borderPane as content of the popup
+			BorderPane bpGameSuccess = new BorderPane();
+			bpGameSuccess.getStyleClass().add("bpGameSuccess");
+			
+			bpGameSuccess.setTop(lblCongratulations);
+			bpGameSuccess.setLeft(gridpGameSuccess);
+			bpGameSuccess.setBottom(btnGetBackToMainMenu);
+			bpGameSuccess.setAlignment(lblCongratulations, Pos.TOP_CENTER);
+			bpGameSuccess.setAlignment(btnGetBackToMainMenu, Pos.BOTTOM_RIGHT);
 
-			HBox hboxWinnerName = new HBox(lblWinner, lblNameOfWinner);
-			HBox hboxWinnerVictoryPoints = new HBox(lblWinnerVictoryPoints, lblNmbrOfWinnerVictoryPoints);
-			HBox hboxLoserName = new HBox(lblLoser, lblNameOfLoser);
-			HBox hboxLoserVictoryPoints = new HBox(lblLoserVictoryPoints, lblNmbrOfLoserVictoryPoints);
-			HBox hboxGetBack = new HBox(btnGetBackToMainMenu);
-			hboxGetBack.setAlignment(Pos.BOTTOM_RIGHT);
-
-			ImageView confettiGIF = new ImageView(new Image(getClass().getResourceAsStream("Images/confetti.gif")));
-
-			VBox result = new VBox(hboxWinnerName, hboxWinnerVictoryPoints, hboxLoserName, hboxLoserVictoryPoints, confettiGIF, hboxGetBack);
-
-			popupPlayerSuccess.getContent().add(result);
+			popupPlayerSuccess.getContent().add(bpGameSuccess);			
 			popupPlayerSuccess.centerOnScreen();
 			popupPlayerSuccess.show(stage); // popupPlayerSuccess.show(view.getStage()); or view.getStage().getScene().getWindow()
-
 		});
 	}
 
