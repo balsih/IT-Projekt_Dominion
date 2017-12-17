@@ -137,11 +137,11 @@
 
 
 .table-view{
-   -fx-background-color: rgba(0, 0, 0, 0.8);
+   -fx-background-color: transparent;
 }
 
 .table-view:focused{
-    -fx-background-color: rgba(0, 0, 0, 0.8);
+    -fx-background-color: transparent;
 }
 
 
