@@ -144,12 +144,12 @@ public class GameApp_Model extends Model {
 
 	/**
 	 * @author Adrian
-	 * Checks if the user entered a valid input. This method is applicable for the inputs clientName, ipAddress, port and password.
+	 * Checks if the user entered a valid input. This method is applicable the the inputs clientName, ipAddress, port and password.
 	 * Returns true if the input is valid.
 	 * 
 	 * @param userInput
 	 * @param inputType
-	 * @return boolean user input correct/incorrect
+	 * @return boolean input correct/incorrect
 	 */
 	public boolean checkUserInput(String userInput, UserInput inputType){
 		boolean valid = false;

@@ -141,7 +141,10 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		this.initializeServerListening();
 	}
 
-	// Updates the whole GUI
+	/**
+	 * @author Adrian
+	 * Updates the whole GUI
+	 */
 	private void updateGUI() {
 
 		// Ensures the update happens on the JavaFX Application Thread, by using Platform.runLater()
@@ -381,7 +384,10 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		});
 	}
 
-	// Displays a popup that informs the player about the current phase
+	/**
+	 * @author Adrian
+	 * Displays a popup that informs the player about the current phase
+	 */
 	private void startPhasePopup() {
 
 		Popup popupPhase = new Popup();
@@ -414,14 +420,20 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		delay.play();
 	}
 
-	// Resizes images to the optimal fit size
+	/**
+	 * @author Adrian
+	 * Resizes images to the optimal fit size
+	 */
 	private ImageView resizeImage(ImageView img) {
 		img.setFitWidth(80);
 		img.setFitHeight(120);
 		return img;
 	}
 
-	// Defines image changes in size and brightness after triggering an event
+	/**
+	 * @author Adrian
+	 * Defines image changes in size and brightness after triggering an event
+	 */
 	private void setGeneralImageEvents(ImageView img) {
 
 		// Sets the initial and brighter image brightness
@@ -452,7 +464,10 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		});
 	}
 
-	// Displays an image in a bigger size
+	/**
+	 * @author Adrian
+	 * Displays an image in a bigger size
+	 */
 	private void setZoomEvents(ImageView img) {
 		// Stores the initial image height and width
 		int imageHeight = (int) img.getFitHeight();
@@ -469,7 +484,10 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		popupZoom.setAutoHide(true);
 	}
 
-	// Sets events on hand cards
+	/**
+	 * @author Adrian
+	 * Sets events on hand cards. See comments below for further details.
+	 */
 	private void setInitialHandCardsEvents(Card card, ImageView img) {
 
 		// Image brightness
@@ -546,7 +564,10 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		setGeneralImageEvents(img);
 	}
 
-	// Displays the winner and loser after a game has ended
+	/**
+	 * @author Adrian
+	 * Displays the winner and loser after a game has ended
+	 */
 	private void createWinnerPopup(Stage stage) {
 
 		// Ensures the update happens on the JavaFX Application Thread, by using Platform.runLater()
@@ -593,12 +614,12 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			Popup popupPlayerSuccess = new Popup();
 
 			Label lblPlayer = new Label(t.getString("popupPlayerSuccess.lblPlayer")); // Player:
-			
+
 			Label lblWinner = new Label(t.getString("popupPlayerSuccess.lblWinner")); // Winner:
 			Label lblNameOfWinner = new Label(winnerName);
 			Label lblLoser = new Label(t.getString("popupPlayerSuccess.lblLoser")); // Loser:
 			Label lblNameOfLoser = new Label(loserName);
-			
+
 			Label lblVictoryPoints = new Label(t.getString("popupPlayerSuccess.lblVictoryPoints")); // Victory points:
 			Label lblNmbrOfWinnerVictoryPoints = new Label(Integer.toString(winnerVictoryPoints));
 			Label lblNmbrOfLoserVictoryPoints = new Label(Integer.toString(loserVictoryPoints));
@@ -606,11 +627,11 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			Label lblMoves = new Label(t.getString("popupPlayerSuccess.lblMoves")); // Moves:
 			Label lblNmbrOfWinnerMoves = new Label(Integer.toString(winnerMoves));
 			Label lblNmbrOfLoserMoves = new Label(Integer.toString(loserMoves));
-			
+
 			Button btnGetBackToMainMenu = new Button(t.getString("popupPlayerSuccess.btnGetBackToMainMenu")); // Get back to main menu
 			Label lblCongratulations = new Label(t.getString("popupPlayerSuccess.lblCongratulations")+", "+winnerName+"!"); // Congratulations
 			lblCongratulations.getStyleClass().add("lblCongratulations");
-			
+
 			// A button click leads the player back to the main menu
 			btnGetBackToMainMenu.setOnAction(event -> {
 				model.main.startMainMenu();
@@ -618,30 +639,30 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				view.stop();
 				this.listenToServer = false;
 			});
-			
+
 			// Defines a gridPane with information about the winner and loser
 			GridPane gridpGameSuccess = new GridPane();
 			gridpGameSuccess.getStyleClass().add("gridpGameSuccess");
 			gridpGameSuccess.setMinWidth(500);
-			
+
 			gridpGameSuccess.add(lblPlayer, 0, 1);
 			gridpGameSuccess.add(lblWinner, 1, 0);
 			gridpGameSuccess.add(lblNameOfWinner, 1, 1);
 			gridpGameSuccess.add(lblLoser, 2, 0);
 			gridpGameSuccess.add(lblNameOfLoser, 2, 1);
-			
+
 			gridpGameSuccess.add(lblVictoryPoints, 0, 2);
 			gridpGameSuccess.add(lblNmbrOfWinnerVictoryPoints, 1, 2);
 			gridpGameSuccess.add(lblNmbrOfLoserVictoryPoints, 2, 2);
-			
+
 			gridpGameSuccess.add(lblMoves, 0, 3);
 			gridpGameSuccess.add(lblNmbrOfWinnerMoves, 1, 3);
 			gridpGameSuccess.add(lblNmbrOfLoserMoves, 2, 3);
-			
+
 			// Defines a borderPane as content of the popup
 			BorderPane bpGameSuccess = new BorderPane();
 			bpGameSuccess.getStyleClass().add("bpGameSuccess");
-			
+
 			bpGameSuccess.setTop(lblCongratulations);
 			bpGameSuccess.setLeft(gridpGameSuccess);
 			bpGameSuccess.setBottom(btnGetBackToMainMenu);
@@ -654,7 +675,10 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		});
 	}
 
-	// Sets events on action, treasure and victory cards
+	/**
+	 * @author Adrian
+	 * Sets events on action, treasure and victory cards. See comments below for further details.
+	 */
 	private void setInitialATVCardEvents(Card card, ImageView img) {
 
 		// Describes what happens when the user clicks an action, treasure or victory card
@@ -703,7 +727,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 	/**
 	 * @author Adrian 
-	 * Depending on which message was received, this class updates the contents of the components of the GUI
+	 * This thread listens to the server and receives messages, depending on which it sets and updates the content of the GUI
 	 */
 	public class ServerListening implements Runnable {
 
