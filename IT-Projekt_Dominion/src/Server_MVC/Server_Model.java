@@ -48,21 +48,15 @@ public class Server_Model extends Model {
 				public void run() {
 					while(!stop){
 						Socket socket = null;
-						try {
-							socket = listener.accept();
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							logger.severe("Exception in listener.accept: "+e1.toString());
-						}
-						//start the thread
-						ServerThreadForClient client = ServerThreadForClient.getServerThreadForClient(socket);
-						if(client != null){
-							new Thread(client).start();
-						}else{
-							logger.info("Thread was null");
-						}
 						try{
-
+							//start the thread
+							socket = listener.accept();
+							ServerThreadForClient client = ServerThreadForClient.getServerThreadForClient(socket);
+							if(client != null){
+								new Thread(client).start();
+							}else{
+								logger.info("Thread was null");
+							}
 						} catch (Exception e){
 							logger.info("Exception in startServerSocket: "+e.toString());
 							new Thread(r, "ServerSocket").start();

@@ -67,60 +67,6 @@ public class ServerThreadForClient implements Runnable {
 	private ServerThreadForClient(){
 		super();
 	}
-	
-	
-//	/**
-//	 * @author Lukas
-//	 * Factory Pattern, if a new client connects to server, a new Thread will be created.
-//	 * If a client already had connected with server with the same clientName, the client will have the same Thread as before
-//	 * 
-//	 * @param clientSocket
-//	 * @return client, a new or existing Thread. Result depends weather a Thread of the client already exists or not
-//	 * 					, or null if there is any Exception to ensure further server-listening
-//	 */
-//	public static ServerThreadForClient getServerThreadForClient(Socket clientSocket){
-//		try {
-//			Message msgIn = Message.receive(clientSocket);
-//			String clientName = msgIn.getClient();
-//			ServerThreadForClient client = null;
-//			LinkedList<String> clientNames;
-//			InetAddress inetAddress = clientSocket.getInetAddress();
-//			
-//			//Checks the client's IP and name to assign the correct Thread
-//			if(clientNamesOnIP.containsKey(inetAddress)){
-//				clientNames = clientNamesOnIP.get(inetAddress);
-//				boolean found = false;
-//				for(String storedClient: clientNames){
-//					if(storedClient.compareTo(clientName) == 0){
-//						client = connections.get(storedClient);
-//						found = true;
-//						break;
-//					}
-//				}
-//				if(!found){
-//					//If the client already had a connection with the server, but not with the current name
-//					client = new ServerThreadForClient();
-//					clientNames.add(clientName);
-//					clientNamesOnIP.replace(inetAddress, clientNames);
-//					connections.put(clientName, client);
-//				}
-//			}else{
-//				//If the client never had a connection before with the server
-//				client = new ServerThreadForClient();
-//				LinkedList<String> newClientNameList = new LinkedList<String>();
-//				newClientNameList.add(clientName);
-//				connections.put(clientName, client);
-//				clientNamesOnIP.put(inetAddress, newClientNameList);
-//			}
-//			//New socket for every connection needed, msgIn already received (only 1 Message.receive per Message possible)
-//			client.addClientSocket(clientSocket);
-//			client.setMsgIn(msgIn);
-//			return client;
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			return null;
-//		}
-//	}
 
 	/**
 	 * @author Lukas
