@@ -65,7 +65,7 @@ public class ServerThreadForClient implements Runnable {
 	private Game game = null;
 	private Player player;
 	private InetAddress inetAddress;
-	public Queue<Message> waitingMessages = new LinkedList<Message>();
+	private Queue<Message> waitingMessages = new LinkedList<Message>();
 	private String clientName = "unknown client";
 	private long currentTime = System.currentTimeMillis();
 

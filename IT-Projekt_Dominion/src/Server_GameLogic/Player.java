@@ -554,10 +554,6 @@ public class Player {
 		return psmsg;
 	}
 
-	public Queue<Message> getWaitingMsg() {
-		return this.serverThreadForClient.waitingMessages;
-	}
-
 	public int getActions() {
 		return actions;
 	}
