@@ -36,6 +36,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.TransferMode;
@@ -580,12 +582,12 @@ public class GUI_Test extends Application {
 				Popup popupPlayerSuccess = new Popup();
 
 				Label lblPlayer = new Label("Player:");
-				
+
 				Label lblWinner = new Label("Winner:");
 				Label lblNameOfWinner = new Label(winnerName);
 				Label lblLoser = new Label("Loser:");
 				Label lblNameOfLoser = new Label(loserName);
-				
+
 				Label lblVictoryPoints = new Label("Victory points:");
 				Label lblNmbrOfWinnerVictoryPoints = new Label(Integer.toString(winnerVictoryPoints));
 				Label lblNmbrOfLoserVictoryPoints = new Label(Integer.toString(loserVictoryPoints));
@@ -593,7 +595,7 @@ public class GUI_Test extends Application {
 				Label lblMoves = new Label("Moves:");
 				Label lblNmbrOfWinnerMoves = new Label(Integer.toString(winnerMoves));
 				Label lblNmbrOfLoserMoves = new Label(Integer.toString(loserMoves));
-				
+
 				Button btnGetBackToMainMenu = new Button("Get back to main menu");
 				Label lblCongratulations = new Label("Congatulations, "+winnerName+"!");
 				lblCongratulations.getStyleClass().add("lblCongratulations");
@@ -606,25 +608,25 @@ public class GUI_Test extends Application {
 				GridPane gridpGameSuccess = new GridPane();
 				gridpGameSuccess.getStyleClass().add("gridpGameSuccess");
 				gridpGameSuccess.setMinWidth(500);
-				
+
 				gridpGameSuccess.add(lblWinner, 1, 0);
 				gridpGameSuccess.add(lblNameOfWinner, 1, 1);
 				gridpGameSuccess.add(lblLoser, 2, 0);
 				gridpGameSuccess.add(lblNameOfLoser, 2, 1);
 				gridpGameSuccess.add(lblPlayer, 0, 1);
-				
+
 				gridpGameSuccess.add(lblVictoryPoints, 0, 2);
 				gridpGameSuccess.add(lblNmbrOfWinnerVictoryPoints, 1, 2);
 				gridpGameSuccess.add(lblNmbrOfLoserVictoryPoints, 2, 2);
-				
+
 				gridpGameSuccess.add(lblMoves, 0, 3);
 				gridpGameSuccess.add(lblNmbrOfWinnerMoves, 1, 3);
 				gridpGameSuccess.add(lblNmbrOfLoserMoves, 2, 3);
-				
+
 				// root
 				BorderPane bpGameSuccess = new BorderPane();
 				bpGameSuccess.getStyleClass().add("bpGameSuccess");
-				
+
 				bpGameSuccess.setTop(lblCongratulations);
 				bpGameSuccess.setLeft(gridpGameSuccess);
 				bpGameSuccess.setBottom(btnGetBackToMainMenu);
@@ -714,6 +716,17 @@ public class GUI_Test extends Application {
 			txtaChatArea.setText(txtfChatArea.getText()+System.lineSeparator().concat(existingMessages));
 			txtfChatArea.setText("");
 
+		});
+
+		txtfChatArea.setOnKeyPressed(keyEvent -> {
+			if(keyEvent.getCode().equals(KeyCode.ENTER)) {
+				String existingMessages = txtaChatArea.getText();
+				String newMessage = txtfChatArea.getText();
+
+				if (newMessage.length() > 0)
+					txtaChatArea.setText(existingMessages.concat(newMessage)+"\n");
+				txtfChatArea.setText("");
+			}
 		});
 
 		// Set mouse click on action

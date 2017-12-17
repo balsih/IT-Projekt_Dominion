@@ -31,6 +31,7 @@ import javafx.scene.control.Button;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.ZoomEvent;
@@ -91,14 +92,15 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			}
 		});
 
-		// Defines what happens after sending a new chat message
+		// Adds a new chat message after clicking the button
 		view.btnSendChatArea.setOnAction(event -> {
-			String newMessage = view.txtfChatArea.getText();
+			addChatMessage();
+		});
 
-			if (newMessage.length()>0){
-				model.sendChat(newMessage);
-				updateGUI();
-				view.txtfChatArea.setText(""); // Removes the entered text
+		// Adds a new chat message after pressing the key enter
+		view.txtfChatArea.setOnKeyPressed(keyEvent -> {
+			if(keyEvent.getCode().equals(KeyCode.ENTER)) {
+				addChatMessage();
 			}
 		});
 
@@ -139,6 +141,20 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 		// Starts the thread
 		this.initializeServerListening();
+	}
+
+	/**
+	 * @author Adrian
+	 * Adds a new chat message to the existing chat history (on top)
+	 */
+	private void addChatMessage() {
+		String newMessage = view.txtfChatArea.getText();
+
+		if (newMessage.length()>0){
+			model.sendChat(newMessage);
+			updateGUI();
+			view.txtfChatArea.setText(""); // Removes the entered text
+		}
 	}
 
 	/**
@@ -578,36 +594,60 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			view.btnGiveUp.setDisable(true);
 			view.btnSendChatArea.setDisable(true);
 
+			String winnerNameHeader = null;
 			String loserName = null;
 			String winnerName = null;
+			String contentlblWinner = null;
+			String contentlblLoser = null;
+
 			int winnerVictoryPoints = 0;
 			int loserVictoryPoints = 0;
 			int winnerMoves = 0;
 			int loserMoves = 0;
 
 			// Gets loser and winner names with the number of acquired victory points and needed moves
-			if (model.clientPlayer != null) {
-				if (model.clientPlayer.getStatus() == GameSuccess.Won){
-					winnerName = model.clientPlayer.getPlayerName();
-					winnerVictoryPoints = model.clientPlayer.getVictoryPoints();
-					winnerMoves = model.clientPlayer.getMoves();
-				} else {
-					loserName = model.clientPlayer.getPlayerName();
-					loserVictoryPoints = model.clientPlayer.getVictoryPoints();
-					loserMoves = model.clientPlayer.getMoves();
-				}
+			// If both players win (same number of victory points and moves)
+			if (model.clientPlayer.getStatus() == GameSuccess.Won && model.opponentPlayer.getStatus() == GameSuccess.Won) {
+				winnerNameHeader = model.clientPlayer.getPlayerName().concat(" & "+model.opponentPlayer.getPlayerName());
+				contentlblWinner = t.getString("popupPlayerSuccess.lblDraw");
+				contentlblLoser = "";
+
+				// Winner 1
+				winnerName = model.clientPlayer.getPlayerName();
+				winnerVictoryPoints = model.clientPlayer.getVictoryPoints();
+				winnerMoves = model.clientPlayer.getMoves();
+
+				// Winner 2
+				loserName = model.opponentPlayer.getPlayerName();
+				loserVictoryPoints = model.opponentPlayer.getVictoryPoints();
+				loserMoves = model.opponentPlayer.getMoves();	
 			}
 
-			if (model.opponentPlayer != null) {
-				if (model.opponentPlayer.getStatus() == GameSuccess.Won) {
-					winnerName = model.opponentPlayer.getPlayerName();
-					winnerVictoryPoints = model.opponentPlayer.getVictoryPoints();
-					winnerMoves = model.opponentPlayer.getMoves();
-				} else {
-					loserName = model.opponentPlayer.getPlayerName();
-					loserVictoryPoints = model.opponentPlayer.getVictoryPoints();
-					loserMoves = model.opponentPlayer.getMoves();
-				}
+			// If clientPlayer wins and opponentPlayer loses
+			if (model.clientPlayer.getStatus() == GameSuccess.Won && model.opponentPlayer.getStatus() == GameSuccess.Lost){
+				contentlblWinner = t.getString("popupPlayerSuccess.lblWinner");
+				winnerNameHeader = model.clientPlayer.getPlayerName();
+				winnerName = model.clientPlayer.getPlayerName();
+				winnerVictoryPoints = model.clientPlayer.getVictoryPoints();
+				winnerMoves = model.clientPlayer.getMoves();
+
+				contentlblLoser = t.getString("popupPlayerSuccess.lblLoser");
+				loserName = model.opponentPlayer.getPlayerName();
+				loserVictoryPoints = model.opponentPlayer.getVictoryPoints();
+				loserMoves = model.opponentPlayer.getMoves();
+
+			// If clientPlayer loses and opponentPlayer wins
+			} else if (model.clientPlayer.getStatus() == GameSuccess.Lost && model.opponentPlayer.getStatus() == GameSuccess.Won) {
+				contentlblWinner = t.getString("popupPlayerSuccess.lblWinner");
+				winnerNameHeader = model.opponentPlayer.getPlayerName();
+				winnerName = model.opponentPlayer.getPlayerName();
+				winnerVictoryPoints = model.opponentPlayer.getVictoryPoints();
+				winnerMoves = model.opponentPlayer.getMoves();
+
+				contentlblLoser = t.getString("popupPlayerSuccess.lblLoser");
+				loserName = model.clientPlayer.getPlayerName();
+				loserVictoryPoints = model.clientPlayer.getVictoryPoints();
+				loserMoves = model.clientPlayer.getMoves();
 			}
 
 			// Defines a popup with its content
@@ -615,9 +655,9 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 			Label lblPlayer = new Label(t.getString("popupPlayerSuccess.lblPlayer")); // Player:
 
-			Label lblWinner = new Label(t.getString("popupPlayerSuccess.lblWinner")); // Winner:
+			Label lblWinner = new Label(contentlblWinner); // Winner:
 			Label lblNameOfWinner = new Label(winnerName);
-			Label lblLoser = new Label(t.getString("popupPlayerSuccess.lblLoser")); // Loser:
+			Label lblLoser = new Label(contentlblLoser); // Loser:
 			Label lblNameOfLoser = new Label(loserName);
 
 			Label lblVictoryPoints = new Label(t.getString("popupPlayerSuccess.lblVictoryPoints")); // Victory points:
@@ -629,7 +669,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			Label lblNmbrOfLoserMoves = new Label(Integer.toString(loserMoves));
 
 			Button btnGetBackToMainMenu = new Button(t.getString("popupPlayerSuccess.btnGetBackToMainMenu")); // Get back to main menu
-			Label lblCongratulations = new Label(t.getString("popupPlayerSuccess.lblCongratulations")+", "+winnerName+"!"); // Congratulations
+			Label lblCongratulations = new Label(t.getString("popupPlayerSuccess.lblCongratulations")+", "+winnerNameHeader+"!"); // Congratulations
 			lblCongratulations.getStyleClass().add("lblCongratulations");
 
 			// A button click leads the player back to the main menu
@@ -671,7 +711,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 			popupPlayerSuccess.getContent().add(bpGameSuccess);			
 			popupPlayerSuccess.centerOnScreen();
-			popupPlayerSuccess.show(stage); // popupPlayerSuccess.show(view.getStage()); or view.getStage().getScene().getWindow()
+			popupPlayerSuccess.show(stage);
 		});
 	}
 
