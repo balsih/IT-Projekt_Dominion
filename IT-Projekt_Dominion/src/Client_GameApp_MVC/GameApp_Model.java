@@ -44,11 +44,12 @@ import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
 /**
- * @author Adrian & Lukas
  * Performs the application-logic of this Game (Dominion)
  * This class provides a Thin-Client concept
  * It provides a set of methods to communicate with the server
  * It also checks several client-site inputs to keep the network-communication to a minimum
+ * 
+ * @author Adrian & Lukas
  */
 public class GameApp_Model extends Model {
 
@@ -200,9 +201,9 @@ public class GameApp_Model extends Model {
 	}
 
 	/**
-	 * @author Lukas
 	 * Translates any parts of a String between two #: i.e. #translateThisString#
 	 * 
+	 * @author Lukas
 	 * @param input
 	 * @return translated input
 	 */
@@ -233,12 +234,14 @@ public class GameApp_Model extends Model {
 	}
 	
 	/**
-	 * @author Lukas
 	 * Separates server-site line-separators client-site. Regex is "=="
 	 * Translation inclusive if translation
 	 * 
+	 * @author Lukas
 	 * @param input
+	 * 				The input (String) to translate
 	 * @param translation
+	 * 				true if translation including, else false
 	 * @return output, one String with system-specific separators
 	 */
 	private String lineSeparator(String input, boolean translation){
@@ -264,10 +267,10 @@ public class GameApp_Model extends Model {
 
 
 	/**
-	 * @author Lukas Gehrig
 	 * Sets the IP and the port of the server to connect
 	 * In addition, it knocks to server if the port with the given IP is listening
 	 * 
+	 * @author Lukas Gehrig
 	 * @param ipAddress
 	 * @param port
 	 * @return result, translated NO_CONNECTION to server String.
@@ -288,9 +291,9 @@ public class GameApp_Model extends Model {
 	}
 
 	/**
-	 *@author Lukas, source: Bradley Richards
-	 *Creates a new Socket with the set IP and Port
-	 * 
+	 * Creates a new Socket with the set IP and Port
+	 *
+	 * @author Lukas, source: Bradley Richards
 	 * @return Socket
 	 */
 	private Socket connect(){
@@ -304,9 +307,9 @@ public class GameApp_Model extends Model {
 	}
 
 	/**
-	 * @author Lukas
 	 * The client sends his encrypted password to server and will get to the MainMenu if the password is appropriate to clientName
 	 * 
+	 * @author Lukas
 	 * @param clientName
 	 * @param password
 	 * @return result, usually only necessary if clientName and password don't work or the client lost connection to server
@@ -337,10 +340,10 @@ public class GameApp_Model extends Model {
 	}
 
 	/**
-	 * @author Lukas
 	 * Sends the clientName and the encrypted password to server.
 	 * When the clientName was unique, the name and encrypted password will be stored in the server's database
 	 * 
+	 * @author Lukas
 	 * @param clientName
 	 * @param password
 	 * @return result, usually only necessary if clientName is already set or there is no connection to server
@@ -371,9 +374,9 @@ public class GameApp_Model extends Model {
 	}
 
 	/**
-	 * @author Lukas
 	 * Sends a request to server for the top5 Highscore
 	 * 
+	 * @author Lukas
 	 * @return result, ObservableList with the Highscore
 	 */
 	public ObservableList<Highscore> sendHighScoreRequest(){
@@ -395,9 +398,9 @@ public class GameApp_Model extends Model {
 	}
 
 	/**
-	 * @author Lukas
-	 * Sends the client's cosen GameMode (Singleplayer or Multiplayer) to server.
+	 * Sends the client's cosen GameMode (Singleplayer or Multiplayer) to server
 	 * 
+	 * @author Lukas
 	 * @param mode
 	 * @return result, usually only necessary if the client lost connection to server
 	 */
@@ -420,9 +423,9 @@ public class GameApp_Model extends Model {
 	}
 
 	/**
-	 * @author Lukas
-	 * Sends the card the client wants to buy. The result depends on the players validity to buy.
+	 * Sends the card the client wants to buy. The result depends on the players validity to buy
 	 * 
+	 * @author Lukas
 	 * @param cardName
 	 * @return update, tells the controller if the game has to be updated
 	 */
@@ -447,10 +450,11 @@ public class GameApp_Model extends Model {
 	}
 
 	/**
-	 * @author Lukas
 	 * The client wants to play a chosen Card. The result depends on the validity of the move
 	 * 
+	 * @author Lukas
 	 * @param card
+	 * 				The chosen card the client wants to play
 	 * @return update, tells the controller if the game has to be updated
 	 */
 	protected boolean sendPlayCard(Card card){
@@ -469,9 +473,9 @@ public class GameApp_Model extends Model {
 	}
 
 	/**
-	 * @author Lukas
 	 * Sends a Chat_Message to the opponent. The chat of the client will return from server.
 	 * 
+	 * @author Lukas
 	 * @param chat
 	 * @return update, tells the controller if the game has to be updated
 	 */
@@ -489,9 +493,9 @@ public class GameApp_Model extends Model {
 	}
 
 	/**
-	 * @author Lukas
 	 * Sends the specified interaction with content to server.
 	 * 
+	 * @author Lukas
 	 * @return update, tells the controller if the game has to be updated
 	 */
 	protected boolean sendInteraction(){
@@ -549,9 +553,9 @@ public class GameApp_Model extends Model {
 	}
 	
 	/**
-	 * @author Lukas
 	 * Sends a GiveUp_Message to Server
 	 * 
+	 * @author Lukas
 	 * @return update, if communication to server was successful
 	 */
 	protected boolean sendGiveUp(){
@@ -573,10 +577,11 @@ public class GameApp_Model extends Model {
 
 
 	/**
-	 * @author Lukas
 	 * Set all necessary variables to creates a new Game
 	 * 
+	 * @author Lukas
 	 * @param msgIn
+	 * 				The CreateGame_Message to process
 	 */
 	protected void processCreateGame(Message msgIn) {		
 		CreateGame_Message cgmsg = (CreateGame_Message) msgIn;
@@ -591,10 +596,11 @@ public class GameApp_Model extends Model {
 	}
 
 	/**
-	 * @author Lukas
 	 * Set the players with set success and victoryPoints. Result depends weather you won or lost
 	 * 
+	 * @author Lukas
 	 * @param msgIn
+	 * 				The PlayerSuccess_Message to process
 	 */
 	protected void processPlayerSuccess(Message msgIn) {
 		PlayerSuccess_Message psmsg = (PlayerSuccess_Message) msgIn;
@@ -609,9 +615,9 @@ public class GameApp_Model extends Model {
 
 
 	/**
-	 * @author Lukas
 	 * Interpret all updates and provides structures for further work
 	 * 
+	 * @author Lukas
 	 * @param msgIn
 	 * 				 UpdateGame_Message. Can consist various contents
 	 */
@@ -721,9 +727,9 @@ public class GameApp_Model extends Model {
 
 
 	/**
-	 * @author Lukas, source:  partly(Bradley Richards)
 	 * SetUp a socket_connection to server with the given message and returns the answer
 	 * 
+	 * @author Lukas, source:  partly(Bradley Richards)
 	 * @param message
 	 * @return msgIn, individual InputMessage
 	 */
