@@ -66,6 +66,7 @@ public class ServerThreadForClient implements Runnable {
 	private Player player;
 	private InetAddress inetAddress;
 	private Queue<Message> waitingMessages = new LinkedList<Message>();
+	private Queue<Message> unsentMessages = new LinkedList<Message>();
 	private String clientName = "unknown client";
 	private long currentTime = System.currentTimeMillis();
 
@@ -539,7 +540,7 @@ public class ServerThreadForClient implements Runnable {
     		Player opponent = this.game.getOpponent(this.player);
     		this.game.setGameEnded(true);
     		if(opponent == null){
-	    		this.game.setGameCounter(this.game.getGameCounter()+1);
+	    		Game.setGameCounter(Game.getGameCounter()+1);
 	    		psmsg.setNumOfPlayers(1);
     		}else{
         		opponent.countVictoryPoints();

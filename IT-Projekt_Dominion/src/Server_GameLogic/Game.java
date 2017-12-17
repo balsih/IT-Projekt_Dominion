@@ -421,7 +421,7 @@ public class Game {
 		return player1;
 	}
 
-	public int getGameCounter() {
+	public static int getGameCounter() {
 		return gameCounter;
 	}
 	
