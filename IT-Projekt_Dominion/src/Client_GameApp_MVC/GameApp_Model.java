@@ -390,8 +390,10 @@ public class GameApp_Model extends Model {
 		if(msgIn instanceof HighScore_Message){
 			HighScore_Message nhsmsg = (HighScore_Message) msgIn;
 			String[] elements = nhsmsg.getHighScore().split(this.HIGHSCORE_REGEX);
-			for(int i = 0; i < elements.length; i+= 3){
-				highscoreList.add(new Highscore(elements[i], elements[i+1], elements[i+2]));
+			if(elements.length > 2){
+				for(int i = 0; i < elements.length; i+= 3){
+					highscoreList.add(new Highscore(elements[i], elements[i+1], elements[i+2]));
+				}
 			}
 		}
 		ObservableList<Highscore> observableHighscoreList = FXCollections.observableList(highscoreList);
@@ -726,7 +728,7 @@ public class GameApp_Model extends Model {
 
 
 	/**
-	 * @author Lukas, source: Bradley Richards
+	 * @author Lukas, source:  partly(Bradley Richards)
 	 * SetUp a socket_connection to server with the given message and returns the answer
 	 * 
 	 * @param message
