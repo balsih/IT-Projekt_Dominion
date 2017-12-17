@@ -3,9 +3,10 @@ package Messages;
 import org.w3c.dom.Document;
 
 /**
+ * This Message asks the server if something has changed in the game.
+ *  Communication: client --> server
+ * 
  * @author Lukas
- * This Message asks the server if something has changed in the game
- * client --> server
  */
 public class AskForChanges_Message extends Message {
 
@@ -18,11 +19,7 @@ public class AskForChanges_Message extends Message {
 		//nothing toDo here
 	}
 
-	/**
-	 * 
-	 * @param docIn
-	 * @return 
-	 */
+
 	@Override
 	protected void init(Document docIn){
 		//nothing toDo here

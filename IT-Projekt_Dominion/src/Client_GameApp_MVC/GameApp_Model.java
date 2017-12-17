@@ -44,10 +44,10 @@ import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
 /**
- * Performs the application-logic of this Game (Dominion)
- * This class provides a Thin-Client concept
- * It provides a set of methods to communicate with the server
- * It also checks several client-site inputs to keep the network-communication to a minimum
+ * Performs the application-logic of this Game (Dominion).
+ * This class provides a Thin-Client concept.
+ * It provides a set of methods to communicate with the server.
+ * It also checks several client-site inputs to keep the network-communication to a minimum.
  * 
  * @author Adrian & Lukas
  */
@@ -234,8 +234,8 @@ public class GameApp_Model extends Model {
 	}
 	
 	/**
-	 * Separates server-site line-separators client-site. Regex is "=="
-	 * Translation inclusive if translation
+	 * Separates server-site line-separators client-site. Regex is "==".
+	 * Translation inclusive if translation.
 	 * 
 	 * @author Lukas
 	 * @param input
@@ -267,8 +267,8 @@ public class GameApp_Model extends Model {
 
 
 	/**
-	 * Sets the IP and the port of the server to connect
-	 * In addition, it knocks to server if the port with the given IP is listening
+	 * Sets the IP and the port of the server to connect.
+	 * In addition, it knocks to server if the port with the given IP is listening.
 	 * 
 	 * @author Lukas Gehrig
 	 * @param ipAddress
@@ -291,7 +291,7 @@ public class GameApp_Model extends Model {
 	}
 
 	/**
-	 * Creates a new Socket with the set IP and Port
+	 * Creates a new Socket with the set IP and Port.
 	 *
 	 * @author Lukas, source: Bradley Richards
 	 * @return Socket
@@ -307,7 +307,7 @@ public class GameApp_Model extends Model {
 	}
 
 	/**
-	 * The client sends his encrypted password to server and will get to the MainMenu if the password is appropriate to clientName
+	 * The client sends his encrypted password to server and will get to the MainMenu if the password is appropriate to clientName.
 	 * 
 	 * @author Lukas
 	 * @param clientName
@@ -341,7 +341,7 @@ public class GameApp_Model extends Model {
 
 	/**
 	 * Sends the clientName and the encrypted password to server.
-	 * When the clientName was unique, the name and encrypted password will be stored in the server's database
+	 * When the clientName was unique, the name and encrypted password will be stored in the server's database.
 	 * 
 	 * @author Lukas
 	 * @param clientName
@@ -374,10 +374,10 @@ public class GameApp_Model extends Model {
 	}
 
 	/**
-	 * Sends a request to server for the top5 Highscore
+	 * Sends a request to server for the top5 highscore.
 	 * 
 	 * @author Lukas
-	 * @return result, ObservableList with the Highscore
+	 * @return result, ObservableList with the highscore
 	 */
 	public ObservableList<Highscore> sendHighScoreRequest(){
 		HighScore_Message hsmsg = new HighScore_Message();
@@ -398,7 +398,7 @@ public class GameApp_Model extends Model {
 	}
 
 	/**
-	 * Sends the client's cosen GameMode (Singleplayer or Multiplayer) to server
+	 * Sends the client's cosen GameMode (Singleplayer or Multiplayer) to server.
 	 * 
 	 * @author Lukas
 	 * @param mode
@@ -424,7 +424,7 @@ public class GameApp_Model extends Model {
 	}
 
 	/**
-	 * Sends the card the client wants to buy. The result depends on the players validity to buy
+	 * Sends the card the client wants to buy. The result depends on the players validity to buy.
 	 * 
 	 * @author Lukas
 	 * @param cardName
@@ -452,7 +452,7 @@ public class GameApp_Model extends Model {
 	}
 
 	/**
-	 * The client wants to play a chosen Card. The result depends on the validity of the move
+	 * The client wants to play a chosen Card. The result depends on the validity of the move.
 	 * 
 	 * @author Lukas
 	 * @param card
@@ -555,7 +555,7 @@ public class GameApp_Model extends Model {
 	}
 	
 	/**
-	 * Sends a GiveUp_Message to Server
+	 * Sends a GiveUp_Message to Server.
 	 * 
 	 * @author Lukas
 	 * @return update, if communication to server was successful
@@ -579,7 +579,7 @@ public class GameApp_Model extends Model {
 
 
 	/**
-	 * Set all necessary variables to creates a new Game
+	 * Set all necessary variables to creates a new Game.
 	 * 
 	 * @author Lukas
 	 * @param msgIn
@@ -598,7 +598,7 @@ public class GameApp_Model extends Model {
 	}
 
 	/**
-	 * Set the players with set success and victoryPoints. Result depends weather you won or lost
+	 * Set the players with set success and victoryPoints. Result depends weather you won or lost.
 	 * 
 	 * @author Lukas
 	 * @param msgIn
@@ -617,7 +617,7 @@ public class GameApp_Model extends Model {
 
 
 	/**
-	 * Interpret all updates and provides structures for further work
+	 * Interpret all updates and provides structures for further work.
 	 * 
 	 * @author Lukas
 	 * @param msgIn
@@ -729,7 +729,7 @@ public class GameApp_Model extends Model {
 
 
 	/**
-	 * SetUp a socket_connection to server with the given message and returns the answer
+	 * SetUp a socket_connection to server with the given message and returns the answer.
 	 * 
 	 * @author Lukas, source:  partly(Bradley Richards)
 	 * @param message

@@ -5,11 +5,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
+ * This Message is just to commit some actions server-site.
+ * So the client knows his/her action succeeded.
+ * It is possible to attach a notification for the client.
+ *  Communication: server --> client
+ * 
  * @author Lukas
- * This Message is just to commit some actions server-site
- * So the client knows his/her action succeeded
- * It is possible to attach a notification for the client
- * server --> client
  */
 public class Commit_Message extends Message {
 	

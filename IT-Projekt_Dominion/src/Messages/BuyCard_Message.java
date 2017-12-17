@@ -7,9 +7,10 @@ import org.w3c.dom.NodeList;
 import Cards.CardName;
 
 /**
+ * This Message tries to buy the chosen card.
+ *  Communication: client --> server
+ * 
  * @author Lukas
- * This Message tries to buy the chosen card
- * client --> server
  */
 public class BuyCard_Message extends Message {
 

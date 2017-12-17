@@ -5,9 +5,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * @author Lukas
- * This Message sends a chat-message to all players in the current Game
- * client --> server
+ * This Message sends a chat-message to all players in the current Game.
+ *  Communication: client --> server
+ *  
+ *  @author Lukas
  */
 public class Chat_Message extends Message {
 
@@ -20,9 +21,9 @@ public class Chat_Message extends Message {
 	}
 
 	/**
-	 * @author Lukas
 	 * Adds the chat-message to XML
 	 * 
+	 * @author Lukas
 	 * @param docIn
 	 * 				XML-Document
 	 */
@@ -36,9 +37,9 @@ public class Chat_Message extends Message {
 	}
 
 	/**
-	 * @author Lukas
 	 * Creates the object chat (String) from XML
 	 * 
+	 * @author Lukas
 	 * @param docIn
 	 * 				XML-Document
 	 */

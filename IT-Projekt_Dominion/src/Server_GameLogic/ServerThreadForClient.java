@@ -38,13 +38,13 @@ import Server_Services.DB_Connector;
 
 
 /**
- * Provides a Thread for client to communicate with
- * The identifier is the clientName (String)
- * One Thread is exclusive for one client. He has priority for this Thread for 30 min
- * In case he hasn't done something in the last 30 min, it is possible to kick the client with a different IP
- * This is necessary if something happened like an unexpected computer-shutdown client-site
+ * Provides a Thread for client to communicate with.
+ * The identifier is the clientName (String).
+ * One Thread is exclusive for one client. He has priority for this Thread for 30 min.
+ * In case he hasn't done something in the last 30 min, it is possible to kick the client with a different IP.
+ * This is necessary if something happened like an unexpected computer-shutdown client-site.
  * 
- * The communication-format with this Tread is XML DOM
+ * The communication-format with this Tread is XML DOM.
  * 
  * @author Lukas
  */
