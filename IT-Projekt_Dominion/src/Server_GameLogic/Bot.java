@@ -48,34 +48,35 @@ public class Bot extends Player implements Runnable {
 
 	public Bot(String name, ServerThreadForClient thread) {
 		super(name, thread);
+		
 		counter = 1;
 
 		buyPrioOneCard.put(CardName.Province, 100);
 		buyPrioOneCard.put(CardName.Gold, 90);
 		buyPrioOneCard.put(CardName.Duchy, 56);
 		buyPrioOneCard.put(CardName.Market, 59);
-		buyPrioOneCard.put(CardName.Mine, 57);		
+		buyPrioOneCard.put(CardName.Mine, 57);
 		buyPrioOneCard.put(CardName.Remodel, 54);
-		buyPrioOneCard.put(CardName.Smithy, 55);		
+		buyPrioOneCard.put(CardName.Smithy, 55);
 		buyPrioOneCard.put(CardName.Silver, 50);
 		buyPrioOneCard.put(CardName.Village, 46);
 		buyPrioOneCard.put(CardName.Woodcutter, 53);
-		buyPrioOneCard.put(CardName.Workshop, 44);		
+		buyPrioOneCard.put(CardName.Workshop, 44);
 		buyPrioOneCard.put(CardName.Cellar, 30);
-		
+
 		buyPrioMoreCards.put(CardName.Province, 100);
 		buyPrioMoreCards.put(CardName.Gold, 70);
 		buyPrioMoreCards.put(CardName.Duchy, 56);
 		buyPrioMoreCards.put(CardName.Market, 65);
 		buyPrioMoreCards.put(CardName.Mine, 64);
 		buyPrioMoreCards.put(CardName.Remodel, 40);
-		buyPrioMoreCards.put(CardName.Smithy, 63);	
+		buyPrioMoreCards.put(CardName.Smithy, 63);
 		buyPrioMoreCards.put(CardName.Village, 59);
 		buyPrioMoreCards.put(CardName.Woodcutter, 61);
 		buyPrioMoreCards.put(CardName.Workshop, 49);
-		buyPrioMoreCards.put(CardName.Silver, 50);	
+		buyPrioMoreCards.put(CardName.Silver, 50);
 		buyPrioMoreCards.put(CardName.Cellar, 30);
-		
+
 		maxCardsOfAType.put(CardName.Market, 2);
 		maxCardsOfAType.put(CardName.Smithy, 2);
 		maxCardsOfAType.put(CardName.Village, 1);
@@ -230,15 +231,14 @@ public class Bot extends Player implements Runnable {
 					for (Card card : handCards) {
 						if (card.getType().equals(CardType.Victory))
 							discardedCardsForCellar.add(card);
-						
+
 						// this is bullshit...
-						
-						
-//						if (actions == 1) {
-//							if (card.getType().equals(CardType.Action))
-//								discardedCardsForCellar.add(card);
-//						}
-						
+
+						// if (actions == 1) {
+						// if (card.getType().equals(CardType.Action))
+						// discardedCardsForCellar.add(card);
+						// }
+
 					}
 					System.out.println(discardedCardsForCellar.toString());
 					Cellar_Card cCard = (Cellar_Card) this.getPlayedCards().get(this.getPlayedCards().size() - 1);
@@ -411,13 +411,15 @@ public class Bot extends Player implements Runnable {
 			if (index < buyList.size() - 1)
 				continue;
 			else {
-				System.out.println(this.playerName + " couldn't buy any Card --> skipPhase");
-				UpdateGame_Message ugmsg = (UpdateGame_Message) skipPhase();
-				this.sendToOpponent(this, ugmsg);
-				makeBreak();
-				if (handCards.size() > 1) {
-					chooseDiscardPileTopCard();
-					break;
+				if (game.getCurrentPlayer() == this) {
+					System.out.println(this.playerName + " couldn't buy any Card --> skipPhase");
+					UpdateGame_Message ugmsg = (UpdateGame_Message) skipPhase();
+					this.sendToOpponent(this, ugmsg);
+					makeBreak();
+					if (handCards.size() > 1) {
+						chooseDiscardPileTopCard();
+						break;
+					}
 				}
 			}
 		}
@@ -452,11 +454,11 @@ public class Bot extends Player implements Runnable {
 	 * Fills a name-list with entries, chooses one and gives it back.
 	 */
 	public static String getNameOfBot() {
-		NAMES.add("Computer-\"Bodo\"");
-		NAMES.add("Computer-\"Lukas\"");
-		NAMES.add("Computer-\"Simon\"");
-		NAMES.add("Computer-\"Adrian\"");
-		NAMES.add("Computer-\"René\"");
+		NAMES.add("COMPUTER-\"Bodo\"");
+		NAMES.add("COMPUTER-\"Lukas\"");
+		NAMES.add("COMPUTER-\"Simon\"");
+		NAMES.add("COMPUTER-\"Adrian\"");
+		NAMES.add("COMPUTER-\"René\"");
 		Random rand = new Random();
 		String nameOfBot = NAMES.get(rand.nextInt(5));
 		return nameOfBot;
@@ -483,7 +485,7 @@ public class Bot extends Player implements Runnable {
 	 */
 	private void estimateBuyPriorityOfVictoryCards() {
 		calculateGameStage();
-		
+
 		// add now the Estate_Card
 		if (gameStage >= 50 && done4) {
 			buyPrioOneCard.put(CardName.Estate, 5);
