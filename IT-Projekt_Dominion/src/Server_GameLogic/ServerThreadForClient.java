@@ -10,15 +10,9 @@ import java.util.Queue;
 import java.util.logging.Logger;
 
 import Cards.Card;
-import Cards.CardName;
 import Cards.Cellar_Card;
-import Cards.Gold_Card;
-import Cards.Market_Card;
 import Cards.Mine_Card;
 import Cards.Remodel_Card;
-import Cards.Smithy_Card;
-import Cards.Village_Card;
-import Cards.Woodcutter_Card;
 import Cards.Workshop_Card;
 import Messages.AskForChanges_Message;
 import Messages.BuyCard_Message;
@@ -39,7 +33,6 @@ import Messages.GameSuccess;
 import Messages.MessageType;
 import Messages.PlayCard_Message;
 import Messages.PlayerSuccess_Message;
-import Messages.Request_Message;
 import Messages.UpdateGame_Message;
 import Server_Services.DB_Connector;
 
@@ -67,7 +60,6 @@ public class ServerThreadForClient implements Runnable {
 	private Player player;
 	private InetAddress inetAddress;
 	private Queue<Message> waitingMessages = new LinkedList<Message>();
-	private Queue<Message> unsentMessages = new LinkedList<Message>();
 	private String clientName = "unknown client";
 	private long currentTime = System.currentTimeMillis();
 
@@ -194,8 +186,7 @@ public class ServerThreadForClient implements Runnable {
 			return new Failure_Message();
 		}
 		
-		if(!(msgIn instanceof Knock_Message) && !(msgIn instanceof Login_Message) &&
-				!(msgIn instanceof CreateNewPlayer_Message) && !(msgIn instanceof Request_Message)){
+		if(!(msgIn instanceof Knock_Message) && !(msgIn instanceof Login_Message) && !(msgIn instanceof CreateNewPlayer_Message)){
 			this.currentTime = System.currentTimeMillis();
 		}
 		
@@ -242,9 +233,6 @@ public class ServerThreadForClient implements Runnable {
 			break;
 		case Knock:
 			msgOut = new Commit_Message();
-			break;
-		case Request:
-			msgOut = this.processRequest(msgIn);
 			break;
 		default:
 			msgOut = new Error_Message();
@@ -528,22 +516,6 @@ public class ServerThreadForClient implements Runnable {
 	
 	/**
 	 * @author Lukas
-	 * Processes the Request from the client if he lost a Message server-site
-	 * 
-	 * @param msgIn
-	 * @return any unsent Messages
-	 * 			, or a new Request_Message if there was no Message lost
-	 */
-	private Message processRequest(Message msgIn){
-		if(this.unsentMessages.size() > 0){
-			return this.unsentMessages.poll();
-		}else{
-			return new Commit_Message();
-		}
-	}
-	
-	/**
-	 * @author Lukas
 	 * The player gave up his game. Sends a Success_Message to opponent to tell that he that he wins.
 	 * In addition it stores the result of both players into the database.
 	 * 
@@ -597,15 +569,6 @@ public class ServerThreadForClient implements Runnable {
 		this.waitingMessages.offer(message);
 	}
 	
-	/**
-	 * @author Lukas
-	 * Adds the messages which weren't sent back to client caused by a SocketException
-	 * 
-	 * @param message
-	 */
-	public void addUnsentMessages(Message message){
-		this.unsentMessages.offer(message);
-	}
 	
 	/**
 	 * @author Lukas

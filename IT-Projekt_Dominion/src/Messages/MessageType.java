@@ -23,7 +23,6 @@ public enum MessageType {
 	Error,
 	GiveUp,
 	Interaction,
-	Request,
 	Knock;
 
 	/**
@@ -66,7 +65,6 @@ public enum MessageType {
     	else if (msg instanceof GiveUp_Message) type = MessageType.GiveUp;
        	else if (msg instanceof Interaction_Message) type = MessageType.Interaction;
        	else if (msg instanceof Knock_Message) type = MessageType.Knock;
-       	else if (msg instanceof Request_Message) type = MessageType.Request;
     	return type;
     }	
 }

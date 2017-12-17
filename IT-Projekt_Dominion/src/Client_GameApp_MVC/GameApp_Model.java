@@ -5,25 +5,20 @@ import java.net.Socket;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Stack;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import Abstract_MVC.Model;
 import Cards.Card;
 import Cards.CardName;
-import Cards.CardType;
 import Client_Services.ServiceLocator;
 import Client_Services.Translator;
 import MainClasses.Dominion_Main;
 import Messages.BuyCard_Message;
 import Messages.Chat_Message;
 import Messages.Commit_Message;
-import Messages.GameSuccess;
 import Messages.GiveUp_Message;
 import Messages.CreateGame_Message;
 import Messages.CreateNewPlayer_Message;
@@ -36,10 +31,8 @@ import Messages.Knock_Message;
 import Messages.Login_Message;
 import Messages.Logout_Message;
 import Messages.Message;
-import Messages.MessageType;
 import Messages.PlayCard_Message;
 import Messages.PlayerSuccess_Message;
-import Messages.Request_Message;
 import Messages.UpdateGame_Message;
 import Server_GameLogic.GameMode;
 import Server_GameLogic.Phase;
@@ -65,7 +58,6 @@ public class GameApp_Model extends Model {
 
 	private ServiceLocator sl = ServiceLocator.getServiceLocator();
 	private Translator t = sl.getTranslator();
-	private Integer messagesFailureCounter;
 	
 	protected Dominion_Main main;
 	private String ipAddress;
@@ -746,19 +738,6 @@ public class GameApp_Model extends Model {
 				System.out.println(e.toString());
 			}
 			try { if (socket != null) socket.close(); } catch (IOException e) {}
-			
-			/*
-			 * In this case, there was a communication-error
-			 * The lost Message should wait on the server's Thread unsentMessages
-			 * Max tries: 5
-			 */
-			if(msgIn == null){
-				this.messagesFailureCounter++;
-				if(this.messagesFailureCounter <= 5){
-					msgIn = this.processMessage(new Request_Message());
-				}
-			}
-			this.messagesFailureCounter = 0;
 		}
 		return msgIn;
 	}
