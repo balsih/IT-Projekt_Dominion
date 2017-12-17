@@ -734,7 +734,7 @@ public class GameApp_Model extends Model {
 	 * @param message
 	 * @return msgIn, individual InputMessage
 	 */
-	protected synchronized Message processMessage(Message message){
+	protected synchronized Message processMessage(Message message){//synchronized is necessary because of the Thread in controller uses this method too
 		Socket socket = connect();
 		Message msgIn = null;
 		if(socket != null){
