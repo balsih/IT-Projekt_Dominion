@@ -38,13 +38,14 @@ import Server_Services.DB_Connector;
 
 
 /**
-<<<<<<< HEAD
  * @author Lukas
-=======
- * @author default: Lukas
->>>>>>> branch 'master' of https://github.com/Eagleman1997/IT-Projekt_Dominion.git
- * @version 1.0
- * @created 31-Okt-2017 17:09:30
+ * Provides a Thread for client to communicate with
+ * The identifier is the clientName (String)
+ * One Thread is exclusive for one client. He has priority for this Thread for 30 min
+ * In case he hasn't done something in the last 30 min, it is possible to kick the client with a different IP
+ * This is necessary if something happened like an unexpected computer-shutdown client-site
+ * 
+ * The communication-format with this Tread is XML DOM
  */
 public class ServerThreadForClient implements Runnable {
 	
@@ -52,7 +53,7 @@ public class ServerThreadForClient implements Runnable {
 	private static HashMap<String, ServerThreadForClient> connections = new HashMap<String, ServerThreadForClient>();
 	
 	private static final Logger logger = Logger.getLogger("");
-	private final Integer AFK_TIMER = 1800000;
+	private final Integer AFK_TIMER = 1800000;//30 min
 
 	private Socket clientSocket;
 	private Message msgIn;
@@ -104,7 +105,7 @@ public class ServerThreadForClient implements Runnable {
 	@Override
 	public void run(){
 		Message msgOut = processMessage(this.msgIn);
-		msgOut.send(clientSocket, this);
+		msgOut.send(clientSocket);
 		try { if (clientSocket != null) clientSocket.close(); } catch (IOException e) {}
 		try{				// Read a message from the client
 		}catch(Exception e) {

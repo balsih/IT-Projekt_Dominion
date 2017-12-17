@@ -1,10 +1,5 @@
 package Messages;
 
-/**
- * @author default: Bradley Richards
- * @version 1.0
- * @created 31-Okt-2017 17:01:18
- */
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
@@ -29,6 +24,7 @@ import org.xml.sax.InputSource;
 import Server_GameLogic.ServerThreadForClient;
 
 /**
+ * @author Bradley Richards
  * A simple example showing how to encapsulate messages in a class. This class sends and receives
  * some simple data via sockets. The data is formatted in XML.
  * 
@@ -92,7 +88,7 @@ public abstract class Message {
      * 
      * @param s The socket to use when sending the message
      */
-    public void send(Socket s, ServerThreadForClient stfc) {
+    public void send(Socket s) {
     	// Set the message id before sending (if not already done)
     	if (this.id == -1) this.id = nextMessageID();
     	

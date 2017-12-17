@@ -45,8 +45,10 @@ import javafx.util.Duration;
 
 /**
  * @author Adrian & Lukas
- * @version 1.0
- * @created 31-Okt-2017 17:04:41
+ * Performs the application-logic of this Game (Dominion)
+ * This class provides a Thin-Client concept
+ * It provides a set of methods to communicate with the server
+ * It also checks several client-site inputs to keep the network-communication to a minimum
  */
 public class GameApp_Model extends Model {
 
@@ -732,7 +734,7 @@ public class GameApp_Model extends Model {
 		if(socket != null){
 			try{
 				message.setClient(this.clientName);
-				message.send(socket, null);
+				message.send(socket);
 				msgIn = Message.receive(socket);
 			}catch(Exception e){
 				System.out.println(e.toString());
