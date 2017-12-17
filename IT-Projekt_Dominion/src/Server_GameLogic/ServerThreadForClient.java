@@ -39,6 +39,7 @@ import Messages.GameSuccess;
 import Messages.MessageType;
 import Messages.PlayCard_Message;
 import Messages.PlayerSuccess_Message;
+import Messages.Request_Message;
 import Messages.UpdateGame_Message;
 import Server_Services.DB_Connector;
 
@@ -165,7 +166,7 @@ public class ServerThreadForClient implements Runnable {
 	@Override
 	public void run(){
 		Message msgOut = processMessage(this.msgIn);
-		msgOut.send(clientSocket);
+		msgOut.send(clientSocket, this);
 		try { if (clientSocket != null) clientSocket.close(); } catch (IOException e) {}
 		try{				// Read a message from the client
 		}catch(Exception e) {
@@ -193,7 +194,8 @@ public class ServerThreadForClient implements Runnable {
 			return new Failure_Message();
 		}
 		
-		if(!(msgIn instanceof Knock_Message) && !(msgIn instanceof Login_Message) && !(msgIn instanceof CreateNewPlayer_Message)){
+		if(!(msgIn instanceof Knock_Message) && !(msgIn instanceof Login_Message) &&
+				!(msgIn instanceof CreateNewPlayer_Message) && !(msgIn instanceof Request_Message)){
 			this.currentTime = System.currentTimeMillis();
 		}
 		
@@ -240,6 +242,9 @@ public class ServerThreadForClient implements Runnable {
 			break;
 		case Knock:
 			msgOut = new Commit_Message();
+			break;
+		case Request:
+			msgOut = this.processRequest(msgIn);
 			break;
 		default:
 			msgOut = new Error_Message();
@@ -507,7 +512,7 @@ public class ServerThreadForClient implements Runnable {
 
 	/**
 	 * @author Lukas
-	 * Processes the request from the client weather something has changed in the Game
+	 * Processes the AskForChanges-request from the client weather something has changed in the Game
 	 * 
 	 * @param msgIn
 	 * @return UpdateGame_Message or PlayerSuccess_Message if something has changed.
@@ -517,8 +522,23 @@ public class ServerThreadForClient implements Runnable {
 		if(this.waitingMessages.size() > 0){
 			return this.waitingMessages.poll();
 		}else{
-			Commit_Message cmsg = new Commit_Message();
-			return cmsg;
+			return new Commit_Message();
+		}
+	}
+	
+	/**
+	 * @author Lukas
+	 * Processes the Request from the client if he lost a Message server-site
+	 * 
+	 * @param msgIn
+	 * @return any unsent Messages
+	 * 			, or a new Request_Message if there was no Message lost
+	 */
+	private Message processRequest(Message msgIn){
+		if(this.unsentMessages.size() > 0){
+			return this.unsentMessages.poll();
+		}else{
+			return new Commit_Message();
 		}
 	}
 	
@@ -569,12 +589,22 @@ public class ServerThreadForClient implements Runnable {
 
 	/**
 	 * @author Lukas
-	 * It includes the messages (UpdateGame_Message or PlayerSuccess_Message) to take from the client's AskForChanges_Messages requests
+	 * Adds the messages (UpdateGame_Message or PlayerSuccess_Message) to take from the client's AskForChanges_Messages requests
 	 * 
 	 * @param message
 	 */
 	public void addWaitingMessages(Message message){
 		this.waitingMessages.offer(message);
+	}
+	
+	/**
+	 * @author Lukas
+	 * Adds the messages which weren't sent back to client caused by a SocketException
+	 * 
+	 * @param message
+	 */
+	public void addUnsentMessages(Message message){
+		this.unsentMessages.offer(message);
 	}
 	
 	/**

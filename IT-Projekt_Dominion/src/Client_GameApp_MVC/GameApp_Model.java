@@ -39,6 +39,7 @@ import Messages.Message;
 import Messages.MessageType;
 import Messages.PlayCard_Message;
 import Messages.PlayerSuccess_Message;
+import Messages.Request_Message;
 import Messages.UpdateGame_Message;
 import Server_GameLogic.GameMode;
 import Server_GameLogic.Phase;
@@ -64,6 +65,7 @@ public class GameApp_Model extends Model {
 
 	private ServiceLocator sl = ServiceLocator.getServiceLocator();
 	private Translator t = sl.getTranslator();
+	private Integer messagesFailureCounter;
 	
 	protected Dominion_Main main;
 	private String ipAddress;
@@ -730,18 +732,31 @@ public class GameApp_Model extends Model {
 	 * @param message
 	 * @return msgIn, individual InputMessage
 	 */
-	protected Message processMessage(Message message){
+	protected synchronized Message processMessage(Message message){
 		Socket socket = connect();
 		Message msgIn = null;
 		if(socket != null){
 			try{
 				message.setClient(this.clientName);
-				message.send(socket);
+				message.send(socket, null);
 				msgIn = Message.receive(socket);
 			}catch(Exception e){
 				System.out.println(e.toString());
 			}
 			try { if (socket != null) socket.close(); } catch (IOException e) {}
+			
+			/*
+			 * In this case, there was a communication-error
+			 * The lost Message should wait on the server's Thread unsentMessages
+			 * Max tries: 5
+			 */
+			if(msgIn == null){
+				this.messagesFailureCounter++;
+				if(this.messagesFailureCounter <= 5){
+					msgIn = this.processMessage(new Request_Message());
+				}
+			}
+			this.messagesFailureCounter = 0;
 		}
 		return msgIn;
 	}
