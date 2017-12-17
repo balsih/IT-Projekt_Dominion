@@ -608,8 +608,8 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			Label lblNmbrOfLoserMoves = new Label(Integer.toString(loserMoves));
 			
 			Button btnGetBackToMainMenu = new Button(t.getString("popupPlayerSuccess.btnGetBackToMainMenu")); // Get back to main menu
-			Label lblCongratulations = new Label(t.getString("popupPlayerSuccess.lblCongratulations")); // Congratulations!
-			lblCongratulations.setStyle("-fx-padding: 20px;");
+			Label lblCongratulations = new Label(t.getString("popupPlayerSuccess.lblCongratulations")+", "+winnerName+"!"); // Congratulations
+			lblCongratulations.getStyleClass().add("lblCongratulations");
 			
 			// A button click leads the player back to the main menu
 			btnGetBackToMainMenu.setOnAction(event -> {

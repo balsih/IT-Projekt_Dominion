@@ -148,24 +148,6 @@ public class GameApp_Model extends Model {
 		return generatedPassword;
 	}
 
-//	/**
-//	 * @author Adrian
-//	 * Adds salt for usage in the method encryptPassword
-//	 * @return salt
-//	 */
-//	private String getSalt() {
-//		try {
-//			SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
-//			byte[] salt = new byte[16];
-//			sr.nextBytes(salt);
-//			return salt.toString();
-//			System.out.println(salt.toString());
-//		} catch (NoSuchAlgorithmException e){
-//			e.printStackTrace();
-//		}
-//		return null;
-//	}
-
 	/**
 	 * @author Adrian
 	 * Checks if the user entered a valid input. This method is applicable for the inputs clientName, ipAddress, port and password.
@@ -177,7 +159,7 @@ public class GameApp_Model extends Model {
 	 */
 	public boolean checkUserInput(String userInput, UserInput inputType){
 		boolean valid = false;
-		final int MAX_INPUT_LENGTH = 12;
+		final int MAX_INPUT_LENGTH = 15;
 		String[] parts = userInput.split("\\.");
 
 		switch(inputType) {

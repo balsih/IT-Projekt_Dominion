@@ -596,7 +596,7 @@ public class GUI_Test extends Application {
 				
 				Button btnGetBackToMainMenu = new Button("Get back to main menu");
 				Label lblCongratulations = new Label("Congatulations, "+winnerName+"!");
-				lblCongratulations.setStyle("-fx-padding: 20px;");
+				lblCongratulations.getStyleClass().add("lblCongratulations");
 
 				// Dummy
 				btnGetBackToMainMenu.setOnAction(event2 -> {
