@@ -32,7 +32,7 @@ public class Cellar_Card extends Card {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
 		//#DiscardCards# Chose cards to discard
-		ugmsg.setLog(player.getPlayerName()+": #played# "+this.cardName.toString()+" #card#. #DiscardCards#");
+		ugmsg.setLog(player.getPlayerName()+": #played# #"+this.cardName.toString()+"# #card#. #DiscardCards#");
 		
 		// update game Messages -> XML 
 		ugmsg.setInteractionType(Interaction.Cellar);
