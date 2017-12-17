@@ -402,6 +402,7 @@ public class GameApp_Model extends Model {
 	 * 
 	 * @author Lukas
 	 * @param mode
+	 * 				The mode (GameMode) the client wants to play
 	 * @return result, usually only necessary if the client lost connection to server
 	 */
 	public String sendGameMode(GameMode mode){
@@ -427,6 +428,7 @@ public class GameApp_Model extends Model {
 	 * 
 	 * @author Lukas
 	 * @param cardName
+	 * 				The card (CardName) the client wants to buy
 	 * @return update, tells the controller if the game has to be updated
 	 */
 	protected boolean sendBuyCard(CardName cardName){
