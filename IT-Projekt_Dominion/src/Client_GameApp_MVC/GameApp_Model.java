@@ -701,7 +701,6 @@ public class GameApp_Model extends Model {
 		//Move the played Card from the hand into newPlayedCard
 		if(ugmsg.getPlayedCard() != null){
 			this.newPlayedCard = ugmsg.getPlayedCard();
-			System.out.println("PlayedCard: "+this.newPlayedCard);
 		}
 
 		//If interaction is set, the Type of Interaction can be checked (i.e. meaning of the commit_Button)
