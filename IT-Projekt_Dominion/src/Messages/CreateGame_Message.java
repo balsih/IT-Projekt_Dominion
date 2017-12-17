@@ -14,16 +14,21 @@ import Cards.CardName;
 import Server_GameLogic.Phase;
 
 /**
+ * This Message is to create a new Game client-site.
+ * <ul>
+ * It includes all important data to the client to start a new Game:
+ * <li>buyCards:		all cards <HashMap><CardName> and how many of them can be bought
+ * <li>handCards:		the 5 hand-cards <LinkedList><Card> the client starts with
+ * <li>handNumber:		number <Integer> of hand-cards (5)
+ * <li>deckPile:		the 5 deck-cards <Stack><Card> the client starts with
+ * <li>deckNumber:		the size <Integer> of the deck (5)
+ * <li>startingPlayer:	the starting-player's name <String>
+ * <li>opponent:		the opponent's name <String>
+ * <li>phase:			the phase <Phase> to start with (Buy)
+ * </ul>
+ * <p><li>Communication: server --> client
+ * 
  * @author Lukas
- * This Message sends all important data to the client to start a new Game. That includes:
- * buyCards:		all cards and how many of them can be bought,
- * handCards:		the 5 hand-cards the client starts with
- * handNumber:		number of hand-cards (5)
- * deckPile:		the 5 deck-cards the client starts with
- * deckNumber:		the size of the deck (5)
- * startingPlayer:	the starting-player's name
- * opponent:		the opponent's name
- * phase:			the phase to start with (Buy)
  */
 public class CreateGame_Message extends Message {
 
@@ -59,8 +64,8 @@ public class CreateGame_Message extends Message {
 
 	/**
 	 * Adds all data the client needs to start a new game to XML
-	 * @author Lukas
 	 * 
+	 * @author Lukas
 	 * @param docIn
 	 * 				XML-Document
 	 */
@@ -117,8 +122,11 @@ public class CreateGame_Message extends Message {
 	}
 	
 	/**
+	 * Creates the objects from XML
 	 * 
+	 * @author Lukas
 	 * @param docIn
+	 * 				XML-Document
 	 */
 	@Override
 	protected void init(Document docIn){

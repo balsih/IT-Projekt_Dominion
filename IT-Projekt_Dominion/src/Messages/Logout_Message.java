@@ -3,9 +3,10 @@ package Messages;
 import org.w3c.dom.Document;
 
 /**
+ * This Message is to logout from the server.
+ * <li>Communication: client --> server
+ * 
  * @author Lukas
- * @version 1.0
- * @created 09-Nov-2017 19:09:48
  */
 public class Logout_Message extends Message {
 
@@ -14,19 +15,11 @@ public class Logout_Message extends Message {
 		super();
 	}
 
-	/**
-	 * 
-	 * @param docIn
-	 */
 	protected void addNodes(Document docIn){
-
+		//nothing toDo here
 	}
 
-	/**
-	 * 
-	 * @param docIn
-	 */
 	protected void init(Document docIn){
-
+		//nothing toDo here
 	}
 }//end Logout_Message

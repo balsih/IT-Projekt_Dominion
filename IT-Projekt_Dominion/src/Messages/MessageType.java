@@ -1,9 +1,27 @@
 package Messages;
 
 /**
- * @author default: Bradley Richards
- * @version 1.0
- * @created 31-Okt-2017 17:01:18
+ * This class represent a set of enums to identify the type of the Message.
+ * <li>AskForChanges:	Asks the server if something changed in the game
+ * <li>BuyCard:			Tries to buy a card
+ * <li>Chat:			Sends chat-messages
+ * <li>CreateGame:		Provides data to create a new game
+ * <li>CreateNewPlayer:	Tries to store the client's name and password to server's database
+ * <li>GameMode:		Tells the server which GameMode the client chose (Singleplayer or Multiplayer)
+ * <li>HighScore:		Request and receive the top5 highscore
+ * <li>Login:			Tries to login into the application
+ * <li>Logout:			Tells the server that the player left the game
+ * <li>PlayCard:		Tries to play a card from the hand
+ * <li>PlayerSuccess:	Tells the client's weather they won or lost
+ * <li>UpdateGame:		Provides the client's several updates from the game
+ * <li>Commit:			Commits some application-specified actions
+ * <li>Failure:			Tells the client that his application-specified action failed
+ * <li>Error:			To show communication-errors
+ * <li>GiveUp:			Tells the server the client gave Up his/her current game
+ * <li>Interaction:		Tells the client's which Interaction they have to perform and provides the content from the answers
+ * <li>Knock:			Knocks on socket's ip and port weather server is listening
+ * 
+ * @author Lukas, source: Bradley Richards
  */
 public enum MessageType {
 	AskForChanges,
@@ -29,7 +47,9 @@ public enum MessageType {
 	 * Converts a String into enum MessageType if it exists
 	 * else it returns type Error
 	 * 
-	 * @param typeName, given String to convert
+	 * @author Lukas, source: Bradley Richards
+	 * @param typeName
+	 * 				given String to convert
 	 * @return type, depends on typeName, default Error
 	 */
     public static MessageType parseType(String typeName) {
@@ -43,6 +63,7 @@ public enum MessageType {
 	/**
 	 * Reads (parses) the type of a message
 	 * 
+	 * @author Lukas, source: Bradley Richards
 	 * @param msg, given Message to read
 	 * @return type, depends on msg, default Error
 	 */

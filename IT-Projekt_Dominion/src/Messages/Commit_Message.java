@@ -5,10 +5,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * This Message is just to commit some actions server-site.
+ * This Message is to commit some actions server-site.
  * So the client knows his/her action succeeded.
  * It is possible to attach a notification for the client.
- *  Communication: server --> client
+ * <li>Communication: server --> client
  * 
  * @author Lukas
  */
@@ -23,9 +23,9 @@ public class Commit_Message extends Message {
 	}
 
 	/**
-	 *@author Lukas
-	 *Adds the notification to XML (if set)
+	 * Adds the notification to XML (if set)
 	 *
+	 *@author Lukas
 	 * @param docIn
 	 * 				XML-Document
 	 */
@@ -41,9 +41,9 @@ public class Commit_Message extends Message {
 	}
 
 	/**
-	 * @author Lukas
 	 * Creates the object notification (String) from XML
 	 * 
+	 * @author Lukas
 	 * @param docIn
 	 * 				XML-Document
 	 */

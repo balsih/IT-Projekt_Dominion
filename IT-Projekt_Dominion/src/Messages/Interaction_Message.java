@@ -10,9 +10,20 @@ import Cards.Card;
 import Cards.CardName;
 
 /**
+ * <ul>
+ * This Message is to perform several interactions <Interaction> with the server.
+ * <li>EndOfTurn:	The client has to chose a card from his hand to show on his/her DiscardPile-top
+ * <li>Cellar:		The client has to chose an undefined number of cards to discard from his/her hand
+ * <li>Workshop:	The client has to chose a card from the buyCards that costs up to 4 coins
+ * <li>Remodel1:	The client has to chose a card in his/her hand to dispose
+ * <li>Remodel2:	The client has to chose a card from the buyCards that costs up to 2 more than the disposed card in Remodel1
+ * <li>Mine:		The client has to chose a copper- or silver-card from his hand to dispose
+ * <li>Skip:		The client (wants to) skips his current Phase
+ * </ul>
+ * <p><li>Communication: client --> server (the answer of the Interaction with filled content)
+ * <li>Communication: server --> client (which Interaction the client has to execute)
+ * 
  * @author Lukas
- * @version 1.0
- * @created 09-Nov-2017 19:09:48
  */
 public class Interaction_Message extends Message {
 	
@@ -46,8 +57,11 @@ public class Interaction_Message extends Message {
 
 
 	/**
+	 * Adds the content of the current Interaction to XML
 	 * 
+	 * @author Lukas
 	 * @param docIn
+	 * 				XML-Document
 	 */
 	@Override
 	protected void addNodes(Document docIn) {
@@ -97,8 +111,11 @@ public class Interaction_Message extends Message {
 	}
 	
 	/**
+	 * Creates the objects from XML
 	 * 
+	 * @author Lukas
 	 * @param docIn
+	 * 				XML-Document
 	 */
 	@Override
 	protected void init(Document docIn) {
@@ -210,11 +227,9 @@ public class Interaction_Message extends Message {
 		this.disposedRemodelCard = disposedRemodelCard;
 	}
 
-
 	public Card getDisposedMineCard() {
 		return disposedMineCard;
 	}
-
 
 	public void setDisposedMineCard(Card disposedMineCard) {
 		this.disposedMineCard = disposedMineCard;

@@ -8,9 +8,10 @@ import Cards.Card;
 import Cards.CardName;
 
 /**
+ * This Message is to play a card from the client's hand
+ * <li>Communication: client --> server
+ * 
  * @author Lukas
- * @version 1.0
- * @created 31-Okt-2017 17:01:19
  */
 public class PlayCard_Message extends Message {
 
@@ -23,8 +24,11 @@ public class PlayCard_Message extends Message {
 	}
 
 	/**
+	 * Adds the chosen card to XML
 	 * 
+	 * @author Lukas
 	 * @param docIn
+	 * 				XML-Document
 	 */
 	@Override
 	protected void addNodes(Document docIn){
@@ -36,8 +40,11 @@ public class PlayCard_Message extends Message {
 	}
 
 	/**
+	 * Creates the object card (Card) from XML
 	 * 
+	 * @author Lukas
 	 * @param docIn
+	 * 				XML-Document
 	 */
 	@Override
 	protected void init(Document docIn){

@@ -15,9 +15,28 @@ import Cards.CardName;
 import Server_GameLogic.Phase;
 
 /**
+ * This Message is to provide the client's game-specified updates.
+ * <ul>
+ * The content's are just set if something changed in the game.
+ * <li>currentPlayer:			The currentPlayer's name <String>. Just set if the currentPlayer changes.
+ * <li>log:						The game-log <String> to follow each player's turn. Translated keywords are surrounded with #this#.
+ * <li>chat:					The chat-message <String> with the source's playerName at the beginning.
+ * <li>actions:					The number of actions <Integer> left. Always for the currentPlayer.
+ * <li>buys:					The number of buys <Integer> (how many cards the player can buy) left. Always for the currentPlayer.
+ * <li>coins:					The number of coins <Integer> left. Always currentPlayer.
+ * <li>currentPhase:			The currentPhase <Phase>. Always currentPlayer and just set if currentPhase changes.
+ * <li>buyedCard:				The buyedCard <Card> and confirmation, that the buy succeeded. Always currentPlayer.
+ * <li>deckPileCardNumber:		The size <Integer> of the deckPile. Always currentPlayer.
+ * <li>discardPileCardNumber:	The size <Integer> of the discardPile. Always currentPlayer.
+ * <li>discardPileTopCard:		The topCard <Card> of the discardPile. Always currentPlayer.
+ * <li>newHandCards:			The newHandCards <LinkedList><Card> for the player.
+ * <li>playedCard:				The playedCard <Card> and confirmation, that the play succeeded. Always currentPlayer.
+ * <li>InteractionType:			The interaction <Interaction> the client has to perform. Always currentPlayer.
+ * <li>cardSelection:			A collection of cards the player chan chose to get. Always in combination with InteractionType.
+ * </ul>
+ * <p><li>Communication: server --> client
+ * 
  * @author Lukas
- * @version 1.0
- * @created 31-Okt-2017 17:01:22
  */
 public class UpdateGame_Message extends Message {
 
@@ -67,9 +86,7 @@ public class UpdateGame_Message extends Message {
 	private HashMap<String, String> attrElements;
 	private HashMap<String, String> attrValues;
 
-	/**
-	 * Constructor fills the Top-Level XML List for simpler adding
-	 */
+
 	public UpdateGame_Message() {
 		super();
 		// Top_Level Elements
@@ -87,8 +104,11 @@ public class UpdateGame_Message extends Message {
 	}
 
 	/**
+	 * Adds the set (not null) content to XML.
 	 * 
+	 * @author Lukas
 	 * @param docIn
+	 * 				XML-Document
 	 */
 	@Override
 	protected void addNodes(Document docIn) {
@@ -118,8 +138,9 @@ public class UpdateGame_Message extends Message {
 
 	/**
 	 * Stores the content of the variables into the HashMaps If the content is
-	 * null, the Element just has no content, but probably an attribute. Per
-	 * default they're in the stringElements
+	 * null, the Element just has no content, but probably an attribute.
+	 * 
+	 * @author Lukas
 	 */
 	private void initializeMaps() {
 		this.stringElements.put(ELEMENT_CURRENT_PLAYER, this.currentPlayer);
@@ -136,7 +157,7 @@ public class UpdateGame_Message extends Message {
 		this.cardElements.put(ELEMENT_BUYEDCARD, this.buyedCard);
 		this.cardElements.put(ELEMENT_DISCARDPILE_TOP_CARD, this.discardPileTopCard);
 
-		// The values has to be null if they were not set. Necessary to ask if a content was set (not null)
+		//The values has to be null if they were not set. Necessary to ask if a content was set (not null)
 		if (this.deckPileCardNumber != null) {
 			this.attrValues.put(ATTR_DECKPILE_CARD_NUMBER, this.deckPileCardNumber.toString());
 		} else {
@@ -153,14 +174,16 @@ public class UpdateGame_Message extends Message {
 			this.attrValues.put(ATTR_INTERACTION_TYPE, null);
 		}
 
+		//Creates the link which attributes has to be set on which elements
 		this.attrElements.put(ELEMENT_DECKPILE, ATTR_DECKPILE_CARD_NUMBER);
 		this.attrElements.put(ELEMENT_DISCARDPILE_TOP_CARD, ATTR_DISCARDPILE_CARD_NUMBER);
 		this.attrElements.put(ELEMENT_INTERACTION, ATTR_INTERACTION_TYPE);
 	}
 	
 	/**
+	 * Puts the content of the maps into the variables.
+	 * 
 	 * @author Lukas
-	 * Puts the content of the maps into the variables
 	 */
 	private void initializeVariables() {
 		
@@ -183,16 +206,26 @@ public class UpdateGame_Message extends Message {
 	}
 
 	/**
-	 * Helps the addNodes method to add elements in the given root If an element
-	 * intends to have an attribute, it will be set
+	 * Adds the elements under the given root.
+	 * Sets also an attribute if an element intends to have one
 	 * 
+	 * @author Lukas
 	 * @param docIn
-	 *            to create further elements
+	 *            XML-Document
 	 * @param root
 	 *            the current root to add elements
 	 * @param contents
 	 *            generic HashMap, consists the elements or attributes as
-	 *            keys(<String>) and the input as values(<T>)
+	 *            keys(String) and the input as values(T)
+	 *            <ul>
+	 *            Supportes the following generic types:
+	 *            <li>String
+	 *            <li>Integer
+	 *            <li>Card
+	 *            <li>LinkedList with generic:
+	 *            		<ul><li>Card
+	 *            		<li>CardName</ul>
+	 *            </ul>
 	 */
 	private <T> void addContentElements(Document docIn, Element root, HashMap<String, T> content) {
 		// If the root contains an attribute, it will be set
@@ -256,7 +289,10 @@ public class UpdateGame_Message extends Message {
 
 	/**
 	 * 
+	 * 
+	 * @author Lukas
 	 * @param docIn
+	 * 			XML-Document
 	 */
 	@Override
 	protected void init(Document docIn) {

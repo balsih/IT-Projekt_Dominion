@@ -3,8 +3,8 @@ package Messages;
 import org.w3c.dom.Document;
 
 /**
- * This Message asks the server if something has changed in the game.
- *  Communication: client --> server
+ * This Message is to asks the server if something has changed in the game.
+ * <li>Communication: client --> server
  * 
  * @author Lukas
  */

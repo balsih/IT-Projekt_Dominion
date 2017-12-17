@@ -5,8 +5,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * This Message sends a chat-message to all players in the current Game.
- *  Communication: client --> server
+ * This Message is to send a chat-message to all players in the current Game.
+ * <li>Communication: client --> server
  *  
  *  @author Lukas
  */
@@ -21,7 +21,7 @@ public class Chat_Message extends Message {
 	}
 
 	/**
-	 * Adds the chat-message to XML
+	 * Adds the chat-message <String> to XML
 	 * 
 	 * @author Lukas
 	 * @param docIn
@@ -37,7 +37,7 @@ public class Chat_Message extends Message {
 	}
 
 	/**
-	 * Creates the object chat (String) from XML
+	 * Creates the object chat <String> from XML
 	 * 
 	 * @author Lukas
 	 * @param docIn

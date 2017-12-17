@@ -5,12 +5,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * The client wants to log in the system. For this purpose he has to be checked
- * in the database if clientName and password are correct. The password should be crypted by the client.
+ * This Message is to login into the application's system. For this purpose, he has to be checked
+ * in the database if clientName and password are correct. The password should be encrypted by the client.
+ * <li>Communication: client --> server
  * 
  * @author Lukas
- * @version 1.0
- * @created 31-Okt-2017 17:01:16
  */
 public class Login_Message extends Message {
 
@@ -23,8 +22,11 @@ public class Login_Message extends Message {
 	}
 
 	/**
+	 * Adds the password <String> to XML
 	 * 
+	 * @author Lukas
 	 * @param docIn
+	 * 				XML-Document
 	 */
 	@Override
 	protected void addNodes(Document docIn){
@@ -36,8 +38,11 @@ public class Login_Message extends Message {
 	}
 
 	/**
+	 * Creates the object password <String> from XML
 	 * 
+	 * @author Lukas
 	 * @param docIn
+	 * 				XML-Document
 	 */
 	@Override
 	protected void init(Document docIn){

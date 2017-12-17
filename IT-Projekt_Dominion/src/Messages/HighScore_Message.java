@@ -5,12 +5,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * Client --> Server: Just a request for the highscore
- * Server --> Client: Transports the Top5 highscore from server to client in one String
+ * This Message is to get the highscore from the server.
+ * <li>Communication: client --> server (request)
+ * <li>Communication: server --> client (with highscore)
  * 
  * @author Lukas
- * @version 1.0
- * @created 31-Okt-2017 17:01:15
  */
 public class HighScore_Message extends Message {
 
@@ -23,8 +22,11 @@ public class HighScore_Message extends Message {
 	}
 
 	/**
+	 * Adds the highscore <String> to XML
 	 * 
+	 * @author Lukas
 	 * @param docIn
+	 * 				XML-Document
 	 */
 	@Override
 	protected void addNodes(Document docIn){
@@ -38,7 +40,9 @@ public class HighScore_Message extends Message {
 	}
 
 	/**
+	 * Creates the object highScore <String> from XML
 	 * 
+	 * @author Lukas
 	 * @param docIn
 	 */
 	@Override
@@ -57,7 +61,6 @@ public class HighScore_Message extends Message {
 		return this.highScore;
 	}
 	
-
 	public void setHighScore(String highScore){
 		this.highScore = highScore;
 	}

@@ -5,9 +5,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * @author default: Bradley Richards
- * @version 1.0
- * @created 01-Nov-2017 10:54:39
+ * This Message's purpose is it to be created if there's a failure in the communication.
+ * 
+ * @author Bradley Richards
  */
 
 public class Error_Message extends Message {
@@ -20,10 +20,11 @@ public class Error_Message extends Message {
     }
 
     /**
-     * Given a document from SuperClass Message when a Message received,
-     * fills in the content of the Message for further tasks
+     * Creates the object info (String) from XML
      * 
-     * @param docIn, XML_Document from superClass Message
+     * @author Bradley Richards
+     * @param docIn
+     * 			XML-Document
      */
 	@Override
 	protected void init(Document docIn) {
@@ -37,9 +38,11 @@ public class Error_Message extends Message {
 	}    
 	
 	/**
-	 * Adds nodes to XML_Document in addition to superClass Message
+	 * Adds the info to XML
 	 * 
-	 * @param docIn, XML_Document from superClass Message
+	 * @author Bradley Richards
+	 * @param docIn
+	 * 			XML-Document
 	 */
 	@Override
 	protected void addNodes(Document docIn) {

@@ -7,9 +7,16 @@ import org.w3c.dom.NodeList;
 import Server_GameLogic.Player;
 
 /**
+ * This Message is to tell the client's weather they won or lost.
+ * <ul>
+ * It includes the winner's AND the loser's data.
+ * <li>playerName:		the player's name <String>
+ * <li>success:			the player's success (<GameSuccess> Won or Lost)
+ * <li>victoryPoints:	the player's collected victoryPoints <Integer>
+ * </ul>
+ * <p><li>Communication: server --> client
+ * 
  * @author Lukas
- * @version 1.0
- * @created 31-Okt-2017 17:01:20
  */
 public class PlayerSuccess_Message extends Message {
 
@@ -28,8 +35,12 @@ public class PlayerSuccess_Message extends Message {
 	}
 
 	/**
+	 * Adds the player's (Player) content to XML 
+	 * (playerName (String), success (GameSuccess), victoryPoints (Integer))
 	 * 
+	 * @author Lukas
 	 * @param docIn
+	 * 				XML-Document
 	 */
 	@Override
 	protected void addNodes(Document docIn){
@@ -59,8 +70,12 @@ public class PlayerSuccess_Message extends Message {
 
 
 	/**
+	 * Creates the object player1 and player2 (Player) from XML
+	 * (playerName (String), success (GameSuccess), victoryPoints (Integer))
 	 * 
+	 * @author Lukas
 	 * @param docIn
+	 * 				XML-Document
 	 */
 	@Override
 	protected void init(Document docIn){
