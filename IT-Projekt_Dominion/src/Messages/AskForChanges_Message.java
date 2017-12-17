@@ -3,12 +3,9 @@ package Messages;
 import org.w3c.dom.Document;
 
 /**
- * The client asks the server if something has changed in the game.
- * If yes, the messages will be waiting in a Queue
- * 
  * @author Lukas
- * @version 1.0
- * @created 31-Okt-2017 17:01:10
+ * This Message asks the server if something has changed in the game
+ * client --> server
  */
 public class AskForChanges_Message extends Message {
 
@@ -16,13 +13,9 @@ public class AskForChanges_Message extends Message {
 		super();
 	}
 
-	/**
-	 * 
-	 * @param docIn
-	 */
 	@Override
 	protected void addNodes(Document docIn){
-
+		//nothing toDo here
 	}
 
 	/**
@@ -32,6 +25,6 @@ public class AskForChanges_Message extends Message {
 	 */
 	@Override
 	protected void init(Document docIn){
-
+		//nothing toDo here
 	}
 }//end AksForChanges_Message

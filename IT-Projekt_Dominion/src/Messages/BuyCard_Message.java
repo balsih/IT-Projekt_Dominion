@@ -7,10 +7,9 @@ import org.w3c.dom.NodeList;
 import Cards.CardName;
 
 /**
- * 
  * @author Lukas
- * @version 1.0
- * @created 31-Okt-2017 17:01:11
+ * This Message tries to buy the chosen card
+ * client --> server
  */
 public class BuyCard_Message extends Message {
 
@@ -23,8 +22,11 @@ public class BuyCard_Message extends Message {
 	}
 
 	/**
+	 * @author Lukas
+	 * Adds the chosen card to XML
 	 * 
 	 * @param docIn
+	 * 				XML-Document
 	 */
 	@Override
 	protected void addNodes(Document docIn){
@@ -37,8 +39,11 @@ public class BuyCard_Message extends Message {
 
 
 	/**
+	 * @author Lukas
+	 * Creates the object cardName (CardName) from XML
 	 * 
 	 * @param docIn
+	 * 				XML-Document
 	 */
 	@Override
 	protected void init(Document docIn){

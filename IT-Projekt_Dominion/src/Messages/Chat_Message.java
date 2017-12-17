@@ -6,8 +6,8 @@ import org.w3c.dom.NodeList;
 
 /**
  * @author Lukas
- * @version 1.0
- * @created 31-Okt-2017 17:01:12
+ * This Message sends a chat-message to all players in the current Game
+ * client --> server
  */
 public class Chat_Message extends Message {
 
@@ -20,8 +20,11 @@ public class Chat_Message extends Message {
 	}
 
 	/**
+	 * @author Lukas
+	 * Adds the chat-message to XML
 	 * 
 	 * @param docIn
+	 * 				XML-Document
 	 */
 	@Override
 	protected void addNodes(Document docIn){
@@ -33,8 +36,11 @@ public class Chat_Message extends Message {
 	}
 
 	/**
+	 * @author Lukas
+	 * Creates the object chat (String) from XML
 	 * 
 	 * @param docIn
+	 * 				XML-Document
 	 */
 	@Override
 	protected void init(Document docIn){

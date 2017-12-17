@@ -14,13 +14,16 @@ import Cards.CardName;
 import Server_GameLogic.Phase;
 
 /**
- * The client wants to start a Game. For this purpose the client chooses a singleplayer or multiplayer Game.
- * If the client wants to start a singleplayer Game, he/she starts a new Game with a Bot.
- * If the client wants to start a multiplayer Game, he/she starts a new Game with another Player
- * 
  * @author Lukas
- * @version 1.0
- * @created 31-Okt-2017 17:01:13
+ * This Message sends all important data to the client to start a new Game. That includes:
+ * buyCards:		all cards and how many of them can be bought,
+ * handCards:		the 5 hand-cards the client starts with
+ * handNumber:		number of hand-cards (5)
+ * deckPile:		the 5 deck-cards the client starts with
+ * deckNumber:		the size of the deck (5)
+ * startingPlayer:	the starting-player's name
+ * opponent:		the opponent's name
+ * phase:			the phase to start with (Buy)
  */
 public class CreateGame_Message extends Message {
 
@@ -36,6 +39,7 @@ public class CreateGame_Message extends Message {
 	private static final String ATTR_DECK_NUMBER = "deckNumber";
 	private static final String ATTR_HAND_NUMBER = "handNumber";
 	private static final String ELEMENT_PHASE = "phase";
+	
 	private HashMap<CardName, Integer> buyCards;
 	private Stack<Card> deckPile;
 	private LinkedList<Card> handCards;
@@ -54,8 +58,11 @@ public class CreateGame_Message extends Message {
 	}
 
 	/**
+	 * Adds all data the client needs to start a new game to XML
+	 * @author Lukas
 	 * 
 	 * @param docIn
+	 * 				XML-Document
 	 */
 	@Override
 	protected void addNodes(Document docIn){
