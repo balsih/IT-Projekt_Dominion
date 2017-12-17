@@ -159,35 +159,10 @@ public class GameApp_View extends View<GameApp_Model> {
 		// Resetting model variables
 		model.clientPlayer = null;
 		model.opponentPlayer = null;
-		
-		model.actions = 1;
-		model.buys = 1;
-		model.coins = 0;
 
-		model.clientName = null;
-		model.opponent = null;
-		model.currentPlayer = null;
-		model.yourNewHandCards = null;
-		model.opponentHandCards = null;
-		model.yourDeck = null;
-		model.opponentDeck = null;
 		model.yourDiscardPile = 0;
 		model.opponentDiscardPile = null;
-		model.newPlayedCard = null;
 		model.yourDiscardPileTopCard = null;
-		model.newChat = null;
-		model.newLog = null;
-		
-		model.interaction = Interaction.Skip;
-		model.cardSelection = null;
-		model.discardCard = null;
-		model.cellarDiscards = new LinkedList<Card>();
-
-		model.gameMode = null;
-		model.buyChoice = null;
-		model.currentPhase = null;
-		model.phaseChanged = false;
-		model.turnEnded = false;
 	}
 
 	// Creates the GUI with all its containers and contents
