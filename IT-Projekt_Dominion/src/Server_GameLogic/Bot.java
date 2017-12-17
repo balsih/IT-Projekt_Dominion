@@ -37,7 +37,7 @@ public class Bot extends Player implements Runnable {
 	private static final HashMap<CardName, Integer> PRIOLIST_TOPDISCARDPILE_CARD = new HashMap<CardName, Integer>();
 	private static final ArrayList<String> NAMES = new ArrayList<String>();
 	private static final int MIN_TIME_BEFORE_EXECUTING = 500, MAX_TIME_BEFORE_EXECUTING = 1500;
-	private static final int MAX_TREASURE_CARDS = 12, MAX_ACTION_CARDS = 8;
+	private static final int MAX_TREASURE_CARDS = 16, MAX_ACTION_CARDS = 10;
 	private Card cardToPlay = null;
 	private CardName cardToBuy = null;
 	private double numberOfGoldAndSilverCards = 0.0, numberOfTotalCards = 10.0;
@@ -48,19 +48,19 @@ public class Bot extends Player implements Runnable {
 
 	public Bot(String name, ServerThreadForClient thread) {
 		super(name, thread);
-		
+
 		counter = 1;
 
 		buyPrioOneCard.put(CardName.Province, 100);
-		buyPrioOneCard.put(CardName.Gold, 90);
+		buyPrioOneCard.put(CardName.Gold, 60);
 		buyPrioOneCard.put(CardName.Duchy, 56);
-		buyPrioOneCard.put(CardName.Market, 59);
+		buyPrioOneCard.put(CardName.Market, 58);
 		buyPrioOneCard.put(CardName.Mine, 57);
 		buyPrioOneCard.put(CardName.Remodel, 54);
 		buyPrioOneCard.put(CardName.Smithy, 55);
 		buyPrioOneCard.put(CardName.Silver, 50);
-		buyPrioOneCard.put(CardName.Village, 46);
-		buyPrioOneCard.put(CardName.Woodcutter, 53);
+		buyPrioOneCard.put(CardName.Village, 52);
+		buyPrioOneCard.put(CardName.Woodcutter, 51);
 		buyPrioOneCard.put(CardName.Workshop, 44);
 		buyPrioOneCard.put(CardName.Cellar, 30);
 
@@ -71,15 +71,15 @@ public class Bot extends Player implements Runnable {
 		buyPrioMoreCards.put(CardName.Mine, 64);
 		buyPrioMoreCards.put(CardName.Remodel, 40);
 		buyPrioMoreCards.put(CardName.Smithy, 63);
-		buyPrioMoreCards.put(CardName.Village, 59);
-		buyPrioMoreCards.put(CardName.Woodcutter, 61);
+		buyPrioMoreCards.put(CardName.Village, 61);
+		buyPrioMoreCards.put(CardName.Woodcutter, 59);
 		buyPrioMoreCards.put(CardName.Workshop, 49);
 		buyPrioMoreCards.put(CardName.Silver, 50);
 		buyPrioMoreCards.put(CardName.Cellar, 30);
 
-		maxCardsOfAType.put(CardName.Market, 2);
+		maxCardsOfAType.put(CardName.Market, 4);
 		maxCardsOfAType.put(CardName.Smithy, 2);
-		maxCardsOfAType.put(CardName.Village, 1);
+		maxCardsOfAType.put(CardName.Village, 3);
 		maxCardsOfAType.put(CardName.Mine, 2);
 		maxCardsOfAType.put(CardName.Cellar, 1);
 		maxCardsOfAType.put(CardName.Workshop, 1);
@@ -393,7 +393,7 @@ public class Bot extends Player implements Runnable {
 					System.out.println(this.playerName + " Problem1");
 					if (ugmsg.getCurrentPhase() == null) {
 						System.out.println(this.playerName + " Problem2");
-						if (coins <= 2) {
+						if (coins <= 1) {
 							System.out.println(this.playerName + " stop buyPhase");
 							UpdateGame_Message ugmsg1 = (UpdateGame_Message) skipPhase();
 							this.sendToOpponent(this, ugmsg1);
@@ -586,11 +586,11 @@ public class Bot extends Player implements Runnable {
 			int tempGold2 = buyPrioMoreCards.get(CardName.Gold);
 			int tempSilver2 = buyPrioMoreCards.get(CardName.Silver);
 
-			if (getNumberOfOwnedCards(CardName.Gold) > 4) {
+			if (getNumberOfOwnedCards(CardName.Gold) > 5) {
 				tempGold1 -= 1;
 				tempGold2 -= 5;
 			}
-			if (getNumberOfOwnedCards(CardName.Silver) > 4) {
+			if (getNumberOfOwnedCards(CardName.Silver) > 3) {
 				tempSilver1 -= 1;
 				tempSilver2 -= 5;
 			}
@@ -606,23 +606,54 @@ public class Bot extends Player implements Runnable {
 	 * Calculate the priority of each ActionCards for the buying decision.
 	 */
 	private void estimateBuyPriorityOfActionCards() {
+		// change priority of MineCard according to the number of MarketCards
+		if (buyPrioOneCard.get(CardName.Market) != 0 || buyPrioOneCard.get(CardName.Market) != 40) {
+			if (getNumberOfOwnedCards(CardName.Market) == 2 || getNumberOfOwnedCards(CardName.Market) == 3) {
+				buyPrioOneCard.replace(CardName.Mine, 59);
+				buyPrioMoreCards.replace(CardName.Mine, 66);
+			}
+			if (getNumberOfOwnedCards(CardName.Market) >= 3 && getNumberOfOwnedCards(CardName.Mine) >= 2) {
+				buyPrioOneCard.replace(CardName.Mine, 57);
+				buyPrioMoreCards.replace(CardName.Mine, 64);
+			} else if (getNumberOfOwnedCards(CardName.Market) == 2 && getNumberOfOwnedCards(CardName.Mine) == 1) {
+				buyPrioOneCard.replace(CardName.Mine, 57);
+				buyPrioMoreCards.replace(CardName.Mine, 64);
+			}
+		}
+
+		// change priority of WoodcutterCard
+		if (buyPrioOneCard.get(CardName.Village) != 0 || buyPrioOneCard.get(CardName.Market) != 35) {
+			if (getNumberOfOwnedCards(CardName.Village) >= 1) {
+				buyPrioOneCard.replace(CardName.Woodcutter, 53);
+			}
+			if (getNumberOfOwnedCards(CardName.Woodcutter) >= 1) {
+				buyPrioOneCard.replace(CardName.Woodcutter, 51);
+			}
+		}
+
+		// change priority of an ActionCard if its maximum is reached
 		for (int i = 0; i < CARDNAMESOFACTIONCARDS.size(); i++) {
 			if (getNumberOfOwnedCards(CARDNAMESOFACTIONCARDS.get(i)) == maxCardsOfAType
 					.get(CARDNAMESOFACTIONCARDS.get(i))) {
-				// int tempValue1 = buyPrioOneCard.get(CARDNAMESOFACTIONCARDS.get(i));
-				// int tempValue2 = buyPrioMoreCards.get(CARDNAMESOFACTIONCARDS.get(i));
-				// tempValue1 -= 5;
-				// tempValue2 -= 5;
-				// buyPrioOneCard.replace(CARDNAMESOFACTIONCARDS.get(i), tempValue1);
-				// buyPrioMoreCards.replace(CARDNAMESOFACTIONCARDS.get(i), tempValue2);
-				buyPrioOneCard.remove(CARDNAMESOFACTIONCARDS.get(i));
-				buyPrioMoreCards.remove(CARDNAMESOFACTIONCARDS.get(i));
+				buyPrioOneCard.replace(CARDNAMESOFACTIONCARDS.get(i), 0);
+				buyPrioMoreCards.replace(CARDNAMESOFACTIONCARDS.get(i), 0);
 			}
 		}
+
+		// change priority of ActionCards if the maximum of ActionCards is reached
 		if (numberOfActionCards >= MAX_ACTION_CARDS) {
 			for (int i = 0; i < CARDNAMESOFACTIONCARDS.size(); i++) {
 				buyPrioOneCard.replace(CARDNAMESOFACTIONCARDS.get(i), 0);
 				buyPrioMoreCards.replace(CARDNAMESOFACTIONCARDS.get(i), 0);
+			}
+			// set standard priorities of important ActionCards
+			buyPrioOneCard.replace(CardName.Market, 40);
+			buyPrioMoreCards.replace(CardName.Market, 40);
+			buyPrioOneCard.replace(CardName.Village, 35);
+			buyPrioMoreCards.replace(CardName.Village, 35);
+			if (!buyPrioOneCard.get(CardName.Mine).equals(0)) {
+				buyPrioOneCard.replace(CardName.Mine, 38);
+				buyPrioMoreCards.replace(CardName.Mine, 38);
 			}
 		}
 	}
