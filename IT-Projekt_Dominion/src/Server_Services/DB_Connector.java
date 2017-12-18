@@ -86,7 +86,7 @@ public class DB_Connector {
 	 *            - the achieved score in a game.
 	 * @return Boolean - depending on if the insert statement works.
 	 */
-	public boolean addScore(Player player, int score, int moves) {
+	public boolean addScore(Player player, int score, int moves) {		
 		try {
 			/*
 			 * prepares the preparedStatement with the insert into statement.
@@ -335,5 +335,10 @@ public class DB_Connector {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static void main(String[] args){
+		DB_Connector conn = new DB_Connector();
+		conn.selectPlayer_Scoring();
 	}
 }
