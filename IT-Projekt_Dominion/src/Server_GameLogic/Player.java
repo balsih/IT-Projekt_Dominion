@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.EmptyStackException;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Stack;
 import java.util.logging.Logger;
 
@@ -20,11 +19,12 @@ import Messages.PlayerSuccess_Message;
 import Messages.UpdateGame_Message;
 
 /**
- * @author Bodo Gruetter
  * 
- *         The player class represents a player with his/her card stacks and
- *         hand. It allows him/her to interact with the game and play through
- *         the three phases 'Action', 'Buy' and 'Clean up'.
+ * The player class represents a player with his/her card stacks and hand. It
+ * allows him/her to interact with the game and play through the three phases
+ * 'Action', 'Buy' and 'Clean up'.
+ * 
+ * @author Bodo Gruetter
  * 
  */
 public class Player {
@@ -57,6 +57,8 @@ public class Player {
 	/**
 	 * Constructor for a Player
 	 * 
+	 * @author Bodo Gruetter
+	 * 
 	 * @param name
 	 *            - the name of the player
 	 * @param serverThreadForClient
@@ -73,9 +75,9 @@ public class Player {
 	}
 
 	/**
-	 * @author Bodo Gruetter
+	 * Initializes the player to start a move.
 	 * 
-	 *         Initializes the player to start a move.
+	 * @author Bodo Gruetter
 	 */
 	public void resetStates() {
 		this.actions = 1;
@@ -85,14 +87,18 @@ public class Player {
 	}
 
 	/**
-	 * @author Bodo Gruetter
+	 * Plays an action or a treasure card and executes it, if the conditions to
+	 * play a card applies.
 	 * 
-	 * Plays an action or a treasure card and executes it, if the
-	 * conditions to play a card applies.
+	 * @author Bodo Gruetter
 	 *
-	 * @param selectedCard - the card the player selected to play.
-	 * @return UpdateGame_Message - the message that updates the play process, if all conditions applies.
-	 * @return Failure_Message - if no condition applies.
+	 * @param selectedCard
+	 *            - the card the player selected to play.
+	 * @return UpdateGame_Message - the message that updates the play process if
+	 *         if all conditions applies.
+	 * @return PlayerSuccess_Message - the message who wons and lost a game, if
+	 *         the game is finished.
+	 * @return Failure_Message - if play-method don't is successfully
 	 */
 	public Message play(Card selectedCard) {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
@@ -115,7 +121,8 @@ public class Player {
 				return fmsg;
 			else if (selectedCard.getCardName().equals(CardName.Cellar) && this.handCards.size() == 1)
 				return fmsg;
-			
+
+			// checks if the game is ended after buying a card and who wons it
 			if (game.checkGameEnding()) {
 				this.actualPhase = Phase.Ending;
 				game.checkWinner();
@@ -124,6 +131,7 @@ public class Player {
 				return this.getCurrentPlayerSuccessMsg();
 			}
 
+			// executes the selected card
 			ugmsg = selectedCard.executeCard(this);
 			playedCards.add(this.handCards.remove(index));
 			this.actions--;
@@ -154,10 +162,9 @@ public class Player {
 	}
 
 	/**
-	 * @author Bodo Gruetter
+	 * Buys a Card if all condtions applies.
 	 * 
-	 *         Buys a Card if all condtions applies. Checks if the game is
-	 *         finished and then who the winner is.
+	 * @author Bodo Gruetter
 	 * 
 	 * @param cardName
 	 *            - the name of the Card which should been buyed.
@@ -219,9 +226,10 @@ public class Player {
 	}
 
 	/**
-	 * @author Bodo Gruetter
 	 * 
-	 *         Picks a card from a card stack.
+	 * Picks a card from a card stack.
+	 * 
+	 * @author Bodo Gruetter
 	 * 
 	 * @param cardName
 	 *            - the name of the picked card.
@@ -282,11 +290,11 @@ public class Player {
 	}
 
 	/**
-	 * @author Bodo Gruetter
+	 * Cleans up the playing field and draws five cards in the hand. If the
+	 * player has more than one card in his hand he chooses the card that should
+	 * be on the top of his discardPile.
 	 * 
-	 *         Cleans up the playing field and draws five cards in the hand. If
-	 *         the player has more than one card in his hand he chooses the card
-	 *         that should be on the top of his discardPile.
+	 * @author Bodo Gruetter
 	 * 
 	 * @param selectedTopCard
 	 *            - the card on the top of the discard pile. It is null if the
@@ -307,9 +315,6 @@ public class Player {
 		 */
 		if (this.handCards.size() > 1) {
 			ugmsg.setDiscardPileTopCard(selectedTopCard);
-			// ugmsg.setLog("#topCard#
-			// "+"#selectedTopCard.getCardName().toString()#");
-
 			ugmsg.setLog("#topCard# " + "#" + selectedTopCard.getCardName().toString() + "#");
 
 		} else if (this.handCards.size() == 1 && selectedTopCard == null) {
@@ -338,10 +343,11 @@ public class Player {
 	}
 
 	/**
+	 * 
+	 * 
+	 * Draws a variable number of cards in the hand.
+	 * 
 	 * @author Bodo Gruetter
-	 * 
-	 *         Draws a variable number of cards in the hand.
-	 * 
 	 * @param numOfCards
 	 *            - the number of cards which should be drawn.
 	 * @return UpdateGame_Message - the message that updates the draw process.
@@ -382,9 +388,9 @@ public class Player {
 	}
 
 	/**
-	 * @author Bodo Gruetter
+	 * Skips actual phase and goes to the next phase.
 	 * 
-	 *         Skips actual phase and goes to the next phase.
+	 * @author Bodo Gruetter
 	 * 
 	 * @return UpdateGame_Message - the message that updates the skip process.
 	 * @return Failure_Message - if no condition applies.
@@ -399,7 +405,9 @@ public class Player {
 			case Action:
 				this.actualPhase = Phase.Buy;
 				ugmsg.setCurrentPhase(this.actualPhase);
-				
+
+				// checks if the game is ended after buying a card and who wons
+				// it
 				if (game.checkGameEnding()) {
 					this.actualPhase = Phase.Ending;
 					game.checkWinner();
@@ -442,9 +450,9 @@ public class Player {
 	}
 
 	/**
-	 * @author Bodo Gruetter
+	 * Counts the victory points.
 	 * 
-	 *         Counts the victory points.
+	 * @author Bodo Gruetter
 	 */
 	public void countVictoryPoints() {
 		// Puts all left cards in the deckpile
@@ -463,9 +471,9 @@ public class Player {
 	}
 
 	/**
-	 * @author Bodo Gruetter
+	 * Sends an waiting message to the opponent
 	 * 
-	 *         Sends an waiting message to the opponent
+	 * @author Bodo Gruetter
 	 * 
 	 * @param source
 	 *            - the sending player
@@ -481,9 +489,9 @@ public class Player {
 	}
 
 	/**
-	 * @author Bodo Gruetter
+	 * Checks if a list contains a specific card type.
 	 * 
-	 *         Checks if a list contains a specific card type.
+	 * @author Bodo Gruetter
 	 * 
 	 * @param list
 	 *            - the list which should be checked.
@@ -501,9 +509,9 @@ public class Player {
 	}
 
 	/**
-	 * @author Bodo Gruetter
+	 * Checks if a list contains a specific card.
 	 * 
-	 *         Checks if a list contains a specific card.
+	 * @author Bodo Gruetter
 	 * 
 	 * @param list
 	 *            - the list which should be checked.
@@ -521,9 +529,9 @@ public class Player {
 	}
 
 	/**
-	 * @author Bodo Gruetter
+	 * Sets the status of current player.
 	 * 
-	 *         Sets the status of current player.
+	 * @author Bodo Gruetter
 	 * 
 	 * @return PlayerSuccess_Message - the message with the status and the
 	 *         number of victory points.
@@ -538,9 +546,9 @@ public class Player {
 	}
 
 	/**
-	 * @author Bodo Gruetter
+	 * Sets the status of opponent.
 	 * 
-	 *         Sets the status of opponent.
+	 * @author Bodo Gruetter
 	 * 
 	 * @return PlayerSuccess_Message - the message with the status and the
 	 *         number of victory points.
@@ -553,7 +561,8 @@ public class Player {
 
 		return psmsg;
 	}
-
+	
+	// Getters and Setters
 	public int getActions() {
 		return actions;
 	}

@@ -5,22 +5,23 @@ import java.io.IOException;
 import Abstract_MVC.Controller;
 
 /**
- * @author Bodo Gruetter 
  * 
  * The Server_Controller controls the interaction between Server_View and Server_Model
  * and handles the events.
  * 
- * Adapted from:
- * Prof. Bradley Richards, Package: ch.fhnw.richards.lecture11_chatLab.v3_server, Class: Controller
+ * @author Bodo Gruetter 
+ * source: Prof. Bradley Richards
  */
 public class Server_Controller extends Controller<Server_Model, Server_View> {
 
 	private boolean portValid = false;
 
 	/**
-	 * @author Bodo Gruetter
 	 * 
 	 * Handles the events between Server_View and Server_Model
+	 * 
+	 * @author Bodo Gruetter 
+	 * source: Prof. Bradley Richards
 	 * 
 	 * @param model - the Server_Model
 	 * @param view - the Server_View
@@ -56,15 +57,13 @@ public class Server_Controller extends Controller<Server_Model, Server_View> {
 		view.stage.setOnCloseRequest(event -> model.stopServer());
 	}
 
-	/**
-	 * @author Bodo Gruetter
-	 * 
+	/** 
 	 * Sets port text green or red depending on if port value is valid.
 	 * 
 	 * @param newValue - the new input value
 	 * 
-	 * Adapted from: Prof. Bradley Richards, Package:
-	 * ch.fhnw.richards.lecture02.email_validator, Class: EmailValidator_Model
+	 * @author Bodo Gruetter 
+	 * source: Prof. Bradley Richards
 	 */
 	private void validatePortNumber(String newValue) {
 		boolean valid = model.isValidPortNumber(newValue);
@@ -81,9 +80,10 @@ public class Server_Controller extends Controller<Server_Model, Server_View> {
 	}
 
 	/**
-	 * @author Bodo Gruetter
-	 * 
 	 * Enables Button if the Port is not valid.
+	 * 
+	 * @author Bodo Gruetter 
+	 * source: Prof. Bradley Richards
 	 */
 	private void enableDisableButton() {
 		boolean valid = portValid;

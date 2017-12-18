@@ -16,12 +16,10 @@ import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 
 /**
- * @author Bodo Gruetter
- *
  * The Server_View creates and shows the GUI to interact with the server.
  * 
- * Adapted from:
- * Prof. Bradley Richards, Package: ch.fhnw.richards.lecture11_chatLab.v3_server, Class: View
+ * @author Bodo Gruetter 
+ * source: Prof. Bradley Richards
  */
 public class Server_View extends View<Server_Model>{
 
