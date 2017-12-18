@@ -58,8 +58,8 @@ public class MainMenu_View extends View<GameApp_Model> {
 	protected Label highscoreLbl;
 	protected TableColumn<Highscore, String> nameColumn, pointColumn, roundColumn;
 	
-	protected Button startGameBtn;
 	protected Button quitBtn;
+	protected Button logoutBtn;
 	
 	protected Alert startGameAlert;
 	
@@ -211,10 +211,14 @@ public class MainMenu_View extends View<GameApp_Model> {
 		
 		highscoreBox.getChildren().addAll(highscoreLbl, table);
 		
-		quitBtn = new Button(/*t.getString("menu.quitBtn")*/);
+		quitBtn = new Button(t.getString("menu.quitBtn"));
 		quitBtn.setId("quitBtn");
-		HBox startAndQuitBox = new HBox(/*startGameBtn, */quitBtn);
+		logoutBtn = new Button(t.getString("menu.logoutBtn"));
+		logoutBtn.setId("logoutBtn");
+		
+		HBox startAndQuitBox = new HBox(logoutBtn, quitBtn);
 		startAndQuitBox.setId("startAndQuitBox");
+		
 		
 
 		// VBox for layout and spacing
@@ -261,6 +265,7 @@ public class MainMenu_View extends View<GameApp_Model> {
 		pointColumn.setText(t.getString("menu.table.points"));
 		roundColumn.setText(t.getString("menu.table.rounds"));
 		quitBtn.setText(t.getString("menu.quitBtn"));
+		logoutBtn.setText(t.getString("menu.logoutBtn"));
 		startGameAlert.setTitle(t.getString("menu.startGameAlert"));
 	}
 	

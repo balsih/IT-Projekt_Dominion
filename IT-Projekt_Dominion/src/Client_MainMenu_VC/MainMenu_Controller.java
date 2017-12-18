@@ -75,13 +75,33 @@ public class MainMenu_Controller extends Controller<GameApp_Model, MainMenu_View
 		});
 		
 		
+		// set on action and handling for backBtn
+		view.logoutBtn.setOnAction((event) -> {
+			try {
+				model.startBtnClickSound();
+				main.startLogin();
+				view.stop();
+				model.sendLogout();
+				sl.getConfiguration().save();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+		
+		
+		
 		// set on action and handling for quitBtn
 		view.quitBtn.setOnAction((event) -> {
+			try {
 			model.startBtnClickSound();
 			view.stop();
 			model.sendLogout();
 			sl.getConfiguration().save();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		});
+		
 		
 		
 //		// gets called when the window is closed -> save the language of the combobox to the local cfg File
@@ -93,8 +113,12 @@ public class MainMenu_Controller extends Controller<GameApp_Model, MainMenu_View
 		
 		
 		view.getStage().setOnCloseRequest((event) -> {
-			model.sendLogout();
-			sl.getConfiguration().save();
+			try {
+				model.sendLogout();
+				sl.getConfiguration().save();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		});
 		
 	}
