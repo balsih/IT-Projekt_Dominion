@@ -8,8 +8,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import com.sun.istack.internal.logging.Logger;
-
 import Cards.Card;
 import Cards.CardName;
 import Server_GameLogic.Phase;
