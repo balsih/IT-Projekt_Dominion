@@ -127,17 +127,25 @@ public class ServerThreadForClient implements Runnable {
     private Message processMessage(Message msgIn) {
 		Message msgOut = null;
 		
-		//without inetAddress, the client would be kicked out after the specified time-limit (30 min)
+		/*
+		 * Checks if the client (Requester) is logged in into the system.
+		 * Otherwise he could send his messages to the Thread and it will be processed although the client isn't logged in.
+		 */
+		if(!(msgIn instanceof Knock_Message) && !(msgIn instanceof Login_Message) && !(msgIn instanceof CreateNewPlayer_Message)){
+			if(!onlineClients.contains(msgIn.getClient())){
+				return new Failure_Message();
+			}else{
+				//Refreshes the currentTime. Knock-Login- and CreatePlayer_Message exclusive to avoid abuse (identifier is just clientName)
+				this.currentTime = System.currentTimeMillis();
+			}
+		}
+		
+		//Without inetAddress, the client would be kicked out after the specified time-limit (30 min)
 		if(!(msgIn instanceof Knock_Message) && !(msgIn instanceof Login_Message) && !(msgIn instanceof CreateNewPlayer_Message)
 				&& !this.clientSocket.getInetAddress().equals(this.inetAddress) && System.currentTimeMillis() - this.currentTime > this.AFK_TIMER){
 			Failure_Message fmsg = new Failure_Message();
 			fmsg.setNotification("#clientUsed#");
 			return new Failure_Message();
-		}
-		
-		//Refreshes the currentTime. Knock-Login- and CreatePlayer_Message exclusive to avoid abuse (identifier is just clientName)
-		if(!(msgIn instanceof Knock_Message) && !(msgIn instanceof Login_Message) && !(msgIn instanceof CreateNewPlayer_Message)){
-			this.currentTime = System.currentTimeMillis();
 		}
 		
 		//Sets the clientName

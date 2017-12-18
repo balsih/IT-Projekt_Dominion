@@ -194,15 +194,17 @@ public class UpdateGame_Message extends Message {
 		this.playedCard = this.cardElements.get(ELEMENT_PLAYEDCARD);
 		this.buyedCard = this.cardElements.get(ELEMENT_BUYEDCARD);
 		this.discardPileTopCard = this.cardElements.get(ELEMENT_DISCARDPILE_TOP_CARD);
-		if(this.attrValues.get(ATTR_INTERACTION_TYPE) != null)
+		this.actions = this.integerElements.get(ELEMENT_ACTIONS);
+		this.coins = this.integerElements.get(ELEMENT_COINS);
+		this.buys = this.integerElements.get(ELEMENT_BUYS);
+		
+		//if's to avoid exceptions
+		if (this.attrValues.get(ATTR_INTERACTION_TYPE) != null)
 			this.interactionType = Interaction.parseInteraction(this.attrValues.get(ATTR_INTERACTION_TYPE));
 		if (this.attrValues.get(ATTR_DISCARDPILE_CARD_NUMBER) != null)
 			this.discardPileCardNumber = Integer.parseInt(this.attrValues.get(ATTR_DISCARDPILE_CARD_NUMBER));
 		if (this.attrValues.get(ATTR_DECKPILE_CARD_NUMBER) != null)
 			this.deckPileCardNumber = Integer.parseInt(this.attrValues.get(ATTR_DECKPILE_CARD_NUMBER));
-		this.actions = this.integerElements.get(ELEMENT_ACTIONS);
-		this.coins = this.integerElements.get(ELEMENT_COINS);
-		this.buys = this.integerElements.get(ELEMENT_BUYS);
 	}
 
 	/**
@@ -218,7 +220,7 @@ public class UpdateGame_Message extends Message {
 	 *            generic HashMap, consists the elements or attributes as
 	 *            keys(String) and the input as values(T)
 	 *            <ul>
-	 *            Supportes the following generic types:
+	 *            Supports the following generic data-types:
 	 *            <li>String
 	 *            <li>Integer
 	 *            <li>Card
@@ -228,55 +230,54 @@ public class UpdateGame_Message extends Message {
 	 *            </ul>
 	 */
 	private <T> void addContentElements(Document docIn, Element root, HashMap<String, T> content) {
-		// If the root contains an attribute, it will be set
-		if (this.attrElements.containsKey(root.getTagName())
-				&& this.attrValues.get(this.attrElements.get(root.getTagName())) != null)
-			root.setAttribute(this.attrElements.get(root.getTagName()),
-					this.attrValues.get(this.attrElements.get(root.getTagName())));
+		//Adds the attribute if it is set
+		if (this.attrElements.containsKey(root.getTagName()) && this.attrValues.get(this.attrElements.get(root.getTagName())) != null)
+			root.setAttribute(this.attrElements.get(root.getTagName()), this.attrValues.get(this.attrElements.get(root.getTagName())));
+		
 		Set<String> keys = content.keySet();
 		for (String key : keys) {
-			// If there is just one element but multiple possible Elements, the
-			// content has to be unpacked from the LinkedList
+			/* If there is just one element-type but multiple possible elements, the
+			 * content has to be unpacked from the LinkedList
+			 */
 			if (content.get(key) instanceof LinkedList && content.get(key) != null) {
 				try {
 					LinkedList<Card> cardList = (LinkedList<Card>) content.get(key);
 					for (int i = 0; i < cardList.size(); i++) {
 						Element element = docIn.createElement(key);
 						// If an element contains an attribute, it will be set
-						if (this.attrElements.containsKey(key)
-								&& this.attrValues.get(this.attrElements.get(key)) != null)
-							element.setAttribute(this.attrElements.get(key),
-									this.attrValues.get(this.attrElements.get(key)));
+						if (this.attrElements.containsKey(key) && this.attrValues.get(this.attrElements.get(key)) != null)
+							element.setAttribute(this.attrElements.get(key), this.attrValues.get(this.attrElements.get(key)));
 						element.setTextContent(cardList.get(i).toString());
 						root.appendChild(element);
 					}
 				} catch (Exception e) {
+					//noting toDo here
 				}
+				
 				try {
 					LinkedList<CardName> cardNameList = (LinkedList<CardName>) content.get(key);
 					for (int i = 0; i < cardNameList.size(); i++) {
 						Element element = docIn.createElement(key);
 						// If an element contains an attribute, it will be set
-						if (this.attrElements.containsKey(key)
-								&& this.attrValues.get(this.attrElements.get(key)) != null)
-							element.setAttribute(this.attrElements.get(key),
-									this.attrValues.get(this.attrElements.get(key)));
+						if (this.attrElements.containsKey(key) && this.attrValues.get(this.attrElements.get(key)) != null)
+							element.setAttribute(this.attrElements.get(key), this.attrValues.get(this.attrElements.get(key)));
 						element.setTextContent(cardNameList.get(i).toString());
 						root.appendChild(element);
 					}
 				} catch (Exception e) {
+					//nothing toDo here
 				}
-				// If an element has just one content, it can be resolved the "normal" way (one element, one content)
+				
+				//Adds elements with just a single content
 			} else {
 				Element element = docIn.createElement(key);
 				boolean addContent = false;
-				// If an element contains an attribute, it will be set
+				//Adds the attribute if it is set
 				if (this.attrElements.containsKey(key) && this.attrValues.get(this.attrElements.get(key)) != null) {
-					element.setAttribute(this.attrElements.get(key),
-							this.attrValues.get(this.attrElements.get(key)).toString());
+					element.setAttribute(this.attrElements.get(key), this.attrValues.get(this.attrElements.get(key)).toString());
 					addContent = true;
 				}
-				// if content has changed, it will be set
+				//Adds the content if it is set
 				if (content.get(key) != null && content.get(key).toString().length() > 0) {
 					element.setTextContent(content.get(key).toString());
 					addContent = true;
@@ -288,7 +289,7 @@ public class UpdateGame_Message extends Message {
 	}
 
 	/**
-	 * 
+	 * Creates the objects from XML
 	 * 
 	 * @author Lukas
 	 * @param docIn
@@ -312,50 +313,73 @@ public class UpdateGame_Message extends Message {
 		if(interactionRoot != null)
 			this.parseContent((Element) root.getElementsByTagName(ELEMENT_INTERACTION).item(0), this.cardSelectionElements);
 		
-		
+		//Stores the values from the maps into the variables
 		initializeVariables();
 	}
 
 
 	/**
-	 * Helps the init method to parse the content in the appropriate structure
+	 * Parses the content in the appropriate HashMap
 	 * 
 	 * @param root
 	 *            consists the parsing elements
 	 * @param content
-	 *            generic HashMap, consist the elements or attributes as keys
-	 *            (<String>) and the input as values (<T>)
+	 *            the HashMap to store the content,
+	 *             consist the elements or attributes as keys (String) and the input as values (T)
+	 *            <ul> 
+	 *            Creates the following data-types and stores them into the specified map:
+	 *            <li>String
+	 *            <li>Integer
+	 *            <li>Card
+	 *            <li>LinkedList with generic:
+	 *            		<ul><li>Card
+	 *            		<li>CardName</ul>
+	 *            </ul>
 	 */
 	private <T> void parseContent(Element root, HashMap<String, T> content) {
 		Set<String> keys = content.keySet();
 		Set<String> attrKeys = this.attrValues.keySet();
-		// If the root has an attribute, it will be stored in the HashMap
-		// attrValues
+		
+		// If the root has an attribute, it will be stored in the HashMap attrValues
 		for (String attrKey : attrKeys) {
 			if (root.hasAttribute(attrKey)) {
 				this.attrValues.put(attrKey, root.getAttribute(attrKey));
 			}
 		}
+		
 		for (String key : keys) {
+			//Gets the element with the name in key
 			NodeList tmpElements = root.getElementsByTagName(key);
 			if (tmpElements.getLength() > 0) {
 				Element element = (Element) tmpElements.item(0);
-				// If the element has an attribute, it will be stored in the HashMap attrValues
+				
+				//Stores the attribute in the HashMap attrValues if the element has an attribute
 				for (String attrKey : attrKeys) {
 					if (element.hasAttribute(attrKey)) {
 						this.attrValues.put(attrKey, element.getAttribute(attrKey));
 					}
 				}
-				//Try to put the inputs into the generic specified HashMap. If it's not the correct map, it will skip into the next try
+				
+				//Tries to put the inputs into the generic specified HashMap. If it's not the correct map, it will skip into the next try
 				try {
+					/*
+					 * This is the only Map that consists multiple, possibly wrong content.
+					 * But they won't be stored in the variables because of they won't be found in the initializeVariables()
+					 */
 					this.stringElements.put(key, element.getTextContent());
-				} catch (Exception e) {}
+				} catch (Exception e) {
+					//nothing toDo here
+				}
 				try {
 					this.integerElements.put(key, Integer.parseInt(element.getTextContent()));
-				} catch (Exception e) {}
+				} catch (Exception e) {
+					//The element wasn't an Integer, nothing toDo here
+				}
 				try {
 					this.cardElements.put(key, Card.getCard(CardName.parseName(element.getTextContent())));
-				} catch (Exception e) {}
+				} catch (Exception e) {
+					//The element wasn't a Card, nothing toDo here
+				}
 				try {
 					if (key == ELEMENT_NEW_HANDCARD) {
 						LinkedList<Card> newHandCards = new LinkedList<Card>();
@@ -365,7 +389,9 @@ public class UpdateGame_Message extends Message {
 						}
 						this.handCardListElements.put(key, newHandCards);
 					}
-				} catch (Exception e) {}
+				} catch (Exception e) {
+					//nothing toDo here
+				}
 				try {
 					if (key == ELEMENT_CARDSELECTION) {
 						LinkedList<CardName> cardSelection = new LinkedList<CardName>();
@@ -376,29 +402,40 @@ public class UpdateGame_Message extends Message {
 						this.cardSelectionElements.put(key, cardSelection);
 					}
 				} catch (Exception e) {
+					//nothing toDo here
 				}
 			}
 		}
 	}
 
 	/**
-	 * @author Bodo Gruetter & Lukas merges two UpdateGame_Messages together
+	 * Merges two UpdateGame_Messages together.
 	 * 
+	 * @author Bodo Gruetter & Lukas
 	 * @param first
+	 * 			first UpdateGame_Message to merge
 	 * @param second
-	 *            first message which gets merged with a second message
+	 *            second UpdateGame_Message to merge
 	 * @return the first message with the merged content
 	 */
 	public static UpdateGame_Message merge(UpdateGame_Message first, UpdateGame_Message second) {
 		
-		//If there was a change of currentPlayer, the states of the UpdateGame_Message has to be the reseted states
+		/*
+		 * If there was a change of currentPlayer, the states of the UpdateGame_Message has to be the reseted states.
+		 * The same for buys and coins.
+		 */
 		if (first.actions != null && second.actions != null){
 			if (first.currentPlayer == null){
+				/*
+				 * The second UpdateGame_Message (with currentPlayer != null) has priority because it has the newest content.
+				 * The same for buys and coins.
+				 */
 				first.actions = second.actions;
 			}	
 		} else if (first.actions == null) {
 			first.actions = second.actions;
 		}
+		
 		if (first.buys != null && second.buys != null){
 			if (first.currentPlayer == null){
 				first.buys = second.buys;
@@ -406,6 +443,7 @@ public class UpdateGame_Message extends Message {
 		} else if (first.buys == null) {
 			first.buys = second.buys;
 		}
+		
 		if (first.coins != null && second.coins != null){
 			if (first.currentPlayer == null){
 				first.coins = second.coins;
@@ -414,7 +452,7 @@ public class UpdateGame_Message extends Message {
 			first.coins = second.coins;
 		}
 		
-		//If the phase skipped twice automatically, the Phase.CleanUp will not be the correct phase
+		//If the phase skipped twice automatically, the Phase.CleanUp isn't be the correct phase
 		if(first.currentPhase != null && second.currentPhase != null){
 			if(Phase.parsePhase(first.currentPhase) == Phase.CleanUp){
 				first.currentPhase = second.currentPhase;
@@ -423,7 +461,7 @@ public class UpdateGame_Message extends Message {
 			first.currentPhase = second.currentPhase;
 		}	
 		
-		//Concat the logs if there are multiple logs
+		//Concats the logs if there are multiple logs. Separator is: "=="
 		if (first.log != null && second.log != null){
 			first.log += "=="+second.log;
 		} else if (first.log == null){
@@ -431,12 +469,14 @@ public class UpdateGame_Message extends Message {
 		}
 		
 		//Deletes old data if new cards were drawn
-		if (first.getNewHandCards() != null){//first message has priority
+		if (first.getNewHandCards() != null){
+			//First message has priority
 			if (first.getDiscardPileCardNumber() == 0){
 				second.discardPileTopCard = null;
 				second.discardPileCardNumber = null;
 			}
-		} else if(second.getNewHandCards() != null){//second message has priority
+		} else if(second.getNewHandCards() != null){
+			//Second message has priority
 			if (second.getDiscardPileCardNumber() == 0){
 				first.discardPileTopCard = null;
 				first.discardPileCardNumber = null;
@@ -586,12 +626,10 @@ public class UpdateGame_Message extends Message {
 		this.buys = buys;
 	}
 
-	// fill the cardListElement to use addContentElements
 	public void setNewHandCards(LinkedList<Card> newHandCards) {
 		this.handCardListElements.put(ELEMENT_NEW_HANDCARD, newHandCards);
 	}
 
-	// fill the cardListElement to use addContentElements
 	public void setCardSelection(LinkedList<CardName> cardSelection) {
 		this.cardSelectionElements.put(ELEMENT_CARDSELECTION, cardSelection);
 	}
