@@ -258,9 +258,10 @@ public class GameApp_Model extends Model {
 		
 		//separates the lines if there are multiple lines
 		if(lines.length > 1){
-			for(int i = 0; i < lines.length; i++){
+			for(int i = 0; i < lines.length-1; i++){
 				output += lines[i]+System.lineSeparator();
 			}
+			output += lines[lines.length-1];
 		}else{
 			output = processedInput;;
 		}
@@ -619,7 +620,7 @@ public class GameApp_Model extends Model {
 
 
 	/**
-	 * Interpret all updates and provides structures for further work.
+	 * Interprets all updates and provides structures for further work.
 	 * 
 	 * @author Lukas
 	 * @param msgIn
@@ -750,10 +751,15 @@ public class GameApp_Model extends Model {
 			}
 			try { if (socket != null) socket.close(); } catch (IOException e) {}
 			
-			//Tries to get the lost Message on server
+			//Tries to get the lost Message on server (max tries: 20 to avoid infiniteLoops) i.e. a socketException server-site happened
 			if(msgIn == null){
 				this.requestCounter++;
 				if(this.requestCounter <= 20){
+					try{
+						Thread.sleep(10);
+					}catch(Exception e){
+						//noting toDo here
+					}
 					this.processMessage(new Request_Message());
 				}else{
 					System.out.println("Request failed");

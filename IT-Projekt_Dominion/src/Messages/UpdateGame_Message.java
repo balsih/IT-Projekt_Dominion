@@ -30,7 +30,7 @@ import Server_GameLogic.Phase;
  * <li>newHandCards:			The newHandCards <LinkedList><Card> for the player.
  * <li>playedCard:				The playedCard <Card> and confirmation, that the play succeeded. Always currentPlayer.
  * <li>InteractionType:			The interaction <Interaction> the client has to perform. Always currentPlayer.
- * <li>cardSelection:			A collection of cards the player chan chose to get. Always in combination with InteractionType.
+ * <li>cardSelection:			A collection of cards the player can chose to get. Always in combination with InteractionType.
  * </ul>
  * <p><li>Communication: server --> client
  * 

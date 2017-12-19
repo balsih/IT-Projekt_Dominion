@@ -24,6 +24,7 @@ public class PlayerSuccess_Message extends Message {
 	private static final String ATTR_PLAYER_NAME = "playerName";
 	private static final String ELEMENT_SUCCESS = "success";
 	private static final String ELEMENT_VICTORY_POINTS = "victoryPoints";
+	private static final String ELEMENT_MOVES = "moves";
 	private Integer numOfPlayers = 2;
 	
 	private Player player1 = null;
@@ -65,6 +66,10 @@ public class PlayerSuccess_Message extends Message {
             Element victoryPoints = docIn.createElement(ELEMENT_VICTORY_POINTS);
             victoryPoints.setTextContent(Integer.toString(player.getVictoryPoints()));
             playerElement.appendChild(victoryPoints);
+            
+            Element moves = docIn.createElement(ELEMENT_MOVES);
+            moves.setTextContent(Integer.toString(player.getMoves()));
+            playerElement.appendChild(moves);
         }
 	}
 
@@ -91,7 +96,7 @@ public class PlayerSuccess_Message extends Message {
                 Player player = new Player(playerName, null);
                 
         		NodeList subElements = playerElement.getElementsByTagName(ELEMENT_SUCCESS);
-                if (subElements.getLength() > 0) {
+                if(subElements.getLength() > 0) {
                     Element success = (Element) subElements.item(0);
                     player.setStatus(GameSuccess.parseGameSuccess(success.getTextContent()));
                 }
@@ -100,6 +105,12 @@ public class PlayerSuccess_Message extends Message {
                 if(subElements.getLength() > 0){
                 	Element victoryPoints = (Element) subElements.item(0);
                 	player.setVictoryPoints(Integer.parseInt(victoryPoints.getTextContent()));;
+                }
+                
+                subElements = playerElement.getElementsByTagName(ELEMENT_MOVES);
+                if(subElements.getLength() > 0){
+                	Element moves = (Element) subElements.item(0);
+                	player.setMoves(Integer.parseInt(moves.getTextContent()));
                 }
                 
                 if(i == 0){

@@ -20,6 +20,7 @@ package Messages;
  * <li>GiveUp:			Tells the server the client gave Up his/her current game
  * <li>Interaction:		Tells the client's which Interaction they have to perform and provides the content from the answers
  * <li>Knock:			Knocks on socket's ip and port weather server is listening
+ * <li>Request:			Tries to get the lost Message from server
  * 
  * @author Lukas, source: Bradley Richards
  */
