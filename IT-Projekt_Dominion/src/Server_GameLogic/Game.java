@@ -171,8 +171,10 @@ public class Game {
 		// Shuffle the stacks and lets the players draw their first hand
 		Collections.shuffle(this.player1.deckPile);
 		this.player1.draw(player1.NUM_OF_HANDCARDS);
+		
 		Collections.shuffle(this.player2.deckPile);
 		this.player2.draw(player2.NUM_OF_HANDCARDS);
+		
 		this.currentPlayer = this.getStarter();
 		this.currentPlayer.resetStates();
 		this.player1.setActualPhase(Phase.Buy);

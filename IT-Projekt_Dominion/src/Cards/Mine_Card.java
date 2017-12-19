@@ -9,6 +9,7 @@ import Messages.Interaction;
 import Messages.Message;
 import Messages.UpdateGame_Message;
 import Server_GameLogic.Game;
+import Server_GameLogic.Phase;
 import Server_GameLogic.Player;
 
 /**
@@ -32,6 +33,7 @@ public class Mine_Card extends Card {
 	@Override
 	public UpdateGame_Message executeCard(Player player){
 		this.player = player;
+		this.game = player.getGame();
 		
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
@@ -54,7 +56,6 @@ public class Mine_Card extends Card {
 	public Message executeMine(Card discardedCard){
 		if((discardedCard.getCardName() == CardName.Copper) || (discardedCard.getCardName() == CardName.Silver)){
 			UpdateGame_Message ugmsg = new UpdateGame_Message();
-			Game game = player.getGame();
 			
 			player.getHandCards().remove(discardedCard); // removes the selected card
 			
@@ -70,6 +71,18 @@ public class Mine_Card extends Card {
 				ugmsg.setBuyedCard(goldCard);
 				ugmsg.setLog(this.player.getPlayerName()+": #disposed# "+"#"+discardedCard.toString()+"#"+", #received# "+"#"+CardName.Gold.toString()+"#");
 			}
+			
+			/* checks if the game is ended after playing this card and who wons
+			* it
+			*/
+			if (this.game.checkGameEnding()) {
+				this.player.setActualPhase(Phase.Ending);
+				this.game.checkWinner();
+
+				this.player.sendToOpponent(this.player, this.player.getOpponentSuccessMsg());
+				return this.player.getCurrentPlayerSuccessMsg();
+			}
+			
 			if (this.player.getActions() == 0 || !this.player.containsCardType(this.player.getHandCards(), CardType.Action))
 				ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.player.skipPhase(), ugmsg);
 			return ugmsg;

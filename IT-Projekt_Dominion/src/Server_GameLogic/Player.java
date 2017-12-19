@@ -122,15 +122,6 @@ public class Player {
 			else if (selectedCard.getCardName().equals(CardName.Cellar) && this.handCards.size() == 1)
 				return fmsg;
 
-			// checks if the game is ended after buying a card and who wons it
-			if (game.checkGameEnding()) {
-				this.actualPhase = Phase.Ending;
-				game.checkWinner();
-
-				this.sendToOpponent(this, this.getOpponentSuccessMsg());
-				return this.getCurrentPlayerSuccessMsg();
-			}
-
 			// executes the selected card
 			ugmsg = selectedCard.executeCard(this);
 			playedCards.add(this.handCards.remove(index));
@@ -405,16 +396,6 @@ public class Player {
 			case Action:
 				this.actualPhase = Phase.Buy;
 				ugmsg.setCurrentPhase(this.actualPhase);
-
-				// checks if the game is ended after buying a card and who wons
-				// it
-				if (game.checkGameEnding()) {
-					this.actualPhase = Phase.Ending;
-					game.checkWinner();
-
-					this.sendToOpponent(this, this.getOpponentSuccessMsg());
-					return this.getCurrentPlayerSuccessMsg();
-				}
 				break;
 
 			case Buy:
@@ -536,7 +517,7 @@ public class Player {
 	 * @return PlayerSuccess_Message - the message with the status and the
 	 *         number of victory points.
 	 */
-	private PlayerSuccess_Message getCurrentPlayerSuccessMsg() {
+	public PlayerSuccess_Message getCurrentPlayerSuccessMsg() {
 		PlayerSuccess_Message psmsg = new PlayerSuccess_Message();
 
 		psmsg.setPlayer1(game.getPlayer1());
@@ -553,7 +534,7 @@ public class Player {
 	 * @return PlayerSuccess_Message - the message with the status and the
 	 *         number of victory points.
 	 */
-	private PlayerSuccess_Message getOpponentSuccessMsg() {
+	public PlayerSuccess_Message getOpponentSuccessMsg() {
 		PlayerSuccess_Message psmsg = new PlayerSuccess_Message();
 
 		psmsg.setPlayer1(game.getPlayer1());

@@ -4,6 +4,7 @@ import Client_Services.Gallery;
 import Client_Services.ServiceLocator;
 import Client_Services.Translator;
 import Messages.UpdateGame_Message;
+import Server_GameLogic.Game;
 import Server_GameLogic.Player;
 import javafx.scene.image.ImageView;
 
@@ -21,6 +22,7 @@ public abstract class Card {
 	protected ImageView image;
 	protected CardType type; // action, treasure, victory 	
 	protected Player player;
+	protected Game game;
 	
 	protected Card(){
 	}

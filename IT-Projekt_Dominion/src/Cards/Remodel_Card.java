@@ -9,6 +9,7 @@ import Messages.Interaction;
 import Messages.Message;
 import Messages.UpdateGame_Message;
 import Server_GameLogic.Game;
+import Server_GameLogic.Phase;
 import Server_GameLogic.Player;
 
 /**
@@ -50,10 +51,10 @@ public class Remodel_Card extends Card {
 	public UpdateGame_Message executeRemodel1(Card disposedCard) { 
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
-		Game game = this.player.getGame();
+		this.game = this.player.getGame();
 		
-		List<CardName> list = game.getBuyCards().keySet().stream()
-				.filter(cardName -> (Card.getCard(cardName).getCost() <= disposedCard.getCost() + 2) && (game.getBuyCards().get(cardName) > 0))
+		List<CardName> list = this.game.getBuyCards().keySet().stream()
+				.filter(cardName -> (Card.getCard(cardName).getCost() <= disposedCard.getCost() + 2) && (this.game.getBuyCards().get(cardName) > 0))
 				.collect(Collectors.toList());
 		
 		LinkedList<CardName> availableCards = new LinkedList<CardName>();
@@ -70,7 +71,7 @@ public class Remodel_Card extends Card {
 		return ugmsg;
 	}
 
-	public UpdateGame_Message executeRemodel2(CardName pickedCardName) {
+	public Message executeRemodel2(CardName pickedCardName) {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 
 		Card pickedCard = this.player.pick(pickedCardName);
@@ -84,6 +85,18 @@ public class Remodel_Card extends Card {
 		ugmsg.setBuyedCard(pickedCard);
 		ugmsg.setDiscardPileTopCard(pickedCard);
 		ugmsg.setDiscardPileCardNumber(this.player.getDiscardPile().size());
+		
+		/* checks if the game is ended after playing this card and who wons
+		* it
+		*/
+		if (this.game.checkGameEnding()) {
+			this.player.setActualPhase(Phase.Ending);
+			this.game.checkWinner();
+
+			this.player.sendToOpponent(this.player, this.player.getOpponentSuccessMsg());
+			return this.player.getCurrentPlayerSuccessMsg();
+		}
+		
 		if (this.player.getActions() == 0 || !this.player.containsCardType(this.player.getHandCards(), CardType.Action))
 			ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.player.skipPhase(), ugmsg);
 		

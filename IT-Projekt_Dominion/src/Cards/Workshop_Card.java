@@ -7,9 +7,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import Messages.Interaction;
+import Messages.Message;
 import Messages.UpdateGame_Message;
 import Server_GameLogic.Game;
 import Server_GameLogic.GameMode;
+import Server_GameLogic.Phase;
 import Server_GameLogic.Player;
 
 /**
@@ -18,7 +20,6 @@ import Server_GameLogic.Player;
  * @created 31-Okt-2017 16:58:17
  */
 public class Workshop_Card extends Card {
-
 
 	public Workshop_Card(){
 		this.cardName = CardName.Workshop;
@@ -36,7 +37,7 @@ public class Workshop_Card extends Card {
 		
 		this.player = player;
 		
-		Game game = player.getGame();
+		this.game = player.getGame();
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
 		List<CardName> list = game.getBuyCards().keySet().stream()
@@ -56,7 +57,7 @@ public class Workshop_Card extends Card {
 	}
 	
 	
-	public UpdateGame_Message executeWorkshop(CardName selectedNameCard) {
+	public Message executeWorkshop(CardName selectedNameCard) {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
 		Card selectedCard = this.player.pick(selectedNameCard);
@@ -66,6 +67,17 @@ public class Workshop_Card extends Card {
 		ugmsg.setDiscardPileTopCard(selectedCard);
 		ugmsg.setDiscardPileCardNumber(this.player.getDiscardPile().size());
 		ugmsg.setLog(player.getPlayerName()+": #picked# "+"#"+selectedNameCard.toString()+"#"+" #card#");
+		
+		/* checks if the game is ended after playing this card and who wons
+		* it
+		*/
+		if (this.game.checkGameEnding()) {
+			this.player.setActualPhase(Phase.Ending);
+			this.game.checkWinner();
+
+			this.player.sendToOpponent(this.player, this.player.getOpponentSuccessMsg());
+			return this.player.getCurrentPlayerSuccessMsg();
+		}
 		
 		// update game Messages -> XML 
 		if (this.player.getActions() == 0 || !this.player.containsCardType(this.player.getHandCards(), CardType.Action))
