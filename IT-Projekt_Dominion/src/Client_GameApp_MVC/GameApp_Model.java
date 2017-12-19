@@ -750,9 +750,10 @@ public class GameApp_Model extends Model {
 			}
 			try { if (socket != null) socket.close(); } catch (IOException e) {}
 			
+			//Tries to get the lost Message on server
 			if(msgIn == null){
 				this.requestCounter++;
-				if(this.requestCounter <= 5){
+				if(this.requestCounter <= 20){
 					this.processMessage(new Request_Message());
 				}else{
 					System.out.println("Request failed");
