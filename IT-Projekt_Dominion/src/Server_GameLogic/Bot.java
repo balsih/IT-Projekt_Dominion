@@ -122,6 +122,8 @@ public class Bot extends Player implements Runnable {
 
 	/**
 	 * Executes the Bot with all its stages play and buy.
+	 * 
+	 * @author Simon
 	 */
 	public void run() {
 		System.out.println(this.playerName + " started round " + counter);
@@ -165,6 +167,8 @@ public class Bot extends Player implements Runnable {
 	/**
 	 * Plays all the available TreasureCards which are in the hands of the bot,
 	 * before buying cards.
+	 * 
+	 * @author Simon
 	 */
 	private void playTreasureCards() {
 		for (int index = 0; index < handCards.size(); index++) {
@@ -182,6 +186,8 @@ public class Bot extends Player implements Runnable {
 
 	/**
 	 * Calculates which ActionCard is best to play.
+	 * 
+	 * @author Simon
 	 */
 	private void playActionCards() {
 		int tempPriority = 0;
@@ -231,14 +237,6 @@ public class Bot extends Player implements Runnable {
 					for (Card card : handCards) {
 						if (card.getType().equals(CardType.Victory))
 							discardedCardsForCellar.add(card);
-
-						// this is bullshit...
-
-						// if (actions == 1) {
-						// if (card.getType().equals(CardType.Action))
-						// discardedCardsForCellar.add(card);
-						// }
-
 					}
 					System.out.println(discardedCardsForCellar.toString());
 					Cellar_Card cCard = (Cellar_Card) this.getPlayedCards().get(this.getPlayedCards().size() - 1);
@@ -290,7 +288,7 @@ public class Bot extends Player implements Runnable {
 							Remodel_Card rCard2 = (Remodel_Card) this.getPlayedCards()
 									.get(this.getPlayedCards().size() - 1);
 							Message msg = rCard2.executeRemodel2(newCard);
-							if(msg instanceof UpdateGame_Message){
+							if (msg instanceof UpdateGame_Message) {
 								this.sendToOpponent(this, ugmsg);
 								System.out.println(this.playerName + " bought " + newCard);
 								numberOfTotalCards++;
@@ -301,7 +299,7 @@ public class Bot extends Player implements Runnable {
 								break;
 							}
 							break;
-						}	
+						}
 					}
 					break;
 
@@ -315,7 +313,7 @@ public class Bot extends Player implements Runnable {
 							Workshop_Card wCard = (Workshop_Card) this.getPlayedCards()
 									.get(this.getPlayedCards().size() - 1);
 							Message msg = wCard.executeWorkshop(newCard);
-							if(msg instanceof UpdateGame_Message){
+							if (msg instanceof UpdateGame_Message) {
 								this.sendToOpponent(this, ugmsg);
 								System.out.println(this.playerName + " bought " + newCard);
 								numberOfTotalCards++;
@@ -348,6 +346,8 @@ public class Bot extends Player implements Runnable {
 	/**
 	 * Calculates which card has to be bought and checks if a second buy would make
 	 * sense.
+	 * 
+	 * @author Simon
 	 */
 	private void buy() {
 		// choose list for buying process
@@ -434,6 +434,8 @@ public class Bot extends Player implements Runnable {
 
 	/**
 	 * Chooses a card as the TopCard of the DiscardPile.
+	 * 
+	 * @author Simon
 	 */
 	private void chooseDiscardPileTopCard() {
 		List<CardName> cardToChoose = PRIOLIST_TOPDISCARDPILE_CARD.keySet().stream().sorted(
@@ -458,6 +460,8 @@ public class Bot extends Player implements Runnable {
 
 	/**
 	 * Fills a name-list with entries, chooses one and gives it back.
+	 * 
+	 * @author Simon
 	 */
 	public static String getNameOfBot() {
 		NAMES.add("COMPUTER-\"Bodo\"");
@@ -473,6 +477,7 @@ public class Bot extends Player implements Runnable {
 	/**
 	 * Wait for a few milliseconds.
 	 * 
+	 * @author Simon
 	 * @throws InterruptedException
 	 */
 	private static void makeBreak() {
@@ -488,6 +493,8 @@ public class Bot extends Player implements Runnable {
 
 	/**
 	 * Changes the priority of VictoryCards if game ending is close.
+	 * 
+	 * @author Simon
 	 */
 	private void estimateBuyPriorityOfVictoryCards() {
 		calculateGameStage();
@@ -534,6 +541,8 @@ public class Bot extends Player implements Runnable {
 
 	/**
 	 * Calculates the game status.
+	 * 
+	 * @author Simon
 	 */
 	private void calculateGameStage() {
 		// calculate points
@@ -578,6 +587,8 @@ public class Bot extends Player implements Runnable {
 	/**
 	 * Calculates the share of TreasureCards in relation to the total number of
 	 * owned cards and changes the Priority of GoldCard and SilverCard.
+	 * 
+	 * @author Simon
 	 */
 	private void estimateBuyPriorityOfTreasureCards() {
 		// remove TreasureCards when gameEnd is near
@@ -610,6 +621,8 @@ public class Bot extends Player implements Runnable {
 
 	/**
 	 * Calculate the priority of each ActionCards for the buying decision.
+	 * 
+	 * @author Simon
 	 */
 	private void estimateBuyPriorityOfActionCards() {
 		// change priority of MineCard according to the number of MarketCards
@@ -666,6 +679,8 @@ public class Bot extends Player implements Runnable {
 
 	/**
 	 * Calculate the priority of ActionCards for the playing phase.
+	 * 
+	 * @author Simon
 	 */
 	private void estimatePlayPriorityOfActionCards() {
 		// prepare for calculations
@@ -719,6 +734,7 @@ public class Bot extends Player implements Runnable {
 	 * Calculates who many cards are owned by the Bot of a specific card and returns
 	 * the number as an Integer.
 	 * 
+	 * @author Simon
 	 * @param cardname
 	 * @return specific number of cards
 	 */
