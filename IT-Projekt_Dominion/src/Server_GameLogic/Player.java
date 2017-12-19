@@ -94,11 +94,12 @@ public class Player {
 	 *
 	 * @param selectedCard
 	 *            - the card the player selected to play.
-	 * @return UpdateGame_Message - the message that updates the play process if
+	 * @return 
+	 * <li> UpdateGame_Message - the message that updates the play process if
 	 *         if all conditions applies.
-	 * @return PlayerSuccess_Message - the message who wons and lost a game, if
+	 * <li> PlayerSuccess_Message - the message who wons and lost a game, if
 	 *         the game is finished.
-	 * @return Failure_Message - if play-method don't is successfully
+	 * <li> Failure_Message - if play-method don't is successfully
 	 */
 	public Message play(Card selectedCard) {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
