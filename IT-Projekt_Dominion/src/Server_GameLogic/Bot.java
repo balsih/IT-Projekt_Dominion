@@ -300,7 +300,8 @@ public class Bot extends Player implements Runnable {
 									numberOfGoldAndSilverCards++;
 								break;
 							}
-						}
+							break;
+						}	
 					}
 					break;
 
@@ -324,6 +325,7 @@ public class Bot extends Player implements Runnable {
 									numberOfGoldAndSilverCards++;
 								break;
 							}
+							break;
 						}
 					}
 					break;
