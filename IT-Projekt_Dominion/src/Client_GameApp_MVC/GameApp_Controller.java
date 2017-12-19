@@ -290,7 +290,14 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			}
 
 			// Updates the name of the current player
-			view.lblNameOfCurrentPlayer.setText(model.currentPlayer);
+			// view.lblNameOfCurrentPlayer.setText(model.currentPlayer);
+
+			// Updates the name of the current player
+			if (model.currentPlayer.compareTo(model.clientName) == 0) {
+				view.lblNameOfCurrentPlayer.setText(t.getString("currentPlayerName.you")+" ("+model.currentPlayer+")"); // You
+			} else {
+				view.lblNameOfCurrentPlayer.setText(model.currentPlayer);
+			}
 
 			// Updates the number of current actions
 			view.lblNmbrOfCrntActions.setText(Integer.toString(model.actions));
@@ -636,7 +643,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				loserVictoryPoints = model.opponentPlayer.getVictoryPoints();
 				loserMoves = model.opponentPlayer.getMoves();
 
-			// If clientPlayer loses and opponentPlayer wins
+				// If clientPlayer loses and opponentPlayer wins
 			} else if (model.clientPlayer.getStatus() == GameSuccess.Lost && model.opponentPlayer.getStatus() == GameSuccess.Won) {
 				contentlblWinner = t.getString("popupPlayerSuccess.lblWinner");
 				winnerNameHeader = model.opponentPlayer.getPlayerName();

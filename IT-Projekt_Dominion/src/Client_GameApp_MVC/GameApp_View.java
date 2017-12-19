@@ -432,14 +432,14 @@ public class GameApp_View extends View<GameApp_Model> {
 		root.getStyleClass().add("rootFormat");
 		
 		// Scene and stage
-		Scene scene = new Scene(root, 1280, 720);
+		Scene scene = new Scene(root, 1280, 900);
 		scene.getStylesheets().add(GameApp_View.class.getResource("GameApp.css").toExternalForm());
 		stage.setScene(scene);
         
         // Sets stage full screen
 		stage.setFullScreen(true);
 		
-		stage.setTitle("Dominion");
+		stage.setTitle("Dominion - KeepTyping 2017. Lukas Gehrig, Bodo Grütter, Simon Hafner, René Schwab, Adrian Mathys.");
 		stage.show();
 		
 		return scene;

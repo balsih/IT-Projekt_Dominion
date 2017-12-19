@@ -44,7 +44,7 @@ Label {
 }
 
 .lblPopupCurrentPhase {
-	-fx-font: 50px "Luminari";
+	-fx-font: 50px "Herculanum";
 	-fx-text-fill: white;
 	-fx-padding: 20px;
 	-fx-background-image: url("Images/signpost.png");
