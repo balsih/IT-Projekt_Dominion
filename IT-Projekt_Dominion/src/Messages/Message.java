@@ -88,7 +88,7 @@ public abstract class Message {
      * 
      * @param s The socket to use when sending the message
      */
-    public void send(Socket s) {
+    public void send(Socket s, ServerThreadForClient stfc) {
     	// Set the message id before sending (if not already done)
     	if (this.id == -1) this.id = nextMessageID();
     	
@@ -97,6 +97,11 @@ public abstract class Message {
     	
     	// Convert to XML
         String xmlOut = this.toString();
+        
+        if(this instanceof UpdateGame_Message){
+        	Logger logger = Logger.getLogger("");
+        	logger.info(xmlOut);
+        }
    
         try { // Ignore IO errors
             OutputStreamWriter out = new OutputStreamWriter(s.getOutputStream());
@@ -106,6 +111,8 @@ public abstract class Message {
         } catch (Exception e) {
         	Logger logger = Logger.getLogger("");
         	logger.severe("Message send(): "+e.toString());
+        	if(stfc != null)
+        		stfc.addUnsentMessages(this);
         }
     }    
 
@@ -156,6 +163,7 @@ public abstract class Message {
         else if (type == MessageType.GiveUp) newMessage = new GiveUp_Message();
         else if (type == MessageType.Interaction) newMessage = new Interaction_Message();
         else if (type == MessageType.Knock) newMessage = new Knock_Message();
+        else if (type == MessageType.Request) newMessage = new Request_Message();
         else {
         	Error_Message msg = new Error_Message();
         	msg.setInfo("Error parsing received XML");

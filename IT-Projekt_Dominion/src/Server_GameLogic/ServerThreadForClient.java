@@ -62,6 +62,7 @@ public class ServerThreadForClient implements Runnable {
 	private Player player;
 	private InetAddress inetAddress;
 	private Queue<Message> waitingMessages = new LinkedList<Message>();
+	private Queue<Message> unsentMessages = new LinkedList<Message>();
 	private String clientName = "unknown client";
 	private long currentTime = System.currentTimeMillis();
 
@@ -106,7 +107,7 @@ public class ServerThreadForClient implements Runnable {
 	@Override
 	public void run(){
 		Message msgOut = processMessage(this.msgIn);
-		msgOut.send(clientSocket);
+		msgOut.send(clientSocket, this);
 		try { if (clientSocket != null) clientSocket.close(); } catch (IOException e) {}
 		try{				// Read a message from the client
 		}catch(Exception e) {
@@ -193,6 +194,9 @@ public class ServerThreadForClient implements Runnable {
 			break;
 		case Knock:
 			msgOut = new Commit_Message();
+			break;
+		case Request:
+			msgOut = this.processRequest(msgIn);
 			break;
 		default:
 			msgOut = new Error_Message();
@@ -423,34 +427,45 @@ public class ServerThreadForClient implements Runnable {
 		//Player discards his chosen handCards
 		case Cellar:
 			Cellar_Card cellarCard = (Cellar_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
-			return cellarCard.executeCellar(imsg.getCellarDiscardCards());
+			Message cellarUpdate = cellarCard.executeCellar(imsg.getCellarDiscardCards());
+			this.player.sendToOpponent(this.player, cellarUpdate);
+			return cellarUpdate;
 			
 		//Player chose his card from the buyCards. Max-costs: 4 coins
 		case Workshop:
 			Workshop_Card workshopCard = (Workshop_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
-			return workshopCard.executeWorkshop(imsg.getWorkshopChoice());
+			Message workshopUpdate = workshopCard.executeWorkshop(imsg.getWorkshopChoice());
+			this.player.sendToOpponent(this.player, workshopUpdate);
+			return workshopUpdate;
 			
 		//Player chose his card to dispose. He can chose to take a card that costs until: disposedCard_cost +2 coins
 		case Remodel1:
 			Remodel_Card remodel1Card = (Remodel_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
 			Card disposeRemodelCard = this.getRealHandCard(imsg.getDisposeRemodelCard());
-			if(disposeRemodelCard != null)
-				return remodel1Card.executeRemodel1(disposeRemodelCard);
+			if(disposeRemodelCard != null){
+				Message remodel1Update = remodel1Card.executeRemodel1(disposeRemodelCard);
+				this.player.sendToOpponent(this.player, remodel1Update);
+				return remodel1Update;
+			}
 			logger.info("Interaction "+Interaction.Remodel1.toString()+" failed");
 			return new Failure_Message();
 			
 		//Player chose a card from the buyCards. Max-costs: disposedCard_cost +2 coins
 		case Remodel2:
 			Remodel_Card remodel2Card = (Remodel_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
-			return remodel2Card.executeRemodel2(imsg.getRemodelChoice());
+			Message remodel2Update = remodel2Card.executeRemodel2(imsg.getRemodelChoice());
+			this.player.sendToOpponent(this.player, remodel2Update);
+			return remodel2Update;
 			
 		//Player chose copper or silver to dispose and gets the next-better coin-card directly into his hand
 		case Mine:
 			Mine_Card mineCard = (Mine_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
 			Card disposedMineCard = this.getRealHandCard(imsg.getDisposedMineCard());
-			logger.info("The disposedCard serversite is (369): "+imsg.getDisposedMineCard());
-			if(disposedMineCard != null)
-				return mineCard.executeMine(disposedMineCard);
+			if(disposedMineCard != null){
+				Message mineUpdate = mineCard.executeMine(disposedMineCard);
+				this.player.sendToOpponent(this.player, mineUpdate);
+				return mineUpdate;
+			}
 			logger.info("Interaction "+Interaction.Mine.toString()+" failed");
 			return new Failure_Message();
 		default:
@@ -545,9 +560,25 @@ public class ServerThreadForClient implements Runnable {
     	onlineClients.remove(this.clientName);
     	return new Commit_Message();
     }
+    
+    /**
+     * Processes the Request-request from the client to send back the unsent Message
+     * 
+     * @author Lukas
+     * @param msgIn
+     * 				Not used
+     * @return Message (unsent), if empty a new Commit_Message
+     */
+    private Message processRequest(Message msgIn){
+    	if(this.unsentMessages.size() > 0){
+    		return this.unsentMessages.poll();
+    	}else{
+    		return new Commit_Message();
+    	}
+    }
 
 	/**
-	 * Adds the messages (UpdateGame_Message or PlayerSuccess_Message) to take from the client's AskForChanges_Messages requests
+	 * Adds the messages (UpdateGame_Message or PlayerSuccess_Message) to take from the client's AskForChanges_Messages requests.
 	 * 
 	 * @author Lukas
 	 * @param message
@@ -557,9 +588,19 @@ public class ServerThreadForClient implements Runnable {
 		this.waitingMessages.offer(message);
 	}
 	
+	/**
+	 * Adds the unsent messages to take from the client's Request_Messages requests.
+	 * 
+	 * @author Lukas
+	 * @param message
+	 * 				The Message which waits for a request from client because it wasn't sent
+	 */
+	public void addUnsentMessages(Message message){
+		this.waitingMessages.offer(message);
+	}
 	
 	/**
-	 * Adds a new Socket for client
+	 * Adds a new Socket for client.
 	 * 
 	 * @author Lukas
 	 * @param clientSocket

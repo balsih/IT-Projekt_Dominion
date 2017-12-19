@@ -33,6 +33,7 @@ import Messages.Logout_Message;
 import Messages.Message;
 import Messages.PlayCard_Message;
 import Messages.PlayerSuccess_Message;
+import Messages.Request_Message;
 import Messages.UpdateGame_Message;
 import Server_GameLogic.GameMode;
 import Server_GameLogic.Phase;
@@ -61,6 +62,7 @@ public class GameApp_Model extends Model {
 
 	private ServiceLocator sl = ServiceLocator.getServiceLocator();
 	private Translator t = sl.getTranslator();
+	private Integer requestCounter = 0;
 	
 	protected Dominion_Main main;
 	private String ipAddress;
@@ -741,12 +743,22 @@ public class GameApp_Model extends Model {
 		if(socket != null){
 			try{
 				message.setClient(this.clientName);
-				message.send(socket);
+				message.send(socket, null);
 				msgIn = Message.receive(socket);
 			}catch(Exception e){
 				System.out.println(e.toString());
 			}
 			try { if (socket != null) socket.close(); } catch (IOException e) {}
+			
+			if(msgIn == null){
+				this.requestCounter++;
+				if(this.requestCounter <= 5){
+					this.processMessage(new Request_Message());
+				}else{
+					System.out.println("Request failed");
+				}
+			}
+			this.requestCounter = 0;
 		}
 		return msgIn;
 	}
