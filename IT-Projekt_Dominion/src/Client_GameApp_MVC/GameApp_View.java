@@ -337,8 +337,8 @@ public class GameApp_View extends View<GameApp_Model> {
 		root.add(this.vboxActionCards, 0, 0, 4, 2);
 		root.add(this.vboxTreasureCards, 4, 0, 3, 1);
 		root.add(this.vboxVictoryCards, 4, 1, 3, 1);
-		root.add(this.vboxChatArea, 7, 0, 2, 1);
-		root.add(this.vboxLog, 7, 1, 2, 1);
+		root.add(this.vboxLog, 7, 0, 2, 1);
+		root.add(this.vboxChatArea, 7, 1, 2, 1);
 		root.add(this.vboxDiscard, 0, 2, 1, 1);
 		root.add(this.vboxDeck, 0, 3, 1, 1);
 		root.add(this.vboxPlayedCards, 1, 2, 8, 1);
