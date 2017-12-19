@@ -191,8 +191,8 @@ public class Player {
 				this.actualPhase = Phase.Ending;
 				game.checkWinner();
 
-				this.sendToOpponent(this, this.getOpponentSuccessMsg());
-				return this.getCurrentPlayerSuccessMsg();
+				this.sendToOpponent(this, this.getPlayerSuccessMsg());
+				return this.getPlayerSuccessMsg();
 			}
 
 			// sets all changed attributes of the UpdateGame_Message
@@ -517,24 +517,7 @@ public class Player {
 	 * @return PlayerSuccess_Message - the message with the status and the
 	 *         number of victory points.
 	 */
-	public PlayerSuccess_Message getCurrentPlayerSuccessMsg() {
-		PlayerSuccess_Message psmsg = new PlayerSuccess_Message();
-
-		psmsg.setPlayer1(game.getPlayer1());
-		psmsg.setPlayer2(game.getPlayer2());
-
-		return psmsg;
-	}
-
-	/**
-	 * Sets the status of opponent.
-	 * 
-	 * @author Bodo Gruetter
-	 * 
-	 * @return PlayerSuccess_Message - the message with the status and the
-	 *         number of victory points.
-	 */
-	public PlayerSuccess_Message getOpponentSuccessMsg() {
+	public PlayerSuccess_Message getPlayerSuccessMsg() {
 		PlayerSuccess_Message psmsg = new PlayerSuccess_Message();
 
 		psmsg.setPlayer1(game.getPlayer1());

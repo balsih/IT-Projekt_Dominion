@@ -289,15 +289,17 @@ public class Bot extends Player implements Runnable {
 						if (availableCards.contains(newCard)) {
 							Remodel_Card rCard2 = (Remodel_Card) this.getPlayedCards()
 									.get(this.getPlayedCards().size() - 1);
-							ugmsg = rCard2.executeRemodel2(newCard);
-							this.sendToOpponent(this, ugmsg);
-							System.out.println(this.playerName + " bought " + newCard);
-							numberOfTotalCards++;
-							if (Card.getCard(cardToBuy).getType().equals(CardType.Action))
-								numberOfActionCards++;
-							else if (newCard.equals(CardName.Silver) || newCard.equals(CardName.Gold))
-								numberOfGoldAndSilverCards++;
-							break;
+							Message msg = rCard2.executeRemodel2(newCard);
+							if(msg instanceof UpdateGame_Message){
+								this.sendToOpponent(this, ugmsg);
+								System.out.println(this.playerName + " bought " + newCard);
+								numberOfTotalCards++;
+								if (Card.getCard(cardToBuy).getType().equals(CardType.Action))
+									numberOfActionCards++;
+								else if (newCard.equals(CardName.Silver) || newCard.equals(CardName.Gold))
+									numberOfGoldAndSilverCards++;
+								break;
+							}
 						}
 					}
 					break;
@@ -311,15 +313,17 @@ public class Bot extends Player implements Runnable {
 						if (availableUpgrades.contains(newCard)) {
 							Workshop_Card wCard = (Workshop_Card) this.getPlayedCards()
 									.get(this.getPlayedCards().size() - 1);
-							ugmsg = wCard.executeWorkshop(newCard);
-							this.sendToOpponent(this, ugmsg);
-							System.out.println(this.playerName + " bought " + newCard);
-							numberOfTotalCards++;
-							if (Card.getCard(newCard).getType().equals(CardType.Action))
-								numberOfActionCards++;
-							else if (newCard.equals(CardName.Silver) || newCard.equals(CardName.Gold))
-								numberOfGoldAndSilverCards++;
-							break;
+							Message msg = wCard.executeWorkshop(newCard);
+							if(msg instanceof UpdateGame_Message){
+								this.sendToOpponent(this, ugmsg);
+								System.out.println(this.playerName + " bought " + newCard);
+								numberOfTotalCards++;
+								if (Card.getCard(newCard).getType().equals(CardType.Action))
+									numberOfActionCards++;
+								else if (newCard.equals(CardName.Silver) || newCard.equals(CardName.Gold))
+									numberOfGoldAndSilverCards++;
+								break;
+							}
 						}
 					}
 					break;

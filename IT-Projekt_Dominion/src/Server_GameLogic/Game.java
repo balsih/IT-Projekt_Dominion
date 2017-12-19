@@ -247,14 +247,14 @@ public class Game {
 			this.player1.setStatus(GameSuccess.Won);
 			this.player2.setStatus(GameSuccess.Lost);
 		} else if (this.player1.getVictoryPoints() == this.player2.getVictoryPoints()) {
-			if (this.player1.getMoves() > this.player2.getMoves()) {
+			if (this.player1.getMoves() < this.player2.getMoves()) {
 				this.player1.setStatus(GameSuccess.Won);
 				this.player2.setStatus(GameSuccess.Lost);
 			} else if (this.player1.getMoves() == this.player2.getMoves()) {
 				this.player1.setStatus(GameSuccess.Won);
 				this.player2.setStatus(GameSuccess.Won);
 			} else {
-				this.player2.setStatus(GameSuccess.Lost);
+				this.player1.setStatus(GameSuccess.Lost);
 				this.player2.setStatus(GameSuccess.Won);
 			}
 		} else {

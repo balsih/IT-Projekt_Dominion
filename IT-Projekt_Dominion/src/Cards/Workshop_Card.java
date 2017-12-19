@@ -75,8 +75,8 @@ public class Workshop_Card extends Card {
 			this.player.setActualPhase(Phase.Ending);
 			this.game.checkWinner();
 
-			this.player.sendToOpponent(this.player, this.player.getOpponentSuccessMsg());
-			return this.player.getCurrentPlayerSuccessMsg();
+			this.player.sendToOpponent(this.player, this.player.getPlayerSuccessMsg());
+			return this.player.getPlayerSuccessMsg();
 		}
 		
 		// update game Messages -> XML 

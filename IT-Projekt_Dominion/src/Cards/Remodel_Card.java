@@ -93,8 +93,8 @@ public class Remodel_Card extends Card {
 			this.player.setActualPhase(Phase.Ending);
 			this.game.checkWinner();
 
-			this.player.sendToOpponent(this.player, this.player.getOpponentSuccessMsg());
-			return this.player.getCurrentPlayerSuccessMsg();
+			this.player.sendToOpponent(this.player, this.player.getPlayerSuccessMsg());
+			return this.player.getPlayerSuccessMsg();
 		}
 		
 		if (this.player.getActions() == 0 || !this.player.containsCardType(this.player.getHandCards(), CardType.Action))
