@@ -30,7 +30,9 @@ public class Market_Card extends Card {
 		player.setBuys(player.getBuys() + 1);
 		player.setCoins(player.getCoins() + 1);		
 		
-		ugmsg.setLog(player.getPlayerName()+": #played# #"+this.cardName.toString()+"# #card#=="+player.getPlayerName()+": #received# #Market1#");
+		//ugmsg.setLog(player.getPlayerName()+": #played# #"+this.cardName.toString()+"# #card#=="+player.getPlayerName()+": #received# #Market1#");
+		
+		ugmsg.setLog(player.getPlayerName()+": #received# #Market1#=="+player.getPlayerName()+": #played# #"+this.cardName.toString()+"# #card#");
 		
 		// update game Messages -> XML 
 		ugmsg.setActions(player.getActions());
