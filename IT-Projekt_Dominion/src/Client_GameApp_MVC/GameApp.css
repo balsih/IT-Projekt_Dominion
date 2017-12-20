@@ -1,23 +1,42 @@
 .button{
-	-fx-background-color: #a9a9a9;
+	-fx-background-color: darkgray;
 	-fx-text-fill: white;
 	-fx-font: 15px "Arial";
 	-fx-spacing: 10px;
 }
+
+.buttonSend{
+	-fx-background-color: 
+        linear-gradient(#f2f2f2, #d6d6d6),
+        linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
+        linear-gradient(wheat 0%, oldlace 50%);
+	-fx-text-fill: maroon;
+	-fx-spacing: 10px;
+}
+
 .btnCommit{
-	-fx-background-color: limegreen;
+	-fx-background-color: 
+        linear-gradient(#f2f2f2, #d6d6d6),
+        linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
+        linear-gradient(forestgreen 0%, limegreen 50%);
 	-fx-font: 15px "Arial";
 	-fx-text-fill: white;
 }
 
 .btnGiveUp{
-	-fx-background-color: red;
+	-fx-background-color: 
+        linear-gradient(#f2f2f2, #d6d6d6),
+        linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
+        linear-gradient(crimson 0%, red 50%);
 	-fx-font: 15px "Arial";
 	-fx-text-fill: white;
 }
 
 .button:hover{
-	-fx-background-color: white;
+	-fx-background-color: 
+        linear-gradient(#f2f2f2, #d6d6d6),
+        linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
+        linear-gradient(silver 0%, white 50%);
 	-fx-text-fill: black;
 }
 
@@ -28,18 +47,18 @@ Label {
 
 .lblHeaders {
 	-fx-font: 15px "Arial";
-	-fx-text-fill: black;
+	-fx-text-fill: maroon;
 	-fx-padding: 5px;
 	-fx-background-color: 
         linear-gradient(#f2f2f2, #d6d6d6),
         linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
-        linear-gradient(#dddddd 0%, #f6f6f6 50%);
+        linear-gradient(wheat 0%, oldlace 50%);
     -fx-background-insets: 0, 1;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 5, 0.0, 0, 1);
 }
 
 .lblCurrentPlayer {
-	-fx-text-fill: black;
+	-fx-text-fill: maroon;
 	-fx-font: 15px "Arial";
 }
 
@@ -98,7 +117,7 @@ Label {
     -fx-background-color: 
         linear-gradient(#f2f2f2, #d6d6d6),
         linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
-        linear-gradient(#dddddd 0%, #f6f6f6 50%);
+        linear-gradient(oldlace 0%, oldlace 50%);
     -fx-background-insets: 0,1,2;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0.0, 0, 1);
 }
@@ -109,7 +128,7 @@ Label {
     -fx-background-color: 
         linear-gradient(#f2f2f2, #d6d6d6),
         linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
-        linear-gradient(#dddddd 0%, #f6f6f6 50%);
+        linear-gradient(oldlace 0%, oldlace 50%);
     -fx-background-radius: 8,7,6;
     -fx-background-insets: 0,1,2;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0.0, 0, 1);
@@ -123,16 +142,6 @@ Label {
 .giveUpAlert:header *.header-panel *.label{
     -fx-text-fill: black;
 }
-
-.generalAlert > *.label.content{
-    -fx-text-fill: black;
-    -fx-font: 15px "Arial";
-}
-
-.generalAlert:header *.header-panel *.label{
-    -fx-text-fill: black;
-}
-
 
 .bpGameSuccess {
 	-fx-background-image: url("Images/confetti.gif");
@@ -161,4 +170,62 @@ Label {
     -fx-text-fill: black;
     -fx-font-weight: bold;
     -fx-padding: 5 10 5 10;
+}
+
+.txtfChatArea {
+	-fx-background-color: oldlace;
+	-fx-text-fill: maroon;
+}
+
+.text-area {
+    -fx-text-fill: maroon;
+}
+
+.scroll-pane {
+ -fx-background-color: oldlace;
+}
+.scroll-bar:horizontal .track,
+.scroll-bar:vertical .track {
+ -fx-background-color: transparent;
+ -fx-border-color:transparent;
+}
+.scroll-bar:vertical .track-background,
+.scroll-bar:horizontal .track-background {
+ -fx-background-color: oldlace;
+}
+.scroll-bar:horizontal .thumb {
+ -fx-background-color: tan;
+}
+.scroll-bar:vertical .thumb {
+ -fx-background-color: tan;
+}
+.scroll-bar:horizontal .thumb:hover,
+.scroll-bar:vertical .thumb:hover {
+ -fx-background-color: darkgoldenrod;
+}
+.scroll-bar:horizontal .thumb:pressed,
+.scroll-bar:vertical .thumb:pressed {
+ -fx-background-color: darkgoldenrod;
+}
+.scroll-bar:vertical .increment-button, .scroll-bar:vertical .decrement-button {
+ -fx-background-color: tan;
+}
+.scroll-bar:horizontal .increment-button, .scroll-bar:horizontal .decrement-button {
+ -fx-background-color: tan;
+}
+.scroll-bar:horizontal .increment-arrow {
+ -fx-background-color: maroon;
+}
+.scroll-bar:vertical .increment-arrow {
+ -fx-background-color: maroon;
+}
+.scroll-bar:horizontal .decrement-arrow {
+ -fx-background-color: maroon;
+}
+.scroll-bar:vertical .decrement-arrow {
+ -fx-background-color: maroon;
+}
+
+.scroll-pane > .corner {
+    -fx-background-color: oldlace;
 }

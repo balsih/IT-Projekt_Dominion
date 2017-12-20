@@ -255,10 +255,12 @@ public class GUI_Test extends Application {
 
 		// Chat area
 		// scrlpChatArea.setMaxWidth(400);
+		txtaLog.setStyle("-fx-control-inner-background: oldlace;");
 		txtaChatArea.setMaxWidth(400);
 		// scrlpChatArea.setMaxHeight(100);
 		txtaChatArea.setMaxHeight(100);
 		txtfChatArea.setMinWidth(320);
+		txtfChatArea.setStyle("-fx-background-color: oldlace;");
 		// scrlpChatArea.setContent(txtaChatArea);
 		HBox hboxChatArea = new HBox(txtfChatArea, btnSendChatArea);
 		VBox vboxChatArea = new VBox(lblChatArea, txtaChatArea, hboxChatArea);
@@ -357,6 +359,8 @@ public class GUI_Test extends Application {
 		vboxTreasureCards.getStyleClass().add("vbox");
 		hboxTreasureCards.getStyleClass().add("cardGaps");
 		hboxTreasureCards.getStyleClass().add("hbox");
+		
+		btnCommit.getStyleClass().add("btnCommit");
 
 		vboxVictoryCards.getStyleClass().add("vbox");
 		hboxVictoryCards.getStyleClass().add("cardGaps");

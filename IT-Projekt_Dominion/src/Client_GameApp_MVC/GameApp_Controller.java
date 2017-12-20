@@ -46,6 +46,7 @@ import javafx.util.Duration;
 
 /**
  * @author Adrian
+ * Handles events and controls the GUI.
  */
 public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> {
 
@@ -108,14 +109,14 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 		// Defines what happens after clicking the button commit/skip
 		view.btnCommit.setOnAction(event -> {
 			switch (model.interaction) {
-			// Skips a game phase
 			case Skip:
+				// Skips a game phase
 				if (model.currentPlayer.compareTo(model.clientName) == 0) {
 					model.sendInteraction();
 				}
 				break;
-				// Discards user-defined hand cards in cellar interaction
 			case Cellar:
+				// Discards user-defined hand cards in cellar interaction
 				if (model.currentPlayer.compareTo(model.clientName) == 0) {
 					if (model.cellarDiscards.size() >= 1) {
 						if(model.sendInteraction()){
@@ -152,7 +153,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 		if (newMessage.length()>0){
 			model.sendChat(newMessage);
-			model.chatSent = true; // Needed to inform the player about a received chat message
+			model.chatSent = true; // Used to inform the player about a received chat message
 			updateGUI();
 			view.txtfChatArea.setText(""); // Removes the entered text
 		}
@@ -160,7 +161,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 	/**
 	 * @author Adrian
-	 * Updates the whole GUI
+	 * Updates the whole GUI (see comments below for further information)
 	 */
 	private void updateGUI() {
 
@@ -184,7 +185,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 				// Informs the player about a received chat message (if he didn't send it, he gets informed)
 				if (!model.chatSent) {
-					createChatAlert(view.getStage());
+					colorChatArea(); // draws the player's attention to the received chat message
 				}
 				model.chatSent = false;
 			}
@@ -217,15 +218,15 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 					view.btnCommit.setDisable(true);
 				}
 				break;
-				// The cleanUp phase cannot be skipped. Therefore, the button skip gets disabled.
 			case CleanUp:
+				// The cleanUp phase cannot be skipped. Therefore, the button skip gets disabled.
 				view.lblNameOfCurrentPhase.setText(t.getString("cleanUp.lblNameOfCurrentPhase")); // Clean up
 				view.btnCommit.setDisable(true);
 				break;
 			}
 
 			// During the cellar interaction, the button serves to commit the user's cellar discard choice.
-			// Else, it enables the user to skip a game phase.
+			// Otherwise, it enables the user to skip a game phase.
 			if (model.interaction == Interaction.Cellar){
 				view.btnCommit.setDisable(false);
 				view.btnCommit.setText(t.getString("current.btnCommit")); // Commit
@@ -233,14 +234,14 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				view.btnCommit.setText(t.getString("current.btnSkip")); // Skip phase
 			}
 
-			// Clears the played cards and, if it was the client's turn, the hand cards after a player's turn ended
+			// Clears the played cards and, if it was the client's turn, the hand cards, after a player's turn ended
 			if (model.turnEnded){
 				view.hboxPlayedCards.getChildren().clear();
 				if (model.clientName.compareTo(model.currentPlayer) != 0)
 					view.hboxHandCards.getChildren().clear();
 			}
 
-			// Adds new hand to the hand cards area with event handlers
+			// Adds new hand cards to the hand cards area with event handlers
 			if (!model.yourNewHandCards.isEmpty()) {
 				for (Card card : model.yourNewHandCards) {
 					ImageView img = card.getImage();
@@ -272,13 +273,10 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			if (model.yourDeck == 0){
 				view.stackpDeck.getChildren().clear();
 			} else {
-				// Adds a flipside card to the deck pile to show that it is not empty
+				// Adds a flipside card to the deck pile to show that it is not actually empty
 				if (view.stackpDeck.getChildren().isEmpty())
 					view.stackpDeck.getChildren().add(resizeImage(Card.getCard(CardName.Flipside).getImage()));
 			}
-
-			// Updates the name of the current player
-			// view.lblNameOfCurrentPlayer.setText(model.currentPlayer);
 
 			// Updates the name of the current player
 			if (model.currentPlayer.compareTo(model.clientName) == 0) {
@@ -397,40 +395,18 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 	/**
 	 * @author Adrian
-	 * @param stage
-	 * Displays a popup that informs the player about a received chat message.
+	 * Colors the chat text area for a specified duration to draw the player's attention to a received chat message.
 	 */
-	private void createChatAlert(Stage stage) {
-		
-		// Sets color to the textArea 
-		PauseTransition delay = new PauseTransition(Duration.seconds(0.25));
+	private void colorChatArea() {
+		PauseTransition delay = new PauseTransition(Duration.seconds(0.5));
 		delay.setOnFinished(e -> view.txtaChatArea.setStyle("-fx-control-inner-background: oldlace;"));
-		view.txtaChatArea.setStyle("-fx-control-inner-background: red;");
+		view.txtaChatArea.setStyle("-fx-control-inner-background: gold;");
 		delay.play();
-		
-//		// Displays an alert that informs the player about newly received chat messages
-//		Alert chatAlert = new Alert(AlertType.INFORMATION);
-//		chatAlert.setTitle(t.getString("chatAlert.title")); // Chat message
-//		chatAlert.setHeaderText(null);
-//		chatAlert.setContentText(t.getString("chatAlert.content")); // A new chat message has been sent.
-//
-//		// Makes sure that the alert gets displayed in front of the stage
-//		chatAlert.initOwner(stage);
-//
-//		// Styling of the alert
-//		DialogPane chatDialogPane = chatAlert.getDialogPane();
-//		chatDialogPane.getStyleClass().add("generalAlert");
-
-		// Auto-hides the alert after the specified duration
-//		PauseTransition delay = new PauseTransition(Duration.seconds(2));
-//		delay.setOnFinished(e -> chatAlert.hide());
-//		chatAlert.show();
-//		delay.play();
 	}
 
 	/**
 	 * @author Adrian
-	 * Displays a popup that informs the player about the current phase
+	 * Displays a popup that informs the player about the current phase.
 	 */
 	private void startPhasePopup() {
 
@@ -510,7 +486,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 	/**
 	 * @author Adrian
-	 * Displays an image in a bigger size
+	 * Displays an image in a bigger size in a popup
 	 */
 	private void setZoomEvents(ImageView img) {
 		// Stores the initial image height and width
@@ -530,7 +506,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 	/**
 	 * @author Adrian
-	 * Sets events on hand cards. See comments below for further details.
+	 * Sets events on hand cards. See comments below for further information.
 	 */
 	private void setInitialHandCardsEvents(Card card, ImageView img) {
 
@@ -610,7 +586,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 	/**
 	 * @author Adrian
-	 * Displays the winner and loser after a game has ended
+	 * Displays the winner and loser in a popup after a game has ended
 	 */
 	private void createWinnerPopup(Stage stage) {
 
@@ -705,7 +681,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				model.main.startMainMenu();
 				model.startMediaPlayer("Medieval_Camelot.mp3"); // Starts new sound
 				view.stop();
-				this.listenToServer = false;
+				this.listenToServer = false; // stops the thread
 			});
 
 			// Defines a gridPane with information about the winner and loser
@@ -727,7 +703,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			gridpGameSuccess.add(lblNmbrOfWinnerMoves, 1, 3);
 			gridpGameSuccess.add(lblNmbrOfLoserMoves, 2, 3);
 
-			// Defines a borderPane as content of the popup
+			// Defines a border pane as content of the popup
 			BorderPane bpGameSuccess = new BorderPane();
 			bpGameSuccess.getStyleClass().add("bpGameSuccess");
 
@@ -745,7 +721,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 	/**
 	 * @author Adrian
-	 * Sets events on action, treasure and victory cards. See comments below for further details.
+	 * Sets events on action, treasure and victory cards. See comments below for further information.
 	 */
 	private void setInitialATVCardEvents(Card card, ImageView img) {
 

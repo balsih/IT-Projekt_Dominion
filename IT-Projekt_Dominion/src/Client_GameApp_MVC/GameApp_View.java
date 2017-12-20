@@ -1,17 +1,8 @@
 package Client_GameApp_MVC;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-
 import Abstract_MVC.View;
-import Cards.Card;
-import Cards.CardName;
 import Client_Services.ServiceLocator;
 import Client_Services.Translator;
-import Messages.Interaction;
-import Server_GameLogic.GameMode;
-import Server_GameLogic.Phase;
-import Server_GameLogic.Player;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -156,7 +147,7 @@ public class GameApp_View extends View<GameApp_Model> {
 	public GameApp_View(Stage stage, GameApp_Model model){
 		super(stage, model);
 		
-		// Resetting model variables
+		// Resets some model variables
 		model.clientPlayer = null;
 		model.opponentPlayer = null;
 
@@ -194,7 +185,7 @@ public class GameApp_View extends View<GameApp_Model> {
 		this.vboxMineCards = new VBox(1, lblNmbrOfMineCards);
 		this.vboxVillageCards = new VBox(1, lblNmbrOfVillageCards);
 
-		// Sorted by price
+		// Sorts action cards by price
 		gridpActionCards.add(vboxCellarCards, 0, 0);
 		gridpActionCards.add(vboxWoodcutterCards, 1, 0);
 		gridpActionCards.add(vboxWorkshopCards, 2, 0);
@@ -244,9 +235,6 @@ public class GameApp_View extends View<GameApp_Model> {
 		this.txtfChatArea = new TextField();
 
 		this.btnSendChatArea = new Button(t.getString("chat.btnSendChatArea")); // Send
-		txtaChatArea.setMaxWidth(500);
-		txtaChatArea.setEditable(false);
-		txtaChatArea.setStyle("-fx-control-inner-background: oldlace;");
 		this.hboxChatArea = new HBox(txtfChatArea, btnSendChatArea);
 		this.vboxChatArea = new VBox(lblChatArea, txtaChatArea, hboxChatArea);
 
@@ -254,9 +242,6 @@ public class GameApp_View extends View<GameApp_Model> {
 		this.lblLog = new Label(t.getString("log.lblLog")); // Log
 		this.txtaLog = new TextArea();
 
-		txtaLog.setMaxWidth(500);
-		txtaLog.setEditable(false);
-		txtaLog.setStyle("-fx-control-inner-background: oldlace;");
 		this.vboxLog = new VBox(lblLog, txtaLog);
 
 		// Creates discard area
@@ -378,10 +363,17 @@ public class GameApp_View extends View<GameApp_Model> {
 		vboxChatArea.setPrefWidth(150);
 		txtfChatArea.setMinWidth(320);
 		hboxChatArea.getStyleClass().add("hbox");
+		txtfChatArea.getStyleClass().add("txtfChatArea");
+		txtaChatArea.setMaxWidth(500);
+		txtaChatArea.setEditable(false);
+		txtaChatArea.setStyle("-fx-control-inner-background: oldlace;");
 
 		lblLog.getStyleClass().add("lblHeaders");
 		vboxLog.getStyleClass().add("vbox");
 		vboxLog.setPrefWidth(150);
+		txtaLog.setMaxWidth(500);
+		txtaLog.setEditable(false);
+		txtaLog.setStyle("-fx-control-inner-background: oldlace;");
 
 		lblDiscard.getStyleClass().add("lblHeaders");
 		vboxDiscard.getStyleClass().add("vbox");
@@ -405,14 +397,17 @@ public class GameApp_View extends View<GameApp_Model> {
 		// Adds special styling to the current player area
 		hboxCurrentPlayer.getStyleClass().add("hboxCurrentPlayer");
 		hboxCurrentPhase.getStyleClass().add("hboxCurrentPlayer");
-		
 		hboxContentCurrentPlayer.getStyleClass().add("hbox");
 		vboxCurrentPlayer.getStyleClass().add("vboxCurrentPlayer");
 		vboxCurrentPlayerButtons.getStyleClass().add("vboxCurrentPlayerButtons");
+		
 		btnGiveUp.getStyleClass().add("btnGiveUp");
+		btnSendChatArea.getStyleClass().add("buttonSend");
 		btnCommit.getStyleClass().add("btnCommit");
 		btnCommit.setMinHeight(40);
+		
 		gridpCurrentPlayer.getStyleClass().add("gridpCurrentPlayer");
+		
 		lblCurrentPlayer.getStyleClass().add("lblCurrentPlayer");
 		lblNameOfCurrentPlayer.getStyleClass().add("lblCurrentPlayer");
 		lblCurrentPhase.getStyleClass().add("lblCurrentPlayer");
