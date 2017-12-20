@@ -403,26 +403,29 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 	private void createChatAlert(Stage stage) {
 		
 		// Sets color to the textArea 
-		view.txtaChatArea.setStyle("-fx-background-color: red;");
+		PauseTransition delay = new PauseTransition(Duration.seconds(0.25));
+		delay.setOnFinished(e -> view.txtaChatArea.setStyle("-fx-control-inner-background: oldlace;"));
+		view.txtaChatArea.setStyle("-fx-control-inner-background: red;");
+		delay.play();
 		
-		// Displays an alert that informs the player about newly received chat messages
-		Alert chatAlert = new Alert(AlertType.INFORMATION);
-		chatAlert.setTitle(t.getString("chatAlert.title")); // Chat message
-		chatAlert.setHeaderText(null);
-		chatAlert.setContentText(t.getString("chatAlert.content")); // A new chat message has been sent.
-
-		// Makes sure that the alert gets displayed in front of the stage
-		chatAlert.initOwner(stage);
-
-		// Styling of the alert
-		DialogPane chatDialogPane = chatAlert.getDialogPane();
-		chatDialogPane.getStyleClass().add("generalAlert");
+//		// Displays an alert that informs the player about newly received chat messages
+//		Alert chatAlert = new Alert(AlertType.INFORMATION);
+//		chatAlert.setTitle(t.getString("chatAlert.title")); // Chat message
+//		chatAlert.setHeaderText(null);
+//		chatAlert.setContentText(t.getString("chatAlert.content")); // A new chat message has been sent.
+//
+//		// Makes sure that the alert gets displayed in front of the stage
+//		chatAlert.initOwner(stage);
+//
+//		// Styling of the alert
+//		DialogPane chatDialogPane = chatAlert.getDialogPane();
+//		chatDialogPane.getStyleClass().add("generalAlert");
 
 		// Auto-hides the alert after the specified duration
-		PauseTransition delay = new PauseTransition(Duration.seconds(2));
-		delay.setOnFinished(e -> chatAlert.hide());
-		chatAlert.show();
-		delay.play();
+//		PauseTransition delay = new PauseTransition(Duration.seconds(2));
+//		delay.setOnFinished(e -> chatAlert.hide());
+//		chatAlert.show();
+//		delay.play();
 	}
 
 	/**

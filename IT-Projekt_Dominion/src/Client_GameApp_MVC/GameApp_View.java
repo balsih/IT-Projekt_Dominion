@@ -246,6 +246,7 @@ public class GameApp_View extends View<GameApp_Model> {
 		this.btnSendChatArea = new Button(t.getString("chat.btnSendChatArea")); // Send
 		txtaChatArea.setMaxWidth(500);
 		txtaChatArea.setEditable(false);
+		txtaChatArea.setStyle("-fx-control-inner-background: oldlace;");
 		this.hboxChatArea = new HBox(txtfChatArea, btnSendChatArea);
 		this.vboxChatArea = new VBox(lblChatArea, txtaChatArea, hboxChatArea);
 
@@ -255,6 +256,7 @@ public class GameApp_View extends View<GameApp_Model> {
 
 		txtaLog.setMaxWidth(500);
 		txtaLog.setEditable(false);
+		txtaLog.setStyle("-fx-control-inner-background: oldlace;");
 		this.vboxLog = new VBox(lblLog, txtaLog);
 
 		// Creates discard area
