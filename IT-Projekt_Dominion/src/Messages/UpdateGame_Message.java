@@ -505,7 +505,7 @@ public class UpdateGame_Message extends Message {
 			first.setCardSelection(second.getCardSelection());
 		
 		//Sets a newLine for better reading client-site if a turn ended
-		if (first.currentPlayer != null && first.log.substring(0, 2).compareTo("==") != 0)
+		if (first.log != null && first.currentPlayer != null && first.log.substring(0, 2).compareTo("==") != 0)
 			first.log = "=="+first.log;
 		return first;
 	}
