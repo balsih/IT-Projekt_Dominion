@@ -62,7 +62,6 @@ public class Server_Model extends Model {
 							}
 						} catch (Exception e) {
 							logger.info("Exception in startServerSocket: " + e.toString());
-							new Thread(r, "ServerSocket").start();
 						}
 					}
 				}
