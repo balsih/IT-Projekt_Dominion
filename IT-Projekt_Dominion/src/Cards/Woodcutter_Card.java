@@ -30,7 +30,7 @@ public class Woodcutter_Card extends Card {
 		
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
-		ugmsg.setLog(player.getPlayerName()+": #played# #"+this.cardName.toString()+"# #card#");
+		ugmsg.setLog(player.getPlayerName()+": #played# #"+this.cardName.toString()+"# #card#=="+player.getPlayerName()+": #received# #Woodcutter1#");
 		
 		// update game Messages -> XML 
 		ugmsg.setBuys(player.getBuys());

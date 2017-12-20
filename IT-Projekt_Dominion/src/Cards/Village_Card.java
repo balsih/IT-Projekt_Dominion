@@ -17,7 +17,7 @@ public class Village_Card extends Card {
 		this.cost = 3;
 		this.type = CardType.Action;
 	}
-
+	
 	/**
 	 * 
 	 * @param player
@@ -28,7 +28,7 @@ public class Village_Card extends Card {
 		player.setActions(player.getActions() + 2);
 		UpdateGame_Message ugmsg = player.draw(1);
 		
-		ugmsg.setLog(player.getPlayerName()+": #played# #"+this.cardName.toString()+"# #card#");
+		ugmsg.setLog(player.getPlayerName()+": #played# #"+this.cardName.toString()+"# #card#=="+player.getPlayerName()+": #received# #Village1#");
 		
 		// update game Messages -> XML 
 		ugmsg.setPlayedCards(this);

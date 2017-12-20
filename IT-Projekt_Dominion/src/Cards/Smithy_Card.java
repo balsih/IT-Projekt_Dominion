@@ -27,7 +27,7 @@ public class Smithy_Card extends Card {
 		
 		UpdateGame_Message ugmsg = player.draw(3); // draw 3 cards
 		
-		ugmsg.setLog(player.getPlayerName()+": #played# #"+this.cardName.toString()+"# #card#");
+		ugmsg.setLog(player.getPlayerName()+": #played# #"+this.cardName.toString()+"# #card#=="+player.getPlayerName()+": #received# #Smithy1#");
 		
 		ugmsg.setPlayedCards(this);
 		
