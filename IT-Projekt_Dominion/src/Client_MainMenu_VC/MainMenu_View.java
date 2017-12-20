@@ -190,7 +190,7 @@ public class MainMenu_View extends View<GameApp_Model> {
 		
 		nameColumn = new TableColumn<Highscore, String>(t.getString("menu.table.player"));
 		nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-		nameColumn.setPrefWidth(250);
+		nameColumn.setPrefWidth(240);
 		
 		pointColumn = new TableColumn<Highscore, String>(t.getString("menu.table.points"));
 		pointColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
@@ -206,7 +206,7 @@ public class MainMenu_View extends View<GameApp_Model> {
 		table.setId("table");
 		table.setItems(model.sendHighScoreRequest());
 		table.getColumns().addAll(nameColumn, pointColumn, roundColumn);
-		table.setPrefSize(348, 170);
+		table.setPrefSize(340, 163);
 		
 		
 		highscoreBox.getChildren().addAll(highscoreLbl, table);
