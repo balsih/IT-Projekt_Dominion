@@ -19,16 +19,14 @@ import Messages.PlayerSuccess_Message;
 import Messages.UpdateGame_Message;
 
 /**
- * 
  * The player class represents a player with his/her card stacks and hand. It
- * allows him/her to interact with the game and play through the three phases
- * 'Action', 'Buy' and 'Clean up'.
+ * allows him/her to interact with the game and play through the four phases
+ * 'Action', 'Buy', 'Clean up' and 'Ending'.
  * 
  * @author Bodo Gruetter
  * 
  */
 public class Player {
-	// The playing cards of the player
 	protected LinkedList<Card> handCards;
 	protected LinkedList<Card> playedCards;
 	protected Stack<Card> deckPile;
@@ -37,7 +35,6 @@ public class Player {
 
 	protected final int NUM_OF_HANDCARDS = 5;
 
-	// The player values
 	protected String playerName;
 	protected int actions;
 	protected int buys;
@@ -54,15 +51,6 @@ public class Player {
 
 	private final Logger logger = Logger.getLogger("");
 
-	/**
-	 * Constructor for a Player
-	 * 
-	 * @author Bodo Gruetter
-	 * 
-	 * @param name
-	 *            - the name of the player
-	 * @param serverThreadForClient
-	 */
 	public Player(String name, ServerThreadForClient serverThreadForClient) {
 		this.deckPile = new Stack<Card>();
 		this.discardPile = new Stack<Card>();
@@ -75,7 +63,7 @@ public class Player {
 	}
 
 	/**
-	 * Initializes the player to start a move.
+	 * Resets the states of the player to start a move.
 	 * 
 	 * @author Bodo Gruetter
 	 */
@@ -92,14 +80,10 @@ public class Player {
 	 * 
 	 * @author Bodo Gruetter
 	 *
-	 * @param selectedCard
-	 *            - the card the player selected to play.
+	 * @param selectedCard, the card the player selected to play.
 	 * @return 
-	 * <li> UpdateGame_Message - the message that updates the play process if
-	 *         if all conditions applies.
-	 * <li> PlayerSuccess_Message - the message who wons and lost a game, if
-	 *         the game is finished.
-	 * <li> Failure_Message - if play-method don't is successfully
+	 * UpdateGame_Message, the message that updates the play process if if all conditions applies.
+	 * Failure_Message, if play-method don't works successfully
 	 */
 	public Message play(Card selectedCard) {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
@@ -158,13 +142,12 @@ public class Player {
 	 * 
 	 * @author Bodo Gruetter
 	 * 
-	 * @param cardName
-	 *            - the name of the Card which should been buyed.
-	 * @return UpdateGame_Message - the message that updates the buy process, if
-	 *         all conditions applies.
-	 * @return PlayerSuccess_Message - the message who wons and lost a game, if
-	 *         the game is finished.
-	 * @return Failure_Message - if no condition applies.
+	 * @param cardName, the name of the Card which should been buyed.
+	 * @return UpdateGame_Message, the message that updates the buy process, if
+	 * all conditions applies.
+	 * PlayerSuccess_Message, the message who wons and lost a game, if
+	 * the game is finished.
+	 * Failure_Message, if no condition applies.
 	 */
 	public Message buy(CardName cardName) {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
@@ -223,8 +206,7 @@ public class Player {
 	 * 
 	 * @author Bodo Gruetter
 	 * 
-	 * @param cardName
-	 *            - the name of the picked card.
+	 * @param cardName, the name of the picked card.
 	 * @return pickedCard - the picked card.
 	 */
 	public Card pick(CardName selectedCard) {
@@ -288,10 +270,9 @@ public class Player {
 	 * 
 	 * @author Bodo Gruetter
 	 * 
-	 * @param selectedTopCard
-	 *            - the card on the top of the discard pile. It is null if the
-	 *            top card is already known.
-	 * @return UpdateGame_Message - the message that updates the clean process.
+	 * @param selectedTopCard, the card on the top of the discard pile. It is null if the
+	 * top card is already known.
+	 * @return UpdateGame_Message, the message that updates the clean process.
 	 */
 	public UpdateGame_Message cleanUp(Card selectedTopCard) {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
@@ -354,14 +335,11 @@ public class Player {
 	}
 
 	/**
-	 * 
-	 * 
 	 * Draws a variable number of cards in the hand.
 	 * 
 	 * @author Bodo Gruetter
-	 * @param numOfCards
-	 *            - the number of cards which should be drawn.
-	 * @return UpdateGame_Message - the message that updates the draw process.
+	 * @param numOfCards, the number of cards which should be drawn.
+	 * @return UpdateGame_Message, the message that updates the draw process.
 	 */
 	public UpdateGame_Message draw(int numOfCards) {
 
@@ -403,8 +381,8 @@ public class Player {
 	 * 
 	 * @author Bodo Gruetter
 	 * 
-	 * @return UpdateGame_Message - the message that updates the skip process.
-	 * @return Failure_Message - if no condition applies.
+	 * @return UpdateGame_Message, the message that updates the skip process.
+	 * Failure_Message, if no condition applies.
 	 */
 	public Message skipPhase() {
 
@@ -476,10 +454,8 @@ public class Player {
 	 * 
 	 * @author Bodo Gruetter
 	 * 
-	 * @param source
-	 *            - the sending player
-	 * @param msg
-	 *            - the message which should be send
+	 * @param source, the sending player
+	 * @param msg, the message which should be send
 	 */
 	public void sendToOpponent(Player source, Message msg) {
 		if (source instanceof Bot)
@@ -494,9 +470,8 @@ public class Player {
 	 * 
 	 * @author Bodo Gruetter
 	 * 
-	 * @param list
-	 *            - the list which should be checked.
-	 * @pram cardType - the type that should be in the list.
+	 * @param list, the list which should be checked.
+	 * cardType - the type that should be in the list.
 	 * @return Boolean - depending if list contains the card type or not.
 	 */
 	public boolean containsCardType(LinkedList<Card> list, CardType cardType) {
@@ -514,9 +489,8 @@ public class Player {
 	 * 
 	 * @author Bodo Gruetter
 	 * 
-	 * @param list
-	 *            - the list which should be checked.
-	 * @pram cardName - the name of the card that should be in the list.
+	 * @param list, the list which should be checked.
+	 * cardName - the name of the card that should be in the list.
 	 * @return Boolean - depending if list contains the card or not.
 	 */
 	public boolean containsCard(LinkedList<Card> list, CardName cardName) {

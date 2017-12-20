@@ -80,6 +80,11 @@ public class Server_View extends View<Server_Model>{
 		stage.setScene(scene);
 	}
 
+	/**
+	 * Shows the stage.
+	 * 
+	 * @author Bodo Gruetter
+	 */
 	public void start(){
 		stage.show();
 	}

@@ -31,11 +31,12 @@ import Server_Services.DB_Connector;
  * The game class represents a game with all available cards and two players. If
  * player 2 is a human or a computer player depends on the game mode.
  * 
+ * Simulation mode is just for testing the bot.
+ * 
  * @author Bodo Gruetter
  * 
  */
 public class Game {
-	// the card stacks of a game
 	private Stack<Copper_Card> copperPile;
 	private Stack<Cellar_Card> cellarPile;
 	private Stack<Duchy_Card> duchyPile;
@@ -52,7 +53,6 @@ public class Game {
 	private Stack<Workshop_Card> workshopPile;
 	private HashMap<CardName, Integer> buyCards;
 
-	// the number of cards in a stack of a card type
 	private final int NUM_OF_TREASURECARDS = 30;
 	private final int NUM_OF_VICTORYCARDS = 8;
 	private final int NUM_OF_ACTIONCARDS = 10;
@@ -61,7 +61,6 @@ public class Game {
 
 	private boolean gameEnded;
 
-	// the players of a game
 	private Player player1 = null;
 	private Player player2 = null;
 	private Player currentPlayer;
@@ -73,9 +72,6 @@ public class Game {
 
 	private final Logger logger = Logger.getLogger("");
 
-	/**
-	 * Constructor for the game
-	 */
 	private Game() {
 		// Build treasure stacks for a new game
 		this.buildTreasureCardStacks();
@@ -121,7 +117,6 @@ public class Game {
 	}
 
 	/**
-	 * 
 	 * Builds the stacks for the action cards with 10 cards per stack.
 	 * 
 	 * @author Bodo Gruetter
@@ -149,9 +144,11 @@ public class Game {
 	}
 
 	/**
-	 * Fills the deckpile of the player with 7 copper cards and 3 estate cards
+	 * Fills the deck pile of the player with 7 copper cards and 3 estate cards
 	 * and shuffles the deck. Each player draws 5 cards of its stack in the
 	 * hand. Finally the the starter of the game will be determined.
+	 * 
+	 * In single player the bot, if it is the starting player, will be started.
 	 * 
 	 * @author Bodo Gruetter
 	 */
@@ -180,7 +177,7 @@ public class Game {
 		this.player1.setActualPhase(Phase.Buy);
 		this.player2.setActualPhase(Phase.Buy);
 
-		// Starts bot if it's the starting player
+		// Starts bot if it is the starting player
 		if ((this.currentPlayer.equals(player2) && this.gameMode.equals(GameMode.Singleplayer))
 				|| this.gameMode.equals(GameMode.Simulation))
 			new Thread(bot).start();
@@ -191,7 +188,7 @@ public class Game {
 	 * 
 	 * @author Bodo Gruetter
 	 * 
-	 * @return Player - the player who starts.
+	 * @return Player, the player who starts.
 	 */
 	private Player getStarter() {
 		Random rand = new Random();
@@ -203,8 +200,8 @@ public class Game {
 	}
 
 	/**
-	 * Switches the current player. In singleplayer the bot will be executed if
-	 * its turn. In multiplayer the current player will be initialized.
+	 * Switches the current player. In single player the bot will be executed if
+	 * its turn. In multi player the current player will be initialized.
 	 * 
 	 * @author Bodo Gruetter
 	 */
@@ -286,7 +283,7 @@ public class Game {
 	 * 
 	 * @author Bodo Gruetter
 	 * 
-	 * @return Boolean - depending if the game is finished.
+	 * @return true or false, depending if the game is finished.
 	 */
 	public boolean checkGameEnding() {
 		int counter = 0;
@@ -312,12 +309,12 @@ public class Game {
 	 * 
 	 * @author Bodo Gruetter
 	 * 
-	 * @param gameMode
-	 *            - the selected gameMode
-	 * @param player
-	 *            - the player who starts a game.
-	 * @return Game - an existing or a new game depending on gameMode and if a
-	 *         player is waiting for another.
+	 * @param
+	 * gameMode, the selected gameMode
+	 * player, the player who starts a game.
+	 * @return 
+	 * Game, an existing or a new game depending on gameMode and if a
+	 * player is waiting for another.
 	 */
 	public static Game getGame(GameMode gameMode, Player player) {
 		/*
@@ -397,7 +394,8 @@ public class Game {
 	 * 
 	 * @author Bodo Gruetter
 	 * 
-	 * @return Hashmap - with the stackname and the number of cards
+	 * @return
+	 * Hashmap, with the stackname and the number of cards
 	 */
 	public HashMap<CardName, Integer> getBuyCards() {
 		this.buyCards.put(CardName.Province, this.provincePile.size());
@@ -425,9 +423,10 @@ public class Game {
 	 *         
 	 * @author Bodo Gruetter
 	 * 
-	 * @param currentPlayer
-	 *            - the current Player
-	 * @return Player - the opponent of the currentplayer
+	 * @param
+	 * currentPlayer, the current Player
+	 * @return
+	 * Player, the opponent of the currentplayer
 	 */
 	public Player getOpponent(Player currentPlayer) {
 		if (currentPlayer.equals(player1))

@@ -23,8 +23,8 @@ public class Server_Controller extends Controller<Server_Model, Server_View> {
 	 * @author Bodo Gruetter 
 	 * source: Prof. Bradley Richards
 	 * 
-	 * @param model - the Server_Model
-	 * @param view - the Server_View
+	 * @param model, the Server_Model
+	 * @param view, the Server_View
 	 */
 	public Server_Controller(Server_Model model, Server_View view) {
 		super(model, view);
@@ -60,7 +60,8 @@ public class Server_Controller extends Controller<Server_Model, Server_View> {
 	/** 
 	 * Sets port text green or red depending on if port value is valid.
 	 * 
-	 * @param newValue - the new input value
+	 * @param
+	 * newValue, the new input value
 	 * 
 	 * @author Bodo Gruetter 
 	 * source: Prof. Bradley Richards

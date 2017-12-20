@@ -9,7 +9,7 @@ import javafx.application.Platform;
 import javafx.scene.control.TextArea;
 
 /**
- * @author Bodo Grütter
+ * @author Bodo Grï¿½tter
  * 
  * A log-handler that writes to a TextArea. Platform.runLater is a means
  * of putting work onto the JavaFX application thread. Anything that
@@ -31,12 +31,16 @@ public class TextAreaHandler extends Handler {
 		//nothing to do here
 	}
 
-	//returns the textArea
 	public TextArea getTextArea() {
 		return this.textArea;
 	}
 
-	//this method logs the log output into an textArea
+	/**
+	 * this method logs the log output into an textArea
+	 * 
+	 * @author Bodo Gruetter
+	 * @param record, the new record in the Log
+	 */
 	public void publish(LogRecord record) {
 		Platform.runLater(new Runnable() {
 			@Override
