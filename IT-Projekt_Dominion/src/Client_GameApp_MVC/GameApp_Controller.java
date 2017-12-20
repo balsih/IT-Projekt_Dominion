@@ -39,6 +39,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -58,7 +59,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 	// Translates GUI-text
 	private ServiceLocator sl = ServiceLocator.getServiceLocator();
-	Translator t = sl.getTranslator();
+	private Translator t = sl.getTranslator();
 
 	public GameApp_Controller(GameApp_Model model, GameApp_View view) {
 		super(model, view);
@@ -136,7 +137,6 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 			this.listenToServer = false; // Stops the thread
 			view.stop();
 			Platform.exit();
-
 		});
 
 		// Starts the thread
@@ -152,6 +152,7 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 		if (newMessage.length()>0){
 			model.sendChat(newMessage);
+			model.chatSent = true; // Needed to inform the player about a received chat message
 			updateGUI();
 			view.txtfChatArea.setText(""); // Removes the entered text
 		}
@@ -181,27 +182,14 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 
 				model.newChat = null;
 
-				// Displays an alert that informs the player about newly received chat messages
-				Alert chatAlert = new Alert(AlertType.INFORMATION);
-				chatAlert.setTitle(t.getString("chatAlert.title")); // Chat message
-				chatAlert.setHeaderText(null);
-				chatAlert.setContentText(t.getString("chatAlert.content")); // A new chat message has been sent.
-
-				// Makes sure that the alert gets displayed in front of the stage
-				chatAlert.initOwner(view.getStage());
-
-				// Styling of the alert
-				DialogPane chatDialogPane = chatAlert.getDialogPane();
-				chatDialogPane.getStyleClass().add("generalAlert");
-
-				// Auto-hides the alert after the specified duration
-				PauseTransition delay = new PauseTransition(Duration.seconds(2));
-				delay.setOnFinished(e -> chatAlert.hide());
-				chatAlert.show();
-				delay.play();
+				// Informs the player about a received chat message (if he didn't send it, he gets informed)
+				if (!model.chatSent) {
+					createChatAlert(view.getStage());
+				}
+				model.chatSent = false;
 			}
 
-			// Displays a popup that informs the user about the current phase
+			// Displays a popup that informs the player about the current phase
 			if (model.phaseChanged == true){
 				startPhasePopup();
 				model.phaseChanged = false;
@@ -405,6 +393,36 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 				view.vboxProvinceCards.getChildren().add(0, resizeImage(Card.getCard(CardName.Flipside).getImage()));
 			}
 		});
+	}
+
+	/**
+	 * @author Adrian
+	 * @param stage
+	 * Displays a popup that informs the player about a received chat message.
+	 */
+	private void createChatAlert(Stage stage) {
+		
+		// Sets color to the textArea 
+		view.txtaChatArea.setStyle("-fx-background-color: red;");
+		
+		// Displays an alert that informs the player about newly received chat messages
+		Alert chatAlert = new Alert(AlertType.INFORMATION);
+		chatAlert.setTitle(t.getString("chatAlert.title")); // Chat message
+		chatAlert.setHeaderText(null);
+		chatAlert.setContentText(t.getString("chatAlert.content")); // A new chat message has been sent.
+
+		// Makes sure that the alert gets displayed in front of the stage
+		chatAlert.initOwner(stage);
+
+		// Styling of the alert
+		DialogPane chatDialogPane = chatAlert.getDialogPane();
+		chatDialogPane.getStyleClass().add("generalAlert");
+
+		// Auto-hides the alert after the specified duration
+		PauseTransition delay = new PauseTransition(Duration.seconds(2));
+		delay.setOnFinished(e -> chatAlert.hide());
+		chatAlert.show();
+		delay.play();
 	}
 
 	/**

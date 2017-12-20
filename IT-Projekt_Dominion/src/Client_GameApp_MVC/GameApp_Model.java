@@ -86,6 +86,7 @@ public class GameApp_Model extends Model {
 	protected Card newPlayedCard = null;
 	protected Card yourDiscardPileTopCard = null;
 	protected String newChat = null;
+	protected boolean chatSent = false;
 	protected String newLog = null;
 	
 	protected Interaction interaction = Interaction.Skip;
