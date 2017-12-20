@@ -305,11 +305,10 @@ public class Player {
 		 * checks if the player has more than one cards in his hand and if there
 		 * is a interaction of the player required
 		 */
-		if (this.handCards.size() > 1) {
+		if (this.handCards.size() > 1 && selectedTopCard != null) {
 			ugmsg.setDiscardPileTopCard(selectedTopCard);
 			ugmsg.setLog("#topCard# " + "#" + selectedTopCard.getCardName().toString() + "#");
-
-		} else if (this.handCards.size() == 1 && selectedTopCard == null) {
+		} else if (this.handCards.size() >= 1 && selectedTopCard == null) {
 			ugmsg.setDiscardPileTopCard(this.handCards.element());
 			ugmsg.setLog("#topCard# " + "#" + this.handCards.element().getCardName().toString() + "#");
 		} else if (this.handCards.size() == 0 && selectedTopCard == null) {
@@ -332,6 +331,26 @@ public class Player {
 		ugmsg = UpdateGame_Message.merge((UpdateGame_Message) this.skipPhase(), ugmsg);
 
 		return ugmsg;
+	}
+	
+	/**
+	 * Checks weather all of the player's hand-cards have the same name.
+	 * 
+	 * @author Lukas
+	 * @return 	<li>true if all hand-cards have the same name.
+	 * 			<li>false if the hand-cards consists different names.
+	 */
+	private boolean allSameHandCards(){
+		if(this.handCards.size() > 1){
+			Card firstCard = this.handCards.get(0);
+			for(int i = 1; i < this.handCards.size(); i++){
+				if(this.handCards.get(i).getCardName() != firstCard.getCardName())
+					return false;
+			}
+		}else{
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -403,7 +422,7 @@ public class Player {
 				this.actualPhase = Phase.CleanUp;
 				ugmsg.setCurrentPhase(this.actualPhase);
 
-				if (this.handCards.size() > 1) {
+				if (this.handCards.size() > 1 && !this.allSameHandCards()) {
 					ugmsg.setInteractionType(Interaction.EndOfTurn);
 					ugmsg.setLog("#choseTopCard#"); // choose top card for
 													// discardPile
