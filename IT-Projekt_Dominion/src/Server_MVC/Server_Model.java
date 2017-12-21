@@ -57,10 +57,10 @@ public class Server_Model extends Model {
 							if (client != null) {
 								new Thread(client).start();
 							} else {
-								logger.info("Thread was null");
+								logger.severe("Thread was null");
 							}
 						} catch (Exception e) {
-							logger.info("Exception in startServerSocket: " + e.toString());
+							logger.severe("Exception in startServerSocket: " + e.toString());
 						}
 					}
 				}

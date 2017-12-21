@@ -1,91 +1,108 @@
 package Server_MVC;
 
 import java.io.IOException;
-
+import java.util.logging.Logger;
 import Abstract_MVC.Controller;
+import javafx.scene.input.KeyCode;
 
 /**
- * The Server_Controller controls the interaction between Server_View and Server_Model
- * and handles the events.
+ * The Server_Controller controls the interaction between Server_View and
+ * Server_Model and handles the events.
  * 
- * @author Bodo Gruetter 
- * source: Prof. Bradley Richards
+ * @author Bodo Gruetter source: Prof. Bradley Richards
  */
 public class Server_Controller extends Controller<Server_Model, Server_View> {
 
 	private boolean portValid = false;
+	private Logger logger = Logger.getLogger("");
 
 	/**
 	 * Handles the events between Server_View and Server_Model
 	 * 
-	 * @author Bodo Gruetter 
-	 * source: Prof. Bradley Richards
+	 * @author Bodo Gruetter source: Prof. Bradley Richards
 	 * 
-	 * @param model, the Server_Model
-	 * @param view, the Server_View
+	 * @param model
+	 * , the Server_Model
+	 * @param view
+	 * , the Server_View
 	 */
 	public Server_Controller(Server_Model model, Server_View view) {
 		super(model, view);
 
 		// changeListener that checks during the typing the portnumber
-		view.txtPort.textProperty().addListener((observable, oldValue, newValue) -> {
-			validatePortNumber(newValue);
+		this.view.txtPort.textProperty().addListener((observable, oldValue, newValue) -> {
+			this.validatePortNumber(newValue);
 		});
 
-		// starting the server with a button click and disables this button
-		view.btnStart.setOnAction((event) -> {
-			try {
-				view.btnStart.setDisable(true);
-				view.btnStop.setDisable(false);
-				view.txtPort.setEditable(false);
-				model.startServerSocket(Integer.parseInt(view.txtPort.getText()));
-			} catch (NumberFormatException | IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		// starts the server with enter
+		this.view.txtPort.setOnKeyPressed(keyEvent -> {
+			if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+				this.startServer();
 			}
 		});
-		
-		view.btnStop.setOnAction((event) -> {
-			view.btnStart.setDisable(false);
-			view.btnStop.setDisable(true);
-			view.txtPort.setEditable(true);
-			model.stopServer();
+
+		// starts the server with a button click
+		this.view.btnStart.setOnAction((event) -> {
+			this.startServer();
 		});
-		
-		view.stage.setOnCloseRequest(event -> model.stopServer());
+
+		this.view.btnStop.setOnAction((event) -> {
+			this.view.btnStart.setDisable(false);
+			this.view.btnStop.setDisable(true);
+			this.view.txtPort.setEditable(true);
+			this.model.stopServer();
+		});
+
+		this.view.stage.setOnCloseRequest(event -> model.stopServer());
 	}
 
-	/** 
+	/**
 	 * Sets port text green or red depending on if port value is valid.
 	 * 
-	 * @param newValue
-	 * , the new input value.
+	 * @author Bodo Gruetter source: Prof. Bradley Richards
 	 * 
-	 * @author Bodo Gruetter 
-	 * source: Prof. Bradley Richards
+	 * @param newValue
+	 *            , the new input value.
 	 */
 	private void validatePortNumber(String newValue) {
 		boolean valid = model.isValidPortNumber(newValue);
 
 		if (valid) {
-			view.txtPort.setStyle("-fx-text-inner-color: green;");
+			this.view.txtPort.setStyle("-fx-text-inner-color: green;");
 		} else {
-			view.txtPort.setStyle("-fx-text-inner-color: red;");
+			this.view.txtPort.setStyle("-fx-text-inner-color: red;");
 		}
 
 		portValid = valid;
 
-		enableDisableButton();
+		this.enableDisableButton();
 	}
 
 	/**
 	 * Enables Button if the Port is not valid.
 	 * 
-	 * @author Bodo Gruetter 
-	 * source: Prof. Bradley Richards
+	 * @author Bodo Gruetter source: Prof. Bradley Richards
 	 */
 	private void enableDisableButton() {
 		boolean valid = portValid;
-		view.btnStart.setDisable(!valid);
+		this.view.btnStart.setDisable(!valid);
+	}
+
+	/**
+	 * Starts server and enable/disables buttons
+	 * 
+	 * @author Bodo Gruetter
+	 */
+	private void startServer() {
+		if (this.view.txtPort.getText().length() > 0) {
+			try {
+				this.view.btnStart.setDisable(true);
+				this.view.btnStop.setDisable(false);
+				this.view.txtPort.setEditable(false);
+				this.model.startServerSocket(Integer.parseInt(view.txtPort.getText()));
+			} catch (NumberFormatException | IOException e) {
+				this.logger.severe(e.toString());
+			}
+		}
 	}
 }// end Server_Controller

@@ -45,7 +45,7 @@ public class Server_View extends View<Server_Model>{
 		this.lblPort.getStyleClass().add("label");
 		this.lblPort.setMinSize(Button.USE_PREF_SIZE, Button.USE_PREF_SIZE);
 		
-		this.txtPort = new TextField("8080");
+		this.txtPort = new TextField();
 		this.txtPort.getStyleClass().add("textfield");
 		this.txtPort.setMinWidth(60);
 		this.txtPort.setPrefWidth(60);
