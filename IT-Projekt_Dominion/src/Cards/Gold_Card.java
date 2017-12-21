@@ -7,7 +7,6 @@ import Server_GameLogic.Player;
  * Gold represents a treasure card. This card has a coin value of 3 and costs 6. 
  * 
  * @author Rene Schwab
- * 
  */
 public class Gold_Card extends Treasure_Card {
 

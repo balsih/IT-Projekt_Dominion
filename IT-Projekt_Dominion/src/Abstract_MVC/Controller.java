@@ -1,11 +1,11 @@
 package Abstract_MVC;
 
 /**
- * Copyright 2015, FHNW, Prof. Dr. Brad Richards. All rights reserved. This code
- * is licensed under the terms of the BSD 3-clause license (see the file
- * license.txt).
+ * Abstract super class for all controllers. 
  * 
- * @author Brad Richards
+ * @author Brad Richards, Copyright 2015, FHNW
+ * , adapted by Rene Schwab
+ * 
  */
 public abstract class Controller<M, V> {
     protected M model;

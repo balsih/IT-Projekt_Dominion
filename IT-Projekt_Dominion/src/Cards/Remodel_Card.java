@@ -109,7 +109,7 @@ public class Remodel_Card extends Card {
 		ugmsg.setDiscardPileTopCard(pickedCard);
 		ugmsg.setDiscardPileCardNumber(this.player.getDiscardPile().size());
 		
-		// checks if the game is ended after playing this card and who did won
+		// checks if the game is ended after playing this card and who did win
 		if (this.game.checkGameEnding()) {
 			this.player.setActualPhase(Phase.Ending);
 			this.game.checkWinner();
