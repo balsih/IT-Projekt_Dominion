@@ -98,10 +98,6 @@ public abstract class Message {
     	// Convert to XML
         String xmlOut = this.toString();
         
-        if(this instanceof UpdateGame_Message || this instanceof CreateGame_Message){
-        	Logger logger = Logger.getLogger("");
-        	logger.info(xmlOut);
-        }
    
         try { // Ignore IO errors
             OutputStreamWriter out = new OutputStreamWriter(s.getOutputStream());
