@@ -670,8 +670,11 @@ public class GameApp_Model extends Model {
 
 		//If a buy was successful. Always currentPlayer
 		//stores the boughtCard of the currentPlayer and reduces the value of the buyCards(Cards which can be bought)
-		if(ugmsg.getBoughtCard() != null)
-			this.buyCards.replace(ugmsg.getBoughtCard().getCardName(), this.buyCards.get(ugmsg.getBoughtCard().getCardName())-1);
+		if(ugmsg.getBoughtCard() != null){
+			Card boughtCard = ugmsg.getBoughtCard();
+			this.buyCards.replace(boughtCard.getCardName(), this.buyCards.get(boughtCard.getCardName())-1);
+			System.out.println(boughtCard);
+		}
 		
 
 		//Just necessary to show opponent's size of discardPile
