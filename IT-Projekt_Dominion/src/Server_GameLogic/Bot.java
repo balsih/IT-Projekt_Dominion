@@ -21,10 +21,12 @@ import Messages.PlayerSuccess_Message;
 import Messages.UpdateGame_Message;
 
 /**
+ * Simulates a player for the singleplayer-modus.
+ * 
  * @author Simon
- * @version 1.0
+ * @version 2.0
  * @created 15-Nov-2017 08:36:00
- * @lastEdited 16-Dec-2017 23:25:00
+ * @lastEdited 21-Dec-2017 12:01:00
  */
 public class Bot extends Player implements Runnable {
 	private HashMap<CardName, Integer> buyPrioOneCard = new HashMap<CardName, Integer>();
@@ -40,16 +42,13 @@ public class Bot extends Player implements Runnable {
 	private static final int MAX_TREASURE_CARDS = 16, MAX_ACTION_CARDS = 10;
 	private Card cardToPlay = null;
 	private CardName cardToBuy = null;
-	private double numberOfGoldAndSilverCards = 0.0, numberOfTotalCards = 10.0;
+	private double numberOfGoldAndSilverCards = 0.0;
 	private int numberOfActionCards = 0, gameStage;
 	private boolean done0 = true, done1 = true, done2 = true, done3 = true, done4 = true;
 	private LinkedList<Card> discardedCardsForCellar = new LinkedList<Card>();
-	private int counter;
 
 	public Bot(String name, ServerThreadForClient thread) {
 		super(name, thread);
-
-		counter = 1;
 
 		buyPrioOneCard.put(CardName.Province, 100);
 		buyPrioOneCard.put(CardName.Gold, 60);
@@ -121,52 +120,35 @@ public class Bot extends Player implements Runnable {
 	}
 
 	/**
-	 * Executes the Bot with all its stages play and buy.
+	 * Executes the bot with its stages play and buy for one round.
 	 * 
 	 * @author Simon
 	 */
 	public void run() {
-		System.out.println(this.playerName + " started round " + counter);
 		try {
 			Thread.sleep(1500);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+
 		while (actions > 0 && actualPhase == Phase.Action) {
 			estimatePlayPriorityOfActionCards();
 			playActionCards();
-			System.out.println(this.playerName + " ActionCard played");
 		}
-		System.out.println(this.playerName + " ActionPhase finished");
+
 		if (buys > 0 && actualPhase == Phase.Buy) {
 			playTreasureCards();
-			System.out.println(this.playerName + " TreasureCards played");
 			do {
 				estimateBuyPriorityOfVictoryCards();
 				estimateBuyPriorityOfTreasureCards();
 				estimateBuyPriorityOfActionCards();
 				buy();
 			} while (buys > 0 && actualPhase == Phase.Buy && game.getCurrentPlayer() == this);
-			System.out.println(this.playerName + " Buy_Phase finished");
 		}
-		System.out.println(this.playerName + " round " + counter + " finished");
-		counter++;
-		System.out.println("***************************");
-		System.out.println(this.playerName + " HandCards: " + handCards.toString() + "\t\t TreasureCards: "
-				+ numberOfGoldAndSilverCards + "\t ActionCards: " + numberOfActionCards + "\t TotalCards: "
-				+ numberOfTotalCards);
-		System.out.println("GameEnding: " + game.getGameEnded() + "\t Status: " + this.getStatus() + "\t GameStage: "
-				+ this.gameStage);
-		System.out.println("ProvincePile: " + game.getProvincePile().toString());
-		System.out.println("MoreBuyPrio: " + this.buyPrioMoreCards.toString());
-		System.out.println("OneBuyPrio: " + this.buyPrioOneCard.toString());
-		System.out.println("PlayPrio: " + this.prioListForPlaying.toString());
-		System.out.println("***************************");
 	}
 
 	/**
-	 * Plays all the available TreasureCards which are in the hands of the bot,
-	 * before buying cards.
+	 * Plays all TreasureCards which are in the hands of the bot.
 	 * 
 	 * @author Simon
 	 */
@@ -178,7 +160,6 @@ public class Bot extends Player implements Runnable {
 				if (index != handCards.size()) {
 					index--;
 				}
-				System.out.println(this.playerName + " played " + cardToPlay.toString());
 			}
 		}
 		cardToPlay = null;
@@ -196,7 +177,6 @@ public class Bot extends Player implements Runnable {
 				if (tempPriority < prioListForPlaying.get(card.getCardName())) {
 					tempPriority = prioListForPlaying.get(card.getCardName());
 					cardToPlay = card;
-					System.out.println(this.playerName + " cardToPlay " + cardToPlay.toString());
 				}
 			}
 		}
@@ -206,7 +186,6 @@ public class Bot extends Player implements Runnable {
 		} else {
 			Message playMessage = play(cardToPlay);
 			makeBreak();
-			System.out.println(this.playerName + " played " + cardToPlay.toString());
 
 			// the card could be bought
 			if (playMessage instanceof UpdateGame_Message) {
@@ -276,7 +255,6 @@ public class Bot extends Player implements Runnable {
 					Remodel_Card rCard1 = (Remodel_Card) this.getPlayedCards().get(this.getPlayedCards().size() - 1);
 					ugmsg = rCard1.executeRemodel1(discardedCard);
 					this.sendToOpponent(this, ugmsg);
-					System.out.println(this.playerName + " discarded " + discardedCard.toString());
 
 					// executeRemodel2
 					LinkedList<CardName> availableCards = ugmsg.getCardSelection();
@@ -290,8 +268,6 @@ public class Bot extends Player implements Runnable {
 							Message msg = rCard2.executeRemodel2(newCard);
 							if (msg instanceof UpdateGame_Message) {
 								this.sendToOpponent(this, ugmsg);
-								System.out.println(this.playerName + " bought " + newCard);
-								numberOfTotalCards++;
 								if (Card.getCard(cardToBuy).getType().equals(CardType.Action))
 									numberOfActionCards++;
 								else if (newCard.equals(CardName.Silver) || newCard.equals(CardName.Gold))
@@ -315,8 +291,6 @@ public class Bot extends Player implements Runnable {
 							Message msg = wCard.executeWorkshop(newCard);
 							if (msg instanceof UpdateGame_Message) {
 								this.sendToOpponent(this, ugmsg);
-								System.out.println(this.playerName + " bought " + newCard);
-								numberOfTotalCards++;
 								if (Card.getCard(newCard).getType().equals(CardType.Action))
 									numberOfActionCards++;
 								else if (newCard.equals(CardName.Silver) || newCard.equals(CardName.Gold))
@@ -333,7 +307,6 @@ public class Bot extends Player implements Runnable {
 
 				// if Bot couldn't buy card --> skipPhase
 			} else if (playMessage instanceof Failure_Message) {
-				System.out.println("That should never happen!");
 				UpdateGame_Message ugmsg = (UpdateGame_Message) skipPhase();
 				this.sendToOpponent(this, ugmsg);
 			}
@@ -372,14 +345,11 @@ public class Bot extends Player implements Runnable {
 
 			// if PlayerSuccess_Message --> terminate buy();
 			if (buyMessage instanceof PlayerSuccess_Message) {
-				System.out.println(this.playerName + " won the game!");
 				break;
 			}
 
 			// if UpdateGame_Message
 			else if (buyMessage instanceof UpdateGame_Message) {
-				System.out.println(this.playerName + " bought " + cardToBuy.toString());
-				numberOfTotalCards++;
 				if (cardToBuy.equals(CardName.Gold) || cardToBuy.equals(CardName.Silver))
 					numberOfGoldAndSilverCards++;
 				else if (Card.getCard(cardToBuy).getType().equals(CardType.Action))
@@ -388,7 +358,6 @@ public class Bot extends Player implements Runnable {
 				// test if manual cleanUp is necessary
 				UpdateGame_Message ugmsg = (UpdateGame_Message) buyMessage;
 				if (ugmsg.getInteractionType() == Interaction.EndOfTurn) {
-					System.out.println(this.playerName + " choosedDiscardPileTopCard");
 					chooseDiscardPileTopCard();
 					break;
 				}
@@ -396,11 +365,8 @@ public class Bot extends Player implements Runnable {
 				// if there are still left some buys and less than 2 coins --> skipPhase, else
 				// buy another card
 				else {
-					System.out.println(this.playerName + " Problem1");
 					if (ugmsg.getCurrentPhase() == null) {
-						System.out.println(this.playerName + " Problem2");
 						if (coins <= 1) {
-							System.out.println(this.playerName + " stop buyPhase");
 							UpdateGame_Message ugmsg1 = (UpdateGame_Message) skipPhase();
 							this.sendToOpponent(this, ugmsg1);
 							if (handCards.size() > 1) {
@@ -413,21 +379,19 @@ public class Bot extends Player implements Runnable {
 			}
 			// if Failure_Message --> keep searching
 			else if (buyMessage instanceof Failure_Message)
-				System.out.println(this.playerName + " buyMessage instanceof Failure");
-			if (index < buyList.size() - 1)
-				continue;
-			else {
-				if (game.getCurrentPlayer() == this) {
-					System.out.println(this.playerName + " couldn't buy any Card --> skipPhase");
-					UpdateGame_Message ugmsg = (UpdateGame_Message) skipPhase();
-					this.sendToOpponent(this, ugmsg);
-					makeBreak();
-					if (handCards.size() > 1) {
-						chooseDiscardPileTopCard();
-						break;
+				if (index < buyList.size() - 1)
+					continue;
+				else {
+					if (game.getCurrentPlayer() == this) {
+						UpdateGame_Message ugmsg = (UpdateGame_Message) skipPhase();
+						this.sendToOpponent(this, ugmsg);
+						makeBreak();
+						if (handCards.size() > 1) {
+							chooseDiscardPileTopCard();
+							break;
+						}
 					}
 				}
-			}
 		}
 		cardToBuy = null;
 	}
@@ -492,7 +456,7 @@ public class Bot extends Player implements Runnable {
 	}
 
 	/**
-	 * Changes the priority of VictoryCards if game ending is close.
+	 * Changes the priority of VictoryCards if game-ending is close.
 	 * 
 	 * @author Simon
 	 */
@@ -585,8 +549,8 @@ public class Bot extends Player implements Runnable {
 	}
 
 	/**
-	 * Calculates the share of TreasureCards in relation to the total number of
-	 * owned cards and changes the Priority of GoldCard and SilverCard.
+	 * Changes the priority of the GoldCard and SilverCard if game-ending is very
+	 * close or if a specific amount of Cards has been reached.
 	 * 
 	 * @author Simon
 	 */
@@ -620,7 +584,7 @@ public class Bot extends Player implements Runnable {
 	}
 
 	/**
-	 * Calculate the priority of each ActionCards for the buying decision.
+	 * Calculates the priority of each ActionCards for the buying decision.
 	 * 
 	 * @author Simon
 	 */
@@ -678,7 +642,7 @@ public class Bot extends Player implements Runnable {
 	}
 
 	/**
-	 * Calculate the priority of ActionCards for the playing phase.
+	 * Calculates the priority of ActionCards for the playing phase.
 	 * 
 	 * @author Simon
 	 */
@@ -731,7 +695,7 @@ public class Bot extends Player implements Runnable {
 	}
 
 	/**
-	 * Calculates who many cards are owned by the Bot of a specific card and returns
+	 * Calculates how many cards of a specific card are owned by the bot and returns
 	 * the number as an Integer.
 	 * 
 	 * @author Simon
