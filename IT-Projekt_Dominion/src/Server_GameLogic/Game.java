@@ -223,8 +223,6 @@ public class Game {
 				new Thread(bot).start();
 		}
 
-		System.out.println(currentPlayer.getPlayerName());
-
 		if (!this.currentPlayer.containsCardType(this.currentPlayer.handCards, CardType.Action))
 			this.currentPlayer.setActualPhase(Phase.Buy);
 	}
