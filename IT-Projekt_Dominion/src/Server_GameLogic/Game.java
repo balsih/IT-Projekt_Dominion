@@ -31,10 +31,9 @@ import Server_Services.DB_Connector;
  * The game class represents a game with all available cards and two players. If
  * player 2 is a human or a computer player depends on the game mode.
  * 
- * Simulation mode is just for testing the bot.
+ * Simulation mode is just for testing the bot and is not used in final game.
  * 
  * @author Bodo Gruetter
- * 
  */
 public class Game {
 	private Stack<Copper_Card> copperPile;
@@ -309,9 +308,10 @@ public class Game {
 	 * 
 	 * @author Bodo Gruetter
 	 * 
-	 * @param
-	 * gameMode, the selected gameMode
-	 * player, the player who starts a game.
+	 * @param gameMode
+	 * , the selected gameMode
+	 * @param player
+	 * , the player who starts a game.
 	 * @return 
 	 * Game, an existing or a new game depending on gameMode and if a
 	 * player is waiting for another.
@@ -354,39 +354,38 @@ public class Game {
 			 * a bot
 			 */
 		} else if (gameMode == GameMode.Singleplayer) {
-			Game game = new Game();
-			game.bot = new Bot(Bot.getNameOfBot(), player.getServerThreadForClient());
-			game.setPlayer1(player);
-			game.player1.setGame(game);
-			game.setPlayer2(game.bot);
-			game.bot.setGame(game);
-			game.gameMode = GameMode.Singleplayer;
-			game.startGame();
+			Game existingGame = new Game();
+			existingGame.bot = new Bot(Bot.getNameOfBot(), player.getServerThreadForClient());
+			existingGame.setPlayer1(player);
+			existingGame.player1.setGame(existingGame);
+			existingGame.setPlayer2(existingGame.bot);
+			existingGame.bot.setGame(existingGame);
+			existingGame.gameMode = GameMode.Singleplayer;
+			existingGame.startGame();
 
-			game.getPlayer1().getServerThreadForClient()
-					.addWaitingMessages(game.getPlayer1().getServerThreadForClient().getCG_Message(game));
-			game.logger.info(game.player1.getPlayerName() + " started a singleplayer game");
-			return game;
+			existingGame.getPlayer1().getServerThreadForClient()
+					.addWaitingMessages(existingGame.getPlayer1().getServerThreadForClient().getCG_Message(existingGame));
+			existingGame.logger.info(existingGame.player1.getPlayerName() + " started a singleplayer game");
+			return existingGame;
 
 			/*
 			 * creates in simulation mode for testing a game between two bots,
 			 * but doesn't start game directly
 			 */
 		} else {
-			Game game = new Game();
+			Game existingGame = new Game();
 			Player dummyPlayer = new Player("hallo", ServerThreadForClient.getServerThreadForClient(new Socket()));
-			game.bot = new Bot(Bot.getNameOfBot(), dummyPlayer.getServerThreadForClient());
-			game.setPlayer1(game.bot);
-			game.bot.setGame(game);
+			existingGame.bot = new Bot(Bot.getNameOfBot(), dummyPlayer.getServerThreadForClient());
+			existingGame.setPlayer1(existingGame.bot);
+			existingGame.bot.setGame(existingGame);
 
-			game.bot2 = new Bot(Bot.getNameOfBot(), dummyPlayer.getServerThreadForClient());
-			game.setPlayer2(game.bot2);
-			game.bot2.setGame(game);
+			existingGame.bot2 = new Bot(Bot.getNameOfBot(), dummyPlayer.getServerThreadForClient());
+			existingGame.setPlayer2(existingGame.bot2);
+			existingGame.bot2.setGame(existingGame);
 
-			game.gameMode = GameMode.Simulation;
-			return game;
+			existingGame.gameMode = GameMode.Simulation;
+			return existingGame;
 		}
-
 	}
 
 	/**
@@ -435,7 +434,6 @@ public class Game {
 		return player1;
 	}
 
-	//getters and setters
 	public static int getGameCounter() {
 		return gameCounter;
 	}

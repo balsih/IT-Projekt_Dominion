@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Stack;
 import java.util.logging.Logger;
-
 import Cards.Card;
 import Cards.CardName;
 import Cards.CardType;
@@ -82,13 +81,11 @@ public class Player {
 	 *
 	 * @param selectedCard, the card the player selected to play.
 	 * @return 
-	 * UpdateGame_Message, the message that updates the play process if if all conditions applies.
-	 * Failure_Message, if play-method don't works successfully
+	 * <li>UpdateGame_Message, the message that updates the play process if if all conditions applies.
+	 * <li>Failure_Message, if play-method don't works successfully
 	 */
 	public Message play(Card selectedCard) {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
-		Failure_Message fmsg = new Failure_Message();
-
 		// get the index of the selected card in handCards
 		int index = this.handCards.indexOf(selectedCard);
 
@@ -101,11 +98,11 @@ public class Player {
 			if (selectedCard.getCardName().equals(CardName.Mine)
 					&& (!(this.containsCard(this.handCards, CardName.Copper)
 							|| (this.containsCard(this.handCards, CardName.Silver)))))
-				return fmsg;
+				return new Failure_Message();
 			else if (selectedCard.getCardName().equals(CardName.Remodel) && this.handCards.size() == 1)
-				return fmsg;
+				return new Failure_Message();
 			else if (selectedCard.getCardName().equals(CardName.Cellar) && this.handCards.size() == 1)
-				return fmsg;
+				return new Failure_Message();
 
 			// executes the selected card
 			ugmsg = selectedCard.executeCard(this);
@@ -134,7 +131,7 @@ public class Player {
 			return ugmsg;
 		}
 
-		return fmsg;
+		return new Failure_Message();
 	}
 
 	/**
@@ -143,15 +140,14 @@ public class Player {
 	 * @author Bodo Gruetter
 	 * 
 	 * @param cardName, the name of the Card which should been buyed.
-	 * @return UpdateGame_Message, the message that updates the buy process, if
+	 * @return <li>UpdateGame_Message, the message that updates the buy process, if
 	 * all conditions applies.
-	 * PlayerSuccess_Message, the message who wons and lost a game, if
+	 * <li>PlayerSuccess_Message, the message who wons and lost a game, if
 	 * the game is finished.
-	 * Failure_Message, if no condition applies.
+	 * <li>Failure_Message, if no condition applies.
 	 */
 	public Message buy(CardName cardName) {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
-		Failure_Message fmsg = new Failure_Message();
 		Card buyedCard = null;
 
 		// if the player is allowed to buy a card, he picks the card
@@ -167,7 +163,7 @@ public class Player {
 
 			} catch (EmptyStackException e) {
 				this.logger.severe("The buy card stack is empty!");
-				return fmsg;
+				return new Failure_Message();
 			}
 
 			// checks if the game is ended after buying a card and who wons it
@@ -197,7 +193,7 @@ public class Player {
 			return ugmsg;
 		}
 
-		return fmsg;
+		return new Failure_Message();
 	}
 
 	/**
@@ -342,7 +338,6 @@ public class Player {
 	 * @return UpdateGame_Message, the message that updates the draw process.
 	 */
 	public UpdateGame_Message draw(int numOfCards) {
-
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		LinkedList<Card> newHandCards = new LinkedList<Card>();
 
@@ -373,7 +368,6 @@ public class Player {
 		this.handCards.addAll(newHandCards);
 
 		return ugmsg;
-
 	}
 
 	/**
@@ -381,13 +375,11 @@ public class Player {
 	 * 
 	 * @author Bodo Gruetter
 	 * 
-	 * @return UpdateGame_Message, the message that updates the skip process.
-	 * Failure_Message, if no condition applies.
+	 * @return <li>UpdateGame_Message, the message that updates the skip process.
+	 * <li>Failure_Message, if no condition applies.
 	 */
 	public Message skipPhase() {
-
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
-		Failure_Message fmsg = new Failure_Message();
 
 		if (this.equals(game.getCurrentPlayer())) {
 			switch (this.actualPhase) {
@@ -425,7 +417,7 @@ public class Player {
 			return ugmsg;
 		}
 
-		return fmsg;
+		return new Failure_Message();
 	}
 
 	/**
@@ -470,9 +462,11 @@ public class Player {
 	 * 
 	 * @author Bodo Gruetter
 	 * 
-	 * @param list, the list which should be checked.
-	 * cardType - the type that should be in the list.
-	 * @return Boolean - depending if list contains the card type or not.
+	 * @param list
+	 * , the list which should be checked.
+	 * @param cardType
+	 * , the type that should be in the list.
+	 * @return true or false, depending if list contains the card type or not.
 	 */
 	public boolean containsCardType(LinkedList<Card> list, CardType cardType) {
 		Iterator<Card> iter = list.iterator();
@@ -489,8 +483,10 @@ public class Player {
 	 * 
 	 * @author Bodo Gruetter
 	 * 
-	 * @param list, the list which should be checked.
-	 * cardName - the name of the card that should be in the list.
+	 * @param list
+	 * , the list which should be checked.
+	 * @param cardName
+	 * , the name of the card that should be in the list.
 	 * @return Boolean - depending if list contains the card or not.
 	 */
 	public boolean containsCard(LinkedList<Card> list, CardName cardName) {
@@ -520,7 +516,6 @@ public class Player {
 		return psmsg;
 	}
 	
-	// Getters and Setters
 	public int getActions() {
 		return actions;
 	}

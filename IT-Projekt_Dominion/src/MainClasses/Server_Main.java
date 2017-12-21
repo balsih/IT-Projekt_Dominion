@@ -11,7 +11,7 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 /** 
- * Launches the Server Application, implementing an TextAreaHandler
+ *  Launches the Server Application and implements a TextAreaHandler.
  * 
  *  @author Bodo Gruetter
  *  source: Prof. Bradley Richards

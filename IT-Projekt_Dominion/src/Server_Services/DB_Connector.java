@@ -41,9 +41,10 @@ public class DB_Connector {
 	 * 
 	 * @author Bodo Gruetter
 	 * 
-	 * @param 
-	 * username, the user name of a new player
-	 * password, the password of a new player
+	 * @param username
+	 * , the user name of a new player
+	 * @param password
+	 * , the password of a new player
 	 * @return
 	 * true or false, depending if username already exists
 	 */
@@ -60,7 +61,6 @@ public class DB_Connector {
 			this.prepStmt.execute();
 
 			return true;
-
 		} catch (SQLException e) {
 			return false;
 		}
@@ -71,10 +71,12 @@ public class DB_Connector {
 	 * 
 	 * @author Bodo Gruetter
 	 * 
-	 * @param 
-	 * player, the player who wons a game
-	 * score, the achieved score in a game
-	 * moves, the moves of the player in a game
+	 * @param player
+	 * , the player who wons a game
+	 * @param score
+	 * , the achieved score in a game
+	 * @param moves
+	 * , the moves of the player in a game
 	 * @return
 	 * true or false, depending if score could be saved in database
 	 */
@@ -102,8 +104,8 @@ public class DB_Connector {
 	 * 
 	 * @author Bodo Gruetter
 	 * 
-	 * @param
-	 * username, the user name of the player which should been deleted.
+	 * @param username
+	 * , the user name of the player which should been deleted.
 	 * @return
 	 * true or false depending on the delete statement works.
 	 */
@@ -130,8 +132,8 @@ public class DB_Connector {
 	 * 
 	 * @author Bodo Gruetter
 	 * 
-	 * @param
-	 * username, the username of the player which should been deleted.
+	 * @param username
+	 * , the username of the player which should been deleted.
 	 * @return
 	 * true or false, depending on the delete statement works.
 	 */
@@ -150,7 +152,7 @@ public class DB_Connector {
 	}
 
 	/**
-	 * Selects the 5 highest scores in the database sorted ascending by moves and descending by score
+	 * Selects the 5 highest scores in the database sorted ascending by moves and descending by score.
 	 * 
 	 * @author Bodo Gruetter
 	 * 
@@ -258,9 +260,10 @@ public class DB_Connector {
 	 * 
 	 * @author Bodo Gruetter
 	 * 
-	 * @param
-	 * username, the user name of the player who tries to log in
-	 * password, the password of the player who tries to log in
+	 * @param username
+	 * , the user name of the player who tries to log in
+	 * @param password
+	 * , the password of the player who tries to log in
 	 * @return
 	 * true or false depending on the user input is correct and the
 	 * select statement works.
@@ -296,6 +299,8 @@ public class DB_Connector {
 	 * Service method which allows to select the existing player in database and
 	 * print them out in console.
 	 * 
+	 * This method is not used in final game.
+	 * 
 	 * @author Bodo Gruetter
 	 */
 	public void selectPlayer() {
@@ -321,6 +326,8 @@ public class DB_Connector {
 	 * Service method which allows to select the existing player_scores in
 	 * database and print them out in console.
 	 * 
+	 * This method is not used in final game.
+	 * 
 	 * @author Bodo Gruetter
 	 */
 	public void selectPlayer_Scoring() {
@@ -334,6 +341,7 @@ public class DB_Connector {
 				System.out.println(this.rs.getString(2) + ": " + this.rs.getInt(3) + ", " + this.rs.getInt(4));
 			}
 		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

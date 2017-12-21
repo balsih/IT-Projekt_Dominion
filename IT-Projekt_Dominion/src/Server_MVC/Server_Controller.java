@@ -5,7 +5,6 @@ import java.io.IOException;
 import Abstract_MVC.Controller;
 
 /**
- * 
  * The Server_Controller controls the interaction between Server_View and Server_Model
  * and handles the events.
  * 
@@ -17,7 +16,6 @@ public class Server_Controller extends Controller<Server_Model, Server_View> {
 	private boolean portValid = false;
 
 	/**
-	 * 
 	 * Handles the events between Server_View and Server_Model
 	 * 
 	 * @author Bodo Gruetter 
@@ -60,8 +58,8 @@ public class Server_Controller extends Controller<Server_Model, Server_View> {
 	/** 
 	 * Sets port text green or red depending on if port value is valid.
 	 * 
-	 * @param
-	 * newValue, the new input value
+	 * @param newValue
+	 * , the new input value.
 	 * 
 	 * @author Bodo Gruetter 
 	 * source: Prof. Bradley Richards

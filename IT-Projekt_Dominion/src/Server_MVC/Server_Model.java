@@ -13,7 +13,6 @@ import Server_GameLogic.ServerThreadForClient;
  * the clients.
  *         
  * @author Bodo Gruetter
- * 
  * source: Prof. Bradley Richards
  */
 public class Server_Model extends Model {
@@ -99,9 +98,9 @@ public class Server_Model extends Model {
 	 * @author Bodo Gruetter
 	 * source: Prof. Bradley Richards
 	 * 
-	 * @param
-	 * newValue, the new input value that will be checked
-	 * @return valid, true or false depending if new input is valid or not
+	 * @param newValue
+	 * , the new input value that will be checked
+	 * @return true or false depending if new input is valid or not
 	 */
 	protected boolean isValidPortNumber(String newValue) {
 		boolean valid = true;
