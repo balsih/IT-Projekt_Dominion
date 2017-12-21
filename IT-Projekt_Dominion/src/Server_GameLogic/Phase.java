@@ -4,7 +4,6 @@ package Server_GameLogic;
  * 
  * Enum for the four possible phases of a game Action, Buy, CleanUp and Ending
  * 
- * Simulation is just for testing the bot.
  * @author Bodo Gruetter
  *
  */
