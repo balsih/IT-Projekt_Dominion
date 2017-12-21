@@ -82,7 +82,7 @@ public class Remodel_Card extends Card {
 		// update game Messages -> XML
 		LinkedList<Card> newHandCard = new LinkedList<Card>();
 		newHandCard.add(pickedCard);
-		ugmsg.setBuyedCard(pickedCard);
+		ugmsg.setBoughtCard(pickedCard);
 		ugmsg.setDiscardPileTopCard(pickedCard);
 		ugmsg.setDiscardPileCardNumber(this.player.getDiscardPile().size());
 		

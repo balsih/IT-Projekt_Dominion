@@ -544,9 +544,9 @@ public class GameApp_Model extends Model {
 			
 			//The picked card with mine will come into the hand and not to discardPile. But the buyCards has to be decreased
 			if(this.interaction == Interaction.Mine){
-				this.yourNewHandCards.add(ugmsg.getBuyedCard());
-				this.buyCards.replace(ugmsg.getBuyedCard().getCardName(), this.buyCards.get(ugmsg.getBuyedCard().getCardName())-1);
-				ugmsg.setBuyedCard(null);
+				this.yourNewHandCards.add(ugmsg.getBoughtCard());
+				this.buyCards.replace(ugmsg.getBoughtCard().getCardName(), this.buyCards.get(ugmsg.getBoughtCard().getCardName())-1);
+				ugmsg.setBoughtCard(null);
 			}
 			this.interaction = Interaction.Skip;//defaultSetting
 			this.processUpdateGame(ugmsg);
@@ -669,9 +669,9 @@ public class GameApp_Model extends Model {
 		}
 
 		//If a buy was successful. Always currentPlayer
-		//stores the buyedCard of the currentPlayer and reduces the value of the buyCards(Cards which can be bought)
-		if(ugmsg.getBuyedCard() != null)
-			this.buyCards.replace(ugmsg.getBuyedCard().getCardName(), this.buyCards.get(ugmsg.getBuyedCard().getCardName())-1);
+		//stores the boughtCard of the currentPlayer and reduces the value of the buyCards(Cards which can be bought)
+		if(ugmsg.getBoughtCard() != null)
+			this.buyCards.replace(ugmsg.getBoughtCard().getCardName(), this.buyCards.get(ugmsg.getBoughtCard().getCardName())-1);
 		
 
 		//Just necessary to show opponent's size of discardPile

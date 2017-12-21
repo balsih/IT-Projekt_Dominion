@@ -23,7 +23,7 @@ import Server_GameLogic.Phase;
  * <li>buys:					The number of buys <Integer> (how many cards the player can buy) left. Always for the currentPlayer.
  * <li>coins:					The number of coins <Integer> left. Always currentPlayer.
  * <li>currentPhase:			The currentPhase <Phase>. Always currentPlayer and just set if currentPhase changes.
- * <li>buyedCard:				The buyedCard <Card> and confirmation, that the buy succeeded. Always currentPlayer.
+ * <li>boughtCard:				The boughtCard <Card> and confirmation, that the buy succeeded. Always currentPlayer.
  * <li>deckPileCardNumber:		The size <Integer> of the deckPile. Always currentPlayer.
  * <li>discardPileCardNumber:	The size <Integer> of the discardPile. Always currentPlayer.
  * <li>discardPileTopCard:		The topCard <Card> of the discardPile. Always currentPlayer.
@@ -62,10 +62,10 @@ public class UpdateGame_Message extends Message {
 	private Integer deckPileCardNumber = null;
 	private Integer discardPileCardNumber = null;
 
-	private static final String ELEMENT_BUYEDCARD = "buyedCard";
+	private static final String ELEMENT_BOUGHTCARD = "boughtCard";
 	private static final String ELEMENT_PLAYEDCARD = "playedCard";
 	private static final String ELEMENT_DISCARDPILE_TOP_CARD = "discardPileTopCard";
-	private Card buyedCard = null;
+	private Card boughtCard = null;
 	private Card playedCard = null;
 	private Card discardPileTopCard = null;
 
@@ -152,7 +152,7 @@ public class UpdateGame_Message extends Message {
 		this.integerElements.put(ELEMENT_BUYS, this.buys);
 
 		this.cardElements.put(ELEMENT_PLAYEDCARD, this.playedCard);
-		this.cardElements.put(ELEMENT_BUYEDCARD, this.buyedCard);
+		this.cardElements.put(ELEMENT_BOUGHTCARD, this.boughtCard);
 		this.cardElements.put(ELEMENT_DISCARDPILE_TOP_CARD, this.discardPileTopCard);
 
 		//The values has to be null if they were not set. Necessary to ask if a content was set (not null)
@@ -190,7 +190,7 @@ public class UpdateGame_Message extends Message {
 		this.chat = this.stringElements.get(ELEMENT_CHAT);
 		this.log = this.stringElements.get(ELEMENT_LOG);
 		this.playedCard = this.cardElements.get(ELEMENT_PLAYEDCARD);
-		this.buyedCard = this.cardElements.get(ELEMENT_BUYEDCARD);
+		this.boughtCard = this.cardElements.get(ELEMENT_BOUGHTCARD);
 		this.discardPileTopCard = this.cardElements.get(ELEMENT_DISCARDPILE_TOP_CARD);
 		this.actions = this.integerElements.get(ELEMENT_ACTIONS);
 		this.coins = this.integerElements.get(ELEMENT_COINS);
@@ -495,8 +495,8 @@ public class UpdateGame_Message extends Message {
 			first.setNewHandCards(second.getNewHandCards());
 		if (first.playedCard == null)
 			first.playedCard = second.playedCard;
-		if (first.buyedCard == null)
-			first.buyedCard = second.buyedCard;
+		if (first.boughtCard == null)
+			first.boughtCard = second.boughtCard;
 		if (first.interactionType == null)
 			first.interactionType = second.interactionType;
 		if (first.interactionType == null)
@@ -537,8 +537,8 @@ public class UpdateGame_Message extends Message {
 		return this.playedCard;
 	}
 
-	public Card getBuyedCard() {
-		return this.buyedCard;
+	public Card getBoughtCard() {
+		return this.boughtCard;
 	}
 
 	public Card getDiscardPileTopCard() {
@@ -599,8 +599,8 @@ public class UpdateGame_Message extends Message {
 		this.playedCard = playedCard;
 	}
 
-	public void setBuyedCard(Card buyedCard) {
-		this.buyedCard = buyedCard;
+	public void setBoughtCard(Card boughtCard) {
+		this.boughtCard = boughtCard;
 	}
 
 	public void setDiscardPileTopCard(Card discardPileTopCard) {

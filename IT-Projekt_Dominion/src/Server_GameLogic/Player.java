@@ -181,7 +181,7 @@ public class Player {
 			ugmsg.setBuys(this.buys);
 			ugmsg.setDiscardPileTopCard(this.discardPile.peek());
 			ugmsg.setDiscardPileCardNumber(this.discardPile.size());
-			ugmsg.setBuyedCard(buyedCard);
+			ugmsg.setBoughtCard(buyedCard);
 
 			// if the buy phase is terminated, skip
 			if (this.buys == 0) {

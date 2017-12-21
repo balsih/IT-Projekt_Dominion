@@ -63,12 +63,12 @@ public class Mine_Card extends Card {
 			if (discardedCard.getCardName() == CardName.Copper){
 				Silver_Card silverCard = game.getSilverPile().pop();
 				player.getHandCards().add(silverCard);
-				ugmsg.setBuyedCard(silverCard);
+				ugmsg.setBoughtCard(silverCard);
 				ugmsg.setLog(this.player.getPlayerName()+": #disposed# "+"#"+discardedCard.toString()+"#"+", #received# "+"#"+CardName.Silver.toString()+"#");
 			} else if (discardedCard.getCardName() == CardName.Silver){
 				Gold_Card goldCard = game.getGoldPile().pop();
 				player.getHandCards().add(goldCard);
-				ugmsg.setBuyedCard(goldCard);
+				ugmsg.setBoughtCard(goldCard);
 				ugmsg.setLog(this.player.getPlayerName()+": #disposed# "+"#"+discardedCard.toString()+"#"+", #received# "+"#"+CardName.Gold.toString()+"#");
 			}
 			
