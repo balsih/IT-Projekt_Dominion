@@ -242,9 +242,14 @@ public class ServerThreadForClient implements Runnable {
 			
 			//Tells the client that his login failed
 		}else{
-			logger.info(this.clientName+"'s login failed");
 			Failure_Message fmsg = new Failure_Message();
-			fmsg.setNotification("#loginFailed#");
+			if(onlineClients.contains(clientName)){
+				logger.info(this.clientName+"'s login failed because player is already logged in");
+				fmsg.setNotification("#clientUsed#");
+			}else{
+				logger.info(this.clientName+"'s login failed because of wrong inputs");
+				fmsg.setNotification("#loginFailed#");
+			}
 			return fmsg;
 		}
 	}
