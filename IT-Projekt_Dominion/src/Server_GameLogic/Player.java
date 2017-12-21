@@ -23,7 +23,6 @@ import Messages.UpdateGame_Message;
  * 'Action', 'Buy', 'Clean up' and 'Ending'.
  * 
  * @author Bodo Gruetter
- * 
  */
 public class Player {
 	protected LinkedList<Card> handCards;
@@ -487,7 +486,7 @@ public class Player {
 	 * , the list which should be checked.
 	 * @param cardName
 	 * , the name of the card that should be in the list.
-	 * @return Boolean - depending if list contains the card or not.
+	 * @return true or false, depending if list contains the card or not.
 	 */
 	public boolean containsCard(LinkedList<Card> list, CardName cardName) {
 		Iterator<Card> iter = list.iterator();
