@@ -1,7 +1,5 @@
 package Messages;
 
-import java.util.logging.Logger;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -32,7 +30,6 @@ public class Failure_Message extends Message {
 	 */
 	@Override
 	protected void addNodes(Document docIn){
-		Logger logger = Logger.getLogger("");
         Element root = docIn.getDocumentElement();
         if(this.notification != null){
     		Element notification = docIn.createElement(ELEMENT_NOTIFICATION);
