@@ -1,15 +1,14 @@
 package Cards;
 
 import Messages.UpdateGame_Message;
-import Server_GameLogic.Game;
 import Server_GameLogic.Player;
 
 /**
- * @author René
- * @version 1.0
- * @created 31-Okt-2017 16:58:15
+ * Village represents a action card and costs 3. 
+ * 
+ * @author Rene Schwab
+ * 
  */
-
 public class Village_Card extends Card {
 
 	public Village_Card(){
@@ -19,10 +18,16 @@ public class Village_Card extends Card {
 	}
 	
 	/**
+	 * Player gets 1 handcard from the deck pile and 2 actions.   
+	 * Changes related with the card get set in the UpdateGame_Message
+	 * 
+	 * @author Rene Schwab
 	 * 
 	 * @param player
+	 * , current player 
+	 * @return UpdateGame_Message
+	 * , containing changes related with this card. 
 	 */
-	@Override
 	public UpdateGame_Message executeCard(Player player){
 		
 		player.setActions(player.getActions() + 2);

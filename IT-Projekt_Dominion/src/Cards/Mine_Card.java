@@ -1,14 +1,9 @@
 package Cards;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.logging.Logger;
-
 import Messages.Failure_Message;
 import Messages.Interaction;
 import Messages.Message;
 import Messages.UpdateGame_Message;
-import Server_GameLogic.Game;
 import Server_GameLogic.Phase;
 import Server_GameLogic.Player;
 
@@ -25,7 +20,7 @@ public class Mine_Card extends Card {
 		this.cost = 5;
 		this.type = CardType.Action;
 	}
-
+	
 	/**
 	 * 
 	 * @param player
@@ -43,7 +38,6 @@ public class Mine_Card extends Card {
 		// update game Messages -> XML 
 		ugmsg.setInteractionType(Interaction.Mine);
 		ugmsg.setPlayedCards(this);
-		
 		return ugmsg;
 	}
 	/**
@@ -52,7 +46,6 @@ public class Mine_Card extends Card {
 	 * @param the from the player discarded Card     
 	 * @return a linkedlist with all available cards
 	 */
-	
 	public Message executeMine(Card discardedCard){
 		if((discardedCard.getCardName() == CardName.Copper) || (discardedCard.getCardName() == CardName.Silver)){
 			UpdateGame_Message ugmsg = new UpdateGame_Message();

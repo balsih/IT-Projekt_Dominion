@@ -205,8 +205,9 @@ public class MainMenu_View extends View<GameApp_Model> {
 		table = new TableView<Highscore>();
 		table.setId("table");
 		table.setItems(model.sendHighScoreRequest());
-		table.getColumns().addAll(nameColumn, pointColumn, roundColumn);
+		table.getColumns().addAll(nameColumn, roundColumn, pointColumn);
 		table.setPrefSize(340, 180);
+		table.setPlaceholder(new Label(""));
 		
 		
 		highscoreBox.getChildren().addAll(highscoreLbl, table);

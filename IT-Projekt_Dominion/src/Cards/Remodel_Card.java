@@ -1,24 +1,21 @@
 package Cards;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import Messages.Interaction;
 import Messages.Message;
 import Messages.UpdateGame_Message;
-import Server_GameLogic.Game;
 import Server_GameLogic.Phase;
 import Server_GameLogic.Player;
 
 /**
- * @author René
- * @version 1.0
- * @created 31-Okt-2017 16:58:11
+ * Remodel represents a action card and costs 4. 
+ * 
+ * @author Rene Schwab
+ * 
  */
 public class Remodel_Card extends Card {
-
 
 	public Remodel_Card(){
 		this.cardName = CardName.Remodel;
@@ -27,14 +24,18 @@ public class Remodel_Card extends Card {
 	}
 
 	/**
+	 * Asks the player to chose a card to trash.
+	 * Changes related with the card get set in the UpdateGame_Message
+	 * 
+	 * @author Rene Schwab
 	 * 
 	 * @param player
+	 * , current player 
+	 * @return UpdateGame_Message
+	 * , containing changes related with this card. 
 	 */
-	@Override
 	public UpdateGame_Message executeCard(Player player){
-		
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
-		
 		this.player = player;
 		
 		//#DisposeCard# Chose a card to get rid of
@@ -47,7 +48,18 @@ public class Remodel_Card extends Card {
 		return ugmsg;
 	}
 	
-	
+	/**
+	 * Trashes the selected card and allows the player to select a card 
+	 * that costs up to 2 more than the trashed card.    
+	 * Changes related with the card get set in the UpdateGame_Message
+	 * 
+	 * @author Rene Schwab
+	 * 
+	 * @param disposedCard
+	 * , selected card to trash
+	 * @return UpdateGame_Message
+	 * , containing changes related with this card. 
+	 */
 	public UpdateGame_Message executeRemodel1(Card disposedCard) { 
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
@@ -60,7 +72,7 @@ public class Remodel_Card extends Card {
 		LinkedList<CardName> availableCards = new LinkedList<CardName>();
 		availableCards.addAll(list);
 		
-		this.player.getHandCards().remove(disposedCard); // removes card from hand 
+		this.player.getHandCards().remove(disposedCard); // removes the selected card from handcards  
 		
 		//#ChoseRemodel1# Chose a card with max 2 higher costs than the disposed card
 		ugmsg.setLog(player.getPlayerName()+": #disposed# "+"#"+disposedCard.getCardName().toString()+"#"+" #card#. #ChoseRemodel1#"); 
@@ -71,6 +83,17 @@ public class Remodel_Card extends Card {
 		return ugmsg;
 	}
 
+	/**
+	 * Ads the selected card to the handcards 
+	 * Changes related with the card get set in the UpdateGame_Message
+	 * 
+	 * @author Rene Schwab
+	 * 
+	 * @param pickedCardName
+	 * , selected card to pick 
+	 * @return UpdateGame_Message
+	 * , containing changes related with this card. 
+	 */
 	public Message executeRemodel2(CardName pickedCardName) {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 
@@ -86,9 +109,7 @@ public class Remodel_Card extends Card {
 		ugmsg.setDiscardPileTopCard(pickedCard);
 		ugmsg.setDiscardPileCardNumber(this.player.getDiscardPile().size());
 		
-		/* checks if the game is ended after playing this card and who wons
-		* it
-		*/
+		// checks if the game is ended after playing this card and who did won
 		if (this.game.checkGameEnding()) {
 			this.player.setActualPhase(Phase.Ending);
 			this.game.checkWinner();
