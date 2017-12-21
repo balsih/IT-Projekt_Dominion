@@ -164,6 +164,7 @@ public abstract class Message {
         else if (type == MessageType.Interaction) newMessage = new Interaction_Message();
         else if (type == MessageType.Knock) newMessage = new Knock_Message();
         else if (type == MessageType.Request) newMessage = new Request_Message();
+        else if (type == MessageType.StartBotGame) newMessage = new StartBotGame_Message();
         else {
         	Error_Message msg = new Error_Message();
         	msg.setInfo("Error parsing received XML");

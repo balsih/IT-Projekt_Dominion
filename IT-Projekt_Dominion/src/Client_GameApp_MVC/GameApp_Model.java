@@ -34,6 +34,7 @@ import Messages.Message;
 import Messages.PlayCard_Message;
 import Messages.PlayerSuccess_Message;
 import Messages.Request_Message;
+import Messages.StartBotGame_Message;
 import Messages.UpdateGame_Message;
 import Server_GameLogic.GameMode;
 import Server_GameLogic.Phase;
@@ -600,6 +601,18 @@ public class GameApp_Model extends Model {
 		this.currentPhase = cgmsg.getPhase();
 		this.yourDeck = cgmsg.getDeckPile().size();
 	}
+	
+	protected void sendStartBot(){
+		if(this.gameMode == GameMode.Singleplayer){
+			StartBotGame_Message sbgmsg = new StartBotGame_Message();
+			Message msgIn = this.processMessage(sbgmsg);
+			if(msgIn instanceof Commit_Message){
+				//start succeeded, nothing toDo here
+			}else if(msgIn instanceof Failure_Message){
+				//start failed, should not be possible, nothing toDo here
+			}
+		}
+	}
 
 	/**
 	 * Set the players with set success and victoryPoints. Result depends weather you won or lost.
@@ -673,7 +686,6 @@ public class GameApp_Model extends Model {
 		if(ugmsg.getBoughtCard() != null){
 			Card boughtCard = ugmsg.getBoughtCard();
 			this.buyCards.replace(boughtCard.getCardName(), this.buyCards.get(boughtCard.getCardName())-1);
-			System.out.println(boughtCard);
 		}
 		
 

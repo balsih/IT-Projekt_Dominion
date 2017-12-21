@@ -198,6 +198,9 @@ public class ServerThreadForClient implements Runnable {
 		case Request:
 			msgOut = this.processRequest(msgIn);
 			break;
+		case StartBotGame:
+			msgOut = this.processStartBotGame(msgIn);
+			break;
 		default:
 			msgOut = new Error_Message();
 		}
@@ -504,8 +507,8 @@ public class ServerThreadForClient implements Runnable {
 	 * @author Lukas
 	 * @param msgIn
 	 * 				Not used
-	 * @return UpdateGame_Message or PlayerSuccess_Message if something has changed.
-	 * 			Commit_Message when nothing changed
+	 * @return <li>UpdateGame_Message or PlayerSuccess_Message if something has changed.
+	 * 			<li>Commit_Message when nothing changed
 	 */
 	private Message processAskForChanges(Message msgIn) {
 		if(this.waitingMessages.size() > 0){
@@ -513,6 +516,24 @@ public class ServerThreadForClient implements Runnable {
 		}else{
 			return new Commit_Message();
 		}
+	}
+	
+	/**
+	 * Starts the Bot
+	 * 
+	 * @param msgIn
+	 * 				Not used
+	 * @return 	<li>Commit_Message if the threat-start succeeded
+	 * 			<li>Failure_Message if the threat-start failed
+	 */
+	private Message processStartBotGame(Message msgIn){
+		if(this.game.getGameMode() == GameMode.Singleplayer){
+			Bot bot = (Bot) this.game.getOpponent(this.player);
+			new Thread(bot).start();
+			return new Commit_Message();
+		}
+		
+		return new Failure_Message();
 	}
 	
 	/**
