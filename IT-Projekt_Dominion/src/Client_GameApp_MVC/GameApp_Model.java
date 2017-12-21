@@ -403,7 +403,7 @@ public class GameApp_Model extends Model {
 	}
 
 	/**
-	 * Sends the client's cosen GameMode (Singleplayer or Multiplayer) to server.
+	 * Sends the client's chosen GameMode (Singleplayer or Multiplayer) to server.
 	 * 
 	 * @author Lukas
 	 * @param mode
@@ -434,7 +434,8 @@ public class GameApp_Model extends Model {
 	 * @author Lukas
 	 * @param cardName
 	 * 				The card (CardName) the client wants to buy
-	 * @return update, tells the controller if the game has to be updated
+	 * @return	<li>true, if an update is necessary
+	 * 			<li>false, if an update would be obsolete
 	 */
 	protected boolean sendBuyCard(CardName cardName){
 		BuyCard_Message bcmsg = new BuyCard_Message();
@@ -462,7 +463,8 @@ public class GameApp_Model extends Model {
 	 * @author Lukas
 	 * @param card
 	 * 				The chosen card the client wants to play
-	 * @return update, tells the controller if the game has to be updated
+	 * @return	<li>true, if an update is necessary
+	 * 			<li>false, if an update would be obsolete
 	 */
 	protected boolean sendPlayCard(Card card){
 		PlayCard_Message pcmsg = new PlayCard_Message();
@@ -484,7 +486,8 @@ public class GameApp_Model extends Model {
 	 * 
 	 * @author Lukas
 	 * @param chat
-	 * @return update, tells the controller if the game has to be updated
+	 * @return	<li>true, if an update is necessary
+	 * 			<li>false, if an update would be obsolete
 	 */
 	protected boolean sendChat(String chat){
 		Chat_Message cmsg = new Chat_Message();
@@ -503,7 +506,8 @@ public class GameApp_Model extends Model {
 	 * Sends the specified interaction with content to server.
 	 * 
 	 * @author Lukas
-	 * @return update, tells the controller if the game has to be updated
+	 * @return	<li>true, if an update is necessary
+	 * 			<li>false, if an update would be obsolete
 	 */
 	protected boolean sendInteraction(){
 		Interaction_Message imsg = new Interaction_Message();
@@ -602,6 +606,11 @@ public class GameApp_Model extends Model {
 		this.yourDeck = cgmsg.getDeckPile().size();
 	}
 	
+	/**
+	 * Tells the server that the client is ready to start the Game if the GameMode is Singleplayer.
+	 * 
+	 * @author Lukas
+	 */
 	protected void sendStartBot(){
 		if(this.gameMode == GameMode.Singleplayer){
 			StartBotGame_Message sbgmsg = new StartBotGame_Message();
