@@ -317,6 +317,9 @@ public class ServerThreadForClient implements Runnable {
 	 * @return Commit_Message (should always succeed)
 	 */
 	private Message processGameMode(Message msgIn) {
+		this.waitingMessages.clear();
+		this.unsentMessages.clear();
+		
 		GameMode_Message gmmsg = (GameMode_Message) msgIn;
 		GameMode gameMode = gmmsg.getMode();
 		this.player = new Player(this.clientName, this);
