@@ -206,7 +206,7 @@ public class MainMenu_View extends View<GameApp_Model> {
 		table.setId("table");
 		table.setItems(model.sendHighScoreRequest());
 		table.getColumns().addAll(nameColumn, pointColumn, roundColumn);
-		table.setPrefSize(340, 163);
+		table.setPrefSize(340, 180);
 		
 		
 		highscoreBox.getChildren().addAll(highscoreLbl, table);
