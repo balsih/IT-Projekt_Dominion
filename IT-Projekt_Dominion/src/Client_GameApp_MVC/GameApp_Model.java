@@ -795,18 +795,15 @@ public class GameApp_Model extends Model {
 		return msgIn;
 	}
 
-
-	/* Provisorischer Kommentar inkl. Quelle -> Rene
-	   https://panjutorials.de/tutorials/javafx-8-gui/lektionen/audio-player-in-javafx-2/?cache-flush=1510439948.4916
-	   hier legen wir die Resource an, welche unbedingt im entsprechenden Ordner sein muss
-
-	 * URL resource = getClass().getResource("sound.mp3"); // wir legen das Mediaobjekt and und weisen unsere Resource zu 
-	 * Media media = new Media(resource.toString()); // wir legen den Mediaplayer an und weisen
-	 * ihm das Media Objekt zu mediaPlayer = new MediaPlayer(media);
+	/**
+	 * Starts game music (loop), stops another music before if necessary 
+	 * 
+	 * @author Rene Schwab
+	 * ,source: https://panjutorials.de/tutorials/javafx-8-gui/lektionen/audio-player-in-javafx-2
+	 * @param soundFileName
+	 * , name of the sound file
 	 */
-	
 	public void startMediaPlayer(String soundFileName) {
-		// Mediaplayer: new music
 		if (mediaPlayer != null) {
 			mediaPlayer.stop();
 		}
@@ -814,14 +811,19 @@ public class GameApp_Model extends Model {
 		mediaPlayer = new MediaPlayer(new Media(resource.toString()));
 		mediaPlayer.setOnEndOfMedia(new Runnable() {
 			public void run() {
-				mediaPlayer.seek(Duration.ZERO);
+				mediaPlayer.seek(Duration.ZERO); // loop
 			}
 		});
 		mediaPlayer.play();
 	}
 	
-	
-	// Button click sound
+	/**
+	 * Starts button click sound
+	 * 
+	 * @author Rene Schwab
+	 * ,source: https://panjutorials.de/tutorials/javafx-8-gui/lektionen/audio-player-in-javafx-2
+	 * 
+	 */
 	public void startBtnClickSound() {
 		if (mediaPlayerBtn != null) {
 			mediaPlayerBtn.stop();
@@ -831,15 +833,21 @@ public class GameApp_Model extends Model {
 		mediaPlayerBtn.play();
 	}
 	
-	// Game stard sound
-		public void gameStartSound() {
-			if (mediaPlayerBtn != null) {
-				mediaPlayerBtn.stop();
-			}
-			URL resource = getClass().getResource("Sword_Sound.mp3");
-			mediaPlayerBtn = new MediaPlayer(new Media(resource.toString()));
-			mediaPlayerBtn.play();
+	/**
+	 * Starts sword sound
+	 * 
+	 * @author Rene Schwab
+	 * ,source: https://panjutorials.de/tutorials/javafx-8-gui/lektionen/audio-player-in-javafx-2
+	 * 
+	 */
+	public void gameStartSound() {
+		if (mediaPlayerBtn != null) {
+			mediaPlayerBtn.stop();
 		}
+		URL resource = getClass().getResource("Sword_Sound.mp3");
+		mediaPlayerBtn = new MediaPlayer(new Media(resource.toString()));
+		mediaPlayerBtn.play();
+	}
 	
 
 	public String getClientName(){
@@ -865,4 +873,5 @@ public class GameApp_Model extends Model {
 	public void setClientName(String clientName){
 		this.clientName = clientName;
 	}
+	
 }//end GameApp_Model
