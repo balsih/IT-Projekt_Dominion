@@ -156,7 +156,10 @@ public class GameApp_View extends View<GameApp_Model> {
 		model.yourDiscardPileTopCard = null;
 	}
 
-	// Creates the GUI with all its containers and contents
+	/**
+	 * @author Adrian
+	 * Creates the GUI and styles the content
+	 */
 	@Override
 	protected Scene create_GUI(){
 
