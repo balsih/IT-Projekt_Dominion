@@ -5,9 +5,11 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
- * @author René
- * @version 1.0
- * @created 31-Okt-2017 17:06:30
+ *  Class stores and handle the multilingual function of the application. 
+ * 
+ * @author Brad Richards, Copyright 2015, FHNW
+ * , adapted by Rene Schwab
+ * 
  */
 public class Translator {
 
@@ -15,13 +17,15 @@ public class Translator {
 	private ResourceBundle resourceBundle;
 	private ServiceLocator sl = ServiceLocator.getServiceLocator();
 
-//	public Translator(){  wird Konstruktor ohne Parameter benötigt??
-//
-//	}
 
 	/**
+	 * Sets up a new Translator object. 
+	 * 
+	 * @author Rene Schwab
 	 * 
 	 * @param localeString
+	 * , language locale as String (de, en, ...) 
+	 * 
 	 */
 	public Translator(String localeString){
 		// Can we find the language in our supported locales?
@@ -42,26 +46,31 @@ public class Translator {
         resourceBundle = ResourceBundle.getBundle(sl.getAPP_CLASS().getName(), locale);
         Locale.setDefault(locale); // Change VM default (for dialogs, etc.)
         currentLocale = locale;
-        
-        
-        // logger.info("Loaded resources for " + locale.getLanguage());
-
 	}
 
+	
 	public Locale getCurrentLocale(){
 		return currentLocale;
 	}
 
 	/**
+	 * Gives back the corresponding String for the given key (in the selected language of the Translator) 
+	 * 
+	 * @author Rene Schwab
 	 * 
 	 * @param key
+	 * , that corresponds with the key of the property file 
+	 * 
+	 * @return String
+	 * , value of the corresponding key 
 	 */
 	public String getString(String key) {
 		try {
 			return resourceBundle.getString(key);
 		} catch (MissingResourceException e) {
-			// logger.warning("Missing string: " + key);
+			// gives "--" back if no resource (key) was found 
 			return "--";
 		}
 	}
+	
 }//end Translator

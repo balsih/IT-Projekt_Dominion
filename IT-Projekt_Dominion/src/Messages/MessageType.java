@@ -20,6 +20,7 @@ package Messages;
  * <li>GiveUp:			Tells the server the client gave Up his/her current game
  * <li>Interaction:		Tells the client's which Interaction they have to perform and provides the content from the answers
  * <li>Knock:			Knocks on socket's ip and port weather server is listening
+ * <li>startBotGame:	Commits the CreateGame_Message to start the Bot
  * <li>Request:			Tries to get the lost Message from server
  * 
  * @author Lukas, source: Bradley Richards
@@ -43,6 +44,7 @@ public enum MessageType {
 	GiveUp,
 	Interaction,
 	Request,
+	StartBotGame,
 	Knock;
 
 	/**
@@ -89,6 +91,7 @@ public enum MessageType {
        	else if (msg instanceof Interaction_Message) type = MessageType.Interaction;
        	else if (msg instanceof Knock_Message) type = MessageType.Knock;
        	else if (msg instanceof Request_Message) type = MessageType.Request;
+       	else if (msg instanceof StartBotGame_Message) type = MessageType.StartBotGame;
     	return type;
     }	
 }

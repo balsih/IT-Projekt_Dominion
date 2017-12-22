@@ -34,6 +34,7 @@ import Messages.Message;
 import Messages.PlayCard_Message;
 import Messages.PlayerSuccess_Message;
 import Messages.Request_Message;
+import Messages.StartBotGame_Message;
 import Messages.UpdateGame_Message;
 import Server_GameLogic.GameMode;
 import Server_GameLogic.Phase;
@@ -402,7 +403,7 @@ public class GameApp_Model extends Model {
 	}
 
 	/**
-	 * Sends the client's cosen GameMode (Singleplayer or Multiplayer) to server.
+	 * Sends the client's chosen GameMode (Singleplayer or Multiplayer) to server.
 	 * 
 	 * @author Lukas
 	 * @param mode
@@ -433,7 +434,8 @@ public class GameApp_Model extends Model {
 	 * @author Lukas
 	 * @param cardName
 	 * 				The card (CardName) the client wants to buy
-	 * @return update, tells the controller if the game has to be updated
+	 * @return	<li>true, if an update is necessary
+	 * 			<li>false, if an update would be obsolete
 	 */
 	protected boolean sendBuyCard(CardName cardName){
 		BuyCard_Message bcmsg = new BuyCard_Message();
@@ -461,7 +463,8 @@ public class GameApp_Model extends Model {
 	 * @author Lukas
 	 * @param card
 	 * 				The chosen card the client wants to play
-	 * @return update, tells the controller if the game has to be updated
+	 * @return	<li>true, if an update is necessary
+	 * 			<li>false, if an update would be obsolete
 	 */
 	protected boolean sendPlayCard(Card card){
 		PlayCard_Message pcmsg = new PlayCard_Message();
@@ -483,7 +486,8 @@ public class GameApp_Model extends Model {
 	 * 
 	 * @author Lukas
 	 * @param chat
-	 * @return update, tells the controller if the game has to be updated
+	 * @return	<li>true, if an update is necessary
+	 * 			<li>false, if an update would be obsolete
 	 */
 	protected boolean sendChat(String chat){
 		Chat_Message cmsg = new Chat_Message();
@@ -502,7 +506,8 @@ public class GameApp_Model extends Model {
 	 * Sends the specified interaction with content to server.
 	 * 
 	 * @author Lukas
-	 * @return update, tells the controller if the game has to be updated
+	 * @return	<li>true, if an update is necessary
+	 * 			<li>false, if an update would be obsolete
 	 */
 	protected boolean sendInteraction(){
 		Interaction_Message imsg = new Interaction_Message();
@@ -600,6 +605,23 @@ public class GameApp_Model extends Model {
 		this.currentPhase = cgmsg.getPhase();
 		this.yourDeck = cgmsg.getDeckPile().size();
 	}
+	
+	/**
+	 * Tells the server that the client is ready to start the Game if the GameMode is Singleplayer.
+	 * 
+	 * @author Lukas
+	 */
+	protected void sendStartBot(){
+		if(this.gameMode == GameMode.Singleplayer){
+			StartBotGame_Message sbgmsg = new StartBotGame_Message();
+			Message msgIn = this.processMessage(sbgmsg);
+			if(msgIn instanceof Commit_Message){
+				//start succeeded, nothing toDo here
+			}else if(msgIn instanceof Failure_Message){
+				//start failed, should not be possible, nothing toDo here
+			}
+		}
+	}
 
 	/**
 	 * Set the players with set success and victoryPoints. Result depends weather you won or lost.
@@ -641,7 +663,7 @@ public class GameApp_Model extends Model {
 			this.turnEnded = false;
 		}
 
-		//If something necessary happened in the Game, it will be provided to show
+		//If something important happened in the Game, it will be provided to show
 		if(ugmsg.getLog() != null){
 			this.newLog = this.lineSeparator(ugmsg.getLog(), true);
 		}
@@ -673,7 +695,6 @@ public class GameApp_Model extends Model {
 		if(ugmsg.getBoughtCard() != null){
 			Card boughtCard = ugmsg.getBoughtCard();
 			this.buyCards.replace(boughtCard.getCardName(), this.buyCards.get(boughtCard.getCardName())-1);
-			System.out.println(boughtCard);
 		}
 		
 
@@ -686,7 +707,7 @@ public class GameApp_Model extends Model {
 			this.opponentDeck = ugmsg.getDeckPileCardNumber();
 		}
 
-		//Just necessary to show opponent's size of deckPile
+		//Gets the size of the currentPlayer's deckPile
 		if(ugmsg.getDiscardPileCardNumber() != null && 
 				((this.currentPlayer.compareTo(this.clientName) == 0 && ugmsg.getCurrentPlayer() == null)
 				|| (this.currentPlayer.compareTo(this.clientName) != 0 && ugmsg.getCurrentPlayer() != null))){
@@ -740,7 +761,7 @@ public class GameApp_Model extends Model {
 	 * 
 	 * @author Lukas, source:  partly(Bradley Richards)
 	 * @param message
-	 * @return msgIn, individual InputMessage
+	 * @return msgIn, individual InputMessage <Message>
 	 */
 	protected synchronized Message processMessage(Message message){//synchronized is necessary because of the Thread in controller uses this method too
 		Socket socket = connect();
@@ -774,18 +795,15 @@ public class GameApp_Model extends Model {
 		return msgIn;
 	}
 
-
-	/* Provisorischer Kommentar inkl. Quelle -> Rene
-	   https://panjutorials.de/tutorials/javafx-8-gui/lektionen/audio-player-in-javafx-2/?cache-flush=1510439948.4916
-	   hier legen wir die Resource an, welche unbedingt im entsprechenden Ordner sein muss
-
-	 * URL resource = getClass().getResource("sound.mp3"); // wir legen das Mediaobjekt and und weisen unsere Resource zu 
-	 * Media media = new Media(resource.toString()); // wir legen den Mediaplayer an und weisen
-	 * ihm das Media Objekt zu mediaPlayer = new MediaPlayer(media);
+	/**
+	 * Starts game music (loop), stops another music before if necessary 
+	 * 
+	 * @author Rene Schwab
+	 * ,source: https://panjutorials.de/tutorials/javafx-8-gui/lektionen/audio-player-in-javafx-2
+	 * @param soundFileName
+	 * , name of the sound file
 	 */
-	
 	public void startMediaPlayer(String soundFileName) {
-		// Mediaplayer: new music
 		if (mediaPlayer != null) {
 			mediaPlayer.stop();
 		}
@@ -793,14 +811,19 @@ public class GameApp_Model extends Model {
 		mediaPlayer = new MediaPlayer(new Media(resource.toString()));
 		mediaPlayer.setOnEndOfMedia(new Runnable() {
 			public void run() {
-				mediaPlayer.seek(Duration.ZERO);
+				mediaPlayer.seek(Duration.ZERO); // loop
 			}
 		});
 		mediaPlayer.play();
 	}
 	
-	
-	// Button click sound
+	/**
+	 * Starts button click sound
+	 * 
+	 * @author Rene Schwab
+	 * ,source: https://panjutorials.de/tutorials/javafx-8-gui/lektionen/audio-player-in-javafx-2
+	 * 
+	 */
 	public void startBtnClickSound() {
 		if (mediaPlayerBtn != null) {
 			mediaPlayerBtn.stop();
@@ -810,15 +833,21 @@ public class GameApp_Model extends Model {
 		mediaPlayerBtn.play();
 	}
 	
-	// Game stard sound
-		public void gameStartSound() {
-			if (mediaPlayerBtn != null) {
-				mediaPlayerBtn.stop();
-			}
-			URL resource = getClass().getResource("Sword_Sound.mp3");
-			mediaPlayerBtn = new MediaPlayer(new Media(resource.toString()));
-			mediaPlayerBtn.play();
+	/**
+	 * Starts sword sound
+	 * 
+	 * @author Rene Schwab
+	 * ,source: https://panjutorials.de/tutorials/javafx-8-gui/lektionen/audio-player-in-javafx-2
+	 * 
+	 */
+	public void gameStartSound() {
+		if (mediaPlayerBtn != null) {
+			mediaPlayerBtn.stop();
 		}
+		URL resource = getClass().getResource("Sword_Sound.mp3");
+		mediaPlayerBtn = new MediaPlayer(new Media(resource.toString()));
+		mediaPlayerBtn.play();
+	}
 	
 
 	public String getClientName(){
@@ -844,4 +873,5 @@ public class GameApp_Model extends Model {
 	public void setClientName(String clientName){
 		this.clientName = clientName;
 	}
+	
 }//end GameApp_Model

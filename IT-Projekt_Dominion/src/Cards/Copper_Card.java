@@ -1,16 +1,15 @@
 package Cards;
 
 import Messages.UpdateGame_Message;
-import Server_GameLogic.Game;
 import Server_GameLogic.Player;
 
 /**
- * @author René
- * @version 1.0
- * @created 31-Okt-2017 16:58:01
+ * Copper represents a treasure card. This card has a coin value of 1 and costs 0. 
+ * 
+ * @author Rene Schwab
+ * 
  */
 public class Copper_Card extends Treasure_Card {
-
 
 	public Copper_Card(){
 		this.cardName = CardName.Copper;
@@ -19,10 +18,17 @@ public class Copper_Card extends Treasure_Card {
 	}
 
 	/**
+	 * Coins of the current player get increased by 1.  
+	 * Changes related with the card get set in the UpdateGame_Message
+	 * 
+	 * @author Rene Schwab
 	 * 
 	 * @param player
+	 * , current player 
+	 * @return UpdateGame_Message
+	 * , containing all changes related with this card. 
+	 * 
 	 */
-	@Override
 	public UpdateGame_Message executeCard(Player player){
 		player.setCoins(player.getCoins() + coinValue); // increment coin value
 		
@@ -37,5 +43,4 @@ public class Copper_Card extends Treasure_Card {
 		return ugmsg;
 	}
 	
-
 }//end Bronce_Card

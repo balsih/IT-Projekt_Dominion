@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Stack;
 import java.util.logging.Logger;
-
 import Cards.Copper_Card;
 import Cards.CardName;
 import Cards.CardType;
@@ -145,9 +144,7 @@ public class Game {
 	/**
 	 * Fills the deck pile of the player with 7 copper cards and 3 estate cards
 	 * and shuffles the deck. Each player draws 5 cards of its stack in the
-	 * hand. Finally the the starter of the game will be determined.
-	 * 
-	 * In single player the bot, if it is the starting player, will be started.
+	 * hand. Finally the starter of the game will be determined.
 	 * 
 	 * @author Bodo Gruetter
 	 */
@@ -175,11 +172,6 @@ public class Game {
 		this.currentPlayer.resetStates();
 		this.player1.setActualPhase(Phase.Buy);
 		this.player2.setActualPhase(Phase.Buy);
-
-		// Starts bot if it is the starting player
-		if ((this.currentPlayer.equals(player2) && this.gameMode.equals(GameMode.Singleplayer))
-				|| this.gameMode.equals(GameMode.Simulation))
-			new Thread(bot).start();
 	}
 
 	/**

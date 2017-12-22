@@ -4,9 +4,11 @@ import java.util.Locale;
 import MainClasses.Dominion_Main;
 
 /**
- * @author Rene
- * @version 1.0
- * @created 31-Okt-2017 17:05:16
+ *  Class locates various services of the application. 
+ * 
+ * @author Brad Richards, Copyright 2015, FHNW
+ * , adapted by Rene Schwab
+ * 
  */
 public class ServiceLocator {
 
@@ -14,12 +16,13 @@ public class ServiceLocator {
 	private final String APP_NAME = Dominion_Main.class.getSimpleName();
 	private Configuration configuration;
 	private Gallery gallery;
+	// Locales for language are defined here (de and en) 
 	private final Locale[] locales = new Locale[] {new Locale("en"), new Locale("de")};
 	private static ServiceLocator serviceLocator;
 	private Translator translator;
 
 	private ServiceLocator() {
-		//
+		
 	}
 
 	public Class<?> getAPP_CLASS(){

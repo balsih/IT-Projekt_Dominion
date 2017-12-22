@@ -1,23 +1,19 @@
 package Cards;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
-
 import Messages.Interaction;
 import Messages.Message;
 import Messages.UpdateGame_Message;
-import Server_GameLogic.Game;
-import Server_GameLogic.GameMode;
 import Server_GameLogic.Phase;
 import Server_GameLogic.Player;
 
 /**
- * @author Rene
- * @version 1.0
- * @created 31-Okt-2017 16:58:17
+ * Workshop represents a action card and costs 3. 
+ * 
+ * @author Rene Schwab
+ * 
  */
 public class Workshop_Card extends Card {
 
@@ -25,18 +21,22 @@ public class Workshop_Card extends Card {
 		this.cardName = CardName.Workshop;
 		this.cost = 3;
 		this.type = CardType.Action;
-
 	}
 
 	/**
+	 * Asks the player to chose a card costing up to 4.
+	 * Changes related with the card get set in the UpdateGame_Message
+	 * 
+	 * @author Rene Schwab
 	 * 
 	 * @param player
+	 * , current player 
+	 * @return UpdateGame_Message
+	 * , containing changes related with this card. 
 	 */
-	@Override
 	public UpdateGame_Message executeCard(Player player){
 		
 		this.player = player;
-		
 		this.game = player.getGame();
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
@@ -56,7 +56,17 @@ public class Workshop_Card extends Card {
 		return ugmsg;
 	}
 	
-	
+	/**
+	 * Ads the selected card to the discard pile 
+	 * Changes related with the card get set in the UpdateGame_Message
+	 * 
+	 * @author Rene Schwab
+	 * 
+	 * @param selectedNameCard
+	 * , selected card to pick 
+	 * @return UpdateGame_Message
+	 * , containing changes related with this card. 
+	 */
 	public Message executeWorkshop(CardName selectedNameCard) {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
@@ -68,9 +78,8 @@ public class Workshop_Card extends Card {
 		ugmsg.setDiscardPileCardNumber(this.player.getDiscardPile().size());
 		ugmsg.setLog(player.getPlayerName()+": #picked# "+"#"+selectedNameCard.toString()+"#"+" #card#");
 		
-		/* checks if the game is ended after playing this card and who wons
-		* it
-		*/
+		// checks if the game is ended after playing this card and who wons it
+
 		if (this.game.checkGameEnding()) {
 			this.player.setActualPhase(Phase.Ending);
 			this.game.checkWinner();

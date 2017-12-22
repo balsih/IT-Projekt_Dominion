@@ -876,6 +876,8 @@ public class GameApp_Controller extends Controller<GameApp_Model, GameApp_View> 
 					});
 
 					updateGUI();
+					
+					model.sendStartBot();
 
 				} else if (msgIn instanceof PlayerSuccess_Message) {
 					model.processPlayerSuccess(msgIn);

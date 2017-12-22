@@ -1,16 +1,15 @@
 package Cards;
 
 import java.util.LinkedList;
-
 import Messages.Interaction;
 import Messages.UpdateGame_Message;
-import Server_GameLogic.Game;
 import Server_GameLogic.Player;
 
 /**
- * @author Rene
- * @version 1.0
- * @created 31-Okt-2017 16:58:05
+ * Cellar represents a action card and costs 3. 
+ * 
+ * @author Rene Schwab
+ * 
  */
 public class Cellar_Card extends Card {
 	
@@ -21,10 +20,17 @@ public class Cellar_Card extends Card {
 	}
 
 	/**
+	 * Actions get increased by 1. 
+	 * Changes related with the card get set in the UpdateGame_Message
+	 * 
+	 * @author Rene Schwab
 	 * 
 	 * @param player
+	 * , current player 
+	 * @return UpdateGame_Message
+	 * , containing changes related with this card. 
+	 * 
 	 */
-	@Override
 	public UpdateGame_Message executeCard(Player player){
 		this.player = player;
 		player.setActions(player.getActions() + 1);
@@ -41,6 +47,19 @@ public class Cellar_Card extends Card {
 		return ugmsg;
 	}
 	
+	/**
+	 * Allows the player to discard any number of cards  
+	 * and draw a new one per card discarded. 
+	 * Changes related with the card get set in the UpdateGame_Message
+	 * 
+	 * @author Rene Schwab
+	 * 
+	 * @param player
+	 * , current player 
+	 * @return UpdateGame_Message
+	 * , containing changes related with this card. 
+	 * 
+	 */
 	public UpdateGame_Message executeCellar(LinkedList<Card> discardedCards) {
 		
 		LinkedList<Card> realDiscardedCards = new LinkedList<Card>();

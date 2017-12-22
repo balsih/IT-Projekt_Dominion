@@ -1,12 +1,11 @@
 package Cards;
 
-
-
-
 /**
- * @author René
- * @version 1.0
- * @created 31-Okt-2017 16:58:14
+ * Abstract super class for all victory cards, extends class Card. 
+ * This class contains victory points and set the CardTyp to Victory. 
+ * 
+ * @author Rene Schwab
+ * 
  */
 public abstract class Victory_Card extends Card {
 
@@ -15,6 +14,5 @@ public abstract class Victory_Card extends Card {
 	protected Victory_Card(){
 		this.type = CardType.Victory;
 	}
-
-
+	
 }//end Victory_Card

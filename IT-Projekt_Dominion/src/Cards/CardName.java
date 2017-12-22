@@ -2,9 +2,24 @@ package Cards;
 
 
 /**
+ * Represents the name of a card.
+ * <li>Cellar
+ * <li>Copper
+ * <li>Duchy
+ * <li>Estate
+ * <li>Gold
+ * <li>Market
+ * <li>Mine
+ * <li>Province
+ * <li>Remodel
+ * <li>Silver
+ * <li>Smithy
+ * <li>Village
+ * <li>Woodcutter
+ * <li>Workshop
+ * <li>Flipside
+ * 
  * @author Lukas
- * @version 1.0
- * @created 31-Okt-2017 17:01:22
  */
 public enum CardName {
 	Cellar,
@@ -24,11 +39,13 @@ public enum CardName {
 	Flipside;
 	
 	/**
-	 * @author Bradley Richards
+	 * @author Lukas, source: Bradley Richards
 	 * Parses the enum-Name for creating new cards on client
 	 * 
 	 * @param cardName
-	 * @return CardName, enum of the given cardName
+	 * 				The cardName in String-format
+	 * @return	<li>CardName, enum of the given cardName
+	 * 			<li>null, if CardName doesn't exist
 	 */
     public static CardName parseName(String cardName) {
     	CardName cardType = null;
