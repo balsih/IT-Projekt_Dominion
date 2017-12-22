@@ -67,7 +67,7 @@ public class Configuration {
 		return localOptions.getProperty(name);
 	}
 
-	// saves the language at teh local.cfg file. Method is called always when mainMenu view gets closed
+	// saves the language to the local.cfg file. Method is called always when mainMenu view gets closed
 	public void save() {
 		FileOutputStream propFile = null;
 		try {
