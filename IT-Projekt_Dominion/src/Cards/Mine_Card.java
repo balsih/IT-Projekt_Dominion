@@ -39,7 +39,7 @@ public class Mine_Card extends Card {
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
 		
 		//#DisposeCards# Chose cards to dispose
-		ugmsg.setLog(player.getPlayerName()+": #played# "+"#"+this.cardName.toString()+"#"+" #card#. #DisposeCard#");
+		ugmsg.setLog(player.getPlayerName()+": #played# "+"#"+this.cardName.toString()+"#"+" #card#. #DisposeMine#");
 		
 		// update game Messages -> XML 
 		ugmsg.setInteractionType(Interaction.Mine);
