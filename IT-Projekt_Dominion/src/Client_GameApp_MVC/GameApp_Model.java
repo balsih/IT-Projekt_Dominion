@@ -663,7 +663,7 @@ public class GameApp_Model extends Model {
 			this.turnEnded = false;
 		}
 
-		//If something necessary happened in the Game, it will be provided to show
+		//If something important happened in the Game, it will be provided to show
 		if(ugmsg.getLog() != null){
 			this.newLog = this.lineSeparator(ugmsg.getLog(), true);
 		}
@@ -707,7 +707,7 @@ public class GameApp_Model extends Model {
 			this.opponentDeck = ugmsg.getDeckPileCardNumber();
 		}
 
-		//Just necessary to show opponent's size of deckPile
+		//Gets the size of the currentPlayer's deckPile
 		if(ugmsg.getDiscardPileCardNumber() != null && 
 				((this.currentPlayer.compareTo(this.clientName) == 0 && ugmsg.getCurrentPlayer() == null)
 				|| (this.currentPlayer.compareTo(this.clientName) != 0 && ugmsg.getCurrentPlayer() != null))){
@@ -761,7 +761,7 @@ public class GameApp_Model extends Model {
 	 * 
 	 * @author Lukas, source:  partly(Bradley Richards)
 	 * @param message
-	 * @return msgIn, individual InputMessage
+	 * @return msgIn, individual InputMessage <Message>
 	 */
 	protected synchronized Message processMessage(Message message){//synchronized is necessary because of the Thread in controller uses this method too
 		Socket socket = connect();

@@ -73,7 +73,8 @@ public class ServerThreadForClient implements Runnable {
 
 	/**
 	 * Factory Pattern, if a new client connects to server, a new Thread will be created.
-	 * If a client already had connected with server, the client will have the same Thread as before
+	 * If a client already had connected with server, the client will have the same Thread as before.
+	 * Identifier is the clientName <String>
 	 * 
 	 * @author Lukas
 	 * @param clientSocket
@@ -123,7 +124,7 @@ public class ServerThreadForClient implements Runnable {
 	 * @author Lukas
 	 * @param msgIn
 	 * 				The Message to process
-	 * @return Message, individual type
+	 * @return Message, individual sub-type
 	 */
     private Message processMessage(Message msgIn) {
 		Message msgOut = null;
@@ -218,8 +219,8 @@ public class ServerThreadForClient implements Runnable {
 	 * @author Lukas
 	 * @param msgIn
 	 * 				Login_Message to process
-	 * @return Commit_Message if the login succeeded (clientName and password are correct)
-	 * 			, Failure_Message if login failed (clientName and/or password are wrong)
+	 * @return 	<li>Commit_Message if the login succeeded (clientName and password are correct)
+	 * 			<li>Failure_Message if login failed (clientName and/or password are wrong)
 	 */
 	private Message processLogin(Message msgIn) {
 		Login_Message lmsg = (Login_Message) msgIn;
@@ -267,8 +268,8 @@ public class ServerThreadForClient implements Runnable {
      * @author Lukas
      * @param msgIn
      * 				CreateNewPlayer_Message to process
-     * @return Commit_Message if storage succeeded
-     * 			, Failure_Message if storage failed
+     * @return 	<li>Commit_Message if storage succeeded
+     * 			<li>Failure_Message if storage failed
      */
 	private Message processCreateNewPlayer(Message msgIn) {
 		CreateNewPlayer_Message cnpmsg = (CreateNewPlayer_Message) msgIn;
@@ -298,7 +299,7 @@ public class ServerThreadForClient implements Runnable {
 	 * @author Lukas
 	 * @param msgIn
 	 * 				Not used
-	 * @return HighScore_Message, content of the top5 (name, points) in one String
+	 * @return HighScore_Message, content of the top5 (name, points) in CSV-String
 	 */
 	private Message processHighScore(Message msgIn) {
 		DB_Connector dbConnector = DB_Connector.getDB_Connector();
@@ -314,13 +315,13 @@ public class ServerThreadForClient implements Runnable {
 	}
 	
 	/**
-	 * Gets the chosen (Mingleplayer or Multiplayer) Game
+	 * Gets the chosen (Singleplayer or Multiplayer) Game
 	 * If Client is the first Player in Multiplayer-Mode, client has to wait for second Player
 	 * 
 	 * @author Lukas
 	 * @param msgIn
 	 * 				GameMode_Message to process
-	 * @return Commit_Message (should always succeed)
+	 * @return Commit_Message
 	 */
 	private Message processGameMode(Message msgIn) {
 		this.waitingMessages.clear();
@@ -342,8 +343,8 @@ public class ServerThreadForClient implements Runnable {
 	 * @author Lukas
 	 * @param msgIn
 	 * 				PlayCard_Message to process
-	 * @return UpdateGame_Message if play of the card succeeded
-	 * 			, Failure_Message if play of the card failed
+	 * @return 	<li>UpdateGame_Message if play of the card succeeded
+	 * 			<li>Failure_Message if play of the card failed
 	 */
 	private Message processPlayCard(Message msgIn) {
 		PlayCard_Message pcmsg = (PlayCard_Message) msgIn;
@@ -401,9 +402,9 @@ public class ServerThreadForClient implements Runnable {
 	 * @author Lukas
 	 * @param msgIn
 	 * 				BuyCard_Message to process
-	 * @return 	UpdateGame_Message if the buy succeeded
-	 * 			, Failure_Message if the buy failed
-	 * 			, PlayerSuccess_Message if the game ended with this buy
+	 * @return 	<li>UpdateGame_Message if the buy succeeded
+	 * 			<li>Failure_Message if the buy failed
+	 * 			<li>PlayerSuccess_Message if the game ended with this buy
 	 */
 	private Message processBuyCard(Message msgIn) {
 		BuyCard_Message bcmsg = (BuyCard_Message) msgIn;
@@ -415,7 +416,8 @@ public class ServerThreadForClient implements Runnable {
 	 * 
 	 * @author Lukas
 	 * @param msgIn
-	 * @return UpdateGame_Message, content depends on which Interaction is running
+	 * @return 	<li>UpdateGame_Message if Interaction succeeded. Content depends on which Interaction is running.
+	 * 			<li>Failure_Message if Interaction failed.
 	 */
 	private Message processInteraction(Message msgIn) {
 		Interaction_Message imsg = (Interaction_Message) msgIn;
@@ -492,9 +494,9 @@ public class ServerThreadForClient implements Runnable {
 	 * 
 	 * @author Lukas
 	 * @param card
-	 * 			the card to look for
-	 * @return handCard, the real object to use for methods
-	 * 			null if there is no object in the hand
+	 * 			,the card to look for
+	 * @return 	<li>handCard, the real object to use for methods
+	 * 			<li>null if there is no object in the hand
 	 */
 	private Card getRealHandCard(Card card){
 		for(Card handCard: this.player.handCards){
@@ -546,8 +548,8 @@ public class ServerThreadForClient implements Runnable {
 	 * @author Lukas
 	 * @param msgIn
 	 * 				Not used
-	 * @return PlayerSuccess_Message if giveUp succeeded
-	 * 			, Failure_Message if the game already ended somehow
+	 * @return 	<li>PlayerSuccess_Message if giveUp succeeded
+	 * 			<li>Failure_Message if the game already ended somehow
 	 */
     private Message processGiveUp(Message msgIn) {
     	PlayerSuccess_Message psmsg = new PlayerSuccess_Message();
@@ -586,7 +588,7 @@ public class ServerThreadForClient implements Runnable {
      * @author Lukas
      * @param msgIn
      * 				Not used
-     * @return
+     * @return Commit_Message
      */
     private Message processLogout(Message msgIn){
     	onlineClients.remove(this.clientName);
@@ -599,7 +601,8 @@ public class ServerThreadForClient implements Runnable {
      * @author Lukas
      * @param msgIn
      * 				Not used
-     * @return Message (unsent), if empty a new Commit_Message
+     * @return 	<li>unsent Message
+     * 			<li>if empty a new Commit_Message
      */
     private Message processRequest(Message msgIn){
     	if(this.unsentMessages.size() > 0){
