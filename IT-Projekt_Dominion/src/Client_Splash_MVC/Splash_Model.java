@@ -8,9 +8,10 @@ import Client_Services.Translator;
 import javafx.concurrent.Task;
 
 /**
- * @author René  --> grösstenteil Copy Past von Brad
- * @version 1.0
- * @created 31-Okt-2017 17:06:12
+ * Model class for Splash screen. 
+ * 
+ * @author Brad Richards, Copyright 2015, FHNW
+ * , adapted by Rene Schwab
  */
 public class Splash_Model extends Model {
 
@@ -28,31 +29,19 @@ public class Splash_Model extends Model {
         protected Void call() throws Exception {
 			this.updateProgress(1, 5); // step 1 of total 5 
 			
-			//Thread.sleep(200); // waiting time to test
-			
         	sl = ServiceLocator.getServiceLocator();
         	this.updateProgress(2, 5); // step 2 of total 5
-        	
-        	//Thread.sleep(200); // waiting time to test
         	
         	sl.setConfiguration(new Configuration());
         	this.updateProgress(3, 5); // step 3 of total 5 
         	
-        	//Thread.sleep(200); // waiting time to test
-        	
+        	// loads the language from the local.cfg file
         	String language = sl.getConfiguration().getOption("Language");
         	sl.setTranslator(new Translator(language));
         	this.updateProgress(4, 5); // step 4 of total 5
-        	
-        	//Thread.sleep(200); // waiting time to test
-        	
+
         	sl.setGallery(new Gallery(language));
         	this.updateProgress(5, 5); // step 5 of total 5
-
-//            // Initialize the resources in the service locator
-//           // sl.setLogger(configureLogging());
-//
-//            // ... more resources would go here...
 
             return null;
         }
