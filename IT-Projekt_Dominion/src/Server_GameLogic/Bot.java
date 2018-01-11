@@ -259,7 +259,7 @@ public class Bot extends Player implements Runnable {
 					// executeRemodel2
 					LinkedList<CardName> availableCards = ugmsg.getCardSelection();
 					List<CardName> prioList = this.buyPrioOneCard.keySet().stream().sorted(
-							(s1, s2) -> Integer.compare(this.buyPrioOneCard.get(s2), this.buyPrioOneCard.get(s1)))
+							(c1, c2) -> Integer.compare(this.buyPrioOneCard.get(c2), this.buyPrioOneCard.get(c1)))
 							.collect(Collectors.toList());
 					for (CardName newCard : prioList) {
 						if (availableCards.contains(newCard)) {
@@ -268,7 +268,7 @@ public class Bot extends Player implements Runnable {
 							Message msg = rCard2.executeRemodel2(newCard);
 							if (msg instanceof UpdateGame_Message) {
 								this.sendToOpponent(this, ugmsg);
-								if (Card.getCard(cardToBuy).getType().equals(CardType.Action))
+								if (Card.getCard(newCard).getType().equals(CardType.Action))
 									numberOfActionCards++;
 								else if (newCard.equals(CardName.Silver) || newCard.equals(CardName.Gold))
 									numberOfGoldAndSilverCards++;
@@ -282,7 +282,7 @@ public class Bot extends Player implements Runnable {
 				case Workshop:
 					LinkedList<CardName> availableUpgrades = ugmsg.getCardSelection();
 					List<CardName> prioList2 = this.buyPrioOneCard.keySet().stream().sorted(
-							(s1, s2) -> Integer.compare(this.buyPrioOneCard.get(s2), this.buyPrioOneCard.get(s1)))
+							(c1, c2) -> Integer.compare(this.buyPrioOneCard.get(c2), this.buyPrioOneCard.get(c1)))
 							.collect(Collectors.toList());
 					for (CardName newCard : prioList2) {
 						if (availableUpgrades.contains(newCard)) {
