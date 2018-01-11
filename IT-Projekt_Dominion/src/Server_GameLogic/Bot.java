@@ -187,7 +187,7 @@ public class Bot extends Player implements Runnable {
 			Message playMessage = play(cardToPlay);
 			makeBreak();
 
-			// the card could be bought
+			// the card could be played
 			if (playMessage instanceof UpdateGame_Message) {
 				UpdateGame_Message ugmsg = (UpdateGame_Message) playMessage;
 
