@@ -5,12 +5,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * The client wants to create a profile. For this purpose he has to be stored
- * in the database. The password should be crypted by the client.
+ * This Message is to send the client's name and password to store it on the server's database.
+ * The password should be encrypted by the client.
+ * <li>Communication: client --> server
  * 
  * @author Lukas
- * @version 1.0
- * @created 31-Okt-2017 17:01:14
  */
 public class CreateNewPlayer_Message extends Message {
 
@@ -23,8 +22,11 @@ public class CreateNewPlayer_Message extends Message {
 	}
 
 	/**
+	 * Adds the password <String> to XML
 	 * 
+	 * @author Lukas
 	 * @param docIn
+	 * 				XML-Document
 	 */
 	@Override
 	protected void addNodes(Document docIn){
@@ -36,8 +38,11 @@ public class CreateNewPlayer_Message extends Message {
 	}
 
 	/**
+	 * Creates the object chat <String> from XML
 	 * 
+	 * @author Lukas
 	 * @param docIn
+	 * 				XML-Document
 	 */
 	@Override
 	protected void init(Document docIn){
@@ -50,10 +55,10 @@ public class CreateNewPlayer_Message extends Message {
         }
 	}
 	
+	
 	public String getPassword(){
 		return this.password;
 	}
-
 
 	public void setPassword(String password){
 		this.password = password;

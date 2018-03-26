@@ -1,5 +1,13 @@
 package Server_GameLogic;
 
+/**
+ * Enum for the three possible GameModes Singleplayer, Multiplayer and Simulation.
+ * 
+ * Simulation is just for testing the bot and is not used for final game.
+ *
+ * @author Bodo Gruetter
+ *
+ */
 public enum GameMode {
 	Singleplayer, Multiplayer, Simulation;
 	

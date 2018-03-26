@@ -38,14 +38,15 @@ import Server_Services.DB_Connector;
 
 
 /**
- * @author Lukas
- * Provides a Thread for client to communicate with
- * The identifier is the clientName (String)
- * One Thread is exclusive for one client. He has priority for this Thread for 30 min
- * In case he hasn't done something in the last 30 min, it is possible to kick the client with a different IP
- * This is necessary if something happened like an unexpected computer-shutdown client-site
+ * Provides a Thread for client to communicate with.
+ * The identifier is the clientName (String).
+ * One Thread is exclusive for one client. He has priority for this Thread for 30 min.
+ * In case he hasn't done something in the last 30 min, it is possible to kick the client with a different IP.
+ * This is necessary if something happened like an unexpected computer-shutdown client-site.
  * 
- * The communication-format with this Tread is XML DOM
+ * The communication-format with this Tread is XML DOM.
+ * 
+ * @author Lukas
  */
 public class ServerThreadForClient implements Runnable {
 	
@@ -61,6 +62,7 @@ public class ServerThreadForClient implements Runnable {
 	private Player player;
 	private InetAddress inetAddress;
 	private Queue<Message> waitingMessages = new LinkedList<Message>();
+	private Queue<Message> unsentMessages = new LinkedList<Message>();
 	private String clientName = "unknown client";
 	private long currentTime = System.currentTimeMillis();
 
@@ -70,12 +72,13 @@ public class ServerThreadForClient implements Runnable {
 	}
 
 	/**
-	 * @author Lukas
 	 * Factory Pattern, if a new client connects to server, a new Thread will be created.
-	 * If a client already had connected with server, the client will have the same Thread as before
+	 * If a client already had connected with server, the client will have the same Thread as before.
+	 * Identifier is the clientName <String>
 	 * 
+	 * @author Lukas
 	 * @param clientSocket
-	 * @return client, a new or existing Thread. Result depends weather a Thread of the client already exists or not
+	 * @return A new or existing Thread. Result depends weather a Thread of the client already exists or not
 	 */
 	public static ServerThreadForClient getServerThreadForClient(Socket clientSocket){
 		try{
@@ -98,14 +101,14 @@ public class ServerThreadForClient implements Runnable {
 	}
 
 	/**
-	 * @author Lukas, source: Bradley Richards
-	 * 
 	 * Everytime a Message received from Client, the Message has to be identified and processed
+	 * 
+	 * @author Lukas, source: Bradley Richards
 	 */
 	@Override
 	public void run(){
 		Message msgOut = processMessage(this.msgIn);
-		msgOut.send(clientSocket);
+		msgOut.send(clientSocket, this);
 		try { if (clientSocket != null) clientSocket.close(); } catch (IOException e) {}
 		try{				// Read a message from the client
 		}catch(Exception e) {
@@ -116,31 +119,46 @@ public class ServerThreadForClient implements Runnable {
 	}
 	
 	/**
-	 * @author Lukas
 	 * Checks the type of Message and process it
 	 * 
+	 * @author Lukas
 	 * @param msgIn
-	 * @return msgOut, depends on the type of Message
+	 * 				The Message to process
+	 * @return Message, individual sub-type
 	 */
     private Message processMessage(Message msgIn) {
 		Message msgOut = null;
 		
-		//without inetAddress, you would be kicked out after the specified time-limit
-		if(!(msgIn instanceof Knock_Message) && !(msgIn instanceof Login_Message) && !(msgIn instanceof CreateNewPlayer_Message)
-				&& !this.clientSocket.getInetAddress().equals(this.inetAddress) && System.currentTimeMillis() - this.currentTime > this.AFK_TIMER){
-			Failure_Message fmsg = new Failure_Message();
-			fmsg.setNotification("#clientUsed#");
-			return new Failure_Message();
-		}
-		
+		//Checks if the client is allowed to do something in the system
 		if(!(msgIn instanceof Knock_Message) && !(msgIn instanceof Login_Message) && !(msgIn instanceof CreateNewPlayer_Message)){
-			this.currentTime = System.currentTimeMillis();
+			
+			/*
+			 * Checks if the client (Requester) is logged in into the system to avoid abuse.
+			 * Otherwise he could send his messages to the Thread and it will be processed although the client isn't logged in.
+			 */
+			if(!onlineClients.contains(msgIn.getClient())){
+				return new Failure_Message();
+				
+				//Without checking inetAddress, the client would be kicked out after the specified time-limit (30 min)
+			}else if(!this.clientSocket.getInetAddress().equals(this.inetAddress) 
+					&& System.currentTimeMillis() - this.currentTime > this.AFK_TIMER){
+				Failure_Message fmsg = new Failure_Message();
+				fmsg.setNotification("#clientUsed#");
+				return fmsg;
+				
+				
+				 //Refreshes the currentTime. Knock-Login- and CreatePlayer_Message exclusive to avoid abuse (identifier is just clientName)
+			}else{
+				this.currentTime = System.currentTimeMillis();
+			}
 		}
 		
+		//Sets the clientName
 		if(msgIn instanceof Login_Message || msgIn instanceof CreateNewPlayer_Message){
 			this.clientName = msgIn.getClient();
 		}
 		
+		//Logs the "important" Message-requests
 		if(!(msgIn instanceof AskForChanges_Message))
 			logger.info("Received from "+this.clientName+": "+msgIn.getType().toString());
 		
@@ -181,6 +199,12 @@ public class ServerThreadForClient implements Runnable {
 		case Knock:
 			msgOut = new Commit_Message();
 			break;
+		case Request:
+			msgOut = this.processRequest(msgIn);
+			break;
+		case StartBotGame:
+			msgOut = this.processStartBotGame(msgIn);
+			break;
 		default:
 			msgOut = new Error_Message();
 		}
@@ -189,13 +213,14 @@ public class ServerThreadForClient implements Runnable {
     }
     
 	/**
-	 * @author Lukas
 	 * Checks if the name is stored in the database.
 	 * If it does, it has to be the adequate password
 	 * 
+	 * @author Lukas
 	 * @param msgIn
-	 * @return cmsg, Commit_Message if the login succeeded (clientName and password are correct)
-	 * @return fmsg, Failure_Message if login failed (clientName and/or password are wrong)
+	 * 				Login_Message to process
+	 * @return 	<li>Commit_Message if the login succeeded (clientName and password are correct)
+	 * 			<li>Failure_Message if login failed (clientName and/or password are wrong)
 	 */
 	private Message processLogin(Message msgIn) {
 		Login_Message lmsg = (Login_Message) msgIn;
@@ -203,34 +228,48 @@ public class ServerThreadForClient implements Runnable {
 		String clientName = lmsg.getClient();
 		boolean success = false;
 		
+		/*
+		 * Checks if the requesting client already logged in
+		 * If no, the client can try to login
+		 * If yes, the client which is registered in the onlineClients has to be at least 30 min absent to succeed the new login
+		 */
 		if(!onlineClients.contains(clientName) || System.currentTimeMillis() - this.currentTime > this.AFK_TIMER){
 			success = dbConnector.checkLoginInput(this.clientName, lmsg.getPassword());
 		}
 		
+		//Set the new states if login succeeded
 		if(success){
 			logger.info(this.clientName+"'s login succeeded");
-			onlineClients.add(this.clientName);
+			if(!onlineClients.contains(clientName))
+				onlineClients.add(this.clientName);
 			this.currentTime = System.currentTimeMillis();
 			this.inetAddress = this.clientSocket.getInetAddress();
 			Commit_Message cmsg = new Commit_Message();
 			return cmsg;
 			
+			//Tells the client that his login failed
 		}else{
-			logger.info(this.clientName+"'s login failed");
 			Failure_Message fmsg = new Failure_Message();
-			fmsg.setNotification("#loginFailed#");
+			if(onlineClients.contains(clientName)){
+				logger.info(this.clientName+"'s login failed because player is already logged in");
+				fmsg.setNotification("#clientUsed#");
+			}else{
+				logger.info(this.clientName+"'s login failed because of wrong inputs");
+				fmsg.setNotification("#loginFailed#");
+			}
 			return fmsg;
 		}
 	}
 	
     /**
-     * @author Lukas
      * Try to store a new Player into the database
      * If clientName is unique, the player will be stored successful
      * 
+     * @author Lukas
      * @param msgIn
-     * @return cmsg, Commit_Message if storage succeeded
-     * @return fmsg, Failure_Message if storage failed
+     * 				CreateNewPlayer_Message to process
+     * @return 	<li>Commit_Message if storage succeeded
+     * 			<li>Failure_Message if storage failed
      */
 	private Message processCreateNewPlayer(Message msgIn) {
 		CreateNewPlayer_Message cnpmsg = (CreateNewPlayer_Message) msgIn;
@@ -255,11 +294,12 @@ public class ServerThreadForClient implements Runnable {
 	}
 	
 	/**
-	 * @author Lukas
 	 * Gives the highscore from the database
 	 * 
+	 * @author Lukas
 	 * @param msgIn
-	 * @return HighScore_Message, content of the top5 (name, points) in one String
+	 * 				Not used
+	 * @return HighScore_Message, content of the top5 (name, points) in CSV-String
 	 */
 	private Message processHighScore(Message msgIn) {
 		DB_Connector dbConnector = DB_Connector.getDB_Connector();
@@ -275,14 +315,18 @@ public class ServerThreadForClient implements Runnable {
 	}
 	
 	/**
-	 * @author Lukas
-	 * Gets the chosen (Mingleplayer or Multiplayer) Game
+	 * Gets the chosen (Singleplayer or Multiplayer) Game
 	 * If Client is the first Player in Multiplayer-Mode, client has to wait for second Player
 	 * 
+	 * @author Lukas
 	 * @param msgIn
-	 * @return cmsg, Commit_Message
+	 * 				GameMode_Message to process
+	 * @return Commit_Message
 	 */
 	private Message processGameMode(Message msgIn) {
+		this.waitingMessages.clear();
+		this.unsentMessages.clear();
+		
 		GameMode_Message gmmsg = (GameMode_Message) msgIn;
 		GameMode gameMode = gmmsg.getMode();
 		this.player = new Player(this.clientName, this);
@@ -294,12 +338,13 @@ public class ServerThreadForClient implements Runnable {
 
 
 	/**
-	 * @author Lukas
-	 * Try to play the card
+	 * Tries to play the card
 	 * 
+	 * @author Lukas
 	 * @param msgIn
-	 * @return UpdateGame_Message, content depends if player was able to play the card or Failure_Message or
-	 * 			 PlayerSuccess_Message if player ended the game with this move
+	 * 				PlayCard_Message to process
+	 * @return 	<li>UpdateGame_Message if play of the card succeeded
+	 * 			<li>Failure_Message if play of the card failed
 	 */
 	private Message processPlayCard(Message msgIn) {
 		PlayCard_Message pcmsg = (PlayCard_Message) msgIn;
@@ -312,10 +357,10 @@ public class ServerThreadForClient implements Runnable {
 	}
 	
 	/**
-	 * @author Lukas
 	 * Creates a CreateGame_Message
 	 * 
-	 * @return cgmsg, CreateGame_Message
+	 * @author Lukas
+	 * @return CreateGame_Message with set content
 	 */
 	protected CreateGame_Message getCG_Message(Game game){
 		CreateGame_Message cgmsg = new CreateGame_Message();
@@ -332,12 +377,13 @@ public class ServerThreadForClient implements Runnable {
 
 
 	/**
-	 * @author Lukas
 	 * Sends the chat wrote by client to each player.
 	 * Adds the clientName to the Chat for better reading
 	 * 
+	 * @author Lukas
 	 * @param msgIn
-	 * @return ugmsg, UpdateGame_Message with set chat
+	 * 				Chat_Message to process
+	 * @return UpdateGame_Message with set chat
 	 */
 	private Message processChat(Message msgIn) {
 		Chat_Message cmsg = (Chat_Message) msgIn;
@@ -351,13 +397,14 @@ public class ServerThreadForClient implements Runnable {
 	}
 
 	/**
-	 * @author Lukas
-	 * Try to buy a card
+	 * Tries to buy a card
 	 * 
+	 * @author Lukas
 	 * @param msgIn
-	 * @return UpdateGame_Message with the correct buyed card or,
-	 * 			 Failure_Message if player wasn't able to buy or,
-	 * 			 PlayerSuccess_Message if the player ended the game with this buy
+	 * 				BuyCard_Message to process
+	 * @return 	<li>UpdateGame_Message if the buy succeeded
+	 * 			<li>Failure_Message if the buy failed
+	 * 			<li>PlayerSuccess_Message if the game ended with this buy
 	 */
 	private Message processBuyCard(Message msgIn) {
 		BuyCard_Message bcmsg = (BuyCard_Message) msgIn;
@@ -365,11 +412,12 @@ public class ServerThreadForClient implements Runnable {
 	}
 	
 	/**
-	 * @author Lukas
 	 * Processes the specified interaction
 	 * 
+	 * @author Lukas
 	 * @param msgIn
-	 * @return UpdateGame_Message, content depends on which Interaction is running
+	 * @return 	<li>UpdateGame_Message if Interaction succeeded. Content depends on which Interaction is running.
+	 * 			<li>Failure_Message if Interaction failed.
 	 */
 	private Message processInteraction(Message msgIn) {
 		Interaction_Message imsg = (Interaction_Message) msgIn;
@@ -395,34 +443,45 @@ public class ServerThreadForClient implements Runnable {
 		//Player discards his chosen handCards
 		case Cellar:
 			Cellar_Card cellarCard = (Cellar_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
-			return cellarCard.executeCellar(imsg.getCellarDiscardCards());
+			Message cellarUpdate = cellarCard.executeCellar(imsg.getCellarDiscardCards());
+			this.player.sendToOpponent(this.player, cellarUpdate);
+			return cellarUpdate;
 			
 		//Player chose his card from the buyCards. Max-costs: 4 coins
 		case Workshop:
 			Workshop_Card workshopCard = (Workshop_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
-			return workshopCard.executeWorkshop(imsg.getWorkshopChoice());
+			Message workshopUpdate = workshopCard.executeWorkshop(imsg.getWorkshopChoice());
+			this.player.sendToOpponent(this.player, workshopUpdate);
+			return workshopUpdate;
 			
 		//Player chose his card to dispose. He can chose to take a card that costs until: disposedCard_cost +2 coins
 		case Remodel1:
 			Remodel_Card remodel1Card = (Remodel_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
 			Card disposeRemodelCard = this.getRealHandCard(imsg.getDisposeRemodelCard());
-			if(disposeRemodelCard != null)
-				return remodel1Card.executeRemodel1(disposeRemodelCard);
+			if(disposeRemodelCard != null){
+				Message remodel1Update = remodel1Card.executeRemodel1(disposeRemodelCard);
+				this.player.sendToOpponent(this.player, remodel1Update);
+				return remodel1Update;
+			}
 			logger.info("Interaction "+Interaction.Remodel1.toString()+" failed");
 			return new Failure_Message();
 			
 		//Player chose a card from the buyCards. Max-costs: disposedCard_cost +2 coins
 		case Remodel2:
 			Remodel_Card remodel2Card = (Remodel_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
-			return remodel2Card.executeRemodel2(imsg.getRemodelChoice());
+			Message remodel2Update = remodel2Card.executeRemodel2(imsg.getRemodelChoice());
+			this.player.sendToOpponent(this.player, remodel2Update);
+			return remodel2Update;
 			
 		//Player chose copper or silver to dispose and gets the next-better coin-card directly into his hand
 		case Mine:
 			Mine_Card mineCard = (Mine_Card) this.player.getPlayedCards().get(this.player.getPlayedCards().size()-1);
 			Card disposedMineCard = this.getRealHandCard(imsg.getDisposedMineCard());
-			logger.info("The disposedCard serversite is (369): "+imsg.getDisposedMineCard());
-			if(disposedMineCard != null)
-				return mineCard.executeMine(disposedMineCard);
+			if(disposedMineCard != null){
+				Message mineUpdate = mineCard.executeMine(disposedMineCard);
+				this.player.sendToOpponent(this.player, mineUpdate);
+				return mineUpdate;
+			}
 			logger.info("Interaction "+Interaction.Mine.toString()+" failed");
 			return new Failure_Message();
 		default:
@@ -431,11 +490,13 @@ public class ServerThreadForClient implements Runnable {
 	}
 	
 	/**
-	 * @author Lukas
+	 * Gets an alias of the handCard with the same object-type as the input (card)
 	 * 
+	 * @author Lukas
 	 * @param card
-	 * @return handCard, the real object to use for methods
-	 * 			null if there is no object in the hand
+	 * 			,the card to look for
+	 * @return 	<li>handCard, the real object to use for methods
+	 * 			<li>null if there is no object in the hand
 	 */
 	private Card getRealHandCard(Card card){
 		for(Card handCard: this.player.handCards){
@@ -446,12 +507,13 @@ public class ServerThreadForClient implements Runnable {
 	}
 
 	/**
-	 * @author Lukas
 	 * Processes the AskForChanges-request from the client weather something has changed in the Game
 	 * 
+	 * @author Lukas
 	 * @param msgIn
-	 * @return UpdateGame_Message or PlayerSuccess_Message if something has changed.
-	 * @return cmsg, Commit_Message when nothing has changed
+	 * 				Not used
+	 * @return <li>UpdateGame_Message or PlayerSuccess_Message if something has changed.
+	 * 			<li>Commit_Message when nothing changed
 	 */
 	private Message processAskForChanges(Message msgIn) {
 		if(this.waitingMessages.size() > 0){
@@ -462,13 +524,32 @@ public class ServerThreadForClient implements Runnable {
 	}
 	
 	/**
-	 * @author Lukas
+	 * Starts the Bot
+	 * 
+	 * @param msgIn
+	 * 				Not used
+	 * @return 	<li>Commit_Message if the threat-start succeeded
+	 * 			<li>Failure_Message if the threat-start failed
+	 */
+	private Message processStartBotGame(Message msgIn){
+		if(this.game.getGameMode() == GameMode.Singleplayer){
+			Bot bot = (Bot) this.game.getOpponent(this.player);
+			new Thread(bot).start();
+			return new Commit_Message();
+		}
+		
+		return new Failure_Message();
+	}
+	
+	/**
 	 * The player gave up his game. Sends a Success_Message to opponent to tell that he that he wins.
 	 * In addition it stores the result of both players into the database.
 	 * 
+	 * @author Lukas
 	 * @param msgIn
-	 * @return psmsgSelf, PlayerSuccess_Message, the client loses
-	 * 			Failure_Message if game already ended
+	 * 				Not used
+	 * @return 	<li>PlayerSuccess_Message if giveUp succeeded
+	 * 			<li>Failure_Message if the game already ended somehow
 	 */
     private Message processGiveUp(Message msgIn) {
     	PlayerSuccess_Message psmsg = new PlayerSuccess_Message();
@@ -478,6 +559,13 @@ public class ServerThreadForClient implements Runnable {
         	psmsg.setPlayer1(this.player);
     		Player opponent = this.game.getOpponent(this.player);
     		this.game.setGameEnded(true);
+    		
+    		/*
+    		 * If the client leaves the game in Multiplayer-mode before the opponent entered the game,
+    		 * the counter for correct allocation has to be corrected
+    		 * Else the client loses the game not matter how many points he/she collected
+    		 */
+    		
     		if(opponent == null){
 	    		Game.setGameCounter(Game.getGameCounter()+1);
 	    		psmsg.setNumOfPlayers(1);
@@ -495,38 +583,74 @@ public class ServerThreadForClient implements Runnable {
 	}
     
     /**
-     * @author Lukas
      * Deletes the client from the list to enable further login's
      * 
+     * @author Lukas
      * @param msgIn
-     * @return
+     * 				Not used
+     * @return Commit_Message
      */
     private Message processLogout(Message msgIn){
     	onlineClients.remove(this.clientName);
     	return new Commit_Message();
     }
+    
+    /**
+     * Processes the Request-request from the client to send back the unsent Message
+     * 
+     * @author Lukas
+     * @param msgIn
+     * 				Not used
+     * @return 	<li>unsent Message
+     * 			<li>if empty a new Commit_Message
+     */
+    private Message processRequest(Message msgIn){
+    	if(this.unsentMessages.size() > 0){
+    		return this.unsentMessages.poll();
+    	}else{
+    		return new Commit_Message();
+    	}
+    }
 
 	/**
-	 * @author Lukas
-	 * Adds the messages (UpdateGame_Message or PlayerSuccess_Message) to take from the client's AskForChanges_Messages requests
+	 * Adds the messages (UpdateGame_Message or PlayerSuccess_Message) to take from the client's AskForChanges_Messages requests.
 	 * 
+	 * @author Lukas
 	 * @param message
+	 * 				The Message which waits for a request from client
 	 */
 	public void addWaitingMessages(Message message){
 		this.waitingMessages.offer(message);
 	}
 	
+	/**
+	 * Adds the unsent messages to take from the client's Request_Messages requests.
+	 * 
+	 * @author Lukas
+	 * @param message
+	 * 				The Message which waits for a request from client because it wasn't sent
+	 */
+	public void addUnsentMessages(Message message){
+		this.waitingMessages.offer(message);
+	}
 	
 	/**
-	 * @author Lukas
-	 * Adds a new Socket for client
+	 * Adds a new Socket for client.
 	 * 
+	 * @author Lukas
 	 * @param clientSocket
 	 */
 	private void addClientSocket(Socket clientSocket){
 		this.clientSocket = clientSocket;
 	}
 	
+	/**
+	 * Set the processed Message to the Thread
+	 * 
+	 * @author Lukas
+	 * @param msgIn
+	 * 				The received and processed Message
+	 */
 	private void setMsgIn(Message msgIn){
 		this.msgIn = msgIn;
 	}

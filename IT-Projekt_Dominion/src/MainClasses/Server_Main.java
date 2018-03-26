@@ -10,10 +10,11 @@ import Server_MVC.TextAreaHandler;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-/**
- * @author Bodo Gruetter
+/** 
+ *  Launches the Server Application and implements a TextAreaHandler.
  * 
- * Launches the Server Application.
+ *  @author Bodo Gruetter
+ *  source: Prof. Bradley Richards
  */
 public class Server_Main extends Application {
 

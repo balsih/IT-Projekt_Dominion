@@ -1,5 +1,12 @@
 package Server_GameLogic;
 
+/**
+ * 
+ * Enum for the four possible phases of a game Action, Buy, CleanUp and Ending
+ * 
+ * @author Bodo Gruetter
+ *
+ */
 public enum Phase {
 	Action, Buy, CleanUp, Ending;
 

@@ -1,29 +1,31 @@
 package Client_Services;
 
-import java.util.ResourceBundle;
-
 import Cards.CardName;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-/**
- * @author Rene
- * @version 1.0
- * @created 31-Okt-2017 17:04:31
+/** 
+ * Gallery class containing the getImage method. 
+ * 
+ * @author Rene Schwab
+ * 
  */
 public class Gallery {
-
-	private ResourceBundle imagesBundle;
-	//private ServiceLocator sl = ServiceLocator.getServiceLocator();
-
 
 	public Gallery(String language){
 	
 	}
 	
-	/**
+	/** 
+	 * Gives back a ImageView with the image of the card. Image gets selected 
+	 * over the cardName and current selected language. 
 	 * 
-	 * @param key
+	 * @author Rene Schwab
+	 * 
+	 * @param cardName
+	 * , name of the card of which the corresponding image is required  
+	 * @return ImageView 
+	 * , image of the card
 	 */
 	public ImageView getImage(CardName cardName){
 		Translator t = ServiceLocator.getServiceLocator().getTranslator();
@@ -33,7 +35,5 @@ public class Gallery {
 		return new ImageView(image);
 	}
 	
-
-	
-	
 }//end Gallery
+

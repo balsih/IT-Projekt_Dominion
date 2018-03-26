@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Stack;
 import java.util.logging.Logger;
-
 import Cards.Copper_Card;
 import Cards.CardName;
 import Cards.CardType;
@@ -28,14 +27,14 @@ import Messages.GameSuccess;
 import Server_Services.DB_Connector;
 
 /**
+ * The game class represents a game with all available cards and two players. If
+ * player 2 is a human or a computer player depends on the game mode.
+ * 
+ * Simulation mode is just for testing the bot and is not used in final game.
+ * 
  * @author Bodo Gruetter
- * 
- * The game class represents a game with all available cards and two players.
- * If player 2 is a human or a computer player depends on the game mode.
- * 
  */
 public class Game {
-	// the card stacks of a game
 	private Stack<Copper_Card> copperPile;
 	private Stack<Cellar_Card> cellarPile;
 	private Stack<Duchy_Card> duchyPile;
@@ -52,7 +51,6 @@ public class Game {
 	private Stack<Workshop_Card> workshopPile;
 	private HashMap<CardName, Integer> buyCards;
 
-	// the number of cards in a stack of a card type
 	private final int NUM_OF_TREASURECARDS = 30;
 	private final int NUM_OF_VICTORYCARDS = 8;
 	private final int NUM_OF_ACTIONCARDS = 10;
@@ -61,7 +59,6 @@ public class Game {
 
 	private boolean gameEnded;
 
-	// the players of a game
 	private Player player1 = null;
 	private Player player2 = null;
 	private Player currentPlayer;
@@ -70,12 +67,9 @@ public class Game {
 
 	private static Game existingGame;
 	private GameMode gameMode;
-	
+
 	private final Logger logger = Logger.getLogger("");
 
-	/**
-	 * Constructor for the game
-	 */
 	private Game() {
 		// Build treasure stacks for a new game
 		this.buildTreasureCardStacks();
@@ -87,9 +81,9 @@ public class Game {
 	}
 
 	/**
-	 * @author Bodo Gruetter
-	 * 
 	 * Builds the stacks for the treasure cards with 30 cards per stack.
+	 * 
+	 * @author Bodo Gruetter
 	 */
 	private void buildTreasureCardStacks() {
 		this.copperPile = new Stack<Copper_Card>();
@@ -104,9 +98,9 @@ public class Game {
 	}
 
 	/**
-	 * @author Bodo Gruetter
-	 * 
 	 * Builds the stacks for the victory cards with 8 cards per stack.
+	 * 
+	 * @author Bodo Gruetter
 	 */
 	private void buildVictoryCardStacks() {
 		this.estatePile = new Stack<Estate_Card>();
@@ -121,9 +115,9 @@ public class Game {
 	}
 
 	/**
-	 * @author Bodo Gruetter
-	 * 
 	 * Builds the stacks for the action cards with 10 cards per stack.
+	 * 
+	 * @author Bodo Gruetter
 	 */
 	private void buildActionCardStacks() {
 		this.cellarPile = new Stack<Cellar_Card>();
@@ -148,11 +142,11 @@ public class Game {
 	}
 
 	/**
-	 * @author Bodo Gruetter
+	 * Fills the deck pile of the player with 7 copper cards and 3 estate cards
+	 * and shuffles the deck. Each player draws 5 cards of its stack in the
+	 * hand. Finally the starter of the game will be determined.
 	 * 
-	 * Fills the deckpile of the player with 7 copper cards and 3 estate
-	 * cards and shuffles the deck. Each player draws 5 cards of its stack in the hand.
-	 * Finally the the starter of the game will be determined.
+	 * @author Bodo Gruetter
 	 */
 	public void startGame() {
 		// fills the starter decks of the two players
@@ -170,27 +164,22 @@ public class Game {
 		// Shuffle the stacks and lets the players draw their first hand
 		Collections.shuffle(this.player1.deckPile);
 		this.player1.draw(player1.NUM_OF_HANDCARDS);
+		
 		Collections.shuffle(this.player2.deckPile);
 		this.player2.draw(player2.NUM_OF_HANDCARDS);
+		
 		this.currentPlayer = this.getStarter();
 		this.currentPlayer.resetStates();
 		this.player1.setActualPhase(Phase.Buy);
 		this.player2.setActualPhase(Phase.Buy);
-		
-		if((this.currentPlayer.equals(player2) && this.gameMode.equals(GameMode.Singleplayer)) || this.gameMode.equals(GameMode.Simulation))
-			new Thread(bot).start();
-		
-//		// starts the first bot in a simulation
-//		if (this.gameMode == GameMode.Simulation)
-//			new Thread(bot).start();
 	}
 
 	/**
-	 * @author Bodo Gruetter
-	 * 
 	 * Determines randomly who starts the game.
 	 * 
-	 * @return Player - the player who starts.
+	 * @author Bodo Gruetter
+	 * 
+	 * @return Player, the player who starts.
 	 */
 	private Player getStarter() {
 		Random rand = new Random();
@@ -202,41 +191,39 @@ public class Game {
 	}
 
 	/**
-	 * @author Bodo Gruetter
+	 * Switches the current player. In single player the bot will be executed if
+	 * its turn. In multi player the current player will be initialized.
 	 * 
-	 * Switches the current player. In singleplayer the bot will be executed if its turn.
-	 * In multiplayer the current player will be initialized.
+	 * @author Bodo Gruetter
 	 */
 	public void switchPlayer() {
-		
+
 		currentPlayer.resetStates();
-		
+
 		if (currentPlayer.equals(this.player1)) {
 			this.currentPlayer = player2;
 
-			if(this.gameMode == GameMode.Singleplayer)
+			if (this.gameMode == GameMode.Singleplayer)
 				new Thread(bot).start();
-			else if(this.gameMode == GameMode.Simulation)
+			else if (this.gameMode == GameMode.Simulation)
 				new Thread(bot2).start();
-				
+
 		} else {
 			this.currentPlayer = player1;
-				
-			if(this.gameMode == GameMode.Simulation)
+
+			if (this.gameMode == GameMode.Simulation)
 				new Thread(bot).start();
 		}
-		
-		System.out.println(currentPlayer.getPlayerName());
-		
+
 		if (!this.currentPlayer.containsCardType(this.currentPlayer.handCards, CardType.Action))
 			this.currentPlayer.setActualPhase(Phase.Buy);
 	}
 
 	/**
-	 * @author Bodo Gruetter
+	 * Lets the players count their points, checks the winner of a game and sets
+	 * the player status.
 	 * 
-	 * Lets the players count their points, checks the winner of a game
-	 * and sets the player status.
+	 * @author Bodo Gruetter
 	 */
 	public void checkWinner() {
 		this.player1.countVictoryPoints();
@@ -246,52 +233,53 @@ public class Game {
 			this.player1.setStatus(GameSuccess.Won);
 			this.player2.setStatus(GameSuccess.Lost);
 		} else if (this.player1.getVictoryPoints() == this.player2.getVictoryPoints()) {
-			if (this.player1.getMoves() > this.player2.getMoves()) {
+			if (this.player1.getMoves() < this.player2.getMoves()) {
 				this.player1.setStatus(GameSuccess.Won);
 				this.player2.setStatus(GameSuccess.Lost);
 			} else if (this.player1.getMoves() == this.player2.getMoves()) {
 				this.player1.setStatus(GameSuccess.Won);
 				this.player2.setStatus(GameSuccess.Won);
 			} else {
-				this.player2.setStatus(GameSuccess.Lost);
+				this.player1.setStatus(GameSuccess.Lost);
 				this.player2.setStatus(GameSuccess.Won);
 			}
 		} else {
 			this.player1.setStatus(GameSuccess.Lost);
 			this.player2.setStatus(GameSuccess.Won);
 		}
-		
+
 		// saves score in database
 		this.saveScore();
 	}
-	
+
 	/**
-	 * @author Bodo Gruetter
+	 * Saves the score of the winner excluding bot in database.
 	 * 
-	 * Saves the player scores excluding bot in database.
+	 * @author Bodo Gruetter
 	 */
-	private void saveScore(){
+	private void saveScore() {
 		DB_Connector connector = DB_Connector.getDB_Connector();
-		
-		if((this.gameMode.equals(GameMode.Singleplayer) || this.gameMode.equals(GameMode.Multiplayer))
+
+		if ((this.gameMode.equals(GameMode.Singleplayer) || this.gameMode.equals(GameMode.Multiplayer))
 				&& this.player1.getStatus().equals(GameSuccess.Won))
 			connector.addScore(this.player1, this.player1.getVictoryPoints(), this.player1.getMoves());
-		if(this.gameMode.equals(GameMode.Multiplayer) && this.player2.getStatus().equals(GameSuccess.Won))
+		if (this.gameMode.equals(GameMode.Multiplayer) && this.player2.getStatus().equals(GameSuccess.Won))
 			connector.addScore(this.player2, this.player2.getVictoryPoints(), this.player2.getMoves());
 	}
 
 	/**
-	 * @author Bodo Gruetter
-	 * 
 	 * Checks if the game is over.
 	 * 
-	 * @return Boolean - depending if the game is finished.
+	 * @author Bodo Gruetter
+	 * 
+	 * @return true or false, depending if the game is finished.
 	 */
 	public boolean checkGameEnding() {
 		int counter = 0;
 
-		/* iterates through all stacks and the number of remaining cards
-		 * to count how much stacks are empty.
+		/*
+		 * iterates through all stacks and the number of remaining cards to
+		 * count how much stacks are empty.
 		 */
 		Iterator<Integer> valueIterator = this.getBuyCards().values().iterator();
 		while (valueIterator.hasNext()) {
@@ -301,22 +289,28 @@ public class Game {
 
 		if (this.provincePile.isEmpty() || counter == 3)
 			return this.gameEnded = true;
-		
+
 		return false;
 	}
 
 	/**
-	 * @author Bodo Gruetter
-	 * 
 	 * Prepares a game for playing.
 	 * 
-	 * @param gameMode - the selected gameMode
-	 * @param player - the player who starts a game.
-	 * @return Game - an existing or a new game depending on gameMode and if a player is waiting for another.
+	 * @author Bodo Gruetter
+	 * 
+	 * @param gameMode
+	 * , the selected gameMode
+	 * @param player
+	 * , the player who starts a game.
+	 * @return 
+	 * Game, an existing or a new game depending on gameMode and if a
+	 * player is waiting for another.
 	 */
 	public static Game getGame(GameMode gameMode, Player player) {
-		/* checks in multiplayer mode if already a game of a waiting player exists,
-		 * and if necessary creates one, sets the two players and starts the game.
+		/*
+		 * checks in multiplayer mode if already a game of a waiting player
+		 * exists, and if necessary creates one, sets the two players and starts
+		 * the game.
 		 */
 		if (gameMode == GameMode.Multiplayer) {
 			if (gameCounter % 2 == 0) {
@@ -330,89 +324,98 @@ public class Game {
 			} else {
 				existingGame.setPlayer2(player);
 				existingGame.player2.setGame(existingGame);
-				
+
 				gameCounter++;
 				existingGame.gameMode = GameMode.Multiplayer;
 				existingGame.startGame();
-				
-				existingGame.getPlayer1().getServerThreadForClient()
-						.addWaitingMessages(existingGame.getPlayer1().getServerThreadForClient().getCG_Message(existingGame));
-				existingGame.getPlayer2().getServerThreadForClient()
-						.addWaitingMessages(existingGame.getPlayer2().getServerThreadForClient().getCG_Message(existingGame));
-				existingGame.logger.info(existingGame.player1.getPlayerName() + " started a multiplayer game versus " + existingGame.player2.getPlayerName());
-				
+
+				existingGame.getPlayer1().getServerThreadForClient().addWaitingMessages(
+						existingGame.getPlayer1().getServerThreadForClient().getCG_Message(existingGame));
+				existingGame.getPlayer2().getServerThreadForClient().addWaitingMessages(
+						existingGame.getPlayer2().getServerThreadForClient().getCG_Message(existingGame));
+				existingGame.logger.info(existingGame.player1.getPlayerName() + " started a multiplayer game versus "
+						+ existingGame.player2.getPlayerName());
+
 			}
 			return existingGame;
-			
-			// creates and starts in singleplayer mode a game with a player and a bot
-		} else if (gameMode == GameMode.Singleplayer){
-			Game game = new Game();
-			game.bot = new Bot(Bot.getNameOfBot(), player.getServerThreadForClient());
-			game.setPlayer1(player);
-			game.player1.setGame(game);
-			game.setPlayer2(game.bot);
-			game.bot.setGame(game);
-			game.gameMode = GameMode.Singleplayer;
-			game.startGame();
-			
-			game.getPlayer1().getServerThreadForClient()
-					.addWaitingMessages(game.getPlayer1().getServerThreadForClient().getCG_Message(game));
-			game.logger.info(game.player1.getPlayerName() + " started a singleplayer game");
-			return game;
-			
-			// creates in simulation mode for testing a game between two bots, but doesn't start game directly
-		} else{
-			Game game = new Game();
-			Player dummyPlayer = new Player("hallo", ServerThreadForClient.getServerThreadForClient(new Socket()));
-			game.bot = new Bot(Bot.getNameOfBot(), dummyPlayer.getServerThreadForClient());
-			game.setPlayer1(game.bot);
-			game.bot.setGame(game);
-			
-			game.bot2 = new Bot(Bot.getNameOfBot(), dummyPlayer.getServerThreadForClient());
-			game.setPlayer2(game.bot2);
-			game.bot2.setGame(game);
-			
-			game.gameMode = GameMode.Simulation;
-			return game;
-		}
 
+			/*
+			 * creates and starts in singleplayer mode a game with a player and
+			 * a bot
+			 */
+		} else if (gameMode == GameMode.Singleplayer) {
+			Game existingGame = new Game();
+			existingGame.bot = new Bot(Bot.getNameOfBot(), player.getServerThreadForClient());
+			existingGame.setPlayer1(player);
+			existingGame.player1.setGame(existingGame);
+			existingGame.setPlayer2(existingGame.bot);
+			existingGame.bot.setGame(existingGame);
+			existingGame.gameMode = GameMode.Singleplayer;
+			existingGame.startGame();
+
+			existingGame.getPlayer1().getServerThreadForClient()
+					.addWaitingMessages(existingGame.getPlayer1().getServerThreadForClient().getCG_Message(existingGame));
+			existingGame.logger.info(existingGame.player1.getPlayerName() + " started a singleplayer game");
+			return existingGame;
+
+			/*
+			 * creates in simulation mode for testing a game between two bots,
+			 * but doesn't start game directly
+			 */
+		} else {
+			Game existingGame = new Game();
+			Player dummyPlayer = new Player("hallo", ServerThreadForClient.getServerThreadForClient(new Socket()));
+			existingGame.bot = new Bot(Bot.getNameOfBot(), dummyPlayer.getServerThreadForClient());
+			existingGame.setPlayer1(existingGame.bot);
+			existingGame.bot.setGame(existingGame);
+
+			existingGame.bot2 = new Bot(Bot.getNameOfBot(), dummyPlayer.getServerThreadForClient());
+			existingGame.setPlayer2(existingGame.bot2);
+			existingGame.bot2.setGame(existingGame);
+
+			existingGame.gameMode = GameMode.Simulation;
+			return existingGame;
+		}
 	}
 
 	/**
-	 * @author Bodo Gruetter
-	 * 
 	 * Builds a Hashmap with all names of the card stacks and their size.
 	 * 
-	 * @return Hashmap - with the stackname and the number of cards
+	 * @author Bodo Gruetter
+	 * 
+	 * @return
+	 * Hashmap, with the stackname and the number of cards
 	 */
 	public HashMap<CardName, Integer> getBuyCards() {
-			this.buyCards.put(CardName.Province, this.provincePile.size());
-			this.buyCards.put(CardName.Duchy, this.duchyPile.size());
-			this.buyCards.put(CardName.Estate, this.estatePile.size());
+		this.buyCards.put(CardName.Province, this.provincePile.size());
+		this.buyCards.put(CardName.Duchy, this.duchyPile.size());
+		this.buyCards.put(CardName.Estate, this.estatePile.size());
 
-			this.buyCards.put(CardName.Copper, this.copperPile.size());
-			this.buyCards.put(CardName.Gold, this.goldPile.size());
-			this.buyCards.put(CardName.Silver, this.silverPile.size());
+		this.buyCards.put(CardName.Copper, this.copperPile.size());
+		this.buyCards.put(CardName.Gold, this.goldPile.size());
+		this.buyCards.put(CardName.Silver, this.silverPile.size());
 
-			this.buyCards.put(CardName.Workshop, this.workshopPile.size());
-			this.buyCards.put(CardName.Woodcutter, this.woodcutterPile.size());
-			this.buyCards.put(CardName.Village, this.villagePile.size());
-			this.buyCards.put(CardName.Smithy, this.smithyPile.size());
-			this.buyCards.put(CardName.Remodel, this.remodelPile.size());
-			this.buyCards.put(CardName.Mine, this.minePile.size());
-			this.buyCards.put(CardName.Market, this.marketPile.size());
-			this.buyCards.put(CardName.Cellar, this.cellarPile.size());
+		this.buyCards.put(CardName.Workshop, this.workshopPile.size());
+		this.buyCards.put(CardName.Woodcutter, this.woodcutterPile.size());
+		this.buyCards.put(CardName.Village, this.villagePile.size());
+		this.buyCards.put(CardName.Smithy, this.smithyPile.size());
+		this.buyCards.put(CardName.Remodel, this.remodelPile.size());
+		this.buyCards.put(CardName.Mine, this.minePile.size());
+		this.buyCards.put(CardName.Market, this.marketPile.size());
+		this.buyCards.put(CardName.Cellar, this.cellarPile.size());
 
 		return this.buyCards;
 	}
 
-	/**
+	/** 
+	 * Gets the opponent of the current player.
+	 *         
 	 * @author Bodo Gruetter
 	 * 
-	 * Gets the opponent of the current player.
-	 * 
-	 * @param currentPlayer - the current Player
-	 * @return Player - the opponent of the currentplayer
+	 * @param
+	 * currentPlayer, the current Player
+	 * @return
+	 * Player, the opponent of the currentplayer
 	 */
 	public Player getOpponent(Player currentPlayer) {
 		if (currentPlayer.equals(player1))
@@ -424,7 +427,7 @@ public class Game {
 	public static int getGameCounter() {
 		return gameCounter;
 	}
-	
+
 	public static void setGameCounter(int gameCounter) {
 		Game.gameCounter = gameCounter;
 	}
@@ -516,10 +519,9 @@ public class Game {
 	public void setCurrentPlayer(Player currentPlayer) {
 		this.currentPlayer = currentPlayer;
 	}
-	
-	public GameMode getGameMode(){
+
+	public GameMode getGameMode() {
 		return gameMode;
 	}
-	
-	
+
 }// end Game

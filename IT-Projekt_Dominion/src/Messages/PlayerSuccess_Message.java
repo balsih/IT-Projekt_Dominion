@@ -7,9 +7,16 @@ import org.w3c.dom.NodeList;
 import Server_GameLogic.Player;
 
 /**
+ * This Message is to tell the client's weather they won or lost.
+ * <ul>
+ * It includes the winner's AND the loser's data.
+ * <li>playerName:		the player's name <String>
+ * <li>success:			the player's success (<GameSuccess> Won or Lost)
+ * <li>victoryPoints:	the player's collected victoryPoints <Integer>
+ * </ul>
+ * <p><li>Communication: server --> client
+ * 
  * @author Lukas
- * @version 1.0
- * @created 31-Okt-2017 17:01:20
  */
 public class PlayerSuccess_Message extends Message {
 
@@ -17,6 +24,7 @@ public class PlayerSuccess_Message extends Message {
 	private static final String ATTR_PLAYER_NAME = "playerName";
 	private static final String ELEMENT_SUCCESS = "success";
 	private static final String ELEMENT_VICTORY_POINTS = "victoryPoints";
+	private static final String ELEMENT_MOVES = "moves";
 	private Integer numOfPlayers = 2;
 	
 	private Player player1 = null;
@@ -28,8 +36,12 @@ public class PlayerSuccess_Message extends Message {
 	}
 
 	/**
+	 * Adds the player's (Player) content to XML 
+	 * (playerName (String), success (GameSuccess), victoryPoints (Integer))
 	 * 
+	 * @author Lukas
 	 * @param docIn
+	 * 				XML-Document
 	 */
 	@Override
 	protected void addNodes(Document docIn){
@@ -54,13 +66,21 @@ public class PlayerSuccess_Message extends Message {
             Element victoryPoints = docIn.createElement(ELEMENT_VICTORY_POINTS);
             victoryPoints.setTextContent(Integer.toString(player.getVictoryPoints()));
             playerElement.appendChild(victoryPoints);
+            
+            Element moves = docIn.createElement(ELEMENT_MOVES);
+            moves.setTextContent(Integer.toString(player.getMoves()));
+            playerElement.appendChild(moves);
         }
 	}
 
 
 	/**
+	 * Creates the object player1 and player2 (Player) from XML
+	 * (playerName (String), success (GameSuccess), victoryPoints (Integer))
 	 * 
+	 * @author Lukas
 	 * @param docIn
+	 * 				XML-Document
 	 */
 	@Override
 	protected void init(Document docIn){
@@ -76,7 +96,7 @@ public class PlayerSuccess_Message extends Message {
                 Player player = new Player(playerName, null);
                 
         		NodeList subElements = playerElement.getElementsByTagName(ELEMENT_SUCCESS);
-                if (subElements.getLength() > 0) {
+                if(subElements.getLength() > 0) {
                     Element success = (Element) subElements.item(0);
                     player.setStatus(GameSuccess.parseGameSuccess(success.getTextContent()));
                 }
@@ -85,6 +105,12 @@ public class PlayerSuccess_Message extends Message {
                 if(subElements.getLength() > 0){
                 	Element victoryPoints = (Element) subElements.item(0);
                 	player.setVictoryPoints(Integer.parseInt(victoryPoints.getTextContent()));;
+                }
+                
+                subElements = playerElement.getElementsByTagName(ELEMENT_MOVES);
+                if(subElements.getLength() > 0){
+                	Element moves = (Element) subElements.item(0);
+                	player.setMoves(Integer.parseInt(moves.getTextContent()));
                 }
                 
                 if(i == 0){

@@ -1,16 +1,15 @@
 package Cards;
 
 import Messages.UpdateGame_Message;
-import Server_GameLogic.Game;
 import Server_GameLogic.Player;
 
 /**
- * @author René
- * @version 1.0
- * @created 31-Okt-2017 16:58:16
+ * Woodcutter represents a action card and costs 3. 
+ * 
+ * @author Rene Schwab
+ * 
  */
 public class Woodcutter_Card extends Card {
-
 
 	public Woodcutter_Card(){
 		this.cardName = CardName.Woodcutter;
@@ -19,18 +18,23 @@ public class Woodcutter_Card extends Card {
 	}
 
 	/**
+	 * Player gets 1 buy and 2 coins.  
+	 * Changes related with the card get set in the UpdateGame_Message
+	 * 
+	 * @author Rene Schwab
 	 * 
 	 * @param player
+	 * , current player 
+	 * @return UpdateGame_Message
+	 * , containing changes related with this card. 
 	 */
-	@Override
 	public UpdateGame_Message executeCard(Player player){
 		
 		player.setCoins(player.getCoins() + 2);
 		player.setBuys(player.getBuys() + 1);
 		
 		UpdateGame_Message ugmsg = new UpdateGame_Message();
-		
-		ugmsg.setLog(player.getPlayerName()+": #played# #"+this.cardName.toString()+"# #card#");
+		ugmsg.setLog(player.getPlayerName()+": #received# #Woodcutter1#=="+player.getPlayerName()+": #played# #"+this.cardName.toString()+"# #card#");
 		
 		// update game Messages -> XML 
 		ugmsg.setBuys(player.getBuys());

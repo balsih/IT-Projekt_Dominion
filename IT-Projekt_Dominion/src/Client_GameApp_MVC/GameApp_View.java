@@ -1,17 +1,8 @@
 package Client_GameApp_MVC;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-
 import Abstract_MVC.View;
-import Cards.Card;
-import Cards.CardName;
 import Client_Services.ServiceLocator;
 import Client_Services.Translator;
-import Messages.Interaction;
-import Server_GameLogic.GameMode;
-import Server_GameLogic.Phase;
-import Server_GameLogic.Player;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -156,7 +147,7 @@ public class GameApp_View extends View<GameApp_Model> {
 	public GameApp_View(Stage stage, GameApp_Model model){
 		super(stage, model);
 		
-		// Resetting model variables
+		// Resets some model variables
 		model.clientPlayer = null;
 		model.opponentPlayer = null;
 
@@ -165,7 +156,10 @@ public class GameApp_View extends View<GameApp_Model> {
 		model.yourDiscardPileTopCard = null;
 	}
 
-	// Creates the GUI with all its containers and contents
+	/**
+	 * @author Adrian
+	 * Creates the GUI and styles the content
+	 */
 	@Override
 	protected Scene create_GUI(){
 
@@ -194,7 +188,7 @@ public class GameApp_View extends View<GameApp_Model> {
 		this.vboxMineCards = new VBox(1, lblNmbrOfMineCards);
 		this.vboxVillageCards = new VBox(1, lblNmbrOfVillageCards);
 
-		// Sorted by price
+		// Sorts action cards by price
 		gridpActionCards.add(vboxCellarCards, 0, 0);
 		gridpActionCards.add(vboxWoodcutterCards, 1, 0);
 		gridpActionCards.add(vboxWorkshopCards, 2, 0);
@@ -244,8 +238,6 @@ public class GameApp_View extends View<GameApp_Model> {
 		this.txtfChatArea = new TextField();
 
 		this.btnSendChatArea = new Button(t.getString("chat.btnSendChatArea")); // Send
-		txtaChatArea.setMaxWidth(500);
-		txtaChatArea.setEditable(false);
 		this.hboxChatArea = new HBox(txtfChatArea, btnSendChatArea);
 		this.vboxChatArea = new VBox(lblChatArea, txtaChatArea, hboxChatArea);
 
@@ -253,8 +245,6 @@ public class GameApp_View extends View<GameApp_Model> {
 		this.lblLog = new Label(t.getString("log.lblLog")); // Log
 		this.txtaLog = new TextArea();
 
-		txtaLog.setMaxWidth(500);
-		txtaLog.setEditable(false);
 		this.vboxLog = new VBox(lblLog, txtaLog);
 
 		// Creates discard area
@@ -337,8 +327,8 @@ public class GameApp_View extends View<GameApp_Model> {
 		root.add(this.vboxActionCards, 0, 0, 4, 2);
 		root.add(this.vboxTreasureCards, 4, 0, 3, 1);
 		root.add(this.vboxVictoryCards, 4, 1, 3, 1);
-		root.add(this.vboxChatArea, 7, 0, 2, 1);
-		root.add(this.vboxLog, 7, 1, 2, 1);
+		root.add(this.vboxLog, 7, 0, 2, 1);
+		root.add(this.vboxChatArea, 7, 1, 2, 1);
 		root.add(this.vboxDiscard, 0, 2, 1, 1);
 		root.add(this.vboxDeck, 0, 3, 1, 1);
 		root.add(this.vboxPlayedCards, 1, 2, 8, 1);
@@ -376,10 +366,17 @@ public class GameApp_View extends View<GameApp_Model> {
 		vboxChatArea.setPrefWidth(150);
 		txtfChatArea.setMinWidth(320);
 		hboxChatArea.getStyleClass().add("hbox");
+		txtfChatArea.getStyleClass().add("txtfChatArea");
+		txtaChatArea.setMaxWidth(500);
+		txtaChatArea.setEditable(false);
+		txtaChatArea.setStyle("-fx-control-inner-background: oldlace;");
 
 		lblLog.getStyleClass().add("lblHeaders");
 		vboxLog.getStyleClass().add("vbox");
 		vboxLog.setPrefWidth(150);
+		txtaLog.setMaxWidth(500);
+		txtaLog.setEditable(false);
+		txtaLog.setStyle("-fx-control-inner-background: oldlace;");
 
 		lblDiscard.getStyleClass().add("lblHeaders");
 		vboxDiscard.getStyleClass().add("vbox");
@@ -403,14 +400,17 @@ public class GameApp_View extends View<GameApp_Model> {
 		// Adds special styling to the current player area
 		hboxCurrentPlayer.getStyleClass().add("hboxCurrentPlayer");
 		hboxCurrentPhase.getStyleClass().add("hboxCurrentPlayer");
-		
 		hboxContentCurrentPlayer.getStyleClass().add("hbox");
 		vboxCurrentPlayer.getStyleClass().add("vboxCurrentPlayer");
 		vboxCurrentPlayerButtons.getStyleClass().add("vboxCurrentPlayerButtons");
+		
 		btnGiveUp.getStyleClass().add("btnGiveUp");
+		btnSendChatArea.getStyleClass().add("buttonSend");
 		btnCommit.getStyleClass().add("btnCommit");
 		btnCommit.setMinHeight(40);
+		
 		gridpCurrentPlayer.getStyleClass().add("gridpCurrentPlayer");
+		
 		lblCurrentPlayer.getStyleClass().add("lblCurrentPlayer");
 		lblNameOfCurrentPlayer.getStyleClass().add("lblCurrentPlayer");
 		lblCurrentPhase.getStyleClass().add("lblCurrentPlayer");
@@ -432,14 +432,14 @@ public class GameApp_View extends View<GameApp_Model> {
 		root.getStyleClass().add("rootFormat");
 		
 		// Scene and stage
-		Scene scene = new Scene(root, 1280, 720);
+		Scene scene = new Scene(root, 1280, 900);
 		scene.getStylesheets().add(GameApp_View.class.getResource("GameApp.css").toExternalForm());
 		stage.setScene(scene);
         
         // Sets stage full screen
 		stage.setFullScreen(true);
 		
-		stage.setTitle("Dominion");
+		stage.setTitle("Dominion - KeepTyping 2017. Lukas Gehrig, Bodo Grütter, Simon Hafner, René Schwab, Adrian Mathys.");
 		stage.show();
 		
 		return scene;

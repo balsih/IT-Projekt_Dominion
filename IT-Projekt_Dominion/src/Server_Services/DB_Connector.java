@@ -7,16 +7,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Logger;
-
 import Server_GameLogic.Player;
 
 /**
+ * A database connector which builds a connection to the embedded h2 database.
+ * JDBC creates the interface to the h2 database. SQL allows to use DDL and DML for
+ * data definition and data manipulation.
+ * 
+ * The DB_Connector allows to create or delete players, and to save a score into the database.
+ * 
  * @author Bodo Gruetter
- * 
- * A database connector which builds a connection to the
- * embedded h2 database. This class allows Select statements of relevant
- * data and data manipulation with DML in SQL.
- * 
  * Adapted from:
  * http://openbook.rheinwerk-verlag.de/javainsel9/javainsel_24_001.htm#mja621f3b4a74c7fa576b4a58b1614041e
  */
@@ -24,39 +24,33 @@ public class DB_Connector {
 
 	private static DB_Connector connector;
 	private final Logger logger = Logger.getLogger("");
-	
-	// Necessary objects that we use with jdbc
+
 	private Connection connection;
 	private Statement stmt;
 	private PreparedStatement prepStmt;
 	private ResultSet rs;
 
-	/**
-	 * @author Bodo Gruetter
-	 * 
-	 * The constructor creates a connection to the
-	 * database and if creates if not exists the database structure.
-	 * 
-	 */
-	protected DB_Connector() {
+	private DB_Connector() {
 		this.createDBConnection();
 		this.createDBStructure();
 	}
 
 	/**
+	 * Creates a new user in database with a user name if not exists and password.
+	 * 
 	 * @author Bodo Gruetter
 	 * 
-	 * Creates a new user in database with a username as
-	 * primary key and a password if not already exists.
-	 * 
-	 * @param username - the username of a new player
-	 * @param password - the password of a new player
-	 * @return Boolean - depending on if the username already exists.
+	 * @param username
+	 * , the user name of a new player
+	 * @param password
+	 * , the password of a new player
+	 * @return
+	 * true or false, depending if username already exists
 	 */
 	public boolean addNewPlayer(String username, String password) {
 		try {
 			/*
-			 * prepare the preparedStatement with the insert into statement.
+			 * Fills the preparedStatement with the insert into statement,
 			 * sets the parameters as value and executes the statement.
 			 */
 			String insertIntoPlayer = "insert into Player (Username, Password) values (?,?)";
@@ -66,23 +60,26 @@ public class DB_Connector {
 			this.prepStmt.execute();
 
 			return true;
-
 		} catch (SQLException e) {
 			return false;
 		}
 	}
 
 	/**
-	 * @autor Bodo Gruetter
+	 * Inserts an winner with high score of a game into the database.
 	 * 
-	 * Inserts an existing player with his score of a game
-	 * into the database.
+	 * @author Bodo Gruetter
 	 * 
-	 * @param player - the existing player
-	 * @param score - the achieved score in a game.
-	 * @return Boolean - depending on if the insert statement works.
+	 * @param player
+	 * , the player who wons a game
+	 * @param score
+	 * , the achieved score in a game
+	 * @param moves
+	 * , the moves of the player in a game
+	 * @return
+	 * true or false, depending if score could be saved in database
 	 */
-	public boolean addScore(Player player, int score, int moves) {
+	public boolean addScore(Player player, int score, int moves) {		
 		try {
 			/*
 			 * prepares the preparedStatement with the insert into statement.
@@ -102,12 +99,14 @@ public class DB_Connector {
 	}
 
 	/**
-	 * @author Bodo Gruetter
-	 * 
 	 * Deletes an existing player from the database.
 	 * 
-	 * @param username - the username of the player which should been deleted.
-	 * @return Boolean - depending on the delete statement works.
+	 * @author Bodo Gruetter
+	 * 
+	 * @param username
+	 * , the user name of the player which should been deleted.
+	 * @return
+	 * true or false depending on the delete statement works.
 	 */
 	public boolean deletePlayer(String username) {
 		try {
@@ -126,35 +125,38 @@ public class DB_Connector {
 		}
 
 	}
-	
+
 	/**
+	 * Deletes an existing player score from the database.
+	 * 
 	 * @author Bodo Gruetter
 	 * 
-	 * Deletes an existing player_Scoring from the database.
-	 * 
-	 * @param username - the username of the player which should been deleted.
-	 * @return Boolean - depending on the delete statement works.
+	 * @param username
+	 * , the username of the player which should been deleted.
+	 * @return
+	 * true or false, depending on the delete statement works.
 	 */
-	public boolean deletePlayer_Scoring(String username){
-		try{
-		String deletePlayer_Scoring = "Delete from Player_Scoring where Username = ?";
-		this.prepStmt = connection.prepareStatement(deletePlayer_Scoring);
-		this.prepStmt.setString(1, username);
-		this.prepStmt.execute();
-		
-		return true;
-		} catch (SQLException e){
+	public boolean deletePlayer_Scoring(String username) {
+		try {
+			String deletePlayer_Scoring = "Delete from Player_Scoring where Username = ?";
+			this.prepStmt = connection.prepareStatement(deletePlayer_Scoring);
+			this.prepStmt.setString(1, username);
+			this.prepStmt.execute();
+
+			return true;
+		} catch (SQLException e) {
 			return false;
 		}
-		
+
 	}
 
 	/**
+	 * Selects the 5 highest scores in the database sorted ascending by moves and descending by score.
+	 * 
 	 * @author Bodo Gruetter
 	 * 
-	 * Selects the 5 highscores in the database
-	 * 
-	 * @return highScore - the 5 best players with their score.
+	 * @return
+	 * highScore, the 5 best players with their score.
 	 */
 	public String getHighScore() {
 		String selectHighScore = "Select distinct Username, Score, Moves from Player_Scoring order by Moves asc, Score desc limit 0,5";
@@ -179,11 +181,12 @@ public class DB_Connector {
 	}
 
 	/**
-	 * @author Bodo Gruetter
-	 * 
 	 * Creates a new instance of database if not exists
 	 * 
-	 * @return connector - an existing connector
+	 * @author Bodo Gruetter
+	 * 
+	 * @return
+	 * connector, an existing or new DB_Connector
 	 */
 	public static DB_Connector getDB_Connector() {
 		if (connector == null) {
@@ -193,12 +196,12 @@ public class DB_Connector {
 	}
 
 	/**
+	 * Creates the database schema with two tables if no database already exists.
+	 * 
 	 * @author Bodo Gruetter
 	 * 
-	 * Creates the database schema with two tables if no
-	 * database exists.
-	 * 
-	 * @return Boolean - depending on the create table statement works.
+	 * @return
+	 * true or false, depending on the create table statement works.
 	 */
 	private boolean createDBStructure() {
 		try {
@@ -215,18 +218,19 @@ public class DB_Connector {
 
 			return true;
 		} catch (SQLException | NullPointerException e) {
-			this.logger.severe("Exception in createDBStructure: "+e.toString());
+			this.logger.severe("Exception in createDBStructure: " + e.toString());
 			return false;
 		}
 	}
 
 	/**
+	 * Creates Connection with DB on Server, and creates DB_Dominion in
+	 * workspace of actual user if not exists.
+	 * 
 	 * @author Bodo Gruetter
 	 * 
-	 * Creates Connection with DB on Server, and creates
-	 * DB_Dominion in workspace of actual user if not exists.
-	 * 
-	 * @return true or false depending on the connection could been created.
+	 * @return
+	 * true or false depending on the connection could been created.
 	 */
 	private boolean createDBConnection() {
 		try {
@@ -251,12 +255,17 @@ public class DB_Connector {
 	}
 
 	/**
-	 * @author Bodo Gruetter checks if the player inputs the correct user data
-	 *         to login.
+	 * checks if the player inputs the correct user data to login.
 	 * 
-	 * @pram username and password of a player
-	 * @return true or false depending on the user input is correct and the
-	 *         select statement works.
+	 * @author Bodo Gruetter
+	 * 
+	 * @param username
+	 * , the user name of the player who tries to log in
+	 * @param password
+	 * , the password of the player who tries to log in
+	 * @return
+	 * true or false depending on the user input is correct and the
+	 * select statement works.
 	 */
 	public boolean checkLoginInput(String username, String password) {
 		try {
@@ -286,8 +295,12 @@ public class DB_Connector {
 	}
 
 	/**
-	 * @author Bodo Gruetter service method which allows to select the existing
-	 *         player in database and print them out in console.
+	 * Service method which allows to select the existing player in database and
+	 * print them out in console.
+	 * 
+	 * This method is not used in final game.
+	 * 
+	 * @author Bodo Gruetter
 	 */
 	public void selectPlayer() {
 		try {
@@ -309,8 +322,12 @@ public class DB_Connector {
 	}
 
 	/**
-	 * @author Bodo Gruetter service method which allows to select the existing
-	 *         player_scores in database and print them out in console.
+	 * Service method which allows to select the existing player_scores in
+	 * database and print them out in console.
+	 * 
+	 * This method is not used in final game.
+	 * 
+	 * @author Bodo Gruetter
 	 */
 	public void selectPlayer_Scoring() {
 		String selectPlayer_Scoring = "select * from Player_Scoring";
@@ -323,12 +340,8 @@ public class DB_Connector {
 				System.out.println(this.rs.getString(2) + ": " + this.rs.getInt(3) + ", " + this.rs.getInt(4));
 			}
 		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-	
-	public static void main(String[] args){
-		DB_Connector connector = new DB_Connector();
-		connector.selectPlayer();
 	}
 }

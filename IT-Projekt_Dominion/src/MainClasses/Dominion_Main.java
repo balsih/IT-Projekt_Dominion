@@ -1,9 +1,5 @@
 package MainClasses;
 
-import Abstract_MVC.Controller;
-import Abstract_MVC.Model;
-import Abstract_MVC.View;
-import Cards.CardName;
 import Client_CreatePlayer_VC.CreatePlayer_Controller;
 import Client_CreatePlayer_VC.CreatePlayer_View;
 import Client_GameApp_MVC.GameApp_Controller;
@@ -14,21 +10,19 @@ import Client_Login_VC.Login_View;
 import Client_MainMenu_VC.MainMenu_Controller;
 import Client_MainMenu_VC.MainMenu_View;
 import Client_Services.ServiceLocator;
-import Client_Services.Translator;
 import Client_Splash_MVC.Splash_Controller;
 import Client_Splash_MVC.Splash_Model;
 import Client_Splash_MVC.Splash_View;
 import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 /**
- * @author Rene
- * @version 1.0
- * @created 31-Okt-2017 17:28:23
+ * The main class launches the application respectively the Dominion game 
+ * 
+ * @author Rene Schwab
+ * 
  */
+
 public class Dominion_Main extends Application {
 	
 	Splash_View splash_View = null;
@@ -37,22 +31,23 @@ public class Dominion_Main extends Application {
 	CreatePlayer_View createPlayer_View = null;
 	GameApp_View gameApp_View = null;
 	ServiceLocator sl;
-	
 	GameApp_Model model;
 
+	
 	public Dominion_Main(){
 
 	}
 
-	/**
-	 * 
-	 * @param args
-	 */
+
 	public static void main(String[] args){
 		launch(args);
 	}
 
-	@Override
+	/** 
+	 *  Launches Splash screen and main application
+	 * 
+	 *  @author Rene Schwab
+	 */
 	public void start(Stage stage) throws Exception{
 		Splash_Model splashModel = new Splash_Model();
 		splash_View = new Splash_View(stage, splashModel);
@@ -60,10 +55,14 @@ public class Dominion_Main extends Application {
 		
 		splash_View.start();
 		splashModel.initialize();
-		
 	}
 	
 	
+	/** 
+	 *  Launches Login screen 
+	 * 
+	 *  @author Rene Schwab
+	 */
 	public void startLogin(){
 		splash_View.stop(); // Hides splashscreen
 		sl = ServiceLocator.getServiceLocator();
@@ -77,7 +76,11 @@ public class Dominion_Main extends Application {
 		this.login_View.start();
 	}
 	
-	
+	/** 
+	 *  Launches CreatePlayer screen 
+	 * 
+	 *  @author Rene Schwab
+	 */
 	public void startCreatePlayer(){
 		this.createPlayer_View = new CreatePlayer_View(new Stage(), model);
 		CreatePlayer_Controller controller = new CreatePlayer_Controller(this, model, this.createPlayer_View);
@@ -89,7 +92,11 @@ public class Dominion_Main extends Application {
 		}
 	}
 	
-	// Create game mvc
+	/** 
+	 *  Launches GameApp screen
+	 * 
+	 *  @author Rene Schwab
+	 */
 	public void startGameApp(){		
 		model.gameStartSound();
 		this.gameApp_View = new GameApp_View(new Stage(), model);
@@ -99,7 +106,11 @@ public class Dominion_Main extends Application {
 		model.startMediaPlayer("Celtic_Music.mp3"); // starts new sound for GameApp 
 	}
 	
-	
+	/** 
+	 *  Launches MainMenu screen 
+	 * 
+	 *  @author Rene Schwab
+	 */
 	public void startMainMenu(){
 		this.mainMenu_View = new MainMenu_View(new Stage(), model);
 		MainMenu_Controller controller = new MainMenu_Controller(this, model, this.mainMenu_View);

@@ -1,35 +1,39 @@
 package Cards;
 
-import Client_Services.Gallery;
 import Client_Services.ServiceLocator;
-import Client_Services.Translator;
 import Messages.UpdateGame_Message;
+import Server_GameLogic.Game;
 import Server_GameLogic.Player;
 import javafx.scene.image.ImageView;
 
 /**
- * @author Rene
- * @version 1.0
- * @created 31-Okt-2017 16:58:04
+ * Abstract super class for all cards. This class contains cardName, cardType, cost
+ * and image of each card. 
+ * 
+ * @author Rene Schwab
+ * 
  */
 public abstract class Card {
-	
 	ServiceLocator sl = ServiceLocator.getServiceLocator();
-	
 	protected CardName cardName;
 	protected int cost;
 	protected ImageView image;
 	protected CardType type; // action, treasure, victory 	
 	protected Player player;
-	
+	protected Game game;
 	protected Card(){
 	}
 	
-
 	/**
+	 * Sends all changes in the game in correlation with the played card 
+	 * 
+	 * @author Rene Schwab
 	 * 
 	 * @param player
-	 * @return 
+	 * , current player who plays the card 
+	 * @return UpdateGame_Message
+	 * ,includes chances of values and set log messages for the executed card.
+	 * 
 	 */
 	public abstract UpdateGame_Message executeCard(Player player);
 	
@@ -54,8 +58,18 @@ public abstract class Card {
 		this.image = image;
 	}
 	
-	// Method gives a card back based on the cardName and the language
-	// and sets the corresponding image 
+	/**
+	 * Gives a Card back and sets the corresponding image based on the card name 
+	 * and the selected language of the player.
+	 * 
+	 * @author Rene Schwab
+	 * 
+	 * @param cardName
+	 * , name of the card  
+	 * @return ard
+	 * , corresponding card object
+	 * 
+	 */
 	public static Card getCard(CardName cardName) {
 
 		Card card = null;
@@ -106,9 +120,10 @@ public abstract class Card {
 			card = new Flipside_Card();
 		}
 		
-		//To catch the server-site using of this method
 		ServiceLocator sl = ServiceLocator.getServiceLocator();
-		if(sl.getGallery() != null)
+		// server uses method as well but has no sl 
+		// -> if null image is not set (
+		if(sl.getGallery() != null) 
 			card.setImage(sl.getGallery().getImage(cardName));
 		
 		return card;
@@ -118,6 +133,5 @@ public abstract class Card {
 	public String toString() {
 		return this.cardName.toString();
 	}
-
 	
 }//end Card

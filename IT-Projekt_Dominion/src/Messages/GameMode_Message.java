@@ -7,11 +7,10 @@ import org.w3c.dom.NodeList;
 import Server_GameLogic.GameMode;
 
 /**
- * The clients choses to play singleplayer or multiplayer
+ * This Message is to send the server the client's chosen GameMode (Singleplayer or Multiplayer).
+ * <li>Communication: client --> server
  * 
  * @author Lukas
- * @version 1.0
- * @created 31-Okt-2017 17:01:14
  */
 public class GameMode_Message extends Message {
 
@@ -24,8 +23,11 @@ public class GameMode_Message extends Message {
 	}
 
 	/**
+	 * Adds the mode <GameMode> to XML
 	 * 
+	 * @author Lukas
 	 * @param docIn
+	 * 				XML-Document
 	 */
 	@Override
 	protected void addNodes(Document docIn){
@@ -38,8 +40,11 @@ public class GameMode_Message extends Message {
 
 
 	/**
+	 * Creates the object mode <GameMode> from XML
 	 * 
+	 * @author Lukas
 	 * @param docIn
+	 * 				XML-Document
 	 */
 	@Override
 	protected void init(Document docIn){

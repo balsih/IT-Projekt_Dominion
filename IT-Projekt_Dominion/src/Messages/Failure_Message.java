@@ -1,15 +1,15 @@
 package Messages;
 
-import java.util.logging.Logger;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
+ * This Message is to show the client that his/her move failed (only application-specific logic).
+ * It is possible to attach a notification for the client.
+ * <li>Communication: server --> client
+ * 
  * @author Lukas
- * @version 1.0
- * @created 01-Nov-2017 17:41:42
  */
 public class Failure_Message extends Message {
 	
@@ -22,12 +22,14 @@ public class Failure_Message extends Message {
 	}
 
 	/**
+	 * Adds the notification to XML (if set)
 	 * 
+	 * @author Lukas
 	 * @param docIn
+	 * 				XML-Document
 	 */
 	@Override
 	protected void addNodes(Document docIn){
-		Logger logger = Logger.getLogger("");
         Element root = docIn.getDocumentElement();
         if(this.notification != null){
     		Element notification = docIn.createElement(ELEMENT_NOTIFICATION);
@@ -37,8 +39,11 @@ public class Failure_Message extends Message {
 	}
 
 	/**
+	 * Creates the object notification (String) from XML
 	 * 
+	 * @author Lukas
 	 * @param docIn
+	 * 				XML-Document
 	 */
 	protected void init(Document docIn){
 		Element root = docIn.getDocumentElement();
@@ -54,7 +59,6 @@ public class Failure_Message extends Message {
 	public String getNotification() {
 		return notification;
 	}
-	
 
 	public void setNotification(String notification) {
 		this.notification = notification;

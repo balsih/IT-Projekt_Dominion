@@ -14,13 +14,21 @@ import Cards.CardName;
 import Server_GameLogic.Phase;
 
 /**
- * The client wants to start a Game. For this purpose the client chooses a singleplayer or multiplayer Game.
- * If the client wants to start a singleplayer Game, he/she starts a new Game with a Bot.
- * If the client wants to start a multiplayer Game, he/she starts a new Game with another Player
+ * This Message is to create a new Game client-site.
+ * <ul>
+ * It includes all important data to the client to start a new Game:
+ * <li>buyCards:		all cards <HashMap><CardName> and how many of them can be bought
+ * <li>handCards:		the 5 hand-cards <LinkedList><Card> the client starts with
+ * <li>handNumber:		number <Integer> of hand-cards (5)
+ * <li>deckPile:		the 5 deck-cards <Stack><Card> the client starts with
+ * <li>deckNumber:		the size <Integer> of the deck (5)
+ * <li>startingPlayer:	the starting-player's name <String>
+ * <li>opponent:		the opponent's name <String>
+ * <li>phase:			the phase <Phase> to start with (Buy)
+ * </ul>
+ * <p><li>Communication: server --> client
  * 
  * @author Lukas
- * @version 1.0
- * @created 31-Okt-2017 17:01:13
  */
 public class CreateGame_Message extends Message {
 
@@ -36,6 +44,7 @@ public class CreateGame_Message extends Message {
 	private static final String ATTR_DECK_NUMBER = "deckNumber";
 	private static final String ATTR_HAND_NUMBER = "handNumber";
 	private static final String ELEMENT_PHASE = "phase";
+	
 	private HashMap<CardName, Integer> buyCards;
 	private Stack<Card> deckPile;
 	private LinkedList<Card> handCards;
@@ -54,8 +63,11 @@ public class CreateGame_Message extends Message {
 	}
 
 	/**
+	 * Adds all data the client needs to start a new game to XML
 	 * 
+	 * @author Lukas
 	 * @param docIn
+	 * 				XML-Document
 	 */
 	@Override
 	protected void addNodes(Document docIn){
@@ -110,8 +122,11 @@ public class CreateGame_Message extends Message {
 	}
 	
 	/**
+	 * Creates the objects from XML
 	 * 
+	 * @author Lukas
 	 * @param docIn
+	 * 				XML-Document
 	 */
 	@Override
 	protected void init(Document docIn){

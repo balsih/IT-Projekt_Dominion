@@ -3,11 +3,10 @@ package Messages;
 import org.w3c.dom.Document;
 
 /**
- * Knocks to server to know if this port with this ip is open
+ * This Message is to knock on the server to know if the socket's port is open.
+ * <li>Communication: client --> server
  * 
  * @author Lukas
- * @version 1.0
- * @created 31-Okt-2017 17:01:10
  */
 public class Knock_Message extends Message {
 
@@ -15,22 +14,13 @@ public class Knock_Message extends Message {
 		super();
 	}
 
-	/**
-	 * 
-	 * @param docIn
-	 */
 	@Override
 	protected void addNodes(Document docIn){
-
+		//nothing toDo here
 	}
 
-	/**
-	 * 
-	 * @param docIn
-	 * @return 
-	 */
 	@Override
 	protected void init(Document docIn){
-
+		//nothing toDo here
 	}
 }//end Knock_Message

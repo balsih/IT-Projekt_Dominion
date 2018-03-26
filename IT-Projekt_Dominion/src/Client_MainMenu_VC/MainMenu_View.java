@@ -1,15 +1,11 @@
 package Client_MainMenu_VC;
 
-import java.net.URL;
 import java.util.Locale;
-
 import Abstract_MVC.View;
 import Client_GameApp_MVC.GameApp_Model;
 import Client_GameApp_MVC.Highscore;
 import Client_Services.ServiceLocator;
 import Client_Services.Translator;
-import Server_GameLogic.Game;
-import Server_GameLogic.Player;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
@@ -20,7 +16,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.Alert.AlertType;
@@ -29,14 +24,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 
 /**
- * @author Rene
- * @version 1.0
- * @created 31-Okt-2017 17:05:02
+ * View class for MainMenu screen 
+ * Defines controls and elements of this GUI, aligns and styles them.
+ * 
+ * @author Rene Schwab
  */
 public class MainMenu_View extends View<GameApp_Model> {
 	
@@ -44,11 +38,9 @@ public class MainMenu_View extends View<GameApp_Model> {
 	
 	// controls -> accessed by controller
 	
-	protected Label logoLbl;
-	protected Label keepTypingLbl;
-	
 	protected Label playerLbl;
 	protected ComboBox<String> languageSelectComboBox;
+	
 	protected Label mainMenuLbl;
 	
 	protected Label selectModeLbl;
@@ -56,19 +48,15 @@ public class MainMenu_View extends View<GameApp_Model> {
 	protected Button multiPlayerBtn;
 	
 	protected Label highscoreLbl;
+	protected TableView<Highscore> table;
 	protected TableColumn<Highscore, String> nameColumn, pointColumn, roundColumn;
 	
-	protected Button startGameBtn;
 	protected Button quitBtn;
+	protected Button logoutBtn;
 	
 	protected Alert startGameAlert;
 	
-	protected TableView<Highscore> table;
-	
-	/**
-	 * 
-	 * @param model
-	 */
+
 	public MainMenu_View(Stage stage, GameApp_Model model) {
 		super(stage, model);
 	}
@@ -76,7 +64,6 @@ public class MainMenu_View extends View<GameApp_Model> {
 	@Override
 	protected Scene create_GUI() {
 		
-		// sl.setTranslator(new Translator("en"));
 		sl = ServiceLocator.getServiceLocator();
 		Translator t = sl.getTranslator();
 
@@ -94,47 +81,40 @@ public class MainMenu_View extends View<GameApp_Model> {
 		structureBox.setId("structureBox");
 		
 
-		// labels and text fields
-		logoLbl = new Label();
+		// header with Dominion and Keep typing logo
+		Label logoLbl = new Label();
 		logoLbl.setId("logoLbl");
 		logoLbl.setPrefSize(410.0, 150.0);
 		logoLbl.setMinSize(380.0, 0.0);
 		logoLbl.setAlignment(Pos.CENTER);
-	
+
 		Image image = new Image(getClass().getResourceAsStream("Logo.png"));
 		ImageView imageView = new ImageView(image);
 		logoLbl.setGraphic(imageView);
-
 		imageView.setScaleX(1.1);
 		imageView.setScaleY(1.1);
 
-		// Keep Typing Label
-		keepTypingLbl = new Label();
+		Label keepTypingLbl = new Label();
 		keepTypingLbl.setId("keepTypingLbl");
 		keepTypingLbl.setPrefSize(40.0, 20.0);
 		keepTypingLbl.setMinSize(40.0, 20.0);
-		//keepTypingLbl.setAlignment(Pos.CENTER_RIGHT);
 		keepTypingLbl.setAlignment(Pos.CENTER_LEFT);
-	
+
 		Image image2 = new Image(getClass().getResourceAsStream("KeepTyping.png"));
 		ImageView imageView2 = new ImageView(image2);
 		keepTypingLbl.setGraphic(imageView2);
-		
+
 		Label space = new Label();
 		HBox typingBox = new HBox();
 		typingBox.setId("typingBox");
 		typingBox.getChildren().addAll(space, keepTypingLbl);
 
-//		imageView2.setScaleX(1.1);
-//		imageView2.setScaleY(1.1);
 		
-		
-		
-		// shows the name of the actual player
+		// Shows the name of the actual player
 		playerLbl = new Label(t.getString("menu.player")+" "+model.getClientName());
 		playerLbl.setId("playerLbl");
 		playerLbl.setPrefSize(295, 15);
-		playerLbl.setAlignment(Pos.CENTER.BOTTOM_LEFT);
+		playerLbl.setAlignment(Pos.BOTTOM_LEFT);
 		
 		// language selection with ComboBox
 		ObservableList<String> lang = FXCollections.observableArrayList();
@@ -147,26 +127,24 @@ public class MainMenu_View extends View<GameApp_Model> {
 				currentIndex = i;
 			} 
 		} 
+		// Sets the current locale language (de, en, ...) as value of the ComboBox 
 		languageSelectComboBox = new ComboBox<String>(lang);
 		languageSelectComboBox.setValue(lang.get(currentIndex)); 
 		languageSelectComboBox.setId("languageSelectComboBox");
 		
 		languageSelectComboBox.setTooltip(new Tooltip(t.getString("program.languageTip")));
-		//languageSelectComboBox.setPrefSize(20.0, 20.0);
-		languageSelectComboBox.toFront();
-		
 		HBox playerAndLanguageBox = new HBox(playerLbl, languageSelectComboBox);
 		
 		//playerAndLanguageBox.setPrefSize(360, 40);
 		playerAndLanguageBox.setId("playerAndLanguageBox");
-		playerAndLanguageBox.setAlignment(Pos.CENTER.CENTER_LEFT);
+		playerAndLanguageBox.setAlignment(Pos.CENTER_LEFT);
 		
 		
-		
+		// Label mainMenuLbl
 		mainMenuLbl = new Label(t.getString("menu.mainMenuLbl"));
-		mainMenuLbl.setPrefSize(300, 50);
 		mainMenuLbl.setId("mainMenuLbl");
 		
+		// Select game mode over buttons
 		selectModeLbl = new Label(t.getString("menu.selectModeLbl"));
 		selectModeLbl.setId("selectModeLbl");
 		singlePlayerBtn = new Button(t.getString("menu.singlePlayerBtn"));
@@ -180,17 +158,15 @@ public class MainMenu_View extends View<GameApp_Model> {
 		// warning message, if start game (single- or multiplayer) fails
 		startGameAlert = new Alert(AlertType.WARNING);
 		startGameAlert.setTitle(t.getString("menu.startGameAlert"));
-		//startGameAlert.setHeaderText(t.getString("NoConnection"));
-		// loginAlert.setContentText("do this or that");
 		
-		
+		// Table view showing the top 5 players 
+		// Input is a AbservableList filled in the GameAp_Model with data from the DB 
 		highscoreLbl = new Label(t.getString("menu.highscoreLbl"));
 		highscoreLbl.setId("highscoreLbl");
 		
-		
 		nameColumn = new TableColumn<Highscore, String>(t.getString("menu.table.player"));
 		nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-		nameColumn.setPrefWidth(250);
+		nameColumn.setPrefWidth(240);
 		
 		pointColumn = new TableColumn<Highscore, String>(t.getString("menu.table.points"));
 		pointColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
@@ -205,50 +181,47 @@ public class MainMenu_View extends View<GameApp_Model> {
 		table = new TableView<Highscore>();
 		table.setId("table");
 		table.setItems(model.sendHighScoreRequest());
-		table.getColumns().addAll(nameColumn, pointColumn, roundColumn);
-		table.setPrefSize(346, 162);
-		
-		
+		table.getColumns().addAll(nameColumn, roundColumn, pointColumn);
+		table.setPrefSize(340, 180);
+		table.setPlaceholder(new Label(""));
 		highscoreBox.getChildren().addAll(highscoreLbl, table);
 		
-		quitBtn = new Button(/*t.getString("menu.quitBtn")*/);
+		
+		// buttons
+		quitBtn = new Button(t.getString("menu.quitBtn"));
 		quitBtn.setId("quitBtn");
-		HBox startAndQuitBox = new HBox(/*startGameBtn, */quitBtn);
+		logoutBtn = new Button(t.getString("menu.logoutBtn"));
+		logoutBtn.setId("logoutBtn");
+		HBox startAndQuitBox = new HBox(logoutBtn, quitBtn);
 		startAndQuitBox.setId("startAndQuitBox");
 		
-
 		// VBox for layout and spacing
 		VBox gameModeAndHigscoreBox = new VBox();
 		gameModeAndHigscoreBox.setId("gameModeAndHigscoreBox");
 		gameModeAndHigscoreBox.getChildren().addAll(gameModeBox, highscoreBox);
 
-		// layout and size configurations
+		
+		// Layout and size configurations
 		root.setPrefSize(1280, 720);
 		root.setAlignment(Pos.CENTER);
-		
 		centerBox.getChildren().addAll(playerAndLanguageBox, mainMenuLbl, gameModeAndHigscoreBox, startAndQuitBox );
-		// centerBox.getChildren().addAll(createNewPlayer, nameBox, passwordBox,
-		// buttonBox); // -> ohne Sprachauswahl
 		
 		structureBox.getChildren().addAll(logoLbl, typingBox, centerBox);
-		
 		root.getChildren().add(structureBox);
-		
 		
 		Scene scene = new Scene(root);
 		scene.getStylesheets().add(getClass().getResource("MainMenu.css").toExternalForm());
 		this.stage.setScene(scene);
 		stage.setFullScreen(true); // set Full Screen
 		stage.setFullScreenExitHint(""); // set full screen message -> shows nothing
-		updateTexts(); // switch text language if chanced over dropdown menu
 		
 		startGameAlert.initOwner(stage); // focus stays on full screen when alert message appears
 		
 		return scene;
 	}
 	
+	// Switch text language if chanced over dropdown menu from ComboBox
 	public void updateTexts() {
-		//startGameBtn
 		Translator t = sl.getTranslator();
 		languageSelectComboBox.setTooltip(new Tooltip(t.getString("program.languageTip")));
 		mainMenuLbl.setText(t.getString("menu.mainMenuLbl"));
@@ -261,6 +234,7 @@ public class MainMenu_View extends View<GameApp_Model> {
 		pointColumn.setText(t.getString("menu.table.points"));
 		roundColumn.setText(t.getString("menu.table.rounds"));
 		quitBtn.setText(t.getString("menu.quitBtn"));
+		logoutBtn.setText(t.getString("menu.logoutBtn"));
 		startGameAlert.setTitle(t.getString("menu.startGameAlert"));
 	}
 	
